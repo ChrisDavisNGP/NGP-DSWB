@@ -16,4 +16,9 @@ include("NGP-DSWB/Lib/Include-Package-v2.0.jl")
 #run(\`ls NGP-DSWB/Lib\`)
 #run(\`ls /data/notebook_home/Production/Studies/Sessions/NGP-DSWB/Lib\`)
 
+To get "Bodies" I switched to "NB-Lib" or notebook library
+
+include("NGP-DSWB/NB-Lib/Individual-Streamline-v1.2.jl")
+
+Is the new path.
 ---------------------------------------------------------------------------
