@@ -1,5 +1,5 @@
 # Packages in Lib Directory; structures first
-#include("/data/notebook_home/Production/Lib/Structures-Package-v2.0.jl")
+include("Structures-Package-v2.0.jl")
 
 #include("/data/notebook_home/Production/Lib/Grouping-Package-v2.0.jl")
 #include("/data/notebook_home/Production/Lib/Peak-Package-v2.0.jl")

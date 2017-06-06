@@ -44,20 +44,6 @@ function removeNegitiveTime(inDF::DataFrame,field::Symbol)
 end
 ;
 
-type TimeVars
-    startTime::DateTime
-    endTime::DateTime
-    startTimeMs::Int64
-    endTimeMs::Int64
-    startTimeUTC::DateTime
-    endTimeUTC::DateTime
-    startTimeMsUTC::Int64
-    endTimeMsUTC::Int64
-    datePart::Symbol
-    timeString::ASCIIString
-    timeStringUTC::ASCIIString
-end
-
 dt = DateTime(2000,1,1,1,1)
 tv = TimeVars(dt,dt,0,0,dt,dt,0,0,:hour,"a","b")
 

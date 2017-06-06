@@ -1,3 +1,26 @@
+type ShowParams
+    desktop::Bool
+    mobile::Bool
+    devView::Bool
+    criticalPathOnly::Bool
+    debug::Bool
+    debugLevel::Int64
+end
+
+type TimeVars
+    startTime::DateTime
+    endTime::DateTime
+    startTimeMs::Int64
+    endTimeMs::Int64
+    startTimeUTC::DateTime
+    endTimeUTC::DateTime
+    startTimeMsUTC::Int64
+    endTimeMsUTC::Int64
+    datePart::Symbol
+    timeString::ASCIIString
+    timeStringUTC::ASCIIString
+end
+
 type UrlParams
     beaconTable::ASCIIString
     resourceTable::ASCIIString
@@ -12,13 +35,4 @@ type UrlParams
     orderBy::ASCIIString
     usePageLoad::Bool
     deviceType::ASCIIString
-end
-
-type ShowParams
-    desktop::Bool
-    mobile::Bool
-    devView::Bool
-    criticalPathOnly::Bool
-    debug::Bool
-    debugLevel::Int64
 end
