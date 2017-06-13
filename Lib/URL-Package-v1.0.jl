@@ -14,9 +14,9 @@ function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=120)
         if Bool[ismatch(r".*/\?utm_source=Facebook.*",url)][1]
             url = map!(x->replace(x,r"utm_source=Facebook.*","utm_source=Facebook"),[url])[1]
         end
-            
+
         # Remove the non-print "%" from all url strings
-        # url = map!(x->replace(x,"%","\045"),[url])[1]        
+        # url = map!(x->replace(x,"%","\045"),[url])[1]
 
         url = map!(x->replace(x,"%","_"),[url])[1]
         url = map!(x->replace(x,";","_"),[url])[1]
@@ -26,7 +26,7 @@ function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=120)
         url = map!(x->replace(x,"~","_"),[url])[1]
         url = map!(x->replace(x,"!","_"),[url])[1]
         url = map!(x->replace(x,"\$","_"),[url])[1]
-    
+
         #uri = URI(url)
         urlLength = length(url)
         if (urlLength > limit)
@@ -38,7 +38,48 @@ function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=120)
     catch y
         println("scrubUrlToPrint Exception ",y)
     end
-        
+
+end
+
+function scrubUrlFieldToPrint(urlDF::DataFrame,urlField::Symbol;limit::Int64=120;)
+    try
+    i = 0
+    todo = 0
+        for url in urlDF[:,urlField]
+        i += 1
+        if Bool[ismatch(r"Not Blocking",url)][1]
+            deleterows!(urlDF,i)
+            continue
+        end
+
+        if Bool[ismatch(r".*/\?utm_source=Facebook.*",url)][1]
+            url = map!(x->replace(x,r"utm_source=Facebook.*","utm_source=Facebook"),[url])[1]
+        end
+
+        # Remove the non-print "%" from all url strings
+        # url = map!(x->replace(x,"%","\045"),[url])[1]
+
+        url = map!(x->replace(x,"%","_"),[url])[1]
+        url = map!(x->replace(x,";","_"),[url])[1]
+        url = map!(x->replace(x,"#","_"),[url])[1]
+        url = map!(x->replace(x,"|","_"),[url])[1]
+        url = map!(x->replace(x,"&","_"),[url])[1]
+        url = map!(x->replace(x,"~","_"),[url])[1]
+        url = map!(x->replace(x,"!","_"),[url])[1]
+        url = map!(x->replace(x,"\$","_"),[url])[1]
+
+        #uri = URI(url)
+        urlLength = length(url)
+        if (urlLength > limit)
+            urlDF[i,urlField] = url[1:limit] * "..."
+        else
+            urlDF[i,urlField] = url
+        end
+    end
+    catch y
+        println("scrubUrlFieldToPrint Exception ",y)
+    end
+
 end
 
 function cleanupTopUrlTable(topUrlList::DataVector)
@@ -70,11 +111,11 @@ function cleanupTopUrlTable(topUrlList::DataVector)
             dv[i] = testUrl
             i = i+1
         end
-        
+
         #Debug
-        
+
         return dv
-        
+
         catch y
         println("cleanupTopUrlTable Exception",y)
     end
@@ -85,11 +126,11 @@ function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::In
 #            CASE WHEN (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end as urlgroup
         topUrl = query("""\
 
-        select 
+        select
             count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
             CASE WHEN (position('?' in params_u) > 0) then (trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) || '/%') else params_u || '%' end as urlgroup
         FROM $(UP.beaconTable)
-        where 
+        where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             "timestamp" between $startTimeMs and $endTimeMs and
@@ -97,7 +138,7 @@ function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::In
             params_u ilike '$(UP.urlRegEx)' and
             timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
             user_agent_device_type ilike '$(UP.deviceType)' and
-            params_rt_quit IS NULL 
+            params_rt_quit IS NULL
         group by urlgroup
         order by cnt desc
         limit $(UP.limitRows)
@@ -106,7 +147,7 @@ function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::In
 #                    user_agent_device_type ilike '$(UP.deviceType)' and
 
         return topUrl
-        
+
     catch y
         println("returnTopUrlTable Exception ",y)
     end
@@ -116,27 +157,27 @@ function returnMatchingUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,start
     try
         topUrl = query("""\
 
-        select 
+        select
             count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
             CASE WHEN (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end as urlgroup
         FROM $(ltName)
-        where 
+        where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             "timestamp" between $startTimeMs and $endTimeMs and
             page_group ilike '$(pageGroup)' and
         timers_t_done >= $(lowerLimitMs) and timers_t_done < $(upperLimitMs) and
-            params_rt_quit IS NULL        
+            params_rt_quit IS NULL
         group by urlgroup
         order by cnt desc
         limit $(limit)
-        
+
          """);
-        
-        
-        
+
+
+
         return topUrl
-        
+
     catch y
         println("returnTopUrlTable Exception ",y)
     end
@@ -146,26 +187,26 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
     try
         topUrl = query("""\
 
-        select 
+        select
             count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
         FROM $(ltName)
-        where 
+        where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             "timestamp" between $startTimeMs and $endTimeMs and
             page_group ilike '$(pageGroup)' and
             timers_t_done >= 1000 and timers_t_done < 600000 and
-            params_rt_quit IS NULL        
+            params_rt_quit IS NULL
         group by params_u
         order by cnt desc
         limit $(limit)
-        
+
          """);
-        
-        
-        
+
+
+
         return topUrl
-        
+
     catch y
         println("returnTopUrlTable Exception ",y)
     end
@@ -180,13 +221,13 @@ function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASC
             topurl = query("""\
 
             select count(*),
-            CASE 
+            CASE
             when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
             else trim('/' from params_u)
             end urlgroup
             FROM $(ltName)
-            where 
-            beacon_type = 'page view' 
+            where
+            beacon_type = 'page view'
             group by urlgroup
             order by count(*) desc
             limit $(limit)
@@ -201,7 +242,7 @@ function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASC
 
             select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
             FROM $(ltName)
-            where 
+            where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             timers_t_done > 0
@@ -213,7 +254,7 @@ function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASC
             scrubUrlToPrint(topurl)
             beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Avg MB"),symbol("Avg MS"),symbol("Url - Individual")]))
         end
-        
+
     catch y
         println("topUrlTable Exception ",y)
     end
@@ -227,12 +268,12 @@ function topUrlTableByTime(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         topurl = query("""\
 
         select count(*),
-        CASE 
+        CASE
         when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
         else trim('/' from params_u)
         end urlgroup
         FROM $(ltName)
-        where 
+        where
         beacon_type = 'page view' and
         "timestamp" between $startTimeMs and $endTimeMs
         group by urlgroup
@@ -247,7 +288,7 @@ function topUrlTableByTime(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
 
         select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_page) ,params_u as urlgroup
         FROM $(ltName)
-        where 
+        where
         beacon_type = 'page view' and
         "timestamp" between $startTimeMs and $endTimeMs and
         params_dom_sz > 0 and
