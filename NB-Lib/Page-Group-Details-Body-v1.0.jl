@@ -124,14 +124,6 @@ function medianTimesPGD()
     end
 end
 
-function customRefPGD()
-    customReferralsTable(localTable,productPageGroup)
-end
-
-function stdRefPGD()
-    standardReferrals(localTable,productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString; limit=15)
-end
-
 function medLoadHttpPGD()
     try
         chartMedianLoadTimesByDimension(tv.startTimeUTC,tv.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
@@ -140,12 +132,6 @@ function medLoadHttpPGD()
     catch y
         println("cell chartSlowestUrls Exception ",y)
     end
-end
-
-function treemapsPGD()
-    deviceTypeTreemap(productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString)
-    browserFamilyTreemap(productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString)
-    countryTreemap(productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString)
 end
 
 function dpQuartilesPGD()
