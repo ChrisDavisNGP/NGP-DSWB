@@ -7,7 +7,7 @@ end
 
 function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2)
     try
-        displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) WPF URLs for $(pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis or Derek Fetsch",timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) WPF URLs for $(pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",timeString],showTimeStamp=false)
 
         topurl = query("""\
 
@@ -32,5 +32,25 @@ function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         println("topUrlTable Exception ",y)
     end
 
+end
+
+function cleanupTableFTWP(TV::TimeVars,UP::UrlParams)
+    
+    CleanupTable = query("""\
+        select 
+            page_group,
+            count(*) as "Page Views",
+            count(*)/7 as "Per Day"
+        FROM $(UP.beaconTable)
+        where 
+            beacon_type = 'page view' 
+            and "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            and page_group in ('Adventure WPF','Animals WPF','Environment WPF','Games WPF','Images WPF','Magazine NGM',
+                                'Movies WPF','Ocean WPF','Photography WPF','Science WPF','Travel WPF')
+        GROUP BY page_group
+        Order by count(*) desc
+    """)
+
+    beautifyDF(CleanupTable[1:min(10,end),:])
 end
 

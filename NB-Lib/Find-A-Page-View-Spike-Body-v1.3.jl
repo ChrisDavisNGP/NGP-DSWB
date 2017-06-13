@@ -1,52 +1,50 @@
-function firstAndLast()
-    limitedTable(localTable,table,productPageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
-    setTable(localTable)
+function firstAndLastFAPVSB(TV::TimeVars,UP::UrlParams)
+    limitedTable(UP.btView,UP.beaconTable,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+    setTable(UP.btView)
     firstAndLast = getBeaconsFirstAndLast()
 end
 
-function sessionsBeacons()
+function sessionsBeaconsFAPVSB(TV::TimeVars,UP::UrlParams)
     try
-        #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup)", chart_info = [timeString])
-        setTable(localTable)
-        chartConcurrentSessionsAndBeaconsOverTime(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
+        setTable(UP.btView)
+        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
     catch y
-        println("chartConcurSessions Exception ",y)
+        println("sessionsBeacons Exception ",y)
     end
 end
 
-function loadTime()
+function loadTimeFAPVSB(TV::TimeVars,UP::UrlParams)
     try
-        #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [timeString])
-        setTable(localTable)
-        chartLoadTimes(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
+        setTable(UP.btView)
+        chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
     catch y
-        println("chartLoadTimes Exception ",y)
+        println("loadTime Exception ",y)
     end 
 end
 
-function topUrls()
-    setTable(localTable)
-    topUrlTable(localTable,productPageGroup,tv.timeString;limit=15)
+function topUrlsFAPVSB(TV::TimeVars,UP::UrlParams)
+    setTable(UP.btView)
+    topUrlTable(UP.btView,UP.pageGroup,TV.timeString;limit=15)
 end
 
-function peakTable()
-    setTable(localTable)
-    showPeakTable(tv.timeString,productPageGroup,tv.startTimeUTC,tv.endTimeUTC)
+function peakTableFAPVSB(TV::TimeVars,UP::UrlParams)
+    setTable(UP.btView)
+    showPeakTable(TV.timeString,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC)
 end
 
-function statsTable()
+function statsTableFAPVSB(TV::TimeVars,UP::UrlParams)
     try 
-        setTable(localTable)
-        localStatsDF = statsTableDF(localTable,productPageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC);    
-        statsDF = basicStats(localStatsDF, productPageGroup, tv.startTimeMsUTC, tv.endTimeMsUTC)
+        setTable(UP.btView)
+        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);    
+        statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
         medianThreshold = statsDF[1:1,:median][1]
 
-        displayTitle(chart_title = "Raw Data Stats Including Those above 600 seconds for $(productPageGroup)", chart_info = [tv.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Raw Data Stats Including Those above 600 seconds for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(statsDF[:,:])
-        #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(productPageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
+        #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
         #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
     catch y
-        println("basicStats Exception ",y)
+        println("statsTableFAPVSB Exception ",y)
     end       
 end
 
