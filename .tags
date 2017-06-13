@@ -1,0 +1,334 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+LocalVars	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^type LocalVars$/;"	t
+LocalVars	NB-Lib/SQL-Data-Mining-For-Group-Body-v1.0.jl	/^type LocalVars$/;"	t
+LocalVars	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^type LocalVars$/;"	t
+LocalVars	NB-Lib/Url-Details-Body-v1.0.jl	/^type LocalVars$/;"	t
+LocalVars	NB-Lib/Url-Page-Treemaps-Body-v1.0.jl	/^type LocalVars$/;"	t
+PartialKnownHost (uriHost::ASCIIString, …)	Lib/URL-Classification-Package-v1.0.jl	/^function PartialKnownHost(uriHost::ASCIIString)$/;"	f
+PartialKnownHost (uriHost::ASCIIString, …)	Lib/URL-Classification-Package-v2.0.jl	/^function PartialKnownHost(uriHost::ASCIIString)$/;"	f
+PartialKnownPath (uriPath::ASCIIString, …)	Lib/URL-Classification-Package-v1.0.jl	/^function PartialKnownPath(uriPath::ASCIIString)$/;"	f
+PartialKnownPath (uriPath::ASCIIString, …)	Lib/URL-Classification-Package-v2.0.jl	/^function PartialKnownPath(uriPath::ASCIIString)$/;"	f
+ShowParams	Lib/Structures-Package-v1.0.jl	/^type ShowParams$/;"	t
+ShowParams	Lib/Structures-Package-v2.0.jl	/^type ShowParams$/;"	t
+ShowParamsInit	Lib/Structures-Package-v1.0.jl	/^function ShowParamsInit()$/;"	f
+SoastaGraphs	Lib/Structures-Package-v1.0.jl	/^type SoastaGraphs$/;"	t
+SoastaGraphsInit	Lib/Structures-Package-v1.0.jl	/^function SoastaGraphsInit()$/;"	f
+SubClassify (urlPageGroup::ASCIIString, …)	Lib/URL-Classification-Package-v1.0.jl	/^function SubClassify(urlPageGroup::ASCIIString,uriPath::ASCIIString)$/;"	f
+SubClassify (urlPageGroup::ASCIIString, …)	Lib/URL-Classification-Package-v2.0.jl	/^function SubClassify(urlPageGroup::ASCIIString,uriPath::ASCIIString)$/;"	f
+TimeVars	Lib/Structures-Package-v1.0.jl	/^type TimeVars$/;"	t
+TimeVars	Lib/Structures-Package-v2.0.jl	/^type TimeVars$/;"	t
+TimeVarsInit	Lib/Structures-Package-v1.0.jl	/^function TimeVarsInit()$/;"	f
+UrlParams	Lib/Structures-Package-v1.0.jl	/^type UrlParams$/;"	t
+UrlParams	Lib/Structures-Package-v2.0.jl	/^type UrlParams$/;"	t
+UrlParamsInit	Lib/Structures-Package-v1.0.jl	/^function UrlParamsInit()$/;"	f
+YourshotClassification (uriPath::ASCIIString, …)	Lib/URL-Classification-Package-v1.0.jl	/^function YourshotClassification(uriPath::ASCIIString)$/;"	f
+YourshotClassification (uriPath::ASCIIString, …)	Lib/URL-Classification-Package-v2.0.jl	/^function YourshotClassification(uriPath::ASCIIString)$/;"	f
+activityImpactPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function activityImpactPGD()$/;"	f
+allPageUrlTableDF (tableRt::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl::ASCIIString,rangeLower::Float64,rangeUpper::Float64,startTimeMs::Int64,endTimeMs::Int64;$/;"	f
+allPageUrlTableDF (tableRt::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl::ASCIIString,rangeLower::Float64,rangeUpper::Float64,startTimeMs::Int64,endTimeMs::Int64;$/;"	f
+allSessionUrlTableDF (tableRt::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function allSessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,startTimeMs::Int64,endTimeMs::Int64)$/;"	f
+allSessionUrlTableDF (tableRt::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function allSessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,startTimeMs::Int64,endTimeMs::Int64)$/;"	f
+anyTimeVar	Lib/Utilities-Package-v1.0.jl	/^function anyTimeVar($/;"	f
+basicStats (localStatsDF::DataFrame, …)	Lib/Stats-Package-v1.0.jl	/^function basicStats(localStatsDF::DataFrame,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMS::Int64)$/;"	f
+basicStats (localStatsDF::DataFrame, …)	Lib/Stats-Package-v2.0.jl	/^function basicStats(localStatsDF::DataFrame,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMS::Int64)$/;"	f
+basicStatsFromDV (dv::DataVector, …)	Lib/Stats-Package-v1.0.jl	/^function basicStatsFromDV(dv::DataVector)$/;"	f
+basicStatsFromDV (dv::DataVector, …)	Lib/Stats-Package-v2.0.jl	/^function basicStatsFromDV(dv::DataVector)$/;"	f
+beaconStatsPBI (localTableDF::DataFrame, …)	NB-Lib/3rd-Party-Body-Individual-v1.0.jl	/^function beaconStatsPBI(localTableDF::DataFrame;showAdditional::Bool=true)$/;"	f
+beaconStatsPBI (localTableDF::DataFrame, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function beaconStatsPBI(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showAdditional::Bool=true,usePageLoad::Bool=true)$/;"	f
+beaconStatsPBI (localTableDF::DataFrame, …)	NB-Lib/Individual-Streamline-Worst-v1.1.jl	/^function beaconStatsPBI(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showAdditional::Bool=true,usePageLoad::Bool=true)$/;"	f
+beaconStatsPBI (localTableDF::DataFrame, …)	NB-Lib/Individual-Streamline-v1.1.jl	/^function beaconStatsPBI(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showAdditional::Bool=true,usePageLoad::Bool=true)$/;"	f
+beaconStatsPBI (localTableDF::DataFrame, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function beaconStatsPBI(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showAdditional::Bool=true,usePageLoad::Bool=true)$/;"	f
+beaconStatsRow (localTableDF::DataFrame, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showDevView::Bool=false,showDebug::Bool=false,usePageLoad::Bool=true)$/;"	f
+beaconStatsRow (localTableDF::DataFrame, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showDevView::Bool=false,showDebug::Bool=false,usePageLoad::Bool=true)$/;"	f
+bestDatePart (startTime::DateTime, …)	Lib/Utilities-Package-v1.0.jl	/^function bestDatePart(startTime::DateTime, endTime::DateTime, datePart::Symbol)$/;"	f
+bestDatePart (startTime::DateTime, …)	Lib/Utilities-Package-v2.0.jl	/^function bestDatePart(startTime::DateTime, endTime::DateTime, datePart::Symbol)$/;"	f
+bigPages1SRFLP (TV::TimeVars, …)	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+bigPages2SRFLP (TV::TimeVars, …)	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+bigPages3SRFLP (TV::TimeVars, …)	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+bigPages4SRFLP (TV::TimeVars, …)	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+bigPages5SRFLP (TV::TimeVars, …)	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+bigPages6SRFLP (TV::TimeVars, …)	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+blockingRequestCountByGroupSDMRS (TV::TimeVars, …)	NB-Lib/SQL-Data-Mining-Rt-Spike-Body-v1.0.jl	/^function blockingRequestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)$/;"	f
+blockingTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function blockingTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)$/;"	f
+blockingTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function blockingTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)$/;"	f
+bodyTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function bodyTreemap(toppageurl::DataFrame,beaconString::ASCIIString;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)$/;"	f
+bodyTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function bodyTreemap(toppageurl::DataFrame,beaconString::ASCIIString;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)$/;"	f
+bouncesPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function bouncesPGD()$/;"	f
+browserFamilyTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function browserFamilyTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+browserFamilyTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function browserFamilyTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+browserFamilyTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function browserFamilyTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+browserFamilyTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function browserFamilyTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+cacheHitRatioSDMRS (TV::TimeVars, …)	NB-Lib/SQL-Data-Mining-Rt-Spike-Body-v1.0.jl	/^function cacheHitRatioSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)$/;"	f
+classifyUrl (toppageurl::DataFrame, …)	Lib/URL-Classification-Package-v1.0.jl	/^function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify::Bool=true)$/;"	f
+classifyUrl (toppageurl::DataFrame, …)	Lib/URL-Classification-Package-v2.0.jl	/^function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify::Bool=true)$/;"	f
+cleanupTableFTWP (TV::TimeVars, …)	NB-Lib/Find-Top-WPF-Pages-Body-v1.0.jl	/^function cleanupTableFTWP(TV::TimeVars,UP::UrlParams)$/;"	f
+cleanupTopUrlTable (topUrlList::DataVector, …)	Lib/URL-Package-v1.0.jl	/^function cleanupTopUrlTable(topUrlList::DataVector)$/;"	f
+cleanupTopUrlTable (topUrlList::DataVector, …)	Lib/URL-Package-v2.0.jl	/^function cleanupTopUrlTable(topUrlList::DataVector)$/;"	f
+countryTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function countryTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+countryTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function countryTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+countryTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function countryTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+countryTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function countryTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+createAllStatsDF (TV::TimeVars, …)	NB-Lib/Study-Range-Of-Stats-Body-v1.0.jl	/^function createAllStatsDF(TV::TimeVars,UP::UrlParams)$/;"	f
+criticalPathTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function criticalPathTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)$/;"	f
+criticalPathTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function criticalPathTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)$/;"	f
+criticalPathTreemapV2 (labelField::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function criticalPathTreemapV2(labelField::ASCIIString,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)$/;"	f
+criticalPathTreemapV2 (labelField::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function criticalPathTreemapV2(labelField::ASCIIString,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)$/;"	f
+customRefPGD	Lib/Page-Group-Package-v1.0.jl	/^function customRefPGD()$/;"	f
+customReferralsTable (localTable::ASCIIString, …)	Lib/Referrals-Package-v1.0.jl	/^function customReferralsTable(localTable::ASCIIString, productPageGroup::ASCIIString)$/;"	f
+customReferralsTable (localTable::ASCIIString, …)	Lib/Referrals-Package-v2.0.jl	/^function customReferralsTable(localTable::ASCIIString, productPageGroup::ASCIIString)$/;"	f
+customReferralsTable0ld (localTable::ASCIIString, …)	Lib/Referrals-Package-v1.0.jl	/^function customReferralsTable0ld(localTable::ASCIIString, productPageGroup::ASCIIString)$/;"	f
+customReferralsTable0ld (localTable::ASCIIString, …)	Lib/Referrals-Package-v2.0.jl	/^function customReferralsTable0ld(localTable::ASCIIString, productPageGroup::ASCIIString)$/;"	f
+datePartQuartiles (startTime::DateTime, …)	Lib/Quartiles-Package-v1.0.jl	/^function datePartQuartiles(startTime::DateTime, endTime::DateTime, datePart::Symbol)$/;"	f
+datePartQuartiles (startTime::DateTime, …)	Lib/Quartiles-Package-v2.0.jl	/^function datePartQuartiles(startTime::DateTime, endTime::DateTime, datePart::Symbol)$/;"	f
+defaultBeaconViewUDB (TV::TimeVars, …)	NB-Lib/Url-Details-Body-v1.0.jl	/^function defaultBeaconViewUDB(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultLocalTableALI (TV::TimeVars, …)	NB-Lib/AEM-Large-Images-Body-v1.0.jl	/^function defaultLocalTableALI(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultLocalTableALR (TV::TimeVars, …)	NB-Lib/AEM-Large-Resources-Body-v1.0.jl	/^function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultLocalTableAemOnlyALR (TV::TimeVars, …)	NB-Lib/AEM-Large-Resources-Body-v1.0.jl	/^function defaultLocalTableAemOnlyALR(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultResourceView (TV::TimeVars, …)	NB-Lib/Url-Details-Body-v1.0.jl	/^function defaultResourceView(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultTableFARB (TV::TimeVars, …)	NB-Lib/Find-Any-Resources-Body-v1.0.jl	/^function defaultTableFARB(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultTableFATS (TV::TimeVars, …)	NB-Lib/Find-A-Time-Spike-Body-v1.2.jl	/^function defaultTableFATS(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultTableFLP (TV::TimeVars, …)	NB-Lib/Find-Large-Pages-Body-v1.0.jl	/^function defaultTableFLP(TV::TimeVars,UP::UrlParams)$/;"	f
+defaultTableSRFLP (TV::TimeVars, …)	NB-Lib/Show-Requests-For-Large-Pages-Body-v1.0.jl	/^function defaultTableSRFLP(TV::TimeVars,UP::UrlParams)$/;"	f
+detailsPrint (UP::UrlParams, …)	NB-Lib/AEM-Large-Images-Body-v1.0.jl	/^function detailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)$/;"	f
+detailsPrint (localTable::ASCIIString, …)	Production/AEM_Large_Images_v1.0.jl	/^function detailsPrint(localTable::ASCIIString,tableRt::ASCIIString,joinTableSummary::DataFrame,row::Int64)$/;"	f
+detailsPrintFLP (TV::TimeVars, …)	NB-Lib/Find-Large-Pages-Body-v1.0.jl	/^function detailsPrintFLP(TV::TimeVars,UP::UrlParams,joinTableSummary::DataFrame,row::Int64)$/;"	f
+deviceTypeTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function deviceTypeTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+deviceTypeTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function deviceTypeTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+deviceTypeTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function deviceTypeTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+deviceTypeTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function deviceTypeTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40)$/;"	f
+display10Rows (df::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function display10Rows(df::DataFrame, nameArr::Array)$/;"	f
+display10Rows (df::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function display10Rows(df::DataFrame, nameArr::Array)$/;"	f
+displayGroup (TV::TimeVars, …)	NB-Lib/SQL-Data-Mining-For-Group-Body-v1.0.jl	/^function displayGroup(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+displayManyRows (df::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function displayManyRows(df::DataFrame, nameArr::Array, limit::Int64)$/;"	f
+displayManyRows (df::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function displayManyRows(df::DataFrame, nameArr::Array, limit::Int64)$/;"	f
+dnsTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function dnsTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+dnsTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function dnsTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+dpQuartilesPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function dpQuartilesPGD()$/;"	f
+drawC3VizConverter (UP::UrlParams, …)	NB-Lib/Study-Range-Of-Stats-Body-v1.0.jl	/^function drawC3VizConverter(UP::UrlParams,AllStatsDF::DataFrame;graphType::Int64=1)$/;"	f
+endToEndTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function endToEndTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+endToEndTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function endToEndTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+estimateBeacons (table::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; $/;"	f
+estimateBeacons (table::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; $/;"	f
+estimateFullBeacons (table::ASCIIString, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; $/;"	f
+estimateFullBeacons (table::ASCIIString, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; $/;"	f
+estimateFullBeaconsV2 (UP::UrlParams, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+estimateFullBeaconsV2 (UP::UrlParams, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+finalUrlTableOutput (UP::UrlParams, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function finalUrlTableOutput(UP::UrlParams,SP::ShowParams,topUrls::DataArray,startTimeMs::Int64,endTimeMs::Int64)$/;"	f
+finalUrlTableOutput (UP::UrlParams, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function finalUrlTableOutput(UP::UrlParams,SP::ShowParams,topUrls::DataArray,startTimeMs::Int64,endTimeMs::Int64)$/;"	f
+findTopPageUrlUPT (TV::TimeVars, …)	NB-Lib/Url-Page-Treemaps-Body-v1.0.jl	/^function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+findTopPageViewUPT (TV::TimeVars, …)	NB-Lib/Url-Page-Treemaps-Body-v1.0.jl	/^function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+firstAndLast (localTable::ASCIIString, …)	NB-Lib/Find-Top-WPF-Pages-Body-v1.0 (1).jl	/^function firstAndLast(localTable::ASCIIString,pageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2)$/;"	f
+firstAndLast (localTable::ASCIIString, …)	NB-Lib/Find-Top-WPF-Pages-Body-v1.0.jl	/^function firstAndLast(localTable::ASCIIString,pageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2)$/;"	f
+firstAndLastFAPVSB (TV::TimeVars, …)	NB-Lib/Find-A-Page-View-Spike-Body-v1.3.jl	/^function firstAndLastFAPVSB(TV::TimeVars,UP::UrlParams)$/;"	f
+gapAndCriticalPath (toppageurl::DataFrame, …)	Lib/URL-Classification-Package-v1.0.jl	/^function gapAndCriticalPath(toppageurl::DataFrame)$/;"	f
+gapAndCriticalPath (toppageurl::DataFrame, …)	Lib/URL-Classification-Package-v2.0.jl	/^function gapAndCriticalPath(toppageurl::DataFrame)$/;"	f
+gapAndCriticalPathV2 (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)$/;"	f
+gapAndCriticalPathV2 (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-Worst-v1.1.jl	/^function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)$/;"	f
+gapAndCriticalPathV2 (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-v1.1.jl	/^function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)$/;"	f
+gapAndCriticalPathV2 (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)$/;"	f
+gapTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function gapTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)$/;"	f
+gapTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function gapTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)$/;"	f
+gapTreemapV2 (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function gapTreemapV2(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)$/;"	f
+gapTreemapV2 (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function gapTreemapV2(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)$/;"	f
+gatherSizeDataALI (UP::UrlParams, …)	NB-Lib/AEM-Large-Images-Body-v1.0.jl	/^function gatherSizeDataALI(UP::UrlParams,linesOutput::Int64)$/;"	f
+generateDimensionMatrix (cols::Array, …)	Lib/Grouping-Package-v1.0.jl	/^function generateDimensionMatrix(cols::Array{Symbol, 1}, dims::Int64; constraints::Dict{Symbol, Symbol}=Dict{Symbol,Symbol}())$/;"	f
+generateDimensionMatrix (cols::Array, …)	Lib/Grouping-Package-v2.0.jl	/^function generateDimensionMatrix(cols::Array{Symbol, 1}, dims::Int64; constraints::Dict{Symbol, Symbol}=Dict{Symbol,Symbol}())$/;"	f
+getBestGrouping (results::DataFrame, …)	Lib/Grouping-Package-v1.0.jl	/^function getBestGrouping(results::DataFrame, summary::DataFrame; showProgress=true)$/;"	f
+getBestGrouping (results::DataFrame, …)	Lib/Grouping-Package-v2.0.jl	/^function getBestGrouping(results::DataFrame, summary::DataFrame; showProgress=true)$/;"	f
+getGroupSummary (df::T, …)	Lib/Grouping-Package-v1.0.jl	/^function getGroupSummary{T <: AbstractDataFrame}(df::T)$/;"	f
+getGroupSummary (df::T, …)	Lib/Grouping-Package-v2.0.jl	/^function getGroupSummary{T <: AbstractDataFrame}(df::T)$/;"	f
+getResourcesForBeacon (table::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,$/;"	f
+getResourcesForBeacon (table::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,$/;"	f
+graphLongTimesFATS (localStats2::DataFrame, …)	NB-Lib/Find-A-Time-Spike-Body-v1.2.jl	/^function graphLongTimesFATS(localStats2::DataFrame)$/;"	f
+groupResults (results::DataFrame, …)	Lib/Grouping-Package-v1.0.jl	/^function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=false, progressID::ASCIIString="")$/;"	f
+groupResults (results::DataFrame, …)	Lib/Grouping-Package-v2.0.jl	/^function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=false, progressID::ASCIIString="")$/;"	f
+groupResultsProgress (text, …)	Lib/Grouping-Package-v1.0.jl	/^        function groupResultsProgress(text) {$/;"	f
+groupResultsProgress (text, …)	Lib/Grouping-Package-v2.0.jl	/^        function groupResultsProgress(text) {$/;"	f
+groupSamplesTableDF (table::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function groupSamplesTableDF(table::ASCIIString,productPageGroup::ASCIIString)$/;"	f
+groupSamplesTableDF (table::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function groupSamplesTableDF(table::ASCIIString,productPageGroup::ASCIIString)$/;"	f
+individualPageData (pageGroup::ASCIIString, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function individualPageData(pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64$/;"	f
+individualPageData (pageGroup::ASCIIString, …)	NB-Lib/Individual-Streamline-Worst-v1.1.jl	/^function individualPageData(pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64$/;"	f
+individualPageData (pageGroup::ASCIIString, …)	NB-Lib/Individual-Streamline-v1.1.jl	/^function individualPageData(pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64$/;"	f
+individualPageData (pageGroup::ASCIIString, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function individualPageData(pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64$/;"	f
+individualPageReport (studySession::ASCIIString, …)	NB-Lib/3rd-Party-Body-Individual-v1.0.jl	/^function individualPageReport(studySession::ASCIIString,studyTime::Int64;showCriticalPathOnly::Bool=false)$/;"	f
+individualPageReportV2 (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;$/;"	f
+individualPageReportV2 (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-Worst-v1.1.jl	/^function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;$/;"	f
+individualPageReportV2 (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-v1.1.jl	/^function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;$/;"	f
+individualPageReportV2 (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;$/;"	f
+individualStreamlineMain (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function individualStreamlineMain(WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,$/;"	f
+individualStreamlineMain (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-Worst-v1.1.jl	/^function individualStreamlineMain(WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,$/;"	f
+individualStreamlineMain (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-v1.1.jl	/^function individualStreamlineMain(WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,$/;"	f
+individualStreamlineMain (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function individualStreamlineMain(WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,$/;"	f
+individualStreamlineTable (table::ASCIIString, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function individualStreamlineTable(table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,$/;"	f
+individualStreamlineTable (table::ASCIIString, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function individualStreamlineTable(table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,$/;"	f
+individualStreamlineTableV2 (UP::UrlParams, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=1)$/;"	f
+individualStreamlineTableV2 (UP::UrlParams, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=1)$/;"	f
+itemCountTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function itemCountTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+itemCountTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function itemCountTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+joinTableSummaryFLP (joinTables::DataFrame, …)	NB-Lib/Find-Large-Pages-Body-v1.0.jl	/^function joinTableSummaryFLP(joinTables::DataFrame)$/;"	f
+joinTableTableFLP (TV::TimeVars, …)	NB-Lib/Find-Large-Pages-Body-v1.0.jl	/^function joinTableTableFLP(TV::TimeVars,UP::UrlParams)$/;"	f
+limitedStatsFromDV (dv::DataVector, …)	Lib/Stats-Package-v1.0.jl	/^function limitedStatsFromDV(dv::DataVector)$/;"	f
+limitedStatsFromDV (dv::DataVector, …)	Lib/Stats-Package-v2.0.jl	/^function limitedStatsFromDV(dv::DataVector)$/;"	f
+limitedTable (localTable::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function limitedTable(localTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+limitedTable (localTable::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function limitedTable(localTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+loadTimeFAPVSB (TV::TimeVars, …)	NB-Lib/Find-A-Page-View-Spike-Body-v1.3.jl	/^function loadTimeFAPVSB(TV::TimeVars,UP::UrlParams)$/;"	f
+loadTimesParamsUPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function loadTimesParamsUPGD()$/;"	f
+localStatsFATS (TV::TimeVars, …)	NB-Lib/Find-A-Time-Spike-Body-v1.2.jl	/^function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)$/;"	f
+longTimesFATS (TV::TimeVars, …)	NB-Lib/Find-A-Time-Spike-Body-v1.2.jl	/^function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)$/;"	f
+lookForLeftOversALR (UP::UrlParams, …)	NB-Lib/AEM-Large-Resources-Body-v1.0.jl	/^function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)$/;"	f
+lookForLeftOversDetailsALR (UP::UrlParams, …)	NB-Lib/AEM-Large-Resources-Body-v1.0.jl	/^function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)$/;"	f
+medLoadHttpPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function medLoadHttpPGD()$/;"	f
+medianTimesPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function medianTimesPGD()$/;"	f
+newPagesList	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function newPagesList()$/;"	f
+newPagesList	NB-Lib/Individual-Streamline-Json-v1.2.jl	/^function newPagesList()$/;"	f
+nonCacheRequestCountByGroupSDMRS (TV::TimeVars, …)	NB-Lib/SQL-Data-Mining-Rt-Spike-Body-v1.0.jl	/^function nonCacheRequestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)$/;"	f
+notBlocking (localDF::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function notBlocking(localDF::DataFrame)$/;"	f
+notBlocking (localDF::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function notBlocking(localDF::DataFrame)$/;"	f
+pageGroupDetailsTables (localTable::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function pageGroupDetailsTables(localTable::ASCIIString,localMobileTable::ASCIIString,localDesktopTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+pageGroupDetailsTables (localTable::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function pageGroupDetailsTables(localTable::ASCIIString,localMobileTable::ASCIIString,localDesktopTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+pageGroupQuartiles (table::ASCIIString, …)	Lib/Quartiles-Package-v1.0.jl	/^function pageGroupQuartiles(table::ASCIIString,productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,startTimeMs::Int64,endTimeMs::Int64,timeString::ASCIIString;showTable::Bool=false,limit::Int64=15)$/;"	f
+pageGroupQuartiles (table::ASCIIString, …)	Lib/Quartiles-Package-v2.0.jl	/^function pageGroupQuartiles(table::ASCIIString,productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,startTimeMs::Int64,endTimeMs::Int64,timeString::ASCIIString;showTable::Bool=false,limit::Int64=15)$/;"	f
+pageGroupTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function pageGroupTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40,showDeskTop::Bool=false,showMobile::Bool=false)$/;"	f
+pageGroupTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v1.0.jl	/^function pageGroupTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40,showDeskTop::Bool=false,showMobile::Bool=false)$/;"	f
+pageGroupTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function pageGroupTreemap(productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,timeString::ASCIIString;showTable::Bool=false,limit::Int64=40,showDeskTop::Bool=false,showMobile::Bool=false)$/;"	f
+pageGroupTreemap (productPageGroup::ASCIIString, …)	Lib/Treemaps-Package-v2.0.jl	/^function pageGroupTreemap(productPageGroup::ASCIIString;showTable::Bool=false,limit::Int64=40,showDeskTop::Bool=false,showMobile::Bool=false)$/;"	f
+pageLoadPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function pageLoadPGD()$/;"	f
+peakPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function peakPGD()$/;"	f
+peakTableFAPVSB (TV::TimeVars, …)	NB-Lib/Find-A-Page-View-Spike-Body-v1.3.jl	/^function peakTableFAPVSB(TV::TimeVars,UP::UrlParams)$/;"	f
+pgQuartPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function pgQuartPGD()$/;"	f
+pgTreemap	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function pgTreemap()$/;"	f
+rawStatsFATS (TV::TimeVars, …)	NB-Lib/Find-A-Time-Spike-Body-v1.2.jl	/^function rawStatsFATS(TV::TimeVars,UP::UrlParams)$/;"	f
+rawStatsSROS (TV::TimeVars, …)	NB-Lib/Study-Range-Of-Stats-Body-v1.0.jl	/^function rawStatsSROS(TV::TimeVars,UP::UrlParams)$/;"	f
+redirectTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function redirectTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+redirectTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function redirectTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+removeNegitiveTime (inDF::DataFrame, …)	Lib/Utilities-Package-v1.0.jl	/^function removeNegitiveTime(inDF::DataFrame,field::Symbol)$/;"	f
+removeNegitiveTime (inDF::DataFrame, …)	Lib/Utilities-Package-v2.0.jl	/^function removeNegitiveTime(inDF::DataFrame,field::Symbol)$/;"	f
+removeNotBlocking (localDF::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function removeNotBlocking(localDF::DataFrame)$/;"	f
+removeNotBlocking (localDF::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function removeNotBlocking(localDF::DataFrame)$/;"	f
+requestCountByGroupSDMRS (TV::TimeVars, …)	NB-Lib/SQL-Data-Mining-Rt-Spike-Body-v1.0.jl	/^function requestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)$/;"	f
+requestTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function requestTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+requestTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function requestTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+resourceMatched (tableRt::ASCIIString, …)	NB-Lib/RD-Body-v1.0.jl	/^function resourceMatched(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceMatched (tableRt::ASCIIString, …)	NB-Lib/RD-By-Page-Body-v1.0.jl	/^function resourceMatched(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceScreen (tableRt::ASCIIString, …)	NB-Lib/RD-Body-v1.0.jl	/^function resourceScreen(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceScreen (tableRt::ASCIIString, …)	NB-Lib/RD-By-Page-Body-v1.0.jl	/^function resourceScreen(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceSize (tableRt::ASCIIString, …)	NB-Lib/RD-Body-v1.0.jl	/^function resourceSize(tableRt::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSize (tableRt::ASCIIString, …)	NB-Lib/RD-By-Page-Body-v1.0.jl	/^function resourceSize(tableRt::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSizes12 (UP::UrlParams, …)	NB-Lib/AEM-Large-Resources-Body-v1.0.jl	/^function resourceSizes12(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSizes12 (localTable::ASCIIString, …)	Production/AEM_Large_Resources_v1.0.jl	/^function resourceSizes12(localTable::ASCIIString,tableRt::ASCIIString,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSizes2 (UP::UrlParams, …)	NB-Lib/AEM-Large-Resources-Body-v1.0.jl	/^function resourceSizes2(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSizes2 (localTable::ASCIIString, …)	Production/AEM_Large_Resources_v1.0.jl	/^function resourceSizes2(localTable::ASCIIString,tableRt::ASCIIString,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummary (UP::UrlParams, …)	NB-Lib/AEM-Large-Resources-Body-v1.0.jl	/^function resourceSummary(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummary (localTable::ASCIIString, …)	Production/AEM_Large_Resources_v1.0.jl	/^function resourceSummary(localTable::ASCIIString,tableRt::ASCIIString,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummary (tableRt::ASCIIString, …)	NB-Lib/RD-Body-v1.0.jl	/^function resourceSummary(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceSummary (tableRt::ASCIIString, …)	NB-Lib/RD-By-Page-Body-v1.0.jl	/^function resourceSummary(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceSummary2FARB (TV::TimeVars, …)	NB-Lib/Find-Any-Resources-Body-v1.0.jl	/^function resourceSummary2FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummary3FARB (TV::TimeVars, …)	NB-Lib/Find-Any-Resources-Body-v1.0.jl	/^function resourceSummary3FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummary4FARB (TV::TimeVars, …)	NB-Lib/Find-Any-Resources-Body-v1.0.jl	/^function resourceSummary4FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummary5FARB (TV::TimeVars, …)	NB-Lib/Find-Any-Resources-Body-v1.0.jl	/^function resourceSummary5FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummary6FARB (TV::TimeVars, …)	NB-Lib/Find-Any-Resources-Body-v1.0.jl	/^function resourceSummary6FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+resourceSummaryAllFields (tableRt::ASCIIString, …)	NB-Lib/RD-Body-v1.0.jl	/^function resourceSummaryAllFields(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceSummaryAllFields (tableRt::ASCIIString, …)	NB-Lib/RD-By-Page-Body-v1.0.jl	/^function resourceSummaryAllFields(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceSummaryDomainUrl (tableRt::ASCIIString, …)	NB-Lib/RD-Body-v1.0.jl	/^function resourceSummaryDomainUrl(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceSummaryDomainUrl (tableRt::ASCIIString, …)	NB-Lib/RD-By-Page-Body-v1.0.jl	/^function resourceSummaryDomainUrl(tableRt::ASCIIString;linesOut::Int64=25)$/;"	f
+resourceSummaryFARB (UP::UrlParams, …)	NB-Lib/Find-Any-Resources-Body-v1.0.jl	/^function resourceSummaryFARB(UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)$/;"	f
+responseTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function responseTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+responseTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function responseTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+returnMatchingUrlTable (ltName::ASCIIString, …)	Lib/URL-Package-v1.0.jl	/^function returnMatchingUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64; lowerLimitMs::Float64=1000.0, upperLimitMs::Float64=600000.0, limit::Int64=20)$/;"	f
+returnMatchingUrlTable (ltName::ASCIIString, …)	Lib/URL-Package-v2.0.jl	/^function returnMatchingUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64; lowerLimitMs::Float64=1000.0, upperLimitMs::Float64=600000.0, limit::Int64=20)$/;"	f
+returnMatchingUrlTableV2 (UP::UrlParams, …)	Lib/URL-Package-v1.0.jl	/^function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::Int64)$/;"	f
+returnMatchingUrlTableV2 (UP::UrlParams, …)	Lib/URL-Package-v2.0.jl	/^function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::Int64)$/;"	f
+returnTopUrlTable (ltName::ASCIIString, …)	Lib/URL-Package-v1.0.jl	/^function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64; limit::Int64=20)$/;"	f
+returnTopUrlTable (ltName::ASCIIString, …)	Lib/URL-Package-v2.0.jl	/^function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64; limit::Int64=20)$/;"	f
+runningStats (year::Int64, …)	Lib/Stats-Package-v1.0.jl	/^function runningStats(year::Int64,month::Int64,day::Int64,hour::Int64,localStatsDF::DataFrame)$/;"	f
+runningStats (year::Int64, …)	Lib/Stats-Package-v2.0.jl	/^function runningStats(year::Int64,month::Int64,day::Int64,hour::Int64,localStatsDF::DataFrame)$/;"	f
+scrubUrlFieldToPrint (urlDF::DataFrame, …)	Lib/URL-Package-v1.0.jl	/^function scrubUrlFieldToPrint(urlDF::DataFrame,urlField::Symbol;limit::Int64=120;)$/;"	f
+scrubUrlToPrint (urlDF::DataFrame, …)	Lib/URL-Package-v1.0.jl	/^function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=120)$/;"	f
+scrubUrlToPrint (urlDF::DataFrame, …)	Lib/URL-Package-v2.0.jl	/^function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=120)$/;"	f
+sessionLoadPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function sessionLoadPGD()$/;"	f
+sessionUrlTableDF (tableRt::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyTime::Int64)$/;"	f
+sessionUrlTableDF (tableRt::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyTime::Int64)$/;"	f
+sessionsBeaconsFAPVSB (TV::TimeVars, …)	NB-Lib/Find-A-Page-View-Spike-Body-v1.3.jl	/^function sessionsBeaconsFAPVSB(TV::TimeVars,UP::UrlParams)$/;"	f
+setRangeUPT (TV::TimeVars, …)	NB-Lib/Url-Page-Treemaps-Body-v1.0.jl	/^function setRangeUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+showAvailableSessions (localTableDF::DataFrame, …)	Lib/Sessions-Package-v1.0.jl	/^function showAvailableSessions(localTableDF::DataFrame,localTableRtDF::DataFrame,rangeLowerMs::Float64,rangeUpperMs::Float64;showCriticalPathOnly::Bool=true,showLines::Int64=10)$/;"	f
+showAvailableSessions (localTableDF::DataFrame, …)	Lib/Sessions-Package-v2.0.jl	/^function showAvailableSessions(localTableDF::DataFrame,localTableRtDF::DataFrame,rangeLowerMs::Float64,rangeUpperMs::Float64;showCriticalPathOnly::Bool=true,showLines::Int64=10)$/;"	f
+showAvailableSessionsStreamline (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict,localTableDF::DataFrame,localTableRtDF::DataFrame,pageGroup::ASCIIString,deviceType::ASCIIString,$/;"	f
+showAvailableSessionsStreamline (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-Worst-v1.1.jl	/^function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict,localTableDF::DataFrame,localTableRtDF::DataFrame,pageGroup::ASCIIString,deviceType::ASCIIString,$/;"	f
+showAvailableSessionsStreamline (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-v1.1.jl	/^function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict,localTableDF::DataFrame,localTableRtDF::DataFrame,pageGroup::ASCIIString,deviceType::ASCIIString,$/;"	f
+showAvailableSessionsStreamline (WellKnownHost::Dict, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict,localTableDF::DataFrame,localTableRtDF::DataFrame,pageGroup::ASCIIString,deviceType::ASCIIString,$/;"	f
+showLimitedStats (statsDF::DataFrame, …)	Lib/Stats-Package-v1.0.jl	/^function showLimitedStats(statsDF::DataFrame,chartTitle::ASCIIString)$/;"	f
+showLimitedStats (statsDF::DataFrame, …)	Lib/Stats-Package-v2.0.jl	/^function showLimitedStats(statsDF::DataFrame,chartTitle::ASCIIString)$/;"	f
+showPeakTable (timeString::ASCIIString, …)	Lib/Peak-Package-v1.0.jl	/^function showPeakTable(timeString::ASCIIString, productPageGroup::ASCIIString, startTime::DateTime, endTime::DateTime; showStartTime30::Bool=false, showStartTime90::Bool=false,tableRange::ASCIIString="7 Day ")$/;"	f
+showPeakTable (timeString::ASCIIString, …)	Lib/Peak-Package-v2.0.jl	/^function showPeakTable(timeString::ASCIIString, productPageGroup::ASCIIString, startTime::DateTime, endTime::DateTime; showStartTime30::Bool=false, showStartTime90::Bool=false,tableRange::ASCIIString="7 Day ")$/;"	f
+standardReferrals (localTable::ASCIIString, …)	Lib/Referrals-Package-v1.0.jl	/^function standardReferrals(localTable::ASCIIString, productPageGroup::ASCIIString, startTime::DateTime, endTime::DateTime, timeString::ASCIIString; limit::Int64=10)$/;"	f
+standardReferrals (localTable::ASCIIString, …)	Lib/Referrals-Package-v2.0.jl	/^function standardReferrals(localTable::ASCIIString, productPageGroup::ASCIIString, startTime::DateTime, endTime::DateTime, timeString::ASCIIString; limit::Int64=10)$/;"	f
+statsArr (v, …)	Lib/Stats-Package-v1.0.jl	/^        statsArr(v) = [round(v,0),round(v\/1000.0,3),round(v\/60000.0,1)]$/;"	f
+statsArr (v, …)	Lib/Stats-Package-v1.0.jl	/^        statsArr(v) = round(v,0)$/;"	f
+statsArr (v, …)	Lib/Stats-Package-v1.0.jl	/^        statsArr(v) = round(v\/1000.0,3)$/;"	f
+statsArr (v, …)	Lib/Stats-Package-v2.0.jl	/^        statsArr(v) = [round(v,0),round(v\/1000.0,3),round(v\/60000.0,1)]$/;"	f
+statsArr (v, …)	Lib/Stats-Package-v2.0.jl	/^        statsArr(v) = round(v,0)$/;"	f
+statsArr (v, …)	Lib/Stats-Package-v2.0.jl	/^        statsArr(v) = round(v\/1000.0,3)$/;"	f
+statsArr (v, …)	NB-Lib/Find-A-Time-Spike-Body-v1.2.jl	/^        statsArr(v) = [round(v,0),round(v\/1000.0,3),round(v\/60000,1)]$/;"	f
+statsArr (v, …)	Production/Find-A-Time-Spike-v1.2.jl	/^statsArr(v) = [round(v,0),round(v\/1000.0,3),round(v\/60000,1)]$/;"	f
+statsDetailsPrint (UP::UrlParams, …)	NB-Lib/AEM-Large-Images-Body-v1.0.jl	/^function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)$/;"	f
+statsDetailsPrint (localTable::ASCIIString, …)	Production/AEM_Large_Images_v1.0.jl	/^function statsDetailsPrint(localTable::ASCIIString,tableRt::ASCIIString,joinTableSummary::DataFrame,row::Int64)$/;"	f
+statsDetailsPrintFLP (TV::TimeVars, …)	NB-Lib/Find-Large-Pages-Body-v1.0.jl	/^function statsDetailsPrintFLP(TV::TimeVars,UP::UrlParams,joinTableSummary::DataFrame,row::Int64)$/;"	f
+statsPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function statsPGD()$/;"	f
+statsTableDF (table::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function statsTableDF(table::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+statsTableDF (table::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function statsTableDF(table::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+statsTableDF2 (UP::UrlParams, …)	NB-Lib/AEM-Large-Images-Body-v1.0.jl	/^function statsTableDF2(UP::UrlParams,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+statsTableDF2 (table::ASCIIString, …)	Production/AEM_Large_Images_v1.0.jl	/^function statsTableDF2(table::ASCIIString,productPageGroup::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+statsTableDF2FLP (UP::UrlParams, …)	NB-Lib/Find-Large-Pages-Body-v1.0.jl	/^function statsTableDF2FLP(UP::UrlParams,productPageGroup::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+statsTableFAPVSB (TV::TimeVars, …)	NB-Lib/Find-A-Page-View-Spike-Body-v1.3.jl	/^function statsTableFAPVSB(TV::TimeVars,UP::UrlParams)$/;"	f
+stdRefPGD	Lib/Page-Group-Package-v1.0.jl	/^function stdRefPGD()$/;"	f
+suitableTest (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-Body-v2.0.jl	/^function suitableTest(toppageurl::DataFrame;timerLimitMs::Int64=2000,showDebug::Bool=false)$/;"	f
+suitableTest (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-Worst-v1.1.jl	/^function suitableTest(toppageurl::DataFrame;timerLimitMs::Int64=2000,showDebug::Bool=false)$/;"	f
+suitableTest (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-v1.1.jl	/^function suitableTest(toppageurl::DataFrame;timerLimitMs::Int64=2000,showDebug::Bool=false)$/;"	f
+suitableTest (toppageurl::DataFrame, …)	NB-Lib/Individual-Streamline-v1.2.jl	/^function suitableTest(toppageurl::DataFrame;timerLimitMs::Int64=2000,showDebug::Bool=false)$/;"	f
+summarizePageGroups (toppageurl::DataFrame, …)	NB-Lib/3rd-Party-Body-TypeAll-v1.0.jl	/^function summarizePageGroups(toppageurl::DataFrame)$/;"	f
+sunburst	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function sunburst()$/;"	f
+tableSummaryALI (joinTables::DataFrame, …)	NB-Lib/AEM-Large-Images-Body-v1.0.jl	/^function tableSummaryALI(joinTables::DataFrame)$/;"	f
+tcpTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v1.0.jl	/^function tcpTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+tcpTreemap (toppageurl::DataFrame, …)	Lib/Treemaps-Package-v2.0.jl	/^function tcpTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)$/;"	f
+thresholdChartPGD (medianThreshold::Float64, …)	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function thresholdChartPGD(medianThreshold::Float64)$/;"	f
+timeVariables	Lib/Utilities-Package-v1.0.jl	/^function timeVariables($/;"	f
+timeVariables	Lib/Utilities-Package-v2.0.jl	/^function timeVariables($/;"	f
+topPageViewsUDB (TV::TimeVars, …)	NB-Lib/Url-Details-Body-v1.0.jl	/^function topPageViewsUDB(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+topUrlPGD	NB-Lib/Page-Group-Details-Body-v1.0.jl	/^function topUrlPGD()$/;"	f
+topUrlPageViewsUDB (TV::TimeVars, …)	NB-Lib/Url-Details-Body-v1.0.jl	/^function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,LV::LocalVars)$/;"	f
+topUrlTable (ltName::ASCIIString, …)	Lib/URL-Package-v1.0.jl	/^function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; limit::Int64=20, showCount::Bool=true, showCountDetails::Bool=true)$/;"	f
+topUrlTable (ltName::ASCIIString, …)	Lib/URL-Package-v2.0.jl	/^function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; limit::Int64=20, showCount::Bool=true, showCountDetails::Bool=true)$/;"	f
+topUrlTableByTime (ltName::ASCIIString, …)	Lib/URL-Package-v1.0.jl	/^function topUrlTableByTime(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; limit::Int64=20)$/;"	f
+topUrlTableByTime (ltName::ASCIIString, …)	Lib/URL-Package-v2.0.jl	/^function topUrlTableByTime(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; limit::Int64=20)$/;"	f
+topUrlTableForWPF (ltName::ASCIIString, …)	NB-Lib/Find-Top-WPF-Pages-Body-v1.0 (1).jl	/^function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2)$/;"	f
+topUrlTableForWPF (ltName::ASCIIString, …)	NB-Lib/Find-Top-WPF-Pages-Body-v1.0.jl	/^function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2)$/;"	f
+topUrlsFAPVSB (TV::TimeVars, …)	NB-Lib/Find-A-Page-View-Spike-Body-v1.3.jl	/^function topUrlsFAPVSB(TV::TimeVars,UP::UrlParams)$/;"	f
+treemapsLocalTableDF (table::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function treemapsLocalTableDF(table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,localUrl::ASCIIString;maxTime::Int64=600000)$/;"	f
+treemapsLocalTableDF (table::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function treemapsLocalTableDF(table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,localUrl::ASCIIString;maxTime::Int64=600000)$/;"	f
+treemapsLocalTableRtDF (table::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function treemapsLocalTableRtDF(table::ASCIIString,tableRt::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,localUrl::ASCIIString;maxTime::Int64=600000)$/;"	f
+treemapsLocalTableRtDF (table::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function treemapsLocalTableRtDF(table::ASCIIString,tableRt::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,localUrl::ASCIIString;maxTime::Int64=600000)$/;"	f
+treemapsPGD	Lib/Page-Group-Package-v1.0.jl	/^function treemapsPGD()$/;"	f
+typeAllBody	NB-Lib/3rd-Party-Body-TypeAll-v1.0.jl	/^function typeAllBody($/;"	f
+updateProgress (text::ASCIIString, …)	Lib/Grouping-Package-v1.0.jl	/^function updateProgress(text::ASCIIString)$/;"	f
+updateProgress (text::ASCIIString, …)	Lib/Grouping-Package-v2.0.jl	/^function updateProgress(text::ASCIIString)$/;"	f
+urlBeaconTable (localTable::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function urlBeaconTable(localTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,params_u::ASCIIString)$/;"	f
+urlBeaconTable (localTable::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function urlBeaconTable(localTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,params_u::ASCIIString)$/;"	f
+urlResourceTable (localTableRt::ASCIIString, …)	Lib/Tables-Package-v1.0.jl	/^function urlResourceTable(localTableRt::ASCIIString,tableRt::ASCIIString,localTable::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+urlResourceTable (localTableRt::ASCIIString, …)	Lib/Tables-Package-v2.0.jl	/^function urlResourceTable(localTableRt::ASCIIString,tableRt::ASCIIString,localTable::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)$/;"	f
+waterFallFinder (table::ASCIIString, …)	Lib/Utilities-Package-v1.0.jl	/^function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,startTimeMs::Int64,endTimeMs::Int64;limit::Int64=30)$/;"	f
+waterFallFinder (table::ASCIIString, …)	Lib/Utilities-Package-v1.0.jl	/^function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,tv::TimeVars;limit::Int64=30)$/;"	f
+waterFallFinder (table::ASCIIString, …)	Lib/Utilities-Package-v1.0.jl	/^function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64;limit::Int64=30)$/;"	f
+waterFallFinder (table::ASCIIString, …)	Lib/Utilities-Package-v2.0.jl	/^function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,startTimeMs::Int64,endTimeMs::Int64;limit::Int64=30)$/;"	f
+waterFallFinder (table::ASCIIString, …)	Lib/Utilities-Package-v2.0.jl	/^function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,tv::TimeVars;limit::Int64=30)$/;"	f
+waterFallFinder (table::ASCIIString, …)	Lib/Utilities-Package-v2.0.jl	/^function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64;limit::Int64=30)$/;"	f
+wellKnownHostDictionary	Lib/URL-Classification-Package-v1.0.jl	/^function wellKnownHostDictionary()$/;"	f
+wellKnownHostDictionary	Lib/URL-Classification-Package-v2.0.jl	/^function wellKnownHostDictionary()$/;"	f
+wellKnownHostDictionaryDebug	Lib/URL-Classification-Package-v1.0.jl	/^function wellKnownHostDictionaryDebug()$/;"	f
+wellKnownHostDictionaryDebug	Lib/URL-Classification-Package-v2.0.jl	/^function wellKnownHostDictionaryDebug()$/;"	f
+wellKnownPathDictionary	Lib/URL-Classification-Package-v1.0.jl	/^function wellKnownPathDictionary()$/;"	f
+wellKnownPathDictionary	Lib/URL-Classification-Package-v2.0.jl	/^function wellKnownPathDictionary()$/;"	f
