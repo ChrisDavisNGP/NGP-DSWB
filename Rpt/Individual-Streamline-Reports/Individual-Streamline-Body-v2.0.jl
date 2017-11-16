@@ -118,6 +118,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 and $table.page_group ilike '$(UP.pageGroup)'
                 and $table.params_u ilike '$(UP.urlRegEx)'
                 and $table.user_agent_device_type ilike '$(UP.deviceType)'
+                and $table.user_agent_os ilike '$(UP.agentOs)'
                 and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
@@ -152,6 +153,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                     and $table.page_group ilike '$(UP.pageGroup)'
                     and $table.params_u ilike '$(UP.urlRegEx)'
                     and $table.user_agent_device_type ilike '$(UP.deviceType)'
+                    and $table.user_agent_os ilike '$(UP.agentOs)'
                     and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
                     and $table.params_rt_quit IS NULL
                     limit 3
@@ -177,6 +179,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 and $table.page_group ilike '$(UP.pageGroup)'
                 and $table.params_u ilike '$(UP.urlRegEx)'
                 and $table.user_agent_device_type ilike '$(UP.deviceType)'
+                and $table.user_agent_os ilike '$(UP.agentOs)'
                 and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
                 and $table.params_rt_quit IS NULL
                 and $table.errors IS NULL
