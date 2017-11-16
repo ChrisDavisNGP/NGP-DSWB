@@ -1,4 +1,8 @@
-function defaultTableFARB(TV::TimeVars,UP::UrlParams)
+type LocalVars
+    linesOutput::Int64
+end
+
+function defaultTableFARB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         table = UP.beaconTable
@@ -13,40 +17,42 @@ function defaultTableFARB(TV::TimeVars,UP::UrlParams)
                         params_u ilike '$(UP.urlRegEx)' 
             )
         """)
-        cnt = query("""SELECT count(*) FROM $localTable""")
-        println("$localTable count is ",cnt[1,1])
+        
+        if (SP.debugLevel > 0)
+            cnt = query("""SELECT count(*) FROM $localTable""")
+            println("$localTable count is ",cnt[1,1])
+        end
     catch y
         println("defaultTableFARB Exception ",y)
     end
 end
 
-function resourceSummaryFARB(UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSummaryFARB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
         
         joinTables = query("""\
-        select 
-        $tableRt.url, $tableRt.params_u, $localTable.url,
-            count(*)
-        from $localTable join $tableRt
-        on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-        where 
-        $tableRt.url ilike '$resourceUrl'
-        group by 
-        $tableRt.url, $tableRt.params_u, $localTable.url
+            select 
+                count(*), $tableRt.url, $tableRt.params_u, $localTable.url
+            from $localTable join $tableRt
+                on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
+            where 
+            $tableRt.url ilike '$(UP.resRegEx)'
+            group by $tableRt.url, $tableRt.params_u, $localTable.url
+            order by count(*) desc
         """);
 
-        displayTitle(chart_title = "Resource Url Pattern $(resourceUrl)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
     catch y
-        println("bigTable5 Exception ",y)
+        println("resourceSummaryFARB Exception ",y)
     end
 end 
 
-function resourceSummary2FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSummary2FARB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     
     try        
         localTable = UP.btView
@@ -54,25 +60,24 @@ function resourceSummary2FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minE
         
         joinTables = query("""\
             select 
-                url,params_u,count(*)
+                count(*), url
             from $tableRt
             where 
-                  url ilike '$resourceUrl' and
-                  "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-            group by 
-                url, params_u
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            group by url
             order by count(*) desc
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(resourceUrl)", chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
     catch y
         println("resourceSummary2FARB Exception ",y)
     end
 end 
 
-function resourceSummary3FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSummary3FARB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     
     try
         localTable = UP.btView
@@ -83,20 +88,20 @@ function resourceSummary3FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minE
                 *
             from $tableRt
             where 
-              url ilike '$resourceUrl' and
+              url ilike '$(UP.resRegEx)' and
               "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             limit 3
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(resourceUrl)", chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
     catch y
         println("resourceSummary3FARB Exception ",y)
     end
 end 
 
-function resourceSummary4FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSummary4FARB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     
     try
         localTable = UP.btView
@@ -119,21 +124,21 @@ function resourceSummary4FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minE
                 avg(secure_connection_start) as "Secure Conn S"
             from $tableRt
             where 
-              url ilike '$resourceUrl' and
-              "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by url, params_u
             order by count(*) desc
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(resourceUrl)", chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
     catch y
         println("resourceSummary4FARB Exception ",y)
     end
 end 
 
-function resourceSummary5FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSummary5FARB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     
     try
         localTable = UP.btView
@@ -155,21 +160,21 @@ function resourceSummary5FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minE
                 (secure_connection_start) as "Secure Conn S"
             from $tableRt
             where 
-                url ilike '$resourceUrl' and
+                url ilike '$(UP.resRegEx)' and
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 (response_last_byte-start_time) > 5000
             order by "Time Taken" desc
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(resourceUrl)", chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
     catch y
         println("resourceSummary5FARB Exception ",y)
     end
 end 
 
-function resourceSummary6FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSummary6FARB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     
     try
         localTable = UP.btView
@@ -191,15 +196,15 @@ function resourceSummary6FARB(TV::TimeVars,UP::UrlParams;linesOut::Int64=25,minE
                 (secure_connection_start) as "Secure Conn S"
             from $tableRt
             where 
-                url ilike '$resourceUrl' and
+                url ilike '$(UP.resRegEx)' and
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 start_time > 10000
             order by start_time desc
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(resourceUrl)", chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
     catch y
         println("resourceSummary6FARB Exception ",y)
     end
