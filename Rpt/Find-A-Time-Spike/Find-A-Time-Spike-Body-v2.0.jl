@@ -1,13 +1,13 @@
 function defaultTableFATS(TV::TimeVars,UP::UrlParams)
     try
         localTable = UP.btView
-
+        
         # Create view to query only product page_group
         query("""drop view if exists $localTable""")
 
         query("""\
-            create or replace view $localTable as
-                (select *,"timestamp" as listtime from $table where
+            create or replace view $localTable as 
+                (select *,"timestamp" as listtime from $table where 
                 page_group = '$(UP.pageGroup)' and 
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
         )""")
@@ -15,15 +15,15 @@ function defaultTableFATS(TV::TimeVars,UP::UrlParams)
 
     catch y
         println("Query exception ",y)
-    end
+    end    
 end
 
 function rawStatsFATS(TV::TimeVars,UP::UrlParams)
-
+    
     localStatsDF = DataFrame()
     medianThreshold = Int64
     try
-        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
+        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);    
         statsDF = basicStats(localStatsDF, UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
         medianThreshold = statsDF[1:1,:median][1]
 
@@ -31,16 +31,16 @@ function rawStatsFATS(TV::TimeVars,UP::UrlParams)
         beautifyDF(statsDF[:,:])
         #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(productPageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
         #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
-
+        
         return statsDF
-
+        
     catch y
         println("rawStatsFATS Exception ",y)
     end
 end
 
 function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
-    try
+    try 
         dv = localStats2[:timers_t_done]
 
         statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000,1)]
@@ -104,17 +104,18 @@ function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
         UpperBy25p = statsDF[1:1,:UpperBy25p][1]
 
         localStats2 = query("""\
-            select
+            select 
                 "timestamp", timers_t_done, session_id
-            from $(UP.btView) where
+            from $(UP.btView) where 
                 page_group = '$(UP.pageGroup)' and
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 timers_t_done > $(UpperBy25p)
         """)
 
         return localStats2
-
+        
     catch y
         println("localStatsFATS Exception ",y)
     end
 end
+
