@@ -18,6 +18,7 @@ function displayGroup(TV::TimeVars,UP::UrlParams,LV::LocalVars)
 
         displayTitle(chart_title = "Top Beacons Counts (limit $(LV.linesOutput)) For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         sort!(finalPrintDF, cols=(order(:count, rev=true)))
+        scrubUrlFieldToPrint(finalPrintDF,:params_u)        
         beautifyDF(finalPrintDF[1:min(LV.linesOutput,end),:])        
     catch y
         println("displayGroup Exception ",y)
