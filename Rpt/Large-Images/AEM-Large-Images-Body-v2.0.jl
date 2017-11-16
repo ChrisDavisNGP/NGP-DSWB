@@ -1,23 +1,9 @@
-function defaultLocalTableALI(TV::TimeVars,UP::UrlParams)
-    try
-        query("""\
-            create or replace view $(UP.btView) as (
-                select * from $(UP.beaconTable)
-                    where 
-                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and 
-                        page_group in ('News Articles','Travel AEM','Photography AEM','Nat Geo Homepage','Magazine AEM') and
-                        params_u ilike '$(UP.urlRegEx)' and
-                        user_agent_device_type ilike '$(UP.deviceType)'
-            )
-        """)
-        cnt = query("""SELECT count(*) FROM $(UP.btView)""")
-        println("$(UP.btView) count is ",cnt[1,1])
-    catch y
-        println("defaultLocalTableALI Exception ",y)
-    end
+type LocalVars
+    linesOutput::Int64
 end
+
     
-function gatherSizeDataALI(UP::UrlParams,linesOutput::Int64)
+function gatherSizeDataALI(UP::UrlParams,LV::LocalVars)
     try
         bt = UP.btView
         rt = UP.resourceTable
@@ -38,8 +24,8 @@ function gatherSizeDataALI(UP::UrlParams,linesOutput::Int64)
         """);
 
         #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOutput,end),:])
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
 
         return joinTables
     catch y
@@ -47,7 +33,7 @@ function gatherSizeDataALI(UP::UrlParams,linesOutput::Int64)
     end
 end
 
-function tableSummaryALI(joinTables::DataFrame)
+function tableSummaryALI(joinTables::DataFrame,LV::LocalVars)
 
     joinTableSummary[:urlgroup] = "delete"
     joinTableSummary[:session_id] = ""
@@ -78,7 +64,7 @@ function tableSummaryALI(joinTables::DataFrame)
     end
     sort!(joinTableSummary,cols=[order(:encoded,rev=true)])
     
-    beautifyDF(joinTableSummary[1:min(linesOutput,end),[:urlgroup,:encoded,:transferred,:decoded]])    
+    beautifyDF(joinTableSummary[1:min(LV.linesOutput,end),[:urlgroup,:encoded,:transferred,:decoded]])    
     
     return joinTableSummary
 end
