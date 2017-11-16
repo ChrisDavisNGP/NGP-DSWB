@@ -1,7 +1,7 @@
 # Packages in Lib Directory; structures first
-include("../../Lib/Structures-Package-v2.0.jl")
+include("Structures-Package-v2.0.jl")
 
-include("../../Lib/Grouping-Package-v2.0.jl")
+include("Grouping-Package-v2.0.jl")
 include("/data/notebook_home/Production/Lib/Page-Group-Package-v1.0.jl")
 include("/data/notebook_home/Production/Lib/Peak-Package-v1.0.jl")
 include("/data/notebook_home/Production/Lib/Quartiles-Package-v1.0.jl")
