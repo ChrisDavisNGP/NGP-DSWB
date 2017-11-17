@@ -1,5 +1,7 @@
 # Packages in Lib Directory; structures first
-#Call Time-Package First to get the structures and the time set.  Time does not like to be rerun, so separating for now
+
+include("Structures-Package-v2.0.jl")
+include("Time-Package-v2.0.jl")
 
 include("Grouping-Package-v2.0.jl")
 include("Page-Group-Package-v2.0.jl")
