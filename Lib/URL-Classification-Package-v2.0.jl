@@ -147,6 +147,8 @@ function PartialKnownHost(uriHost::ASCIIString)
             newuristring = "Livefyre Commenting"
             elseif (ismatch(r".*fyre.co",uriHost))
             newuristring = "Livefyre Commenting"
+            elseif (ismatch(r".*zergnet.com",uriHost))
+            newuristring = "Zergnet"
 
             # Less used
 
@@ -1599,7 +1601,8 @@ function wellKnownHostDictionary()
         ("api.pubpeer.com","api.pubpeer.com"),
         ("api.quebradordelinks.com","api.quebradordelinks.com"),
         ("api.recomme.me","api.recomme.me"),
-        ("api.segment.io","api.segment.io"),
+        ("api.segment.io","Segment"),
+        ("cdn.segment.com","Segment"),
         ("api.slovnik.seznam.cz","api.slovnik.seznam.cz"),
         ("api.speedshiftmedia.com","api.speedshiftmedia.com"),
         ("api.streamingshowguide.com","api.streamingshowguide.com"),
@@ -2870,6 +2873,7 @@ function wellKnownHostDictionary()
         ("randomizednottingconcerts.com","randomizednottingconcerts.com"),
         ("ras.reamp.com.br","ras.reamp.com.br"),
         ("ratexchange.net","ratexchange.net"),
+        ("cdn.ravenjs.com","Raven JS"),
         ("rawgit.com","rawgit.com"),
         ("rcp.c.appier.net","rcp.c.appier.net"),
         ("recordpage-a.akamaihd.net","recordpage-a.akamaihd.net"),
@@ -3193,6 +3197,7 @@ function wellKnownHostDictionary()
         ("sub3.cosmosdirekt.de","sub3.cosmosdirekt.de"),
         ("successprivileges.com","successprivileges.com"),
         ("sungevity.sp1.convertro.com","sungevity.sp1.convertro.com"),
+        ("ev.surveywall-api.survata.com","Survey Wall"),
         ("suzuserver.dk","suzuserver.dk"),
         ("swf.mixpo.com","swf.mixpo.com"),
         ("swim.wordeel.com","swim.wordeel.com"),
@@ -3377,6 +3382,9 @@ function wellKnownHostDictionary()
         ("vintagegamehub.com","vintagegamehub.com"),
         ("visitor.guodafanli.com","visitor.guodafanli.com"),
         ("visual.ly","visual.ly"),
+        ("www.vroptimal-3dx-assets.com","VR Optimal"),
+        ("vroptimal-3dx-assets.com","VR Optimal"),
+        ("remote.vroptimal-3dx-assets.com","VR Optimal"),
         ("vivafiliates.com.br","vivafiliates.com.br"),
         ("vjs.zencdn.net","vjs.zencdn.net"),
         ("vk-simpleload.com","vk-simpleload.com"),
@@ -5258,16 +5266,16 @@ function wellKnownHostDictionary()
         ("securenet.vodafone.pt","Securenet.vodafone.pt"),
         ("securepubads.g.doubleclick.net","Google Doubleclick Ads"),
         ("seg.mmtro.com","seg.mmtro.com"),
-        ("segapi.quantserve.com","Quantcast Real Time Ads"),
-        ("exch.quantserve.com","Quantcast Real Time Ads"),
-        ("eu.pulsepoint.rtb.quantserve.com","Quantcast Real Time Ads"),
-        ("edge.quantserve.com","Quantcast Real Time Ads"),
-        ("us-east.pulsepoint.rtb.quantserve.com","Quantcast Real Time Ads"),
-        ("exch.quantcount.com","Quantcast Real Time Ads"),
-        ("rules.quantcount.com","Quantcast Real Time Ads"),
-        ("content.quantcount.com","Quantcast Real Time Ads"),        
-        ("pixel.quantcount.com","Quantcast Real Time Ads"),
-        ("pixel.quantserve.com","Quantcast Real Time Ads"),
+        ("segapi.quantserve.com","Quantserve Real Time Ads"),
+        ("exch.quantserve.com","Quantserve Real Time Ads"),
+        ("eu.pulsepoint.rtb.quantserve.com","Quantserve Real Time Ads"),
+        ("edge.quantserve.com","Quantserve Real Time Ads"),
+        ("us-east.pulsepoint.rtb.quantserve.com","Quantserve Real Time Ads"),
+        ("exch.quantcount.com","Quantcount Real Time Ads"),
+        ("rules.quantcount.com","Quantcount Real Time Ads"),
+        ("content.quantcount.com","Quantcount Real Time Ads"),        
+        ("pixel.quantcount.com","Quantcount Real Time Ads"),
+        ("pixel.quantserve.com","Quantserve Real Time Ads"),
         ("segment.prod.bidr.io","Segment.prod.bidr.io"),
         ("ser.adledge.com","ser.adledge.com"),
         ("servedby.flashtalking.com","servedby.flashtalking.com"),

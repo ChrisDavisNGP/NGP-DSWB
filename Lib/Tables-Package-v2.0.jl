@@ -340,3 +340,32 @@ function groupSamplesTableDF(table::ASCIIString,productPageGroup::ASCIIString)
         println("groupSamplesTableDF Exception",y)
     end
 end
+
+function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+        table = UP.beaconTable
+        localTable = UP.btView
+        timeLowerMs = UP.timeLowerMs > 0 ? UP.timeLowerMs : 1000
+        timeUpperMs = UP.timeUpperMs > 0 ? UP.timeUpperMs : 600000
+        println("Low=",timeLowerMs," High=", timeUpperMs)
+        
+        query("""\
+            create or replace view $localTable as (
+                select * from $table 
+                    where 
+                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and 
+                        page_group ilike '$(UP.pageGroup)' and
+                        params_u ilike '$(UP.urlRegEx)' and
+                        user_agent_device_type ilike '$(UP.deviceType)' and
+                        timers_t_done >= $timeLowerMs and timers_t_done < $timeUpperMs
+            )
+        """)
+        if (SP.debugLevel > 0)
+            cnt = query("""SELECT count(*) FROM $localTable""")
+            println("$localTable count is ",cnt[1,1])
+        end
+    catch y
+        println("defaultBeaconView Exception ",y)
+    end
+end

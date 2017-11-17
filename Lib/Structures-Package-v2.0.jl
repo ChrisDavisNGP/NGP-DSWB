@@ -6,20 +6,30 @@ type UrlParams
     pageGroup::ASCIIString
     urlRegEx::ASCIIString
     urlFull::ASCIIString
-    timeLowerMs::Float64
-    timeUpperMs::Float64
+    resRegEx::ASCIIString
+    timeLowerMs::Int64
+    timeUpperMs::Int64
     limitRows::Int64
     samplesMin::Int64
     sizeMin::Int64
     orderBy::ASCIIString
     usePageLoad::Bool
     deviceType::ASCIIString
+    agentOs::ASCIIString
 end
 
 function UrlParamsInit()
     # Set blank structure and fill later as needed
-    UP = UrlParams("","","","","","","",0.0,0.0,0,0,0,"",true,"")
+    UP = UrlParams(table,"",tableRt,"","%","%","","%",1000,600000,0,0,0,"",true,"%","%")
     return UP
+end
+
+function UrlParamsPrint(UP::UrlParams)
+    println("Tables: bt=",UP.beaconTable," btView=",UP.btView," rt=",UP.resourceTable," rtView=",UP.rtView);
+    println("pageGroup=",UP.pageGroup," urlRegEx=",UP.urlRegEx," urlFull=",UP.urlFull," resRegEx=",UP.resRegEx);
+    println("timeLowerMs=",UP.timeLowerMs," timeUpperMs=",UP.timeUpperMs," limitRows=",UP.limitRows);
+    println("samplesMin=",UP.samplesMin," sizeMin=",UP.sizeMin," orderBy=",UP.orderBy," usePageLoad=",UP.usePageLoad);
+    println(" deviceType=",UP.deviceType," agentOS=",UP.agentOs);
 end
 
 type ShowParams
@@ -41,7 +51,7 @@ type SoastaGraphs
 end
 
 function SoastaGraphsInit()
-    SG = SoastaGraphs("")
+    SG = SoastaGraphs("NGP")
     return SG
 end
 
