@@ -1,9 +1,3 @@
-function firstAndLastFAPVSB(TV::TimeVars,UP::UrlParams)
-    limitedTable(TV,UP)
-    setTable(UP.btView)
-    firstAndLast = getBeaconsFirstAndLast()
-end
-
 function sessionsBeaconsFAPVSB(TV::TimeVars,UP::UrlParams)
     try
         setTable(UP.btView)
