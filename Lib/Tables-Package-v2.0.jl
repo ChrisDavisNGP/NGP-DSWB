@@ -26,7 +26,7 @@ function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl:
                 avg($table.timers_t_done) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(pageGroup)'
                 and $table.params_u ilike '$(localUrl)'
@@ -34,7 +34,7 @@ function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl:
                 and $table.timers_t_done >= $(rangeLower) and $table.timers_t_done <= $(rangeUpper)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
-                """);    
+                """);
         else
             toppageurl = query("""\
             select
@@ -56,7 +56,7 @@ function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl:
                 avg($table.timers_domready) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(pageGroup)'
                 and $table.params_u ilike '$(localUrl)'
@@ -64,7 +64,7 @@ function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl:
                 and $table.timers_domready >= $(rangeLower) and $table.timers_domready <= $(rangeUpper)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
-                """);    
+                """);
         end
 
         return toppageurl
@@ -72,7 +72,7 @@ function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl:
         println("allPageUrlUrlTableDF Exception ",y)
     end
 end
-    
+
 function allSessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,startTimeMs::Int64,endTimeMs::Int64)
     try
         toppageurl = query("""\
@@ -103,7 +103,7 @@ function allSessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,sta
         println("allSessionUrlTableDF Exception ",y)
     end
 end
-    
+
 function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyTime::Int64)
     try
         toppageurl = query("""\
@@ -124,7 +124,7 @@ function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyT
             'Label' as label,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END as load,
             0 as beacon_time
-        FROM $(tableRt) where session_id = '$(studySession)' and "timestamp" = '$(studyTime)' 
+        FROM $(tableRt) where session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
             order by start_time asc
         """);
 
@@ -134,20 +134,20 @@ function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyT
     end
 end
 
-function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; 
+function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int64;
     pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
     )
 
     try
         localTableDF = query("""\
-            select * from $table 
-            where 
+            select * from $table
+            where
             "timestamp" between $startTimeMs and $endTimeMs and
             session_id IS NOT NULL and
             params_rt_quit IS NULL and
             params_u ilike '$(localUrl)' and
             user_agent_device_type ilike '$(deviceType)' and
-            page_group ilike '$(pageGroup)' and 
+            page_group ilike '$(pageGroup)' and
             timers_t_done >= $(rangeLowerMs) and timers_t_done < $(rangeUpperMs)
         """)
         return localTableDF
@@ -162,10 +162,10 @@ function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,
     )
 
     try
-        
+
         localTableRtDF = query("""\
             select $tableRt.* from $table join $tableRt on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
-            where 
+            where
             $table.params_u ilike '$(localUrl)'
             and $tableRt."timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC)
             and $table.session_id IS NOT NULL
@@ -175,9 +175,9 @@ function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,
             and $table.user_agent_device_type ilike '$(deviceType)'
             order by $tableRt.session_id, $tableRt."timestamp", $tableRt.start_time
             """)
-        
-        
-        
+
+
+
         return localTableRtDF
     catch y
         println("urlDetailRtTables Exception ",y)
@@ -187,8 +187,8 @@ end
 function statsTableDF(table::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         localStats = query("""\
-        select timers_t_done from $table where 
-        page_group = '$(pageGroup)' and 
+        select timers_t_done from $table where
+        page_group = '$(pageGroup)' and
         "timestamp" between $startTimeMs and $endTimeMs and
         params_rt_quit IS NULL
         """);
@@ -201,10 +201,10 @@ end
 function treemapsLocalTableDF(table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,localUrl::ASCIIString;maxTime::Int64=600000)
     try
         localTableDF = query("""\
-        select * from $table where 
+        select * from $table where
             "timestamp" between $startTimeMs and $endTimeMs and
             session_id IS NOT NULL and
-            page_group = '$(productPageGroup)' and 
+            page_group = '$(productPageGroup)' and
             params_u ilike '$(localUrl)' and
             timers_t_done >= 1000 and timers_t_done < $(maxTime)
             AND params_rt_quit IS NULL
@@ -219,7 +219,7 @@ function treemapsLocalTableRtDF(table::ASCIIString,tableRt::ASCIIString,productP
     try
         localTableRtDF = query("""\
             select $tableRt.* from $table join $tableRt on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
-                where $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                where $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 and $table.session_id IS NOT NULL
                 and $table.page_group = '$(productPageGroup)'
                 and $table.params_u ilike '$(localUrl)'
@@ -236,18 +236,19 @@ end
 #  Functions which create views
 #
 
-function limitedTable(localTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function limitedTable(TV::TimeVars,UP::UrlParams)
     try
         query("""\
-            drop view if exists $localTable
+            drop view if exists $(UP.btview)
         """)
-        
+
         query("""\
-            create or replace view $localTable as 
-            (select * from $table where 
-            page_group = '$(productPageGroup)' and "timestamp" between $startTimeMs and $endTimeMs and
-            timers_t_done >= 1000 and timers_t_done < 600000 and
-        params_rt_quit IS NULL
+            create or replace view $(UP.btview) as
+            (select * from $(UP.beaconTable) where
+            page_group = '$(UP.pageGroup)' and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
+            params_rt_quit IS NULL
         )""")
     catch y
         println("limitedTable Exception ",y)
@@ -259,28 +260,28 @@ function pageGroupDetailsTables(localTable::ASCIIString,localMobileTable::ASCIIS
         query("""\
             drop view if exists $localTable
         """)
-        
+
         query("""\
-            create or replace view $localTable as 
-            (select * from $table 
-            where page_group = '$(productPageGroup)' and 
+            create or replace view $localTable as
+            (select * from $table
+            where page_group = '$(productPageGroup)' and
             "timestamp" between $startTimeMs and $endTimeMs
             )
         """)
 
         query("""\
-            create or replace view $localMobileTable as 
-            (select * from $table 
-            where page_group = '$(productPageGroup)' and 
+            create or replace view $localMobileTable as
+            (select * from $table
+            where page_group = '$(productPageGroup)' and
             "timestamp" between $startTimeMs and $endTimeMs and
             user_agent_device_type = 'Mobile'
             )
         """)
 
         query("""\
-            create or replace view $localDesktopTable as 
-            (select * from $table 
-            where page_group = '$(productPageGroup)' and 
+            create or replace view $localDesktopTable as
+            (select * from $table
+            where page_group = '$(productPageGroup)' and
             "timestamp" between $startTimeMs and $endTimeMs and
             user_agent_device_type = 'Desktop'
             )
@@ -296,29 +297,29 @@ function urlBeaconTable(localTable::ASCIIString,table::ASCIIString,productPageGr
         query("""\
             drop view if exists $localTable
         """)
-        
+
     query("""\
-        create or replace view $localTable as 
-        (select * from $table 
-        where page_group = '$(productPageGroup)' and 
-        "timestamp" between $startTimeMs and $endTimeMs and 
+        create or replace view $localTable as
+        (select * from $table
+        where page_group = '$(productPageGroup)' and
+        "timestamp" between $startTimeMs and $endTimeMs and
         params_u ilike '$(localUrl)'
         )
-    """)        
+    """)
     catch y
         println("urlDetailTables Exception ",y)
     end
 end
- 
+
 function urlResourceTable(localTableRt::ASCIIString,tableRt::ASCIIString,localTable::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         query("""\
             drop view if exists $localTableRt
         """)
-        
+
         query("""\
             create or replace view $localTableRt as (
-            select $tableRt.* from $localTable join $tableRt on $tableRt.session_id = $localTable.session_id 
+            select $tableRt.* from $localTable join $tableRt on $tableRt.session_id = $localTable.session_id
             where $tableRt."timestamp" between $startTimeMs and $endTimeMs and $localTable.session_id IS NOT NULL
             order by $tableRt.session_id, $tableRt."timestamp", $tableRt.start_time
             )
@@ -327,10 +328,10 @@ function urlResourceTable(localTableRt::ASCIIString,tableRt::ASCIIString,localTa
         println("urlResourceTables Exception ",y)
     end
 end
- 
+
 function groupSamplesTableDF(table::ASCIIString,productPageGroup::ASCIIString)
     try
-        
+
         samplesDF = query("""\
                 select * from $table where page_group ilike '$(productPageGroup)' and "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and beacon_type = 'page view'
         """);
@@ -349,12 +350,12 @@ function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         timeLowerMs = UP.timeLowerMs > 0 ? UP.timeLowerMs : 1000
         timeUpperMs = UP.timeUpperMs > 0 ? UP.timeUpperMs : 600000
         println("Low=",timeLowerMs," High=", timeUpperMs)
-        
+
         query("""\
             create or replace view $localTable as (
-                select * from $table 
-                    where 
-                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and 
+                select * from $table
+                    where
+                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)' and

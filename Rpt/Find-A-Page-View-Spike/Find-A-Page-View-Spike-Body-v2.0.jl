@@ -1,5 +1,5 @@
 function firstAndLastFAPVSB(TV::TimeVars,UP::UrlParams)
-    limitedTable(UP.btView,UP.beaconTable,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+    limitedTable(TV,UP)
     setTable(UP.btView)
     firstAndLast = getBeaconsFirstAndLast()
 end
@@ -19,7 +19,7 @@ function loadTimeFAPVSB(TV::TimeVars,UP::UrlParams)
         chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
     catch y
         println("loadTime Exception ",y)
-    end 
+    end
 end
 
 function topUrlsFAPVSB(TV::TimeVars,UP::UrlParams)
@@ -33,9 +33,9 @@ function peakTableFAPVSB(TV::TimeVars,UP::UrlParams)
 end
 
 function statsTableFAPVSB(TV::TimeVars,UP::UrlParams)
-    try 
+    try
         setTable(UP.btView)
-        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);    
+        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
         statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
         medianThreshold = statsDF[1:1,:median][1]
 
@@ -45,6 +45,5 @@ function statsTableFAPVSB(TV::TimeVars,UP::UrlParams)
         #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
     catch y
         println("statsTableFAPVSB Exception ",y)
-    end       
+    end
 end
-
