@@ -239,11 +239,11 @@ end
 function limitedTable(TV::TimeVars,UP::UrlParams)
     try
         query("""\
-            drop view if exists $(UP.btview)
+            drop view if exists $(UP.btView)
         """)
 
         query("""\
-            create or replace view $(UP.btview) as
+            create or replace view $(UP.btView) as
             (select * from $(UP.beaconTable) where
             page_group = '$(UP.pageGroup)' and
             "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
