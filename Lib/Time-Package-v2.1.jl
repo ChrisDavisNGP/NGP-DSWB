@@ -51,7 +51,7 @@ function removeNegitiveTime(inDF::DataFrame,field::Symbol)
 end
 ;
 
-tv = TimeVarsInit()
+
 
 function timeVariables(
     Y1::Int64,M1::Int64,D1::Int64,H1::Int64,MM1::Int64,
@@ -59,6 +59,8 @@ function timeVariables(
     showTime::Bool=true
     )
     try
+        tv = TimeVarsInit()
+
         tv.startTime = DateTime(Y1,M1,D1,H1,MM1)
         tv.endTime = DateTime(Y2,M2,D2,H2,MM2)
         tv.startTimeMs = datetimeToMs(tv.startTime)
@@ -80,7 +82,7 @@ function timeVariables(
             println(tv.timeStringUTC);
         end
 
-        return;
+        return tv;
     catch y
         println("timeVariables Exception ",y)
     end
@@ -126,6 +128,7 @@ function weeklyTimeVariables(;days::Int64=7)
         endTime = DateTime(firstAndLast[1,2])
         startTime = DateTime(endTime - Day(days))
 
+        localtv =
         timeVariables(
             Dates.year(startTime),
             Dates.month(startTime),
@@ -138,6 +141,9 @@ function weeklyTimeVariables(;days::Int64=7)
             Dates.hour(endTime),
             Dates.minute(endTime)
         );
+
+        return localtv
+
     catch y
         println("weeklyTimeVariables Exception ",y)
     end
@@ -150,6 +156,7 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17)
         endTime = DateTime(firstAndLast[1,2] - Hour(24-endHour))
         startTime = DateTime(endTime - Hour(endHour-startHour))
 
+        localtv =
         timeVariables(
             Dates.year(startTime),
             Dates.month(startTime),
@@ -162,6 +169,9 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17)
             Dates.hour(endTime),
             Dates.minute(endTime)
         );
+
+        return localtv
+
     catch y
         println("yesterdayTimeVariables Exception ",y)
     end
