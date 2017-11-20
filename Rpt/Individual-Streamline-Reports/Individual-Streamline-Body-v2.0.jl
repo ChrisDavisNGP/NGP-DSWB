@@ -2,7 +2,7 @@ type LocalVars
     useJson::Bool
 end
 
-function individualStreamlineMain(TV::timeVars,WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
+function individualStreamlineMain(TV::TimeVars,WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
     fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64;
     showDevView::Bool=false,repeat::Int64=1,showCriticalPathOnly::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
     try
