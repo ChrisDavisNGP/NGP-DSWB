@@ -121,9 +121,9 @@ function cleanupTopUrlTable(topUrlList::DataVector)
     end
 end
 
-function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::Int64)
+function returnMatchingUrlTableV2(TV:TimeVars,UP::UrlParams)
     try
-#            CASE WHEN (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end as urlgroup
+
         topUrl = query("""\
 
         select
@@ -133,7 +133,7 @@ function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::In
         where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
-            "timestamp" between $startTimeMs and $endTimeMs and
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
             page_group ilike '$(UP.pageGroup)' and
             params_u ilike '$(UP.urlRegEx)' and
             timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
@@ -149,37 +149,7 @@ function returnMatchingUrlTableV2(UP::UrlParams,startTimeMs::Int64,endTimeMs::In
         return topUrl
 
     catch y
-        println("returnTopUrlTable Exception ",y)
-    end
-end
-
-function returnMatchingUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64; lowerLimitMs::Float64=1000.0, upperLimitMs::Float64=600000.0, limit::Int64=20)
-    try
-        topUrl = query("""\
-
-        select
-            count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
-            CASE WHEN (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end as urlgroup
-        FROM $(ltName)
-        where
-            beacon_type = 'page view' and
-            params_dom_sz > 0 and
-            "timestamp" between $startTimeMs and $endTimeMs and
-            page_group ilike '$(pageGroup)' and
-        timers_t_done >= $(lowerLimitMs) and timers_t_done < $(upperLimitMs) and
-            params_rt_quit IS NULL
-        group by urlgroup
-        order by cnt desc
-        limit $(limit)
-
-         """);
-
-
-
-        return topUrl
-
-    catch y
-        println("returnTopUrlTable Exception ",y)
+        println("returnTopUrlTableV2 Exception ",y)
     end
 end
 
