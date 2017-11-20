@@ -57,7 +57,7 @@ function basicStatsFromDV(dv::DataVector)
         stats[:skewness] = round((skewness(dv)),1)
         stats[:entropy] = round((entropy(dv)),0)
         stats[:modes] = (modes(dv)[1])
-        
+
         # Range 1 Std Dev
         rangeLowerByStd = stats[1,:median] - (3 * stats[1,:stddev])
         if (rangeLowerByStd < 0.0) rangeLowerByStd = 1.0 end
@@ -98,7 +98,7 @@ function runningStats(year::Int64,month::Int64,day::Int64,hour::Int64,localStats
         stats[:skewness] = (skewness(dv))
         stats[:entropy] = (entropy(dv))
         stats[:modes] = (modes(dv)[1])
-        
+
         # Range 1 Std Dev
         rangeLowerByStd = stats[1,:median] - (3 * stats[1,:stddev])
         if (rangeLowerByStd < 0.0) rangeLowerByStd = 1 end
@@ -116,7 +116,7 @@ function showLimitedStats(statsDF::DataFrame,chartTitle::ASCIIString)
     try
         printStatsDF = names!(statsDF[:,:],
         [symbol("Page Views"),symbol("Mean(ms)"),symbol("Median(ms)"),symbol("Min(ms)"),symbol("Max(ms)"),symbol("25 Percentile"),symbol("75 Percentile")])
-        
+
         displayTitle(chart_title = chartTitle, chart_info = [tv.timeString],showTimeStamp=false)
         beautifyDF(printStatsDF[:,:])
     catch y
@@ -138,17 +138,17 @@ function limitedStatsFromDV(dv::DataVector)
             stats[:min] = 0
             stats[:max] = 0
             stats[:q25] = 0
-            stats[:q75] = 0            
+            stats[:q75] = 0
             return stats
         end
-        
+
         stats[:mean] = statsArr(mean(dv))
         stats[:median] = statsArr(median(dv))
         stats[:min] = statsArr(minimum(dv))
         stats[:max] = statsArr(maximum(dv))
         stats[:q25] = statsArr(quantile(dv,[0.25]))
         stats[:q75] = statsArr(quantile(dv,[0.75]))
-        
+
         return stats
 
     catch y
@@ -156,3 +156,25 @@ function limitedStatsFromDV(dv::DataVector)
     end
 end
 
+#function beaconStatsPBI(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showAdditional::Bool=true,usePageLoad::Bool=true)
+function beaconStats(UP::UrlParams,SP::ShowParams;showAdditional::Bool=true)
+
+    if (UP.usePageLoad)
+        dv = localTableDF[:timers_t_done]
+    else
+        dv = localTableDF[:timers_domready]
+    end
+
+    # Get page views #, median, min, max and more
+    statsDF = limitedStatsFromDV(dv)
+
+    if (showAdditional)
+        if (UP.usePageLoad)
+            chartTitle = "Page Load Time Stats: $(UP.urlFull) for $(UP.deviceType)"
+        else
+            chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for $(UP.deviceType)"
+        end
+        showLimitedStats(statsDF,chartTitle)
+    end
+    return statsDF
+end

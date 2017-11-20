@@ -3,9 +3,9 @@ function typeAllBody(
     )
     try
         # Is there data?
-        localTableDF = estimateBeacons(table,startTimeMs,endTimeMs,pageGroup=productPageGroup,localUrl=localUrl,deviceType=deviceType)
-        println("$table count is ",size(localTableDF))        
-        
+        localTableDF = estimateBeacons(TV,UP,SP)
+        println("$table count is ",size(localTableDF))
+
         # Stats on the data
         statsDF = DataFrame()
         dv = localTableDF[:timers_t_done]
@@ -13,7 +13,7 @@ function typeAllBody(
 
         displayTitle(chart_title = "Beacon Data Stats for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
         beautifyDF(statsDF[:,:])
-        
+
         rangeLower = statsDF[1:1,:q25][1]
         rangeUpper = statsDF[1:1,:q75][1]
 
@@ -33,14 +33,14 @@ function typeAllBody(
         [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
             symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
-        
+
 
         # Debug
-        toppageurlbackup = deepcopy(toppageurl);        
-        
+        toppageurlbackup = deepcopy(toppageurl);
+
         # Debug
         toppageurl = deepcopy(toppageurlbackup)
-        
+
         removeNegitiveTime(toppageurl,:Total)
         removeNegitiveTime(toppageurl,:Redirect)
         removeNegitiveTime(toppageurl,:Blocking)
@@ -57,17 +57,17 @@ function typeAllBody(
         beautifyDF(summaryStatsDF[:,:])
 
         scrubUrlToPrint(toppageurl);
-        classifyUrl(toppageurl);        
+        classifyUrl(toppageurl);
 
         summaryPageGroup = summarizePageGroups(toppageurl)
-        beautifyDF(summaryPageGroup[1:min(end,10),:])        
-        
+        beautifyDF(summaryPageGroup[1:min(end,10),:])
+
         # This is the non-Url specific report so get the summary table and overwrite toppageurl
-        toppageurl = deepcopy(summaryPageGroup);        
-        
-        itemCountTreemap(toppageurl,showTable=true)      
-        endToEndTreemap(toppageurl,showTable=true,limit=100)        
-        blockingTreemap(toppageurl,showTable=true)        
+        toppageurl = deepcopy(summaryPageGroup);
+
+        itemCountTreemap(toppageurl,showTable=true)
+        endToEndTreemap(toppageurl,showTable=true,limit=100)
+        blockingTreemap(toppageurl,showTable=true)
         requestTreemap(toppageurl,showTable=true)
         responseTreemap(toppageurl,showTable=true)
         dnsTreemap(toppageurl,showTable=true)
@@ -75,7 +75,7 @@ function typeAllBody(
         redirectTreemap(toppageurl,showTable=true)
     catch y
         println("typeAll Exception ",y)
-    end  
+    end
 
 end
 
@@ -127,17 +127,16 @@ function summarizePageGroups(toppageurl::DataFrame)
                 Critical += row[:Critical]
                 request_count += row[:request_count]
                 load_time += row[:load_time]
-                beacon_time += row[:beacon_time]        
+                beacon_time += row[:beacon_time]
             end
             #convert to seconds
             load_time = (Total / request_count) / 1000
             push!(summaryPageGroup,[subDf[1:1,:urlpagegroup];0;Total;Redirect;Blocking;DNS;TCP;Request;Response;Gap;Critical;subDf[1:1,:urlpagegroup];request_count;"Label";load_time;beacon_time])
-        end    
+        end
 
         sort!(summaryPageGroup,cols=[order(:Total,rev=true)])
         return summaryPageGroup
     catch y
         println("summarizePageGroup Exception ",y)
-    end          
+    end
 end
-

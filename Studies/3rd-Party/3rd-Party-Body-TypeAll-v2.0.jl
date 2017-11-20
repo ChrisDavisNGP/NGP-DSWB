@@ -3,7 +3,7 @@ function typeAllBody(
     )
     try
         # Is there data?
-        localTableDF = estimateBeacons(table,startTimeMs,endTimeMs,pageGroup=productPageGroup,localUrl=localUrl,deviceType=deviceType)
+        localTableDF = estimateBeacons(TV,UP,SP)
         println("$table count is ",size(localTableDF))        
         
         # Stats on the data

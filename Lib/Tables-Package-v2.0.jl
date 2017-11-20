@@ -134,21 +134,22 @@ function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyT
     end
 end
 
-function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int64;
-    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
-    )
+#function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int64;
+#    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
+#    )
+function estimateBeacons(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         localTableDF = query("""\
-            select * from $table
+            select * from $(UP.beaconTable)
             where
-            "timestamp" between $startTimeMs and $endTimeMs and
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
             session_id IS NOT NULL and
             params_rt_quit IS NULL and
-            params_u ilike '$(localUrl)' and
-            user_agent_device_type ilike '$(deviceType)' and
-            page_group ilike '$(pageGroup)' and
-            timers_t_done >= $(rangeLowerMs) and timers_t_done < $(rangeUpperMs)
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            page_group ilike '$(UP.pageGroup)' and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
         """)
         return localTableDF
     catch y
@@ -157,23 +158,25 @@ function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int6
 end
 
 
-function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,
-    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
-    )
+#function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,
+#    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
+#    )
+function getResourcesForBeacon(TV::TimeVars,UP::UrlParams)
 
     try
 
         localTableRtDF = query("""\
-            select $tableRt.* from $table join $tableRt on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+            select $(UP.resourceTable).* from $(UP.beaconTable) join $(UP.resourceTable)
+            on $(UP.resourceTable).session_id = $(UP.beaconTable).session_id and $(UP.resourceTable)."timestamp" = $(UP.beaconTable)."timestamp"
             where
-            $table.params_u ilike '$(localUrl)'
-            and $tableRt."timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC)
-            and $table.session_id IS NOT NULL
-            and $table.page_group = '$(pageGroup)'
-            and $table.timers_t_done >= $(rangeLowerMs) and $table.timers_t_done < $(rangeUpperMs)
-            and $table.params_rt_quit IS NULL
-            and $table.user_agent_device_type ilike '$(deviceType)'
-            order by $tableRt.session_id, $tableRt."timestamp", $tableRt.start_time
+            $(UP.beaconTable).params_u ilike '$(UP.urlRegEx)'
+            and $(UP.resourceTable)."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            and $(UP.beaconTable).session_id IS NOT NULL
+            and $(UP.beaconTable).page_group = '$(UP.pageGroup)'
+            and $(UP.beaconTable).timers_t_done >= $(UP.timeLowerMs) and $(UP.beaconTable).timers_t_done < $(UP.timeUpperMs)
+            and $(UP.beaconTable).params_rt_quit IS NULL
+            and $(UP.beaconTable).user_agent_device_type ilike '$(UP.deviceType)'
+            order by $(UP.resourceTable).session_id, $(UP.resourceTable)."timestamp", $(UP.resourceTable).start_time
             """)
 
 
