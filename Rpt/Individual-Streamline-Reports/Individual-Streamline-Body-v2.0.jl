@@ -2,7 +2,7 @@ type LocalVars
     useJson::Bool
 end
 
-function individualStreamlineMain(TV::TimeVar,WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
+function individualStreamlineMain(TV::timeVars,WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
     fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64;
     showDevView::Bool=false,repeat::Int64=1,showCriticalPathOnly::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
     try
@@ -51,7 +51,7 @@ function individualStreamlineMain(TV::TimeVar,WellKnownHost::Dict,WellKnownPath:
     end
 end
 
-function individualStreamlineTableV2(TV::TimeVar,UP::UrlParams,SP::ShowParams;repeat::Int64=1)
+function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;repeat::Int64=1)
     try
 
         # Get Started
@@ -218,7 +218,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
     end
 end
 
-function finalUrlTableOutput(TV::TimeVar,UP::UrlParams,SP::ShowParams,topUrls::DataArray)
+function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::DataArray)
     try
 
     finalTable = DataFrame()
@@ -323,7 +323,7 @@ function finalUrlTableOutput(TV::TimeVar,UP::UrlParams,SP::ShowParams,topUrls::D
     end
 end
 
-function individualStreamlineTable(TV::TimeVar,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
+function individualStreamlineTable(TV::TimeVars,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
     fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64;
     showDevView::Bool=false,repeat::Int64=1,showCriticalPathOnly::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
     try
@@ -566,7 +566,7 @@ function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict
     end
 end
 
-function individualPageData(TV::TimeVar,pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64
+function individualPageData(TV::TimeVars,pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64
     ;showAdditionals::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
     try
 
@@ -587,7 +587,7 @@ function individualPageData(TV::TimeVar,pageGroup::ASCIIString,localUrl::ASCIISt
     end
 end
 
-function individualPageReportV2(TV::TimeVar,WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;
+function individualPageReportV2(TV::TimeVars,WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;
     showCriticalPathOnly::Bool=false,showAdditionals::Bool=true,showDebug::Bool=false)
     try
 
