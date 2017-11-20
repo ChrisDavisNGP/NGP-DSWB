@@ -121,7 +121,7 @@ function cleanupTopUrlTable(topUrlList::DataVector)
     end
 end
 
-function returnMatchingUrlTableV2(TV:TimeVars,UP::UrlParams)
+function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
     try
 
         topUrl = query("""\
