@@ -2,96 +2,96 @@ type LocalVars
     useJson::Bool
 end
 
-function individualStreamlineMain(WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
-    fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64; 
+function individualStreamlineMain(TV::TimeVar,WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
+    fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64;
     showDevView::Bool=false,repeat::Int64=1,showCriticalPathOnly::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
-    try 
+    try
 
-        #customer = "Nat Geo" 
+        #customer = "Nat Geo"
         #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
-        
+
         localTableDF = DataFrame()
         localTableRtDf = DataFrame()
         statsDF = DataFrame()
-        
-        localTableDF = estimateBeacons(table,tv.startTimeMsUTC,tv.endTimeMsUTC,pageGroup=pageGroup,localUrl=localUrl,deviceType=deviceType,rangeLowerMs=rangeLowerMs,rangeUpperMs=rangeUpperMs)
+
+        localTableDF = estimateBeacons(table,TV.startTimeMsUTC,TV.endTimeMsUTC,pageGroup=pageGroup,localUrl=localUrl,deviceType=deviceType,rangeLowerMs=rangeLowerMs,rangeUpperMs=rangeUpperMs)
         recordsFound = nrow(localTableDF)
-        
+
         #println("part 1 done with ",recordsFound, " records")
         if recordsFound == 0
-            displayTitle(chart_title = "$(fullUrl) for $(deviceType) was not found during $(tv.timeString)",showTimeStamp=false)
-            #println("$(fullUrl) for $(deviceType) was not found during $(tv.timeString)")
+            displayTitle(chart_title = "$(fullUrl) for $(deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
+            #println("$(fullUrl) for $(deviceType) was not found during $(TV.timeString)")
             return
         end
-        
+
         # Stats on the data
         statsDF = beaconStatsPBI(localTableDF,fullUrl,deviceType;showAdditional=true,usePageLoad=usePageLoad)
         rangeLowerMs = statsDF[1:1,:median][1] * 0.95
         rangeUpperMs = statsDF[1:1,:median][1] * 1.05
 
-        #println("part 2 done")        
-        localTableRtDF = getResourcesForBeacon(table,tableRt,pageGroup,localUrl,deviceType,rangeLowerMs,rangeUpperMs) 
+        #println("part 2 done")
+        localTableRtDF = getResourcesForBeacon(table,tableRt,pageGroup,localUrl,deviceType,rangeLowerMs,rangeUpperMs)
         recordsFound = nrow(localTableRtDF)
-        
+
         #println("part 1 done with ",recordsFound, " records")
         if recordsFound == 0
             displayTitle(chart_title = "$(fullUrl) for $(deviceType) has no resource matches during this time",showTimeStamp=false)
-            #println("$(fullUrl) for $(deviceType) was not found during $(tv.timeString)")
+            #println("$(fullUrl) for $(deviceType) was not found during $(TV.timeString)")
             return
         end
-        
+
         #println("part 3 done")
         showAvailableSessionsStreamline(WellKnownHost,WellKnownPath,localTableDF,localTableRtDF,pageGroup,deviceType,rangeLowerMs,rangeUpperMs,fullUrl,localUrl,showLines=repeat,
         showCriticalPathOnly=showCriticalPathOnly,showDevView=showDevView,showDebug=showDebug,usePageLoad=usePageLoad)
         #println("part 4 done")
-        
-        
+
+
     catch y
         println("Individual Streamline Main Exception ",y)
-    end  
+    end
 end
 
-function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=1)
-    try 
+function individualStreamlineTableV2(TV::TimeVar,UP::UrlParams,SP::ShowParams;repeat::Int64=1)
+    try
 
         # Get Started
-        
+
         localTableDF = DataFrame()
         localTableRtDf = DataFrame()
         statsDF = DataFrame()
-        
-        localTableDF = estimateFullBeaconsV2(UP,SP,tv.startTimeMsUTC,tv.endTimeMsUTC)
+
+        localTableDF = estimateFullBeaconsV2(UP,SP,TV.startTimeMsUTC,TV.endTimeMsUTC)
         recordsFound = nrow(localTableDF)
-        
+
         if (SP.debugLevel > 0)
             println("part 1 done with ",recordsFound, " records")
             if recordsFound == 0
-                displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(tv.timeString)",showTimeStamp=false)
+                displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
             end
         end
-        
+
         if recordsFound == 0
             row = DataFrame(url=UP.urlFull,beacon_time=0,request_count=0,encoded_size=0,samples=0)
             return row
         end
-        
+
         # Stats on the data
         row = beaconStatsRow(localTableDF,UP.urlFull,UP.deviceType;showDevView=SP.devView,showDebug=SP.debug,usePageLoad=UP.usePageLoad)
 
         # record the latest record and save to print outside the final loop
         return row
-        
+
     catch y
         println("Individual Streamline Table Exception ",y)
-    end  
+    end
 end
 
 function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64, endTimeMs::Int64)
 
-    try       
+    try
         table = UP.beaconTable
         tableRt = UP.resourceTable
-        
+
         if (UP.usePageLoad)
             localTableDF = query("""\
             select
@@ -113,7 +113,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 avg($table.timers_t_done) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(UP.pageGroup)'
                 and $table.params_u ilike '$(UP.urlRegEx)'
@@ -122,7 +122,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
-                """);    
+                """);
         else
 
             if (SP.debugLevel > 8)
@@ -131,7 +131,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 #    count(*) as Count
                 #FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 #    where
-                #    $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                #    $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 #    and $table.session_id IS NOT NULL
                 #    and $table.page_group ilike '$(UP.pageGroup)'
                 #    and $table.params_u ilike '$(UP.urlRegEx)'
@@ -140,15 +140,15 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 #    and $table.params_rt_quit IS NULL
                 #group by $table.params_u,$table.session_id,$table."timestamp",errors
                 #    """);
-                
+
                 #beautifyDF(debugTableDF[1:min(30,end),:])
-                
+
                 debugTableDF = query("""\
                 select
                     *
                 FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                     where
-                    $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                    $tableRt."timestamp" between $startTimeMs and $endTimeMs
                     and $table.session_id IS NOT NULL
                     and $table.page_group ilike '$(UP.pageGroup)'
                     and $table.params_u ilike '$(UP.urlRegEx)'
@@ -158,12 +158,12 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                     and $table.params_rt_quit IS NULL
                     limit 3
                     """);
-                
+
                 beautifyDF(debugTableDF[1:min(30,end),:])
                 println("pg=",UP.pageGroup," url=",UP.urlRegEx," dev=",UP.deviceType," dr lower=",UP.timeLowerMs," dr upper=",UP.timeUpperMs);
-                
+
             end
-            
+
             localTableDF = query("""\
             select
             CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
@@ -171,10 +171,10 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 avg($table.timers_domready) as beacon_time,
                 sum($tableRt.encoded_size) as encoded_size,
                 $table.errors as errors, $table.session_id,$table."timestamp"
-       
+
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(UP.pageGroup)'
                 and $table.params_u ilike '$(UP.urlRegEx)'
@@ -184,41 +184,41 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 and $table.params_rt_quit IS NULL
                 and $table.errors IS NULL
             group by urlgroup,$table.session_id,$table."timestamp",errors
-                """);    
+                """);
 
-            
+
             if (nrow(localTableDF) == 0)
                 return localTableDF
             end
-            
+
             # Clean Up Bad Samples
             # Currently request < 10
-            
+
             iRow = 0
             reqVector = localTableDF[:request_count]
-            
+
             for reqCount in reqVector
                 iRow = iRow + 1
                 if (reqCount < 10)
                     if (SP.debugLevel > 8)
                         beautifyDF(localTableDF[iRow:iRow,:])
-                    end                        
+                    end
                    deleterows!(localTableDF,iRow)
-                end 
+                end
             end
 
             if (SP.debugLevel > 6)
                 beautifyDF(localTableDF[1:min(30,end),:])
             end
         end
-        
+
         return localTableDF
     catch y
         println("urlDetailTables Exception ",y)
     end
 end
 
-function finalUrlTableOutput(UP::UrlParams,SP::ShowParams,topUrls::DataArray,startTimeMs::Int64,endTimeMs::Int64)
+function finalUrlTableOutput(TV::TimeVar,UP::UrlParams,SP::ShowParams,topUrls::DataArray)
     try
 
     finalTable = DataFrame()
@@ -229,13 +229,13 @@ function finalUrlTableOutput(UP::UrlParams,SP::ShowParams,topUrls::DataArray,sta
     finalTable[:samples] = [0]
 
     for testUrl in topUrls
-        #UP.urlRegEx = string("%",ASCIIString(testUrl),"%")       
+        #UP.urlRegEx = string("%",ASCIIString(testUrl),"%")
         #UP.urlFull = string("/",ASCIIString(testUrl),"/")
-        UP.urlRegEx = string("%",ASCIIString(testUrl))       
+        UP.urlRegEx = string("%",ASCIIString(testUrl))
         UP.urlFull = testUrl
         if (SP.mobile)
             UP.deviceType = "mobile"
-            row = individualStreamlineTableV2(UP,SP,repeat=1)       
+            row = individualStreamlineTableV2(UP,SP,repeat=1)
 
             if (UP.orderBy == "size")
                 if (row[:encoded_size][1] < UP.sizeMin)
@@ -267,10 +267,10 @@ function finalUrlTableOutput(UP::UrlParams,SP::ShowParams,topUrls::DataArray,sta
 
             push!(finalTable,[row[:url];row[:beacon_time];row[:request_count];row[:encoded_size];row[:samples]])
         end
-            
+
         if (SP.desktop)
             UP.deviceType = "desktop"
-            row = individualStreamlineTableV2(UP,SP,repeat=1)       
+            row = individualStreamlineTableV2(UP,SP,repeat=1)
 
             if (UP.orderBy == "size")
                 if (row[:encoded_size][1] < UP.sizeMin)
@@ -298,7 +298,7 @@ function finalUrlTableOutput(UP::UrlParams,SP::ShowParams,topUrls::DataArray,sta
                      end
                     continue
                 end
-            end               
+            end
             push!(finalTable,[row[:url];row[:beacon_time];row[:request_count];row[:encoded_size];row[:samples]])
         end
     end
@@ -317,57 +317,57 @@ function finalUrlTableOutput(UP::UrlParams,SP::ShowParams,topUrls::DataArray,sta
     ft = names!(finalTable[:,:],
     [symbol("Recent Urls $(additional)");symbol("Time");symbol("Request Made");symbol("Page Size");symbol("Samples")])
     beautifyDF(ft[1:min(100,end),:])
-        
+
     catch y
         println("finalUrlTableOutput Exception ",y)
     end
 end
 
-function individualStreamlineTable(table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
-    fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64; 
+function individualStreamlineTable(TV::TimeVar,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
+    fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64;
     showDevView::Bool=false,repeat::Int64=1,showCriticalPathOnly::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
-    try 
+    try
 
-        #customer = "Nat Geo" 
+        #customer = "Nat Geo"
         #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
-        
+
         localTableDF = DataFrame()
         localTableRtDf = DataFrame()
         statsDF = DataFrame()
-        
-        localTableDF = estimateFullBeacons(table,tableRt,tv.startTimeMsUTC,tv.endTimeMsUTC,pageGroup=pageGroup,localUrl=localUrl,deviceType=deviceType,rangeLowerMs=rangeLowerMs,rangeUpperMs=rangeUpperMs,
+
+        localTableDF = estimateFullBeacons(table,tableRt,TV.startTimeMsUTC,TV.endTimeMsUTC,pageGroup=pageGroup,localUrl=localUrl,deviceType=deviceType,rangeLowerMs=rangeLowerMs,rangeUpperMs=rangeUpperMs,
         showDevView=showDevView,showDebug=showDebug)
         recordsFound = nrow(localTableDF)
-        
+
         if (showDebug)
             println("part 1 done with ",recordsFound, " records")
             if recordsFound == 0
-                displayTitle(chart_title = "$(fullUrl) for $(deviceType) was not found during $(tv.timeString)",showTimeStamp=false)
+                displayTitle(chart_title = "$(fullUrl) for $(deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
             end
         end
-        
+
         if recordsFound == 0
             row = DataFrame(url=fullUrl,beacon_time=0,request_count=0,encoded_size=0,samples=0)
             return row
         end
-        
+
         # Stats on the data
         row = beaconStatsRow(localTableDF,fullUrl,deviceType;showDevView=showDevView,showDebug=showDebug,usePageLoad=usePageLoad)
 
         # record the latest record and save to print outside the final loop
         return row
-        
+
     catch y
         println("Individual Streamline Table Exception ",y)
-    end  
+    end
 end
 
 
-function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; 
+function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTimeMs::Int64, endTimeMs::Int64;
     pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0,
     showDevView::Bool=false,showDebug::Bool=false)
 
-    try       
+    try
         if (usePageLoad)
             localTableDF = query("""\
             select
@@ -389,7 +389,7 @@ function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTime
                 avg($table.timers_t_done) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(pageGroup)'
                 and $table.params_u ilike '$(localUrl)'
@@ -397,7 +397,7 @@ function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTime
                 and $table.timers_t_done >= $(rangeLowerMs) and $table.timers_t_done <= $(rangeUpperMs)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
-                """);    
+                """);
         else
 
             if (showDebug)
@@ -406,7 +406,7 @@ function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTime
                     *
                 FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                     where
-                    $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                    $tableRt."timestamp" between $startTimeMs and $endTimeMs
                     and $table.session_id IS NOT NULL
                     and $table.page_group ilike '$(pageGroup)'
                     and $table.params_u ilike '$(localUrl)'
@@ -415,7 +415,7 @@ function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTime
                     and $table.params_rt_quit IS NULL
                     limit 3
                     """);
-                
+
                 beautifyDF(debugTableDF[:,:])
             end
 
@@ -427,7 +427,7 @@ function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTime
                 sum($tableRt.encoded_size) as encoded_size
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs 
+                $tableRt."timestamp" between $startTimeMs and $endTimeMs
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(pageGroup)'
                 and $table.params_u ilike '$(localUrl)'
@@ -435,13 +435,13 @@ function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTime
                 and $table.timers_domready >= $(rangeLowerMs) and $table.timers_domready <= $(rangeUpperMs)
                 and $table.params_rt_quit IS NULL
             group by urlgroup,$table.session_id,$table."timestamp"
-                """);    
-            
+                """);
+
             if (showDevView)
                 beautifyDF(localTableDF[1:min(30,end),:])
             end
         end
-        
+
         return localTableDF
     catch y
         println("urlDetailTables Exception ",y)
@@ -452,10 +452,10 @@ function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType:
 
     #Make a para later if anyone want to control
     goal = 3000.0
-    
+
     row = DataFrame()
     row[:url] = fullUrl
-    
+
     dv = localTableDF[:beacon_time]
     statsBeaconTimeDF = limitedStatsFromDV(dv)
     row[:beacon_time] = statsBeaconTimeDF[:median]
@@ -463,7 +463,7 @@ function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType:
     if (showDebug)
         println("bt=",row[:beacon_time][1]," goal=",goal)
     end
-    
+
     if (showDevView)
         if (usePageLoad)
             chartTitle = "Page Load Time Stats: $(fullUrl) for $(deviceType)"
@@ -472,7 +472,7 @@ function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType:
         end
         showLimitedStats(statsBeaconTimeDF,chartTitle)
     end
-    
+
     dv = localTableDF[:request_count]
     statsRequestCountDF = limitedStatsFromDV(dv)
     row[:request_count] = statsRequestCountDF[:median]
@@ -480,13 +480,13 @@ function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType:
         chartTitle = "Request Count"
         showLimitedStats(statsRequestCountDF,chartTitle)
     end
-    
+
     dv = localTableDF[:encoded_size]
     statsEncodedSizeDF = limitedStatsFromDV(dv)
     row[:encoded_size] = statsEncodedSizeDF[:median]
 
     row[:samples] = samples
-    
+
     if (showDevView)
         chartTitle = "Encoded Size"
         showLimitedStats(statsEncodedSizeDF,chartTitle)
@@ -507,7 +507,7 @@ function beaconStatsPBI(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType:
 
     # Get page views #, median, min, max and more
     statsDF = limitedStatsFromDV(dv)
-    
+
     if (showAdditional)
         if (usePageLoad)
             chartTitle = "Page Load Time Stats: $(fullUrl) for $(deviceType)"
@@ -526,7 +526,7 @@ function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict
         full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
         io = 0
         s1String = ASCIIString("")
-               
+
         for subdf in groupby(full,[:session_id,:timestamp])
             s = size(subdf)
             if(showDebug)
@@ -534,7 +534,7 @@ function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict
             end
             if (usePageLoad)
                 timeVar = subdf[1,:timers_t_done]
-            else 
+            else
                 timeVar = subdf[1,:timers_domready]
             end
             if (timeVar >= rangeLowerMs && timeVar <= rangeUpperMs)
@@ -563,10 +563,10 @@ function showAvailableSessionsStreamline(WellKnownHost::Dict,WellKnownPath::Dict
         end
     catch y
         println("showAvailSessions Exception ",y)
-    end            
+    end
 end
 
-function individualPageData(pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64
+function individualPageData(TV::TimeVar,pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64
     ;showAdditionals::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
     try
 
@@ -575,19 +575,19 @@ function individualPageData(pageGroup::ASCIIString,localUrl::ASCIIString,studySe
         if studyTime > 0
             toppageurl = sessionUrlTableDF(tableRt,studySession,studyTime)
             elseif (studySession != "None")
-                toppageurl = allSessionUrlTableDF(tableRt,studySession,tv.startTimeMsUTC,tv.endTimeMsUTC)
+                toppageurl = allSessionUrlTableDF(tableRt,studySession,TV.startTimeMsUTC,TV.endTimeMsUTC)
             else
-                toppageurl = allPageUrlTableDF(tableRt,pageGroup,localUrl,rangeLower,rangeUpper,tv.startTimeMsUTC,tv.endTimeMsUTC,deviceType=deviceType,usePageLoad=usePageLoad)
+                toppageurl = allPageUrlTableDF(tableRt,pageGroup,localUrl,rangeLower,rangeUpper,TV.startTimeMsUTC,TV.endTimeMsUTC,deviceType=deviceType,usePageLoad=usePageLoad)
         end;
-        
+
         return toppageurl
-        
+
     catch y
         println("individual page report Exception ",y)
-    end  
+    end
 end
 
-function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;
+function individualPageReportV2(TV::TimeVar,WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;
     showCriticalPathOnly::Bool=false,showAdditionals::Bool=true,showDebug::Bool=false)
     try
 
@@ -596,8 +596,8 @@ function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageu
         [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
             symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
-        
-        toppageurlbackup = deepcopy(toppageurl);        
+
+        toppageurlbackup = deepcopy(toppageurl);
         toppageurl = deepcopy(toppageurlbackup)
         #if showDebug
         #    beautifyDF(toppageurl)
@@ -614,8 +614,8 @@ function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageu
         #println("Scrub Data");
         scrubUrlToPrint(toppageurl);
         #println("Classify Data");
-        classifyUrl(toppageurl);        
-        
+        classifyUrl(toppageurl);
+
         #println("Add Gap and Critical Path")
         toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
         if (!suitableTest(toppageurl,showDebug=showDebug))
@@ -623,36 +623,36 @@ function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageu
         end
 
         if (showAdditionals)
-            waterFallFinder(table,studySession,studyTime,tv)
-        end        
-        
+            waterFallFinder(table,studySession,studyTime,TV)
+        end
+
         if (showDebug)
             beautifyDF(toppageurl)
-        end        
-        
+        end
+
         labelField = fullUrl
         criticalPathTreemapV2(labelField,toppageurl;showTable=showAdditionals,limit=40)
-        
+
         if (showAdditionals)
-            gapTreemapV2(toppageurl,showTable=true,showPageUrl=true,showTreemap=false,limit=40)        
+            gapTreemapV2(toppageurl,showTable=true,showPageUrl=true,showTreemap=false,limit=40)
         end
-        
+
         if (!showCriticalPathOnly)
             #itemCountTreemap(toppageurl,showTable=true)      All entries are 1
-            endToEndTreemap(toppageurl,showTable=true)        
-            blockingTreemap(toppageurl,showTable=true)        
+            endToEndTreemap(toppageurl,showTable=true)
+            blockingTreemap(toppageurl,showTable=true)
             requestTreemap(toppageurl,showTable=true)
             responseTreemap(toppageurl,showTable=true)
             dnsTreemap(toppageurl,showTable=true)
             tcpTreemap(toppageurl,showTable=true)
-            redirectTreemap(toppageurl,showTable=true)            
+            redirectTreemap(toppageurl,showTable=true)
         end
-        
+
         return true
-        
+
     catch y
         println("individual page report Exception ",y)
-    end  
+    end
 end
 
 
@@ -669,7 +669,7 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
 
         #clear times beyond timerDone, set timerDone high if you wish to see all
         toppageurl2 = deepcopy(toppageurl)
-        
+
         i = 1
         lastRow = 0
         for url in toppageurl[2:end,:urlgroup]
@@ -685,20 +685,20 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
                 deleterows!(toppageurl2,lastRow)
                 continue
             end
-            
+
             #look for requests which cross the end of the timerDone
             if (newEndTime > timerDone && lastRow == 0)
                 adjTime = timerDone-newStartTime
                 #println("Adjusting $(lastRow) for $(url) newStartTime=$(newStartTime), oldEndTime=$(newEndTime), newEndTime=$(adjTime), target=$(timerDone)")
                 toppageurl2[i,:Total] = adjTime
             end
-                
+
         end
-        
+
         #println("")
         #println(" Result ")
         #println("")
-        
+
         #i = 1
         #for url in toppageurl2[2:end,:urlgroup]
         #    i += 1
@@ -706,9 +706,9 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
         #    newTotalTime = toppageurl2[i,:Total]
         #    println("XXX ",url," newStartTime=$(newStartTime), newTotalTime=$(newTotalTime), target=$(timerDone)")
         #end
-        
+
         toppageurl = deepcopy(toppageurl2)
-        
+
         toppageurl[:Gap] = 0
         toppageurl[:Critical] = 0
 
@@ -781,9 +781,9 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
         #i += 1
         #toppageurl[i,:Gap] = 0
         #toppageurl[i,:Critical] = 0
-        
+
         return toppageurl
-        
+
      catch y
         println("gapAndCritcalPath Exception ",y)
     end
@@ -803,7 +803,7 @@ function suitableTest(toppageurl::DataFrame;timerLimitMs::Int64=2000,showDebug::
                 return false
             end
         end
-        
+
         return true
 
      catch y
@@ -814,8 +814,8 @@ end
 function newPagesList()
     try
 
-    jList = JSON.parse(theList)                                                                                                                            
-                                                                                                                            
+    jList = JSON.parse(theList)
+
     dataArray = get(jList,"data","none")
     urlListDF = DataFrame()
     urlListDF[:urlgroup] = [""]
