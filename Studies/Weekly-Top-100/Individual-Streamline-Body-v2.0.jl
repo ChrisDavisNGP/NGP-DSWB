@@ -64,7 +64,7 @@ function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=
         localTableRtDf = DataFrame()
         statsDF = DataFrame()
 
-        localTableDF = estimateFullBeaconsV2(UP,SP,tv.startTimeMsUTC,tv.endTimeMsUTC)
+        localTableDF = estimateFullBeaconsV2(TV,UP,SP)
         recordsFound = nrow(localTableDF)
 
         if (SP.debugLevel > 0)
@@ -80,7 +80,7 @@ function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=
         end
 
         # Stats on the data
-        row = beaconStatsRow(localTableDF,UP.urlFull,UP.deviceType;showDevView=SP.devView,showDebug=SP.debug,usePageLoad=UP.usePageLoad)
+        row = beaconStatsRow(UP,SP,localTableDF)
 
         # record the latest record and save to print outside the final loop
         return row
@@ -90,7 +90,7 @@ function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=
     end
 end
 
-function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64, endTimeMs::Int64)
+function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         table = UP.beaconTable
@@ -117,7 +117,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                 avg($table.timers_t_done) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs
+                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(UP.pageGroup)'
                 and $table.params_u ilike '$(UP.urlRegEx)'
@@ -152,7 +152,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
                     *
                 FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                     where
-                    $tableRt."timestamp" between $startTimeMs and $endTimeMs
+                    $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
                     and $table.session_id IS NOT NULL
                     and $table.page_group ilike '$(UP.pageGroup)'
                     and $table.params_u ilike '$(UP.urlRegEx)'
@@ -178,7 +178,7 @@ function estimateFullBeaconsV2(UP::UrlParams,SP::ShowParams, startTimeMs::Int64,
 
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs
+                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
                 and $table.session_id IS NOT NULL
                 and $table.page_group ilike '$(UP.pageGroup)'
                 and $table.params_u ilike '$(UP.urlRegEx)'
@@ -339,8 +339,7 @@ function individualStreamlineTable(table::ASCIIString,tableRt::ASCIIString,pageG
         localTableRtDf = DataFrame()
         statsDF = DataFrame()
 
-        localTableDF = estimateFullBeacons(table,tableRt,tv.startTimeMsUTC,tv.endTimeMsUTC,pageGroup=pageGroup,localUrl=localUrl,deviceType=deviceType,rangeLowerMs=rangeLowerMs,rangeUpperMs=rangeUpperMs,
-        showDevView=showDevView,showDebug=showDebug)
+        localTableDF = estimateFullBeaconsV2(TV,UP,SP)
         recordsFound = nrow(localTableDF)
 
         if (showDebug)
@@ -356,7 +355,7 @@ function individualStreamlineTable(table::ASCIIString,tableRt::ASCIIString,pageG
         end
 
         # Stats on the data
-        row = beaconStatsRow(localTableDF,fullUrl,deviceType;showDevView=showDevView,showDebug=showDebug,usePageLoad=usePageLoad)
+        row = beaconStatsRow(UP,SP,localTableDF)
 
         # record the latest record and save to print outside the final loop
         return row
@@ -366,113 +365,28 @@ function individualStreamlineTable(table::ASCIIString,tableRt::ASCIIString,pageG
     end
 end
 
-
-function estimateFullBeacons(table::ASCIIString, tableRt::ASCIIString, startTimeMs::Int64, endTimeMs::Int64;
-    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0,
-    showDevView::Bool=false,showDebug::Bool=false)
-
-    try
-        if (usePageLoad)
-            localTableDF = query("""\
-            select
-                'None' as urlpagegroup,
-                avg($tableRt.start_time),
-                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.start_time) END) as total,
-                avg($tableRt.redirect_end-$tableRt.redirect_start) as redirect,
-                avg(CASE WHEN ($tableRt.dns_start = 0 and $tableRt.request_start = 0) THEN (0) WHEN ($tableRt.dns_start = 0) THEN ($tableRt.request_start-$tableRt.fetch_start) ELSE ($tableRt.dns_start-$tableRt.fetch_start) END) as blocking,
-                avg($tableRt.dns_end-$tableRt.dns_start) as dns,
-                avg($tableRt.tcp_connection_end-$tableRt.tcp_connection_start) as tcp,
-                avg($tableRt.response_first_byte-$tableRt.request_start) as request,
-                avg(CASE WHEN ($tableRt.response_first_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.response_first_byte) END) as response,
-                avg(0) as gap,
-                avg(0) as critical,
-                CASE WHEN (position('?' in $tableRt.url) > 0) then trim('/' from (substring($tableRt.url for position('?' in substring($tableRt.url from 9)) +7))) else trim('/' from $tableRt.url) end as urlgroup,
-                count(*) as request_count,
-                'Label' as label,
-                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE (($tableRt.response_last_byte-$tableRt.start_time)/1000.0) END) as load,
-                avg($table.timers_t_done) as beacon_time
-            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
-                where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs
-                and $table.session_id IS NOT NULL
-                and $table.page_group ilike '$(pageGroup)'
-                and $table.params_u ilike '$(localUrl)'
-                and $table.user_agent_device_type ilike '$(deviceType)'
-                and $table.timers_t_done >= $(rangeLowerMs) and $table.timers_t_done <= $(rangeUpperMs)
-                and $table.params_rt_quit IS NULL
-                group by urlgroup,urlpagegroup,label
-                """);
-        else
-
-            if (showDebug)
-                debugTableDF = query("""\
-                select
-                    *
-                FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
-                    where
-                    $tableRt."timestamp" between $startTimeMs and $endTimeMs
-                    and $table.session_id IS NOT NULL
-                    and $table.page_group ilike '$(pageGroup)'
-                    and $table.params_u ilike '$(localUrl)'
-                    and $table.user_agent_device_type ilike '$(deviceType)'
-                    and $table.timers_domready >= $(rangeLowerMs) and $table.timers_domready <= $(rangeUpperMs)
-                    and $table.params_rt_quit IS NULL
-                    limit 3
-                    """);
-
-                beautifyDF(debugTableDF[:,:])
-            end
-
-            localTableDF = query("""\
-            select
-            CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
-                count(*) as request_count,
-                avg($table.timers_domready) as beacon_time,
-                sum($tableRt.encoded_size) as encoded_size
-            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
-                where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs
-                and $table.session_id IS NOT NULL
-                and $table.page_group ilike '$(pageGroup)'
-                and $table.params_u ilike '$(localUrl)'
-                and $table.user_agent_device_type ilike '$(deviceType)'
-                and $table.timers_domready >= $(rangeLowerMs) and $table.timers_domready <= $(rangeUpperMs)
-                and $table.params_rt_quit IS NULL
-            group by urlgroup,$table.session_id,$table."timestamp"
-                """);
-
-            if (showDevView)
-                beautifyDF(localTableDF[1:min(30,end),:])
-            end
-        end
-
-        return localTableDF
-    catch y
-        println("urlDetailTables Exception ",y)
-    end
-end
-
-function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showDevView::Bool=false,showDebug::Bool=false,usePageLoad::Bool=true)
+#function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showDevView::Bool=false,showDebug::Bool=false,usePageLoad::Bool=true)
+function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
 
     #Make a para later if anyone want to control
     goal = 3000.0
 
     row = DataFrame()
-    row[:url] = fullUrl
+    row[:url] = UP.urlFull
 
     dv = localTableDF[:beacon_time]
     statsBeaconTimeDF = limitedStatsFromDV(dv)
     row[:beacon_time] = statsBeaconTimeDF[:median]
     samples = statsBeaconTimeDF[:count]
-    if (showDebug)
+    if (SP.showDebug)
         println("bt=",row[:beacon_time][1]," goal=",goal)
     end
 
-    if (showDevView)
-        if (usePageLoad)
-            chartTitle = "Page Load Time Stats: $(fullUrl) for $(deviceType)"
+    if (SP.showDevView)
+        if (UP.usePageLoad)
+            chartTitle = "Page Load Time Stats: $(UP.urlFull) for $(UP.deviceType)"
         else
-            chartTitle = "Page Domain Ready Time Stats: $(fullUrl) for $(deviceType)"
+            chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for $(UP.deviceType)"
         end
         showLimitedStats(statsBeaconTimeDF,chartTitle)
     end
@@ -480,7 +394,7 @@ function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType:
     dv = localTableDF[:request_count]
     statsRequestCountDF = limitedStatsFromDV(dv)
     row[:request_count] = statsRequestCountDF[:median]
-    if (showDevView)
+    if (SP.showDevView)
         chartTitle = "Request Count"
         showLimitedStats(statsRequestCountDF,chartTitle)
     end
@@ -491,12 +405,12 @@ function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType:
 
     row[:samples] = samples
 
-    if (showDevView)
+    if (SP.showDevView)
         chartTitle = "Encoded Size"
         showLimitedStats(statsEncodedSizeDF,chartTitle)
     end
 
-    if (showDebug)
+    if (SP.showDebug)
         beautifyDF(row[:,:])
     end
     return row
