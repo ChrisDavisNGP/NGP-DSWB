@@ -327,45 +327,6 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
     end
 end
 
-function individualStreamlineTable(table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
-    fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64;
-    showDevView::Bool=false,repeat::Int64=1,showCriticalPathOnly::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
-    try
-
-        #customer = "Nat Geo"
-        #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
-
-        localTableDF = DataFrame()
-        localTableRtDf = DataFrame()
-        statsDF = DataFrame()
-
-        localTableDF = estimateFullBeaconsV2(TV,UP,SP)
-        recordsFound = nrow(localTableDF)
-
-        if (showDebug)
-            println("part 1 done with ",recordsFound, " records")
-            if recordsFound == 0
-                displayTitle(chart_title = "$(fullUrl) for $(deviceType) was not found during $(tv.timeString)",showTimeStamp=false)
-            end
-        end
-
-        if recordsFound == 0
-            row = DataFrame(url=fullUrl,beacon_time=0,request_count=0,encoded_size=0,samples=0)
-            return row
-        end
-
-        # Stats on the data
-        row = beaconStatsRow(UP,SP,localTableDF)
-
-        # record the latest record and save to print outside the final loop
-        return row
-
-    catch y
-        println("Individual Streamline Table Exception ",y)
-    end
-end
-
-#function beaconStatsRow(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showDevView::Bool=false,showDebug::Bool=false,usePageLoad::Bool=true)
 function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
 
     #Make a para later if anyone want to control
