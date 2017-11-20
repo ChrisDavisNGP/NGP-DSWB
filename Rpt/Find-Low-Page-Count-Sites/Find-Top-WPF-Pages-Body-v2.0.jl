@@ -1,8 +1,8 @@
-function firstAndLast(localTable::ASCIIString,pageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
-    wpfLimitedTable(localTable,table,pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
-    setTable(localTable)
-    topUrlTableForWPF(localTable,pageGroup,tv.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
-    q = query(""" drop view if exists $localTable;""")
+function firstAndLast(TV::TimeVars,UP::UrlParams,pageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
+    wpfLimitedTable(UP.btView,UP.beaconTable,pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+    setTable(UP.btView)
+    topUrlTableForWPF(UP.btView,pageGroup,TV.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
+    q = query(""" drop view if exists $(UP.btView);""")
 end
 
 function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
