@@ -262,34 +262,35 @@ function limitedTable(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function pageGroupDetailsTables(localTable::ASCIIString,localMobileTable::ASCIIString,localDesktopTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
-    try
+function pageGroupDetailsTables(TV::TimeVars,UP::UrlParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
+      try
+
         query("""\
-            drop view if exists $localTable
+            drop view if exists $(UP.btView)
         """)
 
         query("""\
-            create or replace view $localTable as
-            (select * from $table
-            where page_group = '$(productPageGroup)' and
-            "timestamp" between $startTimeMs and $endTimeMs
+            create or replace view $(UP.btView) as
+            (select * from $(UP.beaconTable)
+            where page_group = '$(UP.pageGroup)' and
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
             )
         """)
 
         query("""\
             create or replace view $localMobileTable as
-            (select * from $table
-            where page_group = '$(productPageGroup)' and
-            "timestamp" between $startTimeMs and $endTimeMs and
+            (select * from $(UP.beaconTable)
+            where page_group = '$(UP.pageGroup)' and
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
             user_agent_device_type = 'Mobile'
             )
         """)
 
         query("""\
             create or replace view $localDesktopTable as
-            (select * from $table
-            where page_group = '$(productPageGroup)' and
-            "timestamp" between $startTimeMs and $endTimeMs and
+            (select * from $(UP.beaconTable)
+            where page_group = '$(UP.pageGroup)' and
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
             user_agent_device_type = 'Desktop'
             )
         """);

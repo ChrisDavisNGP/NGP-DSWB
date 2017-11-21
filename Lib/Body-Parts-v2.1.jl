@@ -710,12 +710,12 @@ end
 
 # From Page Group Details
 
-function statsPGD()
+function statsPGD(TV::TimeVars,UP::UrlParams)
     try
-        localStatsDF = statsTableDF(localTable, productPageGroup, tv.startTimeMsUTC, tv.endTimeMsUTC);    
-        statsDF = basicStats(localStatsDF, productPageGroup, tv.startTimeMsUTC, tv.endTimeMsUTC)
+        localStatsDF = statsTableDF(UP.btView, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC);
+        statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
 
-        displayTitle(chart_title = "Raw Data Stats $(productPageGroup) Based On Beacon Page Load Time", chart_info = [tv.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Raw Data Stats $(UP.pageGroup) Based On Beacon Page Load Time", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(statsDF[2:2,:])
         return statsDF
     catch y
@@ -742,15 +742,15 @@ function concurrentSessionsPGD(;showMobileOnly::Bool=false,showDesktopOnly::Bool
             #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - MOBILE ONLY", chart_info = [timeString2],showTimeStamp=false)
             setTable(localMobileTable)
             chartConcurrentSessionsAndBeaconsOverTime(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
-            setTable(localTable)    
+            setTable(localTable)
         end
-        
+
         if (showDesktopOnly)
             timeString2 = timeString * " - Desktop Only"
             #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - DESKTOP ONLY", chart_info = [timeString],showTimeStamp=false)
             setTable(localDesktopTable)
             chartConcurrentSessionsAndBeaconsOverTime(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
-            setTable(localTable)    
+            setTable(localTable)
         end
 
     catch y
@@ -776,7 +776,7 @@ function loadTimesPGD(;showMobileOnly::Bool=false,showDesktopOnly::Bool=false)
             chartLoadTimes(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
             setTable(localTable)
         end
-        
+
         if (showDesktopOnly)
             displayTitle(chart_title = "Median Load Times for $(productPageGroup) - DESKTOP ONLY", chart_info = [tv.timeString],showTimeStamp=false)
             setTable(localDesktopTable)
@@ -817,7 +817,7 @@ function sessionLoadPGD()
     try
         perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(tv.startTimeUTC, tv.endTimeUTC);
 
-        c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions", 
+        c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
             "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Session Stats for $(productPageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"]);
     catch y
         println("cell getAggSessionLength Exception ",y)
@@ -849,7 +849,7 @@ function medianTimesPGD()
         chartMedianLoadTimesByDimension(tv.startTimeUTC, tv.endTimeUTC,dimension=:geo_cc,minPercentage=0.6)
         chartMedianLoadTimesByDimension(tv.startTimeUTC, tv.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
         printDF = getMedianLoadTimesByDimension(tv.startTimeUTC, tv.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
-        beautifyDF(printDF)    
+        beautifyDF(printDF)
     catch y
         println("cell chartMedianLoad Exception ",y)
     end
@@ -907,4 +907,3 @@ end
 function activityImpactPGD()
     chartActivityImpactByPageGroup(tv.startTimeUTC, tv.endTimeUTC;n=10);
 end
-
