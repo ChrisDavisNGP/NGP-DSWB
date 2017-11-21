@@ -70,7 +70,7 @@ function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=
         if (SP.debugLevel > 0)
             println("part 1 done with ",recordsFound, " records")
             if recordsFound == 0
-                displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(tv.timeString)",showTimeStamp=false)
+                displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
             end
         end
 
@@ -408,7 +408,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                         println("$(io) / $(showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.showCriticalPathOnly),$(SP.showDevView)")
                     end
                     topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                    suitable  = individualPageReportV2(WellKnownHost,WellKnownPath,topPageUrl,fullUrl,timeVar,s1String,timeStampVar,showCriticalPathOnly=showCriticalPathOnly,showAdditionals=showDevView,showDebug=showDebug)
+                    suitable  = individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,topPageUrl,timeVar,s1String,timeStampVar)
                     if (!suitable)
                         showLines += 1
                     end
@@ -442,8 +442,7 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
     end
 end
 
-function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,fullUrl::ASCIIString,timerDone::Int64,studySession::ASCIIString,studyTime::Int64;
-    showCriticalPathOnly::Bool=false,showAdditionals::Bool=true,showDebug::Bool=false)
+function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnownHost::Dict,WellKnownPath::Dict,toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
     try
 
         #println("Clean Up Data table")
@@ -473,12 +472,12 @@ function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageu
 
         #println("Add Gap and Critical Path")
         toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
-        if (!suitableTest(toppageurl,showDebug=showDebug))
+        if (!suitableTest(toppageurl,showDebug=SP.showDebug))
             return false
         end
 
-        if (showAdditionals)
-            waterFallFinder(table,studySession,studyTime,tv)
+        if (SP.showAdditionals)
+            waterFallFinder(UP.beaconTable,studySession,studyTime,TV)
         end
 
         if (showDebug)
@@ -486,7 +485,7 @@ function individualPageReportV2(WellKnownHost::Dict,WellKnownPath::Dict,toppageu
         end
 
         labelField = fullUrl
-        criticalPathTreemapV2(labelField,toppageurl;showTable=showAdditionals,limit=40)
+        criticalPathTreemapV2(labelField,toppageurl;showTable=SP.showAdditionals,limit=40)
 
         if (showAdditionals)
             gapTreemapV2(toppageurl,showTable=true,showPageUrl=true,showTreemap=false,limit=40)
