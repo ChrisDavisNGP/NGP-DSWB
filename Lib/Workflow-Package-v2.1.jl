@@ -9,4 +9,45 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     statsDF = statsPGD(TV,UP)
     medianThreshold = statsDF[1:1,:median][1]
 
+    peakPGD()
+
+    concurrentSessionsPGD()
+
+    loadTimesPGD()
+
+    topUrlPGD()
+
+    thresholdChartPGD(medianThreshold)
+
+    sessionLoadPGD()
+
+    loadTimesParamsUPGD()
+
+    medianTimesPGD()
+
+    customRefPGD()
+
+    stdRefPGD()
+
+    medLoadHttpPGD()
+
+    treemapsPGD()
+
+    dpQuartilesPGD()
+
+    sunburst()
+
+    # General Context for All groupSamplesTableDF
+
+    setTable(table)
+
+    pgTreemap()
+
+    bouncesPGD()
+
+    pgQuartPGD()
+
+    activityImpactPGD()
+
+    #todo clean up views
 end
