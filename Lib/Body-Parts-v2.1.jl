@@ -725,74 +725,74 @@ end
 
 # From Page Group Details
 
-function peakPGD()
-    showPeakTable(tv.timeString,productPageGroup,tv.startTimeUTC,tv.endTimeUTC;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
+function peakPGD(TV::TimeVars,UP::UrlParams)
+    showPeakTable(TV.timeString,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
 end
 
 # From Page Group Details
 
-function concurrentSessionsPGD(;showMobileOnly::Bool=false,showDesktopOnly::Bool=false)
+function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
     try
-        if (!showMobileOnly && !showDesktopOnly)
-            chartConcurrentSessionsAndBeaconsOverTime(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
+        if (!SP.mobile && !SP.desktop)
+            chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
         end
 
-        if (showMobileOnly)
+        if (SP.mobile)
             timeString2 = timeString * " - Mobile Only"
             #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - MOBILE ONLY", chart_info = [timeString2],showTimeStamp=false)
-            setTable(localMobileTable)
-            chartConcurrentSessionsAndBeaconsOverTime(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
-            setTable(localTable)
+            setTable(mobileView)
+            chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+            setTable(UP.btView)
         end
 
-        if (showDesktopOnly)
+        if (SP.desktop)
             timeString2 = timeString * " - Desktop Only"
             #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - DESKTOP ONLY", chart_info = [timeString],showTimeStamp=false)
-            setTable(localDesktopTable)
-            chartConcurrentSessionsAndBeaconsOverTime(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
-            setTable(localTable)
+            setTable(desktopView)
+            chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+            setTable(UP.btView)
         end
 
     catch y
-        println("cell concurrentSessions Exception ",y)
+        println("cell concurrentSessionsPGD Exception ",y)
     end
 end
 
 # From Page Group Details
 
-function loadTimesPGD(;showMobileOnly::Bool=false,showDesktopOnly::Bool=false)
+function loadTimesPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
     try
 
         #todo turn off title in chartLoadTimes
         #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
-        if (!showMobileOnly && !showDesktopOnly)
-            chartLoadTimes(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
+        if (!SP.mobile && !SP.desktop)
+            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
         end
 
         #cannot use the other forms without creating the code for the charts.  Titles cannot be overwritten.
-        if (showMobileOnly)
-            displayTitle(chart_title = "Median Load Times for $(productPageGroup) - MOBILE ONLY", chart_info = [tv.timeString],showTimeStamp=false)
-            setTable(localMobileTable)
-            chartLoadTimes(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
-            setTable(localTable)
+        if (SP.mobile)
+            displayTitle(chart_title = "Median Load Times for $(UP.pageGroup) - MOBILE ONLY", chart_info = [TV.timeString],showTimeStamp=false)
+            setTable(mobileView)
+            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+            setTable(UP.btView)
         end
 
-        if (showDesktopOnly)
-            displayTitle(chart_title = "Median Load Times for $(productPageGroup) - DESKTOP ONLY", chart_info = [tv.timeString],showTimeStamp=false)
-            setTable(localDesktopTable)
-            chartLoadTimes(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
-            setTable(localTable)
+        if (SP.desktop)
+            displayTitle(chart_title = "Median Load Times for $(UP.pageGroup) - DESKTOP ONLY", chart_info = [TV.timeString],showTimeStamp=false)
+            setTable(desktopView)
+            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+            setTable(UP.btView)
         end
 
     catch y
-        println("cell chartLoadTimes Exception ",y)
+        println("cell loadTimesPGD Exception ",y)
     end
 end
 
 # From Page Group Details
 
-function topUrlPGD()
-    topUrlTable(localTable,productPageGroup,tv.timeString; limit=10)
+function topUrlPGD(TV::TimeVars,UP::UrlParams)
+    topUrlTable(UP.btView,UP.pageGroup,TV.timeString; limit=UP.limitRows)
 end
 
 # From Page Group Details
@@ -813,14 +813,15 @@ end
 
 # From Page Group Details
 
-function sessionLoadPGD()
+function sessionLoadPGD(TV::TimeVars,UP::UrlParams)
     try
-        perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(tv.startTimeUTC, tv.endTimeUTC);
+        perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC);
 
-        c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
-            "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Session Stats for $(productPageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"]);
+        c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],
+             dataNames=["Completed Sessions","Average Session Length", "Average Session Duration"], mPulseWidget=false,
+             chart_title="Session Stats for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"]);
     catch y
-        println("cell getAggSessionLength Exception ",y)
+        println("sessionLoadPGD Exception ",y)
     end
 end
 
