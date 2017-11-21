@@ -3,6 +3,7 @@
 include("Structures-Package-v2.0.jl")
 include("Time-Package-v2.1.jl")
 
+include("Body-Parts-v2.1.jl")
 include("Grouping-Package-v2.0.jl")
 include("Page-Group-Package-v2.0.jl")
 include("Peak-Package-v2.0.jl")
