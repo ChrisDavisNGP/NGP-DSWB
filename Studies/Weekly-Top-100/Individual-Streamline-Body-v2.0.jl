@@ -2,9 +2,6 @@ type LocalVars
     useJson::Bool
 end
 
-#function individualStreamlineMain(WellKnownHost::Dict,WellKnownPath::Dict,table::ASCIIString,tableRt::ASCIIString,pageGroup::ASCIIString,
-#    fullUrl::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64;
-#    showDevView::Bool=false,repeat::Int64=1,showCriticalPathOnly::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
   function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnownHost::Dict,WellKnownPath::Dict,
     deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64)
     try
@@ -339,7 +336,7 @@ function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
     statsBeaconTimeDF = limitedStatsFromDV(dv)
     row[:beacon_time] = statsBeaconTimeDF[:median]
     samples = statsBeaconTimeDF[:count]
-    if (SP.showDebug)
+    if (SP.debug)
         println("bt=",row[:beacon_time][1]," goal=",goal)
     end
 
@@ -371,7 +368,7 @@ function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
         showLimitedStats(statsEncodedSizeDF,chartTitle)
     end
 
-    if (SP.showDebug)
+    if (SP.debug)
         beautifyDF(row[:,:])
     end
     return row
@@ -385,7 +382,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
         for subdf in groupby(full,[:session_id,:timestamp])
             s = size(subdf)
-            if(UP.showDebug)
+            if(SP.debug)
                 println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
             end
             if (UP.usePageLoad)
@@ -404,7 +401,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                     timeVarSec = timeVar / 1000.0
                     # We may be missing requests such that the timers_t_done is a little bigger than the treemap
                     labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
-                    if (showDebug)
+                    if (SP.debug)
                         println("$(io) / $(showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.showCriticalPathOnly),$(SP.showDevView)")
                     end
                     topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
@@ -453,7 +450,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
 
         toppageurlbackup = deepcopy(toppageurl);
         toppageurl = deepcopy(toppageurlbackup)
-        #if showDebug
+        #if debug
         #    beautifyDF(toppageurl)
         #end
 
@@ -472,7 +469,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
 
         #println("Add Gap and Critical Path")
         toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
-        if (!suitableTest(toppageurl,showDebug=SP.showDebug))
+        if (!suitableTest(toppageurl,showDebug=SP.debug))
             return false
         end
 
@@ -480,7 +477,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
             waterFallFinder(UP.beaconTable,studySession,studyTime,TV)
         end
 
-        if (showDebug)
+        if (SP.debug)
             beautifyDF(toppageurl)
         end
 
