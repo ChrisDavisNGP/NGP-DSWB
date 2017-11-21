@@ -11,7 +11,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
       UP.timeUpperMs = rangeUpperMs
 
       localTableDF = DataFrame()
-      localTableRtDf = DataFrame()
+      localTableRtDF = DataFrame()
       statsDF = DataFrame()
 
       localTableDF = estimateBeacons(TV,UP,SP)
@@ -58,7 +58,7 @@ function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=
       # Get Started
 
       localTableDF = DataFrame()
-      localTableRtDf = DataFrame()
+      localTableRtDF = DataFrame()
       statsDF = DataFrame()
 
       localTableDF = estimateFullBeaconsV2(TV,UP,SP)
