@@ -26,7 +26,7 @@ function typeAllBody(
             elseif (studySession != "None")
             toppageurl = allSessionUrlTableDF(tableRt,studySession,startTimeMs,endTimeMs)
             else
-                toppageurl = allPageUrlTableDF(tableRt,productPageGroup,localUrl,rangeLower,rangeUpper,startTimeMs,endTimeMs,deviceType=deviceType)
+                toppageurl = allPageUrlTableDF(TV,UP)
         end
 
         toppageurl = names!(toppageurl[:,:],

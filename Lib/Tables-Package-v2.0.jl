@@ -2,9 +2,13 @@
 # Functions which return a data frame
 #
 
-function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl::ASCIIString,rangeLower::Float64,rangeUpper::Float64,startTimeMs::Int64,endTimeMs::Int64;
-    deviceType::ASCIIString="%",usePageLoad::Bool=true)
+#function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl::ASCIIString,rangeLower::Float64,rangeUpper::Float64,startTimeMs::Int64,endTimeMs::Int64;
+#    deviceType::ASCIIString="%",usePageLoad::Bool=true)
+function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
     try
+        table = UP.beaconTable
+        tableRt = UP.resourceTable
+
         if (usePageLoad)
             toppageurl = query("""\
             select
@@ -25,13 +29,13 @@ function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl:
                 avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE (($tableRt.response_last_byte-$tableRt.start_time)/1000.0) END) as load,
                 avg($table.timers_t_done) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
-                where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs
+            WHERE
+                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
                 and $table.session_id IS NOT NULL
-                and $table.page_group ilike '$(pageGroup)'
-                and $table.params_u ilike '$(localUrl)'
-                and $table.user_agent_device_type ilike '$(deviceType)'
-                and $table.timers_t_done >= $(rangeLower) and $table.timers_t_done <= $(rangeUpper)
+                and $table.page_group ilike '$(UP.pageGroup)'
+                and $table.params_u ilike '$(UP.urlRegEx)'
+                and $table.user_agent_device_type ilike '$(UP.deviceType)'
+                and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
                 """);
@@ -56,12 +60,12 @@ function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl:
                 avg($table.timers_domready) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $startTimeMs and $endTimeMs
+                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
                 and $table.session_id IS NOT NULL
-                and $table.page_group ilike '$(pageGroup)'
-                and $table.params_u ilike '$(localUrl)'
-                and $table.user_agent_device_type ilike '$(deviceType)'
-                and $table.timers_domready >= $(rangeLower) and $table.timers_domready <= $(rangeUpper)
+                and $table.page_group ilike '$(UP.pageGroup)'
+                and $table.params_u ilike '$(UP.urlRegEx)'
+                and $table.user_agent_device_type ilike '$(UP.deviceType)'
+                and $table.timers_domready >= $(UP.timeUpperMs) and $table.timers_domready <= $(UP.timeUpperMs)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
                 """);

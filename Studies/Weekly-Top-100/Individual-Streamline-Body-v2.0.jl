@@ -385,15 +385,15 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
         for subdf in groupby(full,[:session_id,:timestamp])
             s = size(subdf)
-            if(showDebug)
-                println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",rangeLowerMs," ru=",rangeUpperMs)
+            if(UP.showDebug)
+                println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
             end
-            if (usePageLoad)
+            if (UP.usePageLoad)
                 timeVar = subdf[1,:timers_t_done]
             else
                 timeVar = subdf[1,:timers_domready]
             end
-            if (timeVar >= rangeLowerMs && timeVar <= rangeUpperMs)
+            if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
                 io += 1
                 #println("Testing $(io) against $(showLines)")
                 if io <= showLines
@@ -403,11 +403,11 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                     timeStampVar = subdf[1,:timestamp]
                     timeVarSec = timeVar / 1000.0
                     # We may be missing requests such that the timers_t_done is a little bigger than the treemap
-                    labelString = "$(fullUrl) $(timeVarSec) Seconds for $(deviceType)"
+                    labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
                     if (showDebug)
-                        println("$(io) / $(showLines): $(pageGroup),$(labelString),$(localUrl),$(s1String),$(timeStampVar),$(timeVar),$(showCriticalPathOnly),$(showDevView)")
+                        println("$(io) / $(showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.showCriticalPathOnly),$(SP.showDevView)")
                     end
-                    topPageUrl = individualPageData(pageGroup,localUrl,s1String,timeStampVar,showAdditionals=showDevView,showDebug=showDebug,usePageLoad=usePageLoad)
+                    topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
                     suitable  = individualPageReportV2(WellKnownHost,WellKnownPath,topPageUrl,fullUrl,timeVar,s1String,timeStampVar,showCriticalPathOnly=showCriticalPathOnly,showAdditionals=showDevView,showDebug=showDebug)
                     if (!suitable)
                         showLines += 1
@@ -422,18 +422,17 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
     end
 end
 
-function individualPageData(pageGroup::ASCIIString,localUrl::ASCIIString,studySession::ASCIIString,studyTime::Int64
-    ;showAdditionals::Bool=true,showDebug::Bool=false,usePageLoad::Bool=true)
+function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
     try
 
         toppageurl = DataFrame()
 
         if studyTime > 0
-            toppageurl = sessionUrlTableDF(tableRt,studySession,studyTime)
+            toppageurl = sessionUrlTableDF(UP.resourceTable,studySession,studyTime)
             elseif (studySession != "None")
-                toppageurl = allSessionUrlTableDF(tableRt,studySession,tv.startTimeMsUTC,tv.endTimeMsUTC)
+                toppageurl = allSessionUrlTableDF(UP.resourceTable,studySession,TV.startTimeMsUTC,TV.endTimeMsUTC)
             else
-                toppageurl = allPageUrlTableDF(tableRt,pageGroup,localUrl,rangeLower,rangeUpper,tv.startTimeMsUTC,tv.endTimeMsUTC,deviceType=deviceType,usePageLoad=usePageLoad)
+                toppageurl = allPageUrlTableDF(TV,UP)
         end;
 
         return toppageurl

@@ -12,7 +12,7 @@ function individualPageReport(studySession::ASCIIString,studyTime::Int64;showCri
             elseif (studySession != "None")
             toppageurl = allSessionUrlTableDF(tableRt,studySession,tv.startTimeMsUTC,tv.endTimeMsUTC)
         else
-            toppageurl = allPageUrlTableDF(tableRt,productPageGroup,localUrl,rangeLower,rangeUpper,tv.startTimeMsUTC,tv.endTimeMsUTC,deviceType=deviceType)
+            toppageurl = allPageUrlTableDF(TV,UP)
             end;
 
         toppageurl = names!(toppageurl[:,:],
