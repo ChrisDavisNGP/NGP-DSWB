@@ -858,7 +858,7 @@ end
 
 # From Page Group Details
 
-function medLoadHttpPGD(TV:TimeVars)
+function medLoadHttpPGD(TV::TimeVars)
     try
         chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
         chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
