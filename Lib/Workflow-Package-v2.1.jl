@@ -51,3 +51,21 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     #todo clean up views
 end
+
+function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  urlListDF = returnMatchingUrlTableV2(TV,UP)
+  if (SP.debugLevel > 4)
+      beautifyDF(urlListDF[1:min(10,end),:])
+  end
+
+  newListDF = urlListDF[Bool[x > UP.samplesMin for x in urlListDF[:cnt]],:]
+  topUrlList = newListDF[:urlgroup]
+  topUrls = cleanupTopUrlTable(topUrlList)
+  if (SP.debugLevel > 8)
+      println(topUrls)
+  end
+
+  finalUrlTableOutput(TV,UP,SP,topUrls)
+
+end
