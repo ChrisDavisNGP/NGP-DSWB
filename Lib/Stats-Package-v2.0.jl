@@ -112,12 +112,12 @@ function runningStats(year::Int64,month::Int64,day::Int64,hour::Int64,localStats
     end
 end
 
-function showLimitedStats(statsDF::DataFrame,chartTitle::ASCIIString)
+function showLimitedStats(TV::TimeVars,statsDF::DataFrame,chartTitle::ASCIIString)
     try
         printStatsDF = names!(statsDF[:,:],
         [symbol("Page Views"),symbol("Mean(ms)"),symbol("Median(ms)"),symbol("Min(ms)"),symbol("Max(ms)"),symbol("25 Percentile"),symbol("75 Percentile")])
 
-        displayTitle(chart_title = chartTitle, chart_info = [tv.timeString],showTimeStamp=false)
+        displayTitle(chart_title = chartTitle, chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(printStatsDF[:,:])
     catch y
         println("showLimitedStats Exception ",y)
@@ -156,7 +156,7 @@ function limitedStatsFromDV(dv::DataVector)
     end
 end
 
-function beaconStats(UP::UrlParams,SP::ShowParams;showAdditional::Bool=true)
+function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams;showAdditional::Bool=true)
 
     if (UP.usePageLoad)
         dv = localTableDF[:timers_t_done]
@@ -173,7 +173,7 @@ function beaconStats(UP::UrlParams,SP::ShowParams;showAdditional::Bool=true)
         else
             chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for $(UP.deviceType)"
         end
-        showLimitedStats(statsDF,chartTitle)
+        showLimitedStats(TV,statsDF,chartTitle)
     end
     return statsDF
 end

@@ -25,7 +25,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
       end
 
       # Stats on the data
-      statsDF = beaconStats(UP,SP;showAdditional=true)
+      statsDF = beaconStats(TV,UP,SP;showAdditional=true)
       rangeLowerMs = statsDF[1:1,:median][1] * 0.95
       rangeUpperMs = statsDF[1:1,:median][1] * 1.05
 
@@ -52,7 +52,7 @@ end
 
 # From Individual-Streamline-Body
 
-function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=1)
+function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;repeat::Int64=1)
   try
 
       # Get Started
@@ -77,7 +77,7 @@ function individualStreamlineTableV2(UP::UrlParams,SP::ShowParams;repeat::Int64=
       end
 
       # Stats on the data
-      row = beaconStatsRow(UP,SP,localTableDF)
+      row = beaconStatsRow(TV,UP,SP,localTableDF)
 
       # record the latest record and save to print outside the final loop
       return row
@@ -240,7 +240,7 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
       UP.urlFull = testUrl
       if (SP.mobile)
           UP.deviceType = "mobile"
-          row = individualStreamlineTableV2(UP,SP,repeat=1)
+          row = individualStreamlineTableV2(TV,UP,SP,repeat=1)
 
           if (UP.orderBy == "size")
               if (row[:encoded_size][1] < UP.sizeMin)
@@ -275,7 +275,7 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
 
       if (SP.desktop)
           UP.deviceType = "desktop"
-          row = individualStreamlineTableV2(UP,SP,repeat=1)
+          row = individualStreamlineTableV2(TV,UP,SP,repeat=1)
 
           if (UP.orderBy == "size")
               if (row[:encoded_size][1] < UP.sizeMin)
@@ -330,7 +330,7 @@ end
 
 # From Individual-Streamline-Body
 
-function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
+function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
 
   #Make a para later if anyone want to control
   goal = 3000.0
@@ -352,7 +352,7 @@ function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
       else
           chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for $(UP.deviceType)"
       end
-      showLimitedStats(statsBeaconTimeDF,chartTitle)
+      showLimitedStats(TV,statsBeaconTimeDF,chartTitle)
   end
 
   dv = localTableDF[:request_count]
@@ -360,7 +360,7 @@ function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
   row[:request_count] = statsRequestCountDF[:median]
   if (SP.devView)
       chartTitle = "Request Count"
-      showLimitedStats(statsRequestCountDF,chartTitle)
+      showLimitedStats(TV,statsRequestCountDF,chartTitle)
   end
 
   dv = localTableDF[:encoded_size]
@@ -371,7 +371,7 @@ function beaconStatsRow(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
 
   if (SP.devView)
       chartTitle = "Encoded Size"
-      showLimitedStats(statsEncodedSizeDF,chartTitle)
+      showLimitedStats(TV,statsEncodedSizeDF,chartTitle)
   end
 
   if (SP.debug)
