@@ -9,14 +9,14 @@ function showAvailableSessions(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTa
             i += 1
             s = size(subdf)
             #println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",rangeLowerMs," ru=",rangeUpperMs)
-            if (subdf[1,:timers_t_done] >= TV.timeLowerMs && subdf[1,:timers_t_done] <= TV.timeUpperMs)
+            if (subdf[1,:timers_t_done] >= UP.timeLowerMs && subdf[1,:timers_t_done] <= UP.timeUpperMs)
                 io += 1
                 if io <= showLines
                     s1 = subdf[1,:session_id]
                     s2 = subdf[1,:timestamp]
                     s3 = subdf[1,:timers_t_done]
                     #if (reportLevel > 1) println("individualPageReport(\"",s1,"\",",s2,",showCriticalPathOnly=$(showCriticalPathOnly)) #    Time=",s3) end
-                    if (reportLevel > 1) println("individualPageReportV2(TV,UP,SP,wellKnownHostDictionary,wellKnownPathDictionary,\"%\",",s3,"\"",s1,"\",",s2,")) #    Time=",s3) end
+                    if (reportLevel > 1) println("individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,\"%\",",s3,",\"",s1,"\",",s2,") #    Time=",s3) end
                 end
             end
         end
