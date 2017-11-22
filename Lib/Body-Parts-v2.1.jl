@@ -915,6 +915,18 @@ function typeAllBodyQuick(TV::TimeVars,UP::UrlParams,SP::ShowParams,qPageGroup::
     UP.pageGroup = qPageGroup
     UP.urlRegEx = qUrlRegEx
     UP.deviceType = qDeviceType
+
+    if (qDeviceType == "desktop")
+      SP.desktop = true
+    end
+    if (qDeviceType == "mobile")
+      SP.mobile = true
+    end
+    if (qDeviceType == "%")
+      SP.desktop = true
+      SP.mobile = true
+    end
+
     typeAllBody(TV,UP,SP)
 end
 

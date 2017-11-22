@@ -2,14 +2,12 @@
 # Functions which return a data frame
 #
 
-#function allPageUrlTableDF(tableRt::ASCIIString,pageGroup::ASCIIString,localUrl::ASCIIString,rangeLower::Float64,rangeUpper::Float64,startTimeMs::Int64,endTimeMs::Int64;
-#    deviceType::ASCIIString="%",usePageLoad::Bool=true)
 function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
     try
         table = UP.beaconTable
         tableRt = UP.resourceTable
 
-        if (usePageLoad)
+        if (UP.usePageLoad)
             toppageurl = query("""\
             select
                 'None' as urlpagegroup,

@@ -156,7 +156,6 @@ function limitedStatsFromDV(dv::DataVector)
     end
 end
 
-#function beaconStatsPBI(localTableDF::DataFrame,fullUrl::ASCIIString,deviceType::ASCIIString;showAdditional::Bool=true,usePageLoad::Bool=true)
 function beaconStats(UP::UrlParams,SP::ShowParams;showAdditional::Bool=true)
 
     if (UP.usePageLoad)
