@@ -934,7 +934,10 @@ function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         # Is there data?
         localTableDF = estimateBeacons(TV,UP,SP)
-        println("$(UP.beaconTable) count is ",size(localTableDF))
+        if (SP.debugLevel > 0)
+          println("$(UP.beaconTable) count is ",size(localTableDF))
+          println("")
+        end
 
         # Stats on the data
         statsDF = DataFrame()
@@ -957,6 +960,11 @@ function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             toppageurl = allSessionUrlTableDF(UP.resourceTable,studySession,TV.startTimeMs,TV.endTimeMs)
             else
                 toppageurl = allPageUrlTableDF(TV,UP)
+        end
+
+        if (SP.debugLevel > 0)
+          println("topPageUrl rows and column counts are ",size(toppageurl))
+          println("")
         end
 
         toppageurl = names!(toppageurl[:,:],

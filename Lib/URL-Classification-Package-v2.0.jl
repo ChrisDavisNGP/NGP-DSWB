@@ -1,5 +1,5 @@
 function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify::Bool=true)
-    try 
+    try
         i = 0
         todo = 0
         for url in toppageurl[:,:urlgroup]
@@ -39,10 +39,10 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
                             newuristring = "AWS Cloud PNG File"
                         end
                     end
-                    
+
                     if (newuristring == "To Classify")
                         todo += 1
-                        #@show todo uri.host  uri.path            
+                        #@show todo uri.host  uri.path
                         if (ismatch(r"^.*",uri.host))
                             println("Host ", uri.host, " Path ",uri.path)
                             #println(uri.host)
@@ -53,11 +53,11 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
                     println("Host ", uri.host, " Path ",uri.path, " *** None ***")
                         #println(uri.host)
                 end
-                
+
                 toppageurl[i:i,:urlpagegroup] = newuristring
                 newUrlPageGroup = newuristring
             end
-            
+
             #println("newUrlPageGroup ",newUrlPageGroup," uri.path ",uri.path)
             returnValue = SubClassify(newUrlPageGroup,uri.path)
             toppageurl[i:i,:urlpagegroup] = returnValue
@@ -66,7 +66,7 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
      catch y
         println("classifyUrl2 Exception ",y)
     end
-       
+
 end
 
 function SubClassify(urlPageGroup::ASCIIString,uriPath::ASCIIString)
@@ -76,7 +76,7 @@ function SubClassify(urlPageGroup::ASCIIString,uriPath::ASCIIString)
         #println("Checking Broad Group",urlPageGroup)
         # subclassify a few groups
         if (urlPageGroup == "NGP Yourshot")
-            #println("Classify Path ",uriPath)                
+            #println("Classify Path ",uriPath)
             newUrlPageGroup = YourshotClassification(uriPath)
         end
 
@@ -84,7 +84,7 @@ function SubClassify(urlPageGroup::ASCIIString,uriPath::ASCIIString)
      catch y
         println("subClassify Exception ",y)
     end
-        
+
 end
 
 function YourshotClassification(uriPath::ASCIIString)
@@ -115,14 +115,14 @@ function YourshotClassification(uriPath::ASCIIString)
      catch y
         println("Yourshotclassification Exception ",y)
     end
-        
+
 end
 
 
 function PartialKnownHost(uriHost::ASCIIString)
     try
         newuristring = "To Classify"
-        
+
         if (ismatch(r"^www.nationalgeographic.com",uriHost))
             newuristring = "NGP Requests"
             elseif (ismatch(r".*fls\.doubleclick.*",uriHost))
@@ -187,7 +187,7 @@ function PartialKnownHost(uriHost::ASCIIString)
             elseif (ismatch(r".*\.pubmatic.com",uriHost))
             newuristring = "PubMatic Ads"
             elseif (ismatch(r".*EvernoteEvernoteWebClipper.*",uriHost))
-            newuristring = "Evernote"   
+            newuristring = "Evernote"
             elseif (ismatch(r".*yourshot.nationalgeographic.com",uriHost))
             newuristring = "NGP Yourshot"
             elseif (ismatch(r".*adlooxtracking.com",uriHost))
@@ -235,7 +235,7 @@ function PartialKnownHost(uriHost::ASCIIString)
             elseif (ismatch(r"dc8.*cloudfront.net",uriHost))
             newuristring = "Snowplow Analytics"
         end
-        
+
         return newuristring
     catch y
         println("PartialKnownHost Exception",y)
@@ -245,7 +245,7 @@ end
 function PartialKnownPath(uriPath::ASCIIString)
     try
         newuristring = "To Classify"
-        
+
         if (ismatch(r"^/modules-livefyre",uriPath))
             newuristring = "Livefyre Commenting"
             elseif (ismatch(r"^/wpf/CACHE",uriPath))
@@ -301,7 +301,7 @@ function PartialKnownPath(uriPath::ASCIIString)
             elseif (ismatch(r".*\-.*\-.*\-.*\-.*",uriPath))
             newuristring = "GUID Value"
         end
-        
+
         return newuristring
     catch y
         println("PartialKnownPath Exception",y)
@@ -391,24 +391,33 @@ function gapAndCriticalPath(toppageurl::DataFrame)
         #i += 1
         #toppageurl[i,:Gap] = 0
         #toppageurl[i,:Critical] = 0
-        
+
         return toppageurl
-        
+
      catch y
         println("gapAndCritcalPath Exception ",y)
     end
 end
 
+function wellKnownHostDictionary(debug::Bool)
+  if debug == true
+    wellKnownHostDictionaryDebug()
+  elseif
+    wellKnownHostDictionary()
+  end
+end
+
+
 #small subset of well known hosts for debug
 function wellKnownHostDictionaryDebug()
 
     WellKnownHost = Dict([
-        ("appservices.nationalgeographic.com","NGP Requests"),        
+        ("appservices.nationalgeographic.com","NGP Requests"),
         ("f.monetate.net","Monetate Personalization"),
         ("sb.monetate.net","Monetate Personalization"),
         ("se.monetate.net","Monetate Personalization"),
         ("e.monetate.net","Monetate Personalization"),
-        ("b.monetate.net","Monetate Personalization"),                
+        ("b.monetate.net","Monetate Personalization"),
         ("yourshot.nationalgeographic.com","NGP Yourshot"),
         ("fonts.ngeo.com","Font"),
         ("fast.fonts.net","Font"),
@@ -429,6 +438,15 @@ function wellKnownHostDictionaryDebug()
     return WellKnownHost
 end
 
+function wellKnownPathDictionary(debug::Bool)
+  if debug == true
+    # There is no debug Path so far
+    wellKnownPathDictionary()
+  elseif
+    wellKnownPathDictionary()
+  end
+end
+
 # Path is so small it does not need debug
 #
 #function wellKnownPathDictionaryDebug()
@@ -442,6 +460,7 @@ end
 #end
 
 
+
 function wellKnownHostDictionary()
 
     WellKnownHost = Dict([
@@ -450,7 +469,7 @@ function wellKnownHostDictionary()
         ("sb.monetate.net","Monetate Personalization"),
         ("se.monetate.net","Monetate Personalization"),
         ("e.monetate.net","Monetate Personalization"),
-        ("b.monetate.net","Monetate Personalization"),                
+        ("b.monetate.net","Monetate Personalization"),
         ("fonts.ngeo.com","Font"),
         ("fast.fonts.net","Font"),
         ("p.typekit.net","Font"),
@@ -1467,7 +1486,7 @@ function wellKnownHostDictionary()
         ("secure.eyereturn.com","Eyereturn Marketing Ads"),
         ("p3.eyereturn.com","Eyereturn Marketing Ads"),
         ("mcs.eyereturn.com","Eyereturn Marketing Ads"),
-        ("o2.eyereturn.com","Eyereturn Marketing Ads"),        
+        ("o2.eyereturn.com","Eyereturn Marketing Ads"),
         ("quickresource.eyereturn.com","Eyereturn Marketing Ads"),
         ("resources.eyereturn.com","Eyereturn Marketing Ads"),
         ("vast.eyereturn.com","Eyereturn Marketing Ads"),
@@ -3626,7 +3645,7 @@ function wellKnownHostDictionary()
         ("zh.wikipedia.org","zh.wikipedia.org"),
         ("zincdn.com","zincdn.com"),
         ("zintro.files.wordpress.com","zintro.files.wordpress.com"),
-        ("zps4.zippormedia.com","zps4.zippormedia.com"),       
+        ("zps4.zippormedia.com","zps4.zippormedia.com"),
         ("031kr-2ct6v.ads.tremorhub.com","Tremorhub Ads"),
         ("1.2.3.4","1.2.3.4"),
         ("1.base.maps.api.here.com","1.base.maps.api.here.com"),
@@ -4276,7 +4295,7 @@ function wellKnownHostDictionary()
         ("www.tumblr.com","Tumblr.com"),
         ("www.virology.ws","Virology.ws"),
         ("www.wompmobile.com","Wompmobile.com"),
-        ("yourshotblog.nationalgeographic.com","NGeo Yourshot Blog"),        
+        ("yourshotblog.nationalgeographic.com","NGeo Yourshot Blog"),
         ("prod_membership_avatars.s3.amazonaws.com","NGeo Avatars"),
         ("a.tiles.nationalgeographic.com","NGeo Tiles"),
         ("ajax.googleapis.com","Google Doubleclick Ads"),
@@ -4399,7 +4418,7 @@ function wellKnownHostDictionary()
         ("ads.spotible.com","Spotible Ads"),
         ("cdn1.spotible.com","Spotible Ads"),
         ("ads.stickyadstv.com","Sticky Ads"),
-        ("cdn.stickyadstv.com","Sticky Ads"),        
+        ("cdn.stickyadstv.com","Sticky Ads"),
         ("ads.undertone.com","ads.undertone.com"),
         ("adserving.rockabox.co","Adserving.rockabox.co"),
         ("adsfac.net","adsfac.net"),
@@ -4514,7 +4533,7 @@ function wellKnownHostDictionary()
         ("www.publishstreamapp.com","Publishstreamapp.com"),
         ("www.tailwindapp.com","Tailwindapp.com"),
         ("www.technologieyvonlheureux.com","Technologieyvonlheureux.com"),
-        ("zombiefruitcom-a.akamaihd.net","Zombiefruitcom-a.akamaihd.net"),       
+        ("zombiefruitcom-a.akamaihd.net","Zombiefruitcom-a.akamaihd.net"),
         ("ad.ipredictive.com","Ipredictive.com"),
         ("adventure.nationalgeographic.com","Adventure.nationalgeographic.com"),
         ("ae-gmtdmp.mookie1.com","Mookie1"),
@@ -4602,7 +4621,7 @@ function wellKnownHostDictionary()
         ("womp.me","Womp"),
         ("www.reddit.com","Reddit.com"),
         ("www.wolframalpha.com","Wolframalpha.com"),
-        ("wwwimages.adobe.com","Adobe Images"),    
+        ("wwwimages.adobe.com","Adobe Images"),
         ("10.165.197.8","10.165.197.8"),
         ("10.239.160.148","10.239.160.148"),
         ("10.239.160.149","10.239.160.149"),
@@ -4657,7 +4676,7 @@ function wellKnownHostDictionary()
         ("usw-lax.adsrvr.org","Adsrvr.org"),
         ("vht.tradedoubler.com","Tradedoubler.com"),
         ("video.nationalgeographic.com","NGeo Video"),
-        ("ww.steelhousemedia.com","Steelhousemedia.com"),        
+        ("ww.steelhousemedia.com","Steelhousemedia.com"),
         ("uav.tidaltv.com","Videolgy Ads"),
         ("req.tidaltv.com","Videolgy Ads"),
         ("http.tidaltv.com","Videolgy Ads"),
@@ -5025,7 +5044,7 @@ function wellKnownHostDictionary()
         ("me.kis.v2.scr.kaspersky-labs.com","me.kis.v2.scr.kaspersky-labs.com"),
         ("me.ksk.scr.kaspersky-labs.com","me.ksk.scr.kaspersky-labs.com"),
         ("media-members.nationalgeographic.com","NGP Members"),
-        ("aem-pub.int.ngeo.com","NGP Request"),        
+        ("aem-pub.int.ngeo.com","NGP Request"),
         ("media-wajam.netdna-ssl.com","media-wajam.netdna-ssl.com"),
         ("media.adfrontiers.com","Media.adfrontiers.com"),
         ("media.mvmtwatches.com","media.mvmtwatches.com"),
@@ -5153,7 +5172,7 @@ function wellKnownHostDictionary()
         ("akqacloroxvpaid934xk.s.moatpixel.com","Moatpixel.com"),
         ("ipgtradedesk570092244753.s.moatpixel.com","Moatpixel.com"),
         ("groupmnestle394802156537.s.moatpixel.com","Moatpixel.com"),
-        ("bpi100914419959.s.moatpixel.com","Moatpixel.com"),                
+        ("bpi100914419959.s.moatpixel.com","Moatpixel.com"),
         ("xaxisautomatedappnexus278849507304.s.moatpixel.com","Moatpixel.com"),
         ("xaxisnzappnexus667156527915.s.moatpixel.com","Moatpixel.com"),
         ("xaxistradedeskvpaid675918190.s.moatpixel.com","Moatpixel.com"),
@@ -5273,7 +5292,7 @@ function wellKnownHostDictionary()
         ("us-east.pulsepoint.rtb.quantserve.com","Quantserve Real Time Ads"),
         ("exch.quantcount.com","Quantcount Real Time Ads"),
         ("rules.quantcount.com","Quantcount Real Time Ads"),
-        ("content.quantcount.com","Quantcount Real Time Ads"),        
+        ("content.quantcount.com","Quantcount Real Time Ads"),
         ("pixel.quantcount.com","Quantcount Real Time Ads"),
         ("pixel.quantserve.com","Quantserve Real Time Ads"),
         ("segment.prod.bidr.io","Segment.prod.bidr.io"),
@@ -5440,7 +5459,7 @@ function wellKnownHostDictionary()
         ("hnsvmy.nyzrs.tl.facebook.com","Facebook"),
         ("0-edge-chat.facebook.com","Facebook"),
         ("fcilod.oxu4j.tl.facebook.com","Facebook"),
-        ("sss.staticxx.facebook.com","Facebook"),        
+        ("sss.staticxx.facebook.com","Facebook"),
         ("www.facebook.com","Facebook"),
         ("web.facebook.com","Facebook"),
         ("staticxx.facebook.com","Facebook"),
@@ -5510,7 +5529,7 @@ function wellKnownHostDictionary()
         ("ysn.waggonsblanks.com","ysn.waggonsblanks.com"),
         ("yxo.warmportrait.com","yxo.warmportrait.com"),
         ("yzutbfns.com","Yzutbfns.com"),
-        ("za-gmtdmp.mookie1.com","Mookie1"),  
+        ("za-gmtdmp.mookie1.com","Mookie1"),
         ("ac.brainient.com","Brainient.com"),
         ("ads.wootag.com","Wootag.com"),
         ("adscdn.wootag.com","Wootag.com"),
@@ -5540,8 +5559,8 @@ function wellKnownHostDictionary()
         ("www.tagserve.asia","Tagserve.asia"),
         ("yourads.website","Yourads.website"),
         ("m.addthisedge.com","AddThisEdge.com"),
-        
-        ("zt.1rx.io","zt.1rx.io")        
+
+        ("zt.1rx.io","zt.1rx.io")
     ]);
 
     return WellKnownHost
