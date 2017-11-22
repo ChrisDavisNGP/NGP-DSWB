@@ -71,7 +71,7 @@ function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
 
         return toppageurl
     catch y
-        println("allPageUrlUrlTableDF Exception ",y)
+        println("allPageUrlTableDF Exception ",y)
     end
 end
 
