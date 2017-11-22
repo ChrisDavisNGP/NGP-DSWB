@@ -63,7 +63,7 @@ function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
                 and $table.page_group ilike '$(UP.pageGroup)'
                 and $table.params_u ilike '$(UP.urlRegEx)'
                 and $table.user_agent_device_type ilike '$(UP.deviceType)'
-                and $table.timers_domready >= $(UP.timeUpperMs) and $table.timers_domready <= $(UP.timeUpperMs)
+                and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
                 and $table.params_rt_quit IS NULL
                 group by urlgroup,urlpagegroup,label
                 """);

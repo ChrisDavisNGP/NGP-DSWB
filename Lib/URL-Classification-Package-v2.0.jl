@@ -402,7 +402,7 @@ end
 function wellKnownHostDictionary(debug::Bool)
   if debug == true
     wellKnownHostDictionaryDebug()
-  elseif
+  else
     wellKnownHostDictionary()
   end
 end
@@ -411,6 +411,7 @@ end
 #small subset of well known hosts for debug
 function wellKnownHostDictionaryDebug()
 
+    println("Using Short Dictionary for Debug")
     WellKnownHost = Dict([
         ("appservices.nationalgeographic.com","NGP Requests"),
         ("f.monetate.net","Monetate Personalization"),
@@ -442,7 +443,7 @@ function wellKnownPathDictionary(debug::Bool)
   if debug == true
     # There is no debug Path so far
     wellKnownPathDictionary()
-  elseif
+  else
     wellKnownPathDictionary()
   end
 end

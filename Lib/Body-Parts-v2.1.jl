@@ -957,7 +957,7 @@ function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         if studyTime > 0
             toppageurl = sessionUrlTableDF(UP.resourceTable,studySession,studyTime)
             elseif (studySession != "None")
-            toppageurl = allSessionUrlTableDF(UP.resourceTable,studySession,TV.startTimeMs,TV.endTimeMs)
+              toppageurl = allSessionUrlTableDF(UP.resourceTable,studySession,TV.startTimeMs,TV.endTimeMs)
             else
                 toppageurl = allPageUrlTableDF(TV,UP)
         end
