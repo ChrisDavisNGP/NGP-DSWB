@@ -1,5 +1,5 @@
 function customRefPGD(TV::TimeVars,UP::UrlParams)
-    customReferralsTable(UP.btView,UP.pageGroup)
+    customReferralsTable(TV,UP)
 end
 
 function stdRefPGD(TV::TimeVars,UP::UrlParams)
