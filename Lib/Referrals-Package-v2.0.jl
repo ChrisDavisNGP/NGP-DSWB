@@ -1,5 +1,7 @@
-function customReferralsTable(localTable::ASCIIString, productPageGroup::ASCIIString)
+function customReferralsTable(TV::TimeVars,UP::UrlParams)
     try
+        localTable = UP.btView
+
         fb = query("""\
         select 'Facebook' refgrp, count(*)
         FROM $localTable
@@ -53,7 +55,7 @@ function customReferralsTable(localTable::ASCIIString, productPageGroup::ASCIISt
         order by count(*) desc
         """)
 
-        displayTitle(chart_title = "Custom Analytics Top Referrers for $(productPageGroup)", chart_info = [tv.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Custom Analytics Top Referrers for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
 
         dftest2 = DataFrame(RefGroup=["","",""],Cnt=1:3)
         dftest2[1:1,:Cnt] = fb[1:1,:count]
@@ -69,7 +71,7 @@ function customReferralsTable(localTable::ASCIIString, productPageGroup::ASCIISt
         beautifyDF(names!(gas[1:min(10,end),[1:2;]],[symbol("Google Analytics Field: Source"),symbol("Page Views")]))
         beautifyDF(names!(gam[1:min(10,end),[1:2;]],[symbol("Google Analytics Field: Medium"),symbol("Page Views")]))
         beautifyDF(names!(gac[1:min(10,end),[1:2;]],[symbol("Google Analytics Field: Campaign"),symbol("Page Views")]))
-        
+
     catch y
         println("customReferralsTable Exception ",y)
     end
@@ -141,5 +143,5 @@ function standardReferrals(localTable::ASCIIString, productPageGroup::ASCIIStrin
         beautifyDF(topr)
     catch y
         println("standardReferrals Exception ",y)
-    end   
+    end
 end

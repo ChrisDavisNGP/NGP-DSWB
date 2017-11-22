@@ -827,42 +827,42 @@ end
 
 # From Page Group Details
 
-function loadTimesParamsUPGD()
+function loadTimesParamsUPGD(TV::TimeVars,UP::UrlParams)
     try
-        chartMedianLoadTimesByDimension(tv.startTimeUTC,tv.endTimeUTC,dimension=:params_u,minPercentage=0.5)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_u,minPercentage=0.5)
 
-        df = getTopURLsByLoadTime(tv.startTimeUTC, tv.endTimeUTC, minPercentage=0.5);
+        df = getTopURLsByLoadTime(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.5);
 
         sort!(df, cols=:Requests, rev=true)
         display("text/html", """
-        <h2 style="color:#ccc">Top URLs By Load Time for $productPageGroup (Ordered by Requests)</h2>
+        <h2 style="color:#ccc">Top URLs By Load Time for $(UP.pageGroup) (Ordered by Requests)</h2>
             """)
         beautifyDF(df);
         catch y
-        println("cell chartMedianLoadParamsU Exception ",y)
+        println("loadTimesParamsUPGD Exception ",y)
     end
 end
 
 # From Page Group Details
 
-function medianTimesPGD()
+function medianTimesPGD(TV::TimeVars)
     try
-        chartMedianLoadTimesByDimension(tv.startTimeUTC, tv.endTimeUTC,dimension=:geo_cc,minPercentage=0.6)
-        chartMedianLoadTimesByDimension(tv.startTimeUTC, tv.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
-        printDF = getMedianLoadTimesByDimension(tv.startTimeUTC, tv.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC,dimension=:geo_cc,minPercentage=0.6)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
+        printDF = getMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
         beautifyDF(printDF)
     catch y
-        println("cell chartMedianLoad Exception ",y)
+        println("medianTimesPGD Exception ",y)
     end
 end
 
 # From Page Group Details
 
-function medLoadHttpPGD()
+function medLoadHttpPGD(TV:TimeVars)
     try
-        chartMedianLoadTimesByDimension(tv.startTimeUTC,tv.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
-        chartMedianLoadTimesByDimension(tv.startTimeUTC,tv.endTimeUTC,dimension=:params_r,minPercentage=0.5)
-        chartTopN(tv.startTimeUTC, tv.endTimeUTC; variable=:landingPages)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
+        chartTopN(TV.startTimeUTC, TV.endTimeUTC; variable=:landingPages)
     catch y
         println("cell chartSlowestUrls Exception ",y)
     end
@@ -870,41 +870,41 @@ end
 
 # From Page Group Details
 
-function dpQuartilesPGD()
-    datePartQuartiles(tv.startTimeUTC, tv.endTimeUTC, tv.datePart)
+function dpQuartilesPGD(TV::TimeVars)
+    datePartQuartiles(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
 end
 
 # From Page Group Details
 
-function sunburst()
+function sunburst(TV::TimeVars)
     try
-        result10 = getAllPaths(tv.startTimeUTC, tv.endTimeUTC; n=60, f=getAbandonPaths);
+        result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=60, f=getAbandonPaths);
         drawSunburst(result10[1]; totalPaths=result10[3])
     catch y
-        println("cell chartMedianLoad Exception ",y)
+        println("sunburst Exception ",y)
     end
 end
 
 # From Page Group Details
 
-function pgTreemap()
-    pageGroupTreemap(productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString)
+function pgTreemap(TV::TimeVars,UP::UrlParams)
+    pageGroupTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
 end
 
 # From Page Group Details
 
-function bouncesPGD()
-    chartLoadTimeMediansAndBounceRatesByPageGroup(tv.startTimeUTC,tv.endTimeUTC)
+function bouncesPGD(TV::TimeVars)
+    chartLoadTimeMediansAndBounceRatesByPageGroup(TV.startTimeUTC,TV.endTimeUTC)
 end
 
 # From Page Group Details
 
-function pgQuartPGD()
-    pageGroupQuartiles(table,productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.startTimeMsUTC,tv.endTimeMsUTC,tv.timeString;limit=10,showTable=false);
+function pgQuartPGD(TV::TimeVars,UP::UrlParams)
+    pageGroupQuartiles(UP.beaconTable,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.startTimeMsUTC,TV.endTimeMsUTC,TV.timeString;limit=UP.limitRows,showTable=false);
 end
 
 # From Page Group Details
 
-function activityImpactPGD()
-    chartActivityImpactByPageGroup(tv.startTimeUTC, tv.endTimeUTC;n=10);
+function activityImpactPGD(TV::TimeVars,UP::UrlParams)
+    chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=UP.limitRows);
 end

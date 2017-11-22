@@ -1,14 +1,13 @@
-function customRefPGD()
-    customReferralsTable(localTable,productPageGroup)
+function customRefPGD(TV::TimeVars,UP::UrlParams)
+    customReferralsTable(UP.btView,UP.pageGroup)
 end
 
-function stdRefPGD()
-    standardReferrals(localTable,productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString; limit=15)
+function stdRefPGD(TV::TimeVars,UP::UrlParams)
+    standardReferrals(UP.btView,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString; limit=UP.limitRows)
 end
 
-function treemapsPGD()
-    deviceTypeTreemap(productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString)
-    browserFamilyTreemap(productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString)
-    countryTreemap(productPageGroup,tv.startTimeUTC,tv.endTimeUTC,tv.timeString)
+function treemapsPGD(TV::TimeVars,UP::UrlParams)
+    deviceTypeTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
+    browserFamilyTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
+    countryTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
 end
-

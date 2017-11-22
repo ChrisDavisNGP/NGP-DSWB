@@ -21,33 +21,33 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     sessionLoadPGD(TV,UP)
 
-    loadTimesParamsUPGD()
+    loadTimesParamsUPGD(TV,UP)
 
-    medianTimesPGD()
+    medianTimesPGD(TV)
 
-    customRefPGD()
+    customRefPGD(TV,UP)
 
-    stdRefPGD()
+    stdRefPGD(TV,UP)
 
-    medLoadHttpPGD()
+    medLoadHttpPGD(TV)
 
-    treemapsPGD()
+    treemapsPGD(TV,UP)
 
-    dpQuartilesPGD()
+    dpQuartilesPGD(TV)
 
-    sunburst()
+    sunburst(TV)
 
     # General Context for All groupSamplesTableDF
 
-    setTable(table)
+    setTable(UP.beaconTable)
 
-    pgTreemap()
+    pgTreemap(TV,UP)
 
-    bouncesPGD()
+    bouncesPGD(TV)
 
-    pgQuartPGD()
+    pgQuartPGD(TV,UP)
 
-    activityImpactPGD()
+    activityImpactPGD(TV,UP)
 
     #todo clean up views
 end
