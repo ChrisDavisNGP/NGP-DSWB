@@ -1,5 +1,6 @@
 #function showAvailableSessions(localTableDF::DataFrame,localTableRtDF::DataFrame,rangeLowerMs::Float64,rangeUpperMs::Float64;showCriticalPathOnly::Bool=true,showLines::Int64=10)
-function showAvailableSessions(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame;showCriticalPathOnly::Bool=true,showLines::Int64=10)
+function showAvailableSessions(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame;
+  showCriticalPathOnly::Bool=true,showLines::Int64=10)
     try
         full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
         i = 0
