@@ -7,7 +7,7 @@ function stdRefPGD(TV::TimeVars,UP::UrlParams)
 end
 
 function treemapsPGD(TV::TimeVars,UP::UrlParams)
-    deviceTypeTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
-    browserFamilyTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
-    countryTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
+    deviceTypeTreemap(TV,UP)
+    browserFamilyTreemap(TV,UP)
+    countryTreemap(TV,UP)
 end

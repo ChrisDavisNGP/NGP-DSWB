@@ -497,18 +497,18 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       criticalPathTreemapV2(labelField,toppageurl;showTable=SP.showAdditionals,limit=40)
 
       if (showAdditionals)
-          gapTreemapV2(toppageurl,showTable=true,showPageUrl=true,showTreemap=false,limit=40)
+          gapTreemapV2(TV,toppageurl,showTable=true,showPageUrl=true,showTreemap=false,limit=40)
       end
 
       if (!showCriticalPathOnly)
           #itemCountTreemap(toppageurl,showTable=true)      All entries are 1
-          endToEndTreemap(toppageurl,showTable=true)
-          blockingTreemap(toppageurl,showTable=true)
-          requestTreemap(toppageurl,showTable=true)
-          responseTreemap(toppageurl,showTable=true)
-          dnsTreemap(toppageurl,showTable=true)
-          tcpTreemap(toppageurl,showTable=true)
-          redirectTreemap(toppageurl,showTable=true)
+          endToEndTreemap(TV,toppageurl,showTable=true)
+          blockingTreemap(TV,toppageurl,showTable=true)
+          requestTreemap(TV,toppageurl,showTable=true)
+          responseTreemap(TV,toppageurl,showTable=true)
+          dnsTreemap(TV,toppageurl,showTable=true)
+          tcpTreemap(TV,toppageurl,showTable=true)
+          redirectTreemap(TV,toppageurl,showTable=true)
       end
 
       return true
@@ -888,7 +888,7 @@ end
 # From Page Group Details
 
 function pgTreemap(TV::TimeVars,UP::UrlParams)
-    pageGroupTreemap(UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString)
+    pageGroupTreemap(TV,UP)
 end
 
 # From Page Group Details
@@ -1004,13 +1004,13 @@ function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         toppageurl = deepcopy(summaryPageGroup);
 
         itemCountTreemap(toppageurl,showTable=true)
-        endToEndTreemap(toppageurl,showTable=true,limit=100)
-        blockingTreemap(toppageurl,showTable=true)
-        requestTreemap(toppageurl,showTable=true)
-        responseTreemap(toppageurl,showTable=true)
-        dnsTreemap(toppageurl,showTable=true)
-        tcpTreemap(toppageurl,showTable=true)
-        redirectTreemap(toppageurl,showTable=true)
+        endToEndTreemap(TV,toppageurl,showTable=true,limit=100)
+        blockingTreemap(TV,toppageurl,showTable=true)
+        requestTreemap(TV,toppageurl,showTable=true)
+        responseTreemap(TV,toppageurl,showTable=true)
+        dnsTreemap(TV,toppageurl,showTable=true)
+        tcpTreemap(TV,toppageurl,showTable=true)
+        redirectTreemap(TV,toppageurl,showTable=true)
     catch y
         println("typeAll Exception ",y)
     end

@@ -48,13 +48,13 @@ function individualPageReport(studySession::ASCIIString,studyTime::Int64;showCri
         if (!showCriticalPathOnly)
             gapTreemap(toppageurl;showTable=true,limit=12)
             #itemCountTreemap(toppageurl,showTable=true)      All entries are 1
-            endToEndTreemap(toppageurl,showTable=true)
-            blockingTreemap(toppageurl,showTable=true)
-            requestTreemap(toppageurl,showTable=true)
-            responseTreemap(toppageurl,showTable=true)
-            dnsTreemap(toppageurl,showTable=true)
-            tcpTreemap(toppageurl,showTable=true)
-            redirectTreemap(toppageurl,showTable=true)
+            endToEndTreemap(TV,toppageurl,showTable=true)
+            blockingTreemap(TV,toppageurl,showTable=true)
+            requestTreemap(TV,toppageurl,showTable=true)
+            responseTreemap(TV,toppageurl,showTable=true)
+            dnsTreemap(TV,toppageurl,showTable=true)
+            tcpTreemap(TV,toppageurl,showTable=true)
+            redirectTreemap(TV,toppageurl,showTable=true)
         end
 
     catch y
