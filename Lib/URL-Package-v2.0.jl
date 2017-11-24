@@ -231,9 +231,11 @@ function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASC
 
 end
 
-function topUrlTableByTime(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString, startTimeMs::Int64, endTimeMs::Int64; limit::Int64=20)
-    try
-        displayTitle(chart_title = "Top URL Page Views for $(pageGroup)", chart_info = [timeString],showTimeStamp=false)
+function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+      try
+
+        ltName = UP.beaconTable
+        displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
 
         topurl = query("""\
 
@@ -244,11 +246,12 @@ function topUrlTableByTime(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         end urlgroup
         FROM $(ltName)
         where
-        beacon_type = 'page view' and
-        "timestamp" between $startTimeMs and $endTimeMs
+          beacon_type = 'page view' and
+          "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+          page_group ilike '$(UP.PageGroup)'
         group by urlgroup
         order by count(*) desc
-        limit $(limit)
+        limit $(SP.showLines)
         """);
 
         scrubUrlToPrint(topurl)
@@ -261,6 +264,7 @@ function topUrlTableByTime(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         where
         beacon_type = 'page view' and
         "timestamp" between $startTimeMs and $endTimeMs and
+        page_group ilike '$(UP.PageGroup)' and
         params_dom_sz > 0 and
         timers_t_page > 0
         group by params_u

@@ -7,10 +7,11 @@ function datePartQuartiles(startTime::DateTime, endTime::DateTime, datePart::Sym
     end
 end
 
-function pageGroupQuartiles(table::ASCIIString,productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,startTimeMs::Int64,endTimeMs::Int64,timeString::ASCIIString;showTable::Bool=false,limit::Int64=15)
-    
-    try 
-        pageGroupPercentages = getGroupPercentages(startTime, endTime)
+#function pageGroupQuartiles(table::ASCIIString,productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,startTimeMs::Int64,endTimeMs::Int64,timeString::ASCIIString;showTable::Bool=false,limit::Int64=15)
+function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+    try
+        table = UP.beaconTable
+        pageGroupPercentages = getGroupPercentages(TV.startTimeUTC, TV.endTimeUTC)
         pageGroups = pageGroupPercentages[:page_group][1:min(10,end)]
         pageGroups = "'"*join(pageGroups,"','")*"'"
         maxResources = limit
@@ -24,15 +25,15 @@ function pageGroupQuartiles(table::ASCIIString,productPageGroup::ASCIIString,sta
             COUNT(*)OVER (PARTITION BY page_group)
             --MAX(timers_t_done) OVER (PARTITION BY page_group) AS maximum
             FROM $table
-            WHERE "timestamp" BETWEEN $startTimeMs AND $endTimeMs
+            WHERE "timestamp" BETWEEN $(TV.startTimeMs) AND $(TV.endTimeMs)
             AND params_rt_quit IS NULL
             AND timers_t_done BETWEEN 1 AND 600000
             AND page_group IN ($(pageGroups))
             ORDER BY count DESC
-            limit $limit
+            limit $(UP.limitRows)
         """);
 
-        if (showTable)
+        if (SP.devView)
             # pgAndCt = DataArray([]);
             # for x in eachrow(pageGroupQuartiles)
             #     newRow = [x[:page_group]*" \n \("*string(format(x[:count], commas=true))*"\)"]
@@ -42,7 +43,7 @@ function pageGroupQuartiles(table::ASCIIString,productPageGroup::ASCIIString,sta
             # display(pageGroupQuartiles)
         end
 
-        displayTitle(chart_title = "Top $(limit) Page Group Time Quartiles", chart_info = ["Between $startTime and $endTime"],showTimeStamp=false)
+        displayTitle(chart_title = "Top $(UP.limitRows) Page Group Time Quartiles", chart_info = ["Between $(TV.startTime) and $(TV.endTime)"],showTimeStamp=false)
         plotsDF = drawBoxPlots(pageGroupQuartiles, yAxisLabel = "Milliseconds");
     catch y
         println("pageGroupQuartiles Exception ",y)

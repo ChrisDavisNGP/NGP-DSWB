@@ -914,8 +914,8 @@ end
 
 # From Page Group Details
 
-function pgTreemap(TV::TimeVars,UP::UrlParams)
-    pageGroupTreemap(TV,UP)
+function pgTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+    pageGroupTreemap(TV,UP,SP)
 end
 
 # From Page Group Details
@@ -927,7 +927,7 @@ end
 # From Page Group Details
 
 function pgQuartPGD(TV::TimeVars,UP::UrlParams)
-    pageGroupQuartiles(UP.beaconTable,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.startTimeMsUTC,TV.endTimeMsUTC,TV.timeString;limit=UP.limitRows,showTable=false);
+    pageGroupQuartiles(TV,UP,SP);
 end
 
 # From Page Group Details
