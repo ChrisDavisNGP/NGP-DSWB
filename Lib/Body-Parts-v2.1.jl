@@ -752,8 +752,8 @@ end
 
 # From Page Group Details
 
-function peakPGD(TV::TimeVars,UP::UrlParams)
-    showPeakTable(TV.timeString,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
+function peakPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+    showPeakTable(TV,UP,SP;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
 end
 
 # From Page Group Details

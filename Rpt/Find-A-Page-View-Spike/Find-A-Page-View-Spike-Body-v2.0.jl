@@ -21,9 +21,9 @@ function topUrlsFAPVSB(TV::TimeVars,UP::UrlParams)
     topUrlTable(UP.btView,UP.pageGroup,TV.timeString;limit=15)
 end
 
-function peakTableFAPVSB(TV::TimeVars,UP::UrlParams)
+function peakTableFAPVSB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     setTable(UP.btView)
-    showPeakTable(TV.timeString,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC)
+    showPeakTable(TV,UP,SP)
 end
 
 function statsTableFAPVSB(TV::TimeVars,UP::UrlParams)

@@ -9,7 +9,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     statsDF = statsPGD(TV,UP)
     medianThreshold = statsDF[1:1,:median][1]
 
-    peakPGD(TV,UP)
+    peakPGD(TV,UP,SP)
 
     concurrentSessionsPGD(TV,UP,SP,mobileView,desktopView)
 
