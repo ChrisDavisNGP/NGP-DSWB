@@ -5,7 +5,6 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
   try
 
       #customer = "Nat Geo"
-      #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
       UP.deviceType = deviceType
       UP.timeLowerMs = rangeLowerMs
       UP.timeUpperMs = rangeUpperMs

@@ -38,11 +38,12 @@ type ShowParams
     devView::Bool
     criticalPathOnly::Bool
     debug::Bool
-    debugLevel::Int64
+    debugLevel::Int64        #debugLevel = 10 # 1 for min output, 5 medium output, 10 all output
+    reportLevel::Int64       #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
 end
 
 function ShowParamsInit()
-    SP = ShowParams(false,true,false,true,false,0)
+    SP = ShowParams(false,true,false,true,false,0,1)
     return SP
 end
 
