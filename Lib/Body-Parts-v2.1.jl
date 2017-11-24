@@ -19,7 +19,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
       #println("part 1 done with ",recordsFound, " records")
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
-          #println("$(fullUrl) for $(deviceType) was not found during $(tv.timeString)")
+          #println("$(UP.urlFull) for $(deviceType) was not found during $(tv.timeString)")
           return
       end
 
@@ -35,7 +35,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
       #println("part 1 done with ",recordsFound, " records")
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
-          #println("$(fullUrl) for $(deviceType) was not found during $(tv.timeString)")
+          #println("$(UP.urlFull) for $(deviceType) was not found during $(tv.timeString)")
           return
       end
 
@@ -493,17 +493,17 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       removeNegitiveTime(toppageurl,:Request)
       removeNegitiveTime(toppageurl,:Response)
 
-      if (SP.debugLevel > 0)
+      if (SP.debugLevel > 2)
         println("Scrub Data");
       end
       scrubUrlToPrint(toppageurl);
 
-      if (SP.debugLevel > 0)
+      if (SP.debugLevel > 2)
         println("Classify Data");
       end
       classifyUrl(toppageurl);
 
-      if (SP.debugLevel > 0)
+      if (SP.debugLevel > 2)
         println("Add Gap and Critical Path")
       end
 
@@ -520,7 +520,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
           beautifyDF(toppageurl)
       end
 
-      labelField = fullUrl
+      labelField = UP.urlFull
       criticalPathTreemapV2(labelField,toppageurl;showTable=SP.devView,limit=40)
 
       if (SP.devView)
