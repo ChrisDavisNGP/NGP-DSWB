@@ -454,7 +454,9 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
   toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
   try
 
-      #println("Clean Up Data table")
+      if (SP.debugLevel > 0)
+        println("Clean Up Data table")
+      end
       toppageurl = names!(toppageurl[:,:],
       [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
           symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
@@ -462,9 +464,9 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
 
       toppageurlbackup = deepcopy(toppageurl);
       toppageurl = deepcopy(toppageurlbackup)
-      #if debug
-      #    beautifyDF(toppageurl)
-      #end
+      if (SP.debugLevel > 0)
+          beautifyDF(toppageurl)
+      end
 
       removeNegitiveTime(toppageurl,:Total)
       removeNegitiveTime(toppageurl,:Redirect)
@@ -474,12 +476,20 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       removeNegitiveTime(toppageurl,:Request)
       removeNegitiveTime(toppageurl,:Response)
 
-      #println("Scrub Data");
+      if (SP.debugLevel > 0)
+        println("Scrub Data");
+      end
       scrubUrlToPrint(toppageurl);
-      #println("Classify Data");
+
+      if (SP.debugLevel)
+        println("Classify Data");
+      end
       classifyUrl(toppageurl);
 
-      #println("Add Gap and Critical Path")
+      if (SP.debugLevel > 0)
+        println("Add Gap and Critical Path")
+      end
+
       toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
       if (!suitableTest(toppageurl,showDebug=SP.showDebug))
           return false
@@ -489,7 +499,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
           waterFallFinder(UP.beaconTable,studySession,studyTime,TV)
       end
 
-      if (showDebug)
+      if (SP.debugLevel > 0)
           beautifyDF(toppageurl)
       end
 

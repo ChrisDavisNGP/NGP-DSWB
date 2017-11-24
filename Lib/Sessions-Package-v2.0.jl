@@ -16,7 +16,7 @@ function showAvailableSessions(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTa
                     s2 = subdf[1,:timestamp]
                     s3 = subdf[1,:timers_t_done]
                     #if (SP.reportLevel > 1) println("individualPageReport(\"",s1,"\",",s2,",showCriticalPathOnly=$(showCriticalPathOnly)) #    Time=",s3) end
-                    if (SP.reportLevel > 1) println("individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,\"%\",",s3,",\"",s1,"\",",s2,") #    Time=",s3) end
+                    if (SP.reportLevel > 1) println("individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,\"",UP.urlRegEx,"\",",s3,",\"",s1,"\",",s2,") #    Time=",s3) end
                 end
             end
         end
