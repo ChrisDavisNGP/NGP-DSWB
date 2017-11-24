@@ -428,6 +428,22 @@ end
 
 # From Individual-Streamline-Body
 
+function executeSingleSession(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnownHost::Dict,WellKnownPath::Dict,
+  timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
+  try
+
+    sessionPageUrl = individualPageData(TV,UP,SP,studySession,studyTime)
+    individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,sessionPageUrl,timerDone,studySession,studyTIme)
+    
+  catch y
+      println("showAvailSessions Exception ",y)
+  end
+
+end
+
+
+# From Individual-Streamline-Body
+
 function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
   try
 
