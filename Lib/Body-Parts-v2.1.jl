@@ -508,7 +508,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       end
 
       toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
-      if (!suitableTest(toppageurl,showDebug=SP.debug))
+      if (!suitableTest(UP,SP,toppageurl))
           return false
       end
 
@@ -683,15 +683,15 @@ end
 
 # From Individual-Streamline-Body
 
-function suitableTest(toppageurl::DataFrame;timerLimitMs::Int64=2000,showDebug::Bool=false)
+function suitableTest(UP::UrlParams,SP::ShowParams,toppageurl::DataFrame)
   try
       i = 1
       lastRow = 0
       for url in toppageurl[2:end,:urlgroup]
           i += 1
           newTotalTime = toppageurl[i,:Total]
-          if (newTotalTime > timerLimitMs)
-              if (showDebug)
+          if (newTotalTime > UP.timeUpperMs)
+              if (SP.debug)
                   println("Dropping page $(url) due to total time of $(newTotalTime)")
               end
               return false
