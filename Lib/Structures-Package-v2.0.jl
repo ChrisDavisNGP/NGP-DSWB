@@ -40,10 +40,11 @@ type ShowParams
     debug::Bool
     debugLevel::Int64        #debugLevel = 10 # 1 for min output, 5 medium output, 10 all output
     reportLevel::Int64       #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
+    showLines::Int64
 end
 
 function ShowParamsInit()
-    SP = ShowParams(false,true,false,true,false,0,1)
+    SP = ShowParams(false,true,false,true,false,0,1,10)
     return SP
 end
 

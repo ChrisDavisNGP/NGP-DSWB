@@ -1,5 +1,4 @@
 
-# showAvailableSessions(localTableDF,localTableRtDF,rangeLower,rangeUpper)
 # #Individual pages uses the numbers above make the best tree maps
 # #Test 1
 # studySession = "060212ca-9fdb-4b55-9aa9-b2ff9f6c5032-odv5lh"

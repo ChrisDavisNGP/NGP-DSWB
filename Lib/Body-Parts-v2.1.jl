@@ -381,7 +381,8 @@ end
 
 # From Individual-Streamline-Body
 
-function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnownHost::Dict,WellKnownPath::Dict,localTableDF::DataFrame,localTableRtDF::DataFrame)
+function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnownHost::Dict,WellKnownPath::Dict,
+     localTableDF::DataFrame,localTableRtDF::DataFrame)
   try
       full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
       io = 0
@@ -399,8 +400,8 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
           end
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
-              #println("Testing $(io) against $(showLines)")
-              if io <= showLines
+              #println("Testing $(io) against $(SP.showLines)")
+              if io <= SP.showLines
                   s1 = subdf[1,:session_id]
                   #println("Session_id $(s1)")
                   s1String = ASCIIString(s1)
@@ -409,12 +410,12 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
                   labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
                   if (SP.debug)
-                      println("$(io) / $(showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.showCriticalPathOnly),$(SP.devView)")
+                      println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
                   suitable  = individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,topPageUrl,timeVar,s1String,timeStampVar)
                   if (!suitable)
-                      showLines += 1
+                      SP.showLines += 1
                   end
               else
                   return
@@ -507,7 +508,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       end
 
       toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
-      if (!suitableTest(toppageurl,showDebug=SP.showDebug))
+      if (!suitableTest(toppageurl,showDebug=SP.debug))
           return false
       end
 
@@ -526,7 +527,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
           gapTreemapV2(TV,toppageurl,showTable=true,showPageUrl=true,showTreemap=false,limit=40)
       end
 
-      if (!showCriticalPathOnly)
+      if (!SP.criticalPathOnly)
           #itemCountTreemap(toppageurl,showTable=true)      All entries are 1
           endToEndTreemap(TV,toppageurl,showTable=true)
           blockingTreemap(TV,toppageurl,showTable=true)
