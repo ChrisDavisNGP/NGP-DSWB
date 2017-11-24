@@ -433,8 +433,8 @@ function executeSingleSession(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnow
   try
 
     sessionPageUrl = individualPageData(TV,UP,SP,studySession,studyTime)
-    individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,sessionPageUrl,timerDone,studySession,studyTIme)
-    
+    individualPageReportV2(TV,UP,SP,WellKnownHost,WellKnownPath,sessionPageUrl,timerDone,studySession,studyTime)
+
   catch y
       println("showAvailSessions Exception ",y)
   end
@@ -460,7 +460,7 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
       return toppageurl
 
   catch y
-      println("individual page report Exception ",y)
+      println("individualPageData Exception ",y)
   end
 end
 
@@ -497,7 +497,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       end
       scrubUrlToPrint(toppageurl);
 
-      if (SP.debugLevel)
+      if (SP.debugLevel > 0)
         println("Classify Data");
       end
       classifyUrl(toppageurl);
@@ -511,7 +511,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
           return false
       end
 
-      if (SP.showAdditionals)
+      if (SP.devView)
           waterFallFinder(UP.beaconTable,studySession,studyTime,TV)
       end
 
@@ -520,9 +520,9 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       end
 
       labelField = fullUrl
-      criticalPathTreemapV2(labelField,toppageurl;showTable=SP.showAdditionals,limit=40)
+      criticalPathTreemapV2(labelField,toppageurl;showTable=SP.devView,limit=40)
 
-      if (showAdditionals)
+      if (SP.devView)
           gapTreemapV2(TV,toppageurl,showTable=true,showPageUrl=true,showTreemap=false,limit=40)
       end
 
@@ -540,7 +540,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       return true
 
   catch y
-      println("individual page report Exception ",y)
+      println("individualPageReportV2 Exception ",y)
   end
 end
 
