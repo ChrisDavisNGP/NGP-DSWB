@@ -12,7 +12,7 @@ function deviceTypeTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limi
 
     try
         fieldNames = [:user_agent_device_type]
-        treeData = getTreemapData(TV.startTimeMs, TV.endTimeMs, fieldNames = fieldNames)
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = fieldNames)
         treeData[:x1] = "Natgeo - All"
         displayTitle(chart_title = "Device Type for Page Group: $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         drawTree(treeData; titleCol = :x1, fieldNames = fieldNames)
@@ -34,7 +34,7 @@ end
 function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        treeData = getTreemapData(TV.startTimeMs, TV.endTimeMs, fieldNames = [:page_group])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:page_group])
         treeData[:x1] = "Natgeo - All"
         displayTitle(chart_title = "$(UP.pageGroup) Page Group", chart_info = [TV.timeString],showTimeStamp=false)
         drawTree(treeData; titleCol = :x1, fieldNames = [:page_group])
@@ -47,7 +47,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             displayManyRows(treeData[:,1:3], [symbol("Page Group"), symbol("Load Time"), symbol("Beacons")],limit)
         end
 
-        treeData = getTreemapData(TV.startTimeMs, TV.endTimeMs, fieldNames = [:user_agent_device_type,:page_group])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:user_agent_device_type,:page_group])
 
         if (SP.desktop)
             subTreeData = treeData[treeData[:, :user_agent_device_type] .== "Desktop", :]
@@ -84,7 +84,7 @@ end
 function browserFamilyTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limit::Int64=40)
 
     try
-        treeData = getTreemapData(TV.startTimeMs, TV.endTimeMs, fieldNames = [:user_agent_family])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:user_agent_family])
         treeData[:x1] = "Natgeo - All"
         displayTitle(chart_title = "Browser Family for Page Group: $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         drawTree(treeData; titleCol = :x1, fieldNames = [:user_agent_family])
@@ -104,7 +104,7 @@ end
 function countryTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limit::Int64=40)
 
     try
-        treeData = getTreemapData(TV.startTimeMs, TV.endTimeMs, fieldNames = [:geo_cc])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:geo_cc])
         treeData[:x1] = "Natgeo - All"
         displayTitle(chart_title = "Countries for Page Group: $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         drawTree(treeData; titleCol = :x1, fieldNames = [:geo_cc])

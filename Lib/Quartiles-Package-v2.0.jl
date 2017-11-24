@@ -14,7 +14,7 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         pageGroupPercentages = getGroupPercentages(TV.startTimeUTC, TV.endTimeUTC)
         pageGroups = pageGroupPercentages[:page_group][1:min(10,end)]
         pageGroups = "'"*join(pageGroups,"','")*"'"
-        maxResources = limit
+        maxResources = UP.limitRows
         pageGroupQuartiles = select("""
         SELECT DISTINCT page_group,
             MIN(timers_t_done) OVER (PARTITION BY page_group) AS minimum,

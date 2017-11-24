@@ -248,7 +248,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         where
           beacon_type = 'page view' and
           "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-          page_group ilike '$(UP.PageGroup)'
+          page_group ilike '$(UP.pageGroup)'
         group by urlgroup
         order by count(*) desc
         limit $(SP.showLines)
@@ -264,7 +264,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         where
         beacon_type = 'page view' and
         "timestamp" between $startTimeMs and $endTimeMs and
-        page_group ilike '$(UP.PageGroup)' and
+        page_group ilike '$(UP.pageGroup)' and
         params_dom_sz > 0 and
         timers_t_page > 0
         group by params_u

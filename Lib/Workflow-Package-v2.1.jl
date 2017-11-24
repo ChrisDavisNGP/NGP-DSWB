@@ -1,4 +1,4 @@
-function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function dailyWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
     showPeakTable(TV,UP,SP;showStartTime30=true,showStartTime90=false,tableRange="Daily ")
@@ -65,7 +65,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
-function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
+function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
 
     pageGroupDetailsTables(TV,UP,mobileView,desktopView)
     setTable(UP.btView);
@@ -119,7 +119,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     #todo clean up views
 end
 
-function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function individualStreamlineWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   urlListDF = returnMatchingUrlTableV2(TV,UP)
   if (SP.debugLevel > 4)
