@@ -54,6 +54,7 @@ function dailyWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     println("chartActivityImpactByPageGroup Exception ",y)
   end
 
+
   try
       perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTime, TV.endTime);
 
