@@ -752,12 +752,6 @@ end
 
 # From Page Group Details
 
-function peakPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-    showPeakTable(TV,UP,SP;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
-end
-
-# From Page Group Details
-
 function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
     try
         if (!SP.mobile && !SP.desktop)
@@ -818,42 +812,6 @@ end
 
 # From Page Group Details
 
-function topUrlPGD(TV::TimeVars,UP::UrlParams)
-    topUrlTable(UP.btView,UP.pageGroup,TV.timeString; limit=UP.limitRows)
-end
-
-# From Page Group Details
-
-function thresholdChartPGD(medianThreshold::Float64)
-    try
-        chartPercentageOfBeaconsBelowThresholdStackedBar(tv.startTimeUTC, tv.endTimeUTC, tv.datePart; threshold = medianThreshold)
-    catch y
-        println("chartPercent exception ",y)
-    end
-end
-
-# From Page Group Details
-
-function pageLoadPGD()
-    sessionLoadPGD()
-end
-
-# From Page Group Details
-
-function sessionLoadPGD(TV::TimeVars,UP::UrlParams)
-    try
-        perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC);
-
-        c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],
-             dataNames=["Completed Sessions","Average Session Length", "Average Session Duration"], mPulseWidget=false,
-             chart_title="Session Stats for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"]);
-    catch y
-        println("sessionLoadPGD Exception ",y)
-    end
-end
-
-# From Page Group Details
-
 function loadTimesParamsUPGD(TV::TimeVars,UP::UrlParams)
     try
         chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_u,minPercentage=0.5)
@@ -868,72 +826,6 @@ function loadTimesParamsUPGD(TV::TimeVars,UP::UrlParams)
         catch y
         println("loadTimesParamsUPGD Exception ",y)
     end
-end
-
-# From Page Group Details
-
-function medianTimesPGD(TV::TimeVars)
-    try
-        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC,dimension=:geo_cc,minPercentage=0.6)
-        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
-        printDF = getMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
-        beautifyDF(printDF)
-    catch y
-        println("medianTimesPGD Exception ",y)
-    end
-end
-
-# From Page Group Details
-
-function medLoadHttpPGD(TV::TimeVars)
-    try
-        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
-        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
-        chartTopN(TV.startTimeUTC, TV.endTimeUTC; variable=:landingPages)
-    catch y
-        println("cell chartSlowestUrls Exception ",y)
-    end
-end
-
-# From Page Group Details
-
-function dpQuartilesPGD(TV::TimeVars)
-    datePartQuartiles(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-end
-
-# From Page Group Details
-
-function sunburst(TV::TimeVars)
-    try
-        result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=60, f=getAbandonPaths);
-        drawSunburst(result10[1]; totalPaths=result10[3])
-    catch y
-        println("sunburst Exception ",y)
-    end
-end
-
-# From Page Group Details
-
-function pgTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-    pageGroupTreemap(TV,UP,SP)
-end
-
-# From Page Group Details
-
-function bouncesPGD(TV::TimeVars)
-    chartLoadTimeMediansAndBounceRatesByPageGroup(TV.startTimeUTC,TV.endTimeUTC)
-end
-
-# From Page Group Details
-
-function pgQuartPGD(TV::TimeVars,UP::UrlParams)
-    pageGroupQuartiles(TV,UP,SP);
-end
-
-# From Page Group Details
-
-function activityImpactPGD(TV::TimeVars,UP::UrlParams)
-    chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=UP.limitRows);
 end
 
 # From 3rd Party Body TypeALl

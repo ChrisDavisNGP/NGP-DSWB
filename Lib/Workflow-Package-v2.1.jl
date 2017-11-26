@@ -77,46 +77,78 @@ function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     statsDF = statsPGD(TV,UP)
     medianThreshold = statsDF[1:1,:median][1]
 
-    peakPGD(TV,UP,SP)
+    showPeakTable(TV,UP,SP;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
 
     concurrentSessionsPGD(TV,UP,SP,mobileView,desktopView)
 
     loadTimesPGD(TV,UP,SP,mobileView,desktopView)
 
-    topUrlPGD(TV,UP)
+    topUrlTable(UP.btView,UP.pageGroup,TV.timeString; limit=UP.limitRows)
 
-    thresholdChartPGD(medianThreshold)
+    try
+        chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; threshold = medianThreshold)
+    catch y
+        println("chartPercentageOfBeaconsBelowThresholdStackedBar exception ",y)
+    end
 
-    sessionLoadPGD(TV,UP)
+    try
+        perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC);
+
+        c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],
+             dataNames=["Completed Sessions","Average Session Length", "Average Session Duration"], mPulseWidget=false,
+             chart_title="Session Stats for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"]);
+    catch y
+        println("sessionLoadPGD Exception ",y)
+    end
 
     loadTimesParamsUPGD(TV,UP)
 
-    medianTimesPGD(TV)
+    try
+        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC,dimension=:geo_cc,minPercentage=0.6)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
+        printDF = getMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
+        beautifyDF(printDF)
+    catch y
+        println("medianTimesPGD Exception ",y)
+    end
+
 
     customRefPGD(TV,UP)
 
     stdRefPGD(TV,UP)
 
-    medLoadHttpPGD(TV)
+    try
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
+        chartTopN(TV.startTimeUTC, TV.endTimeUTC; variable=:landingPages)
+    catch y
+        println("cell chartSlowestUrls Exception ",y)
+    end
 
     treemapsPGD(TV,UP)
 
-    dpQuartilesPGD(TV)
+    datePartQuartiles(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
 
-    sunburst(TV)
+    try
+        result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=60, f=getAbandonPaths);
+        drawSunburst(result10[1]; totalPaths=result10[3])
+    catch y
+        println("sunburst Exception ",y)
+    end
 
     # General Context for All groupSamplesTableDF
 
     setTable(UP.beaconTable)
 
-    pgTreemap(TV,UP,SP)
+    pageGroupTreemap(TV,UP,SP)
 
-    bouncesPGD(TV)
+    chartLoadTimeMediansAndBounceRatesByPageGroup(TV.startTimeUTC,TV.endTimeUTC)
 
-    pgQuartPGD(TV,UP,SP)
+    pageGroupQuartiles(TV,UP,SP)
 
-    activityImpactPGD(TV,UP)
+    chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=UP.limitRows)
 
+    ;
     #todo clean up views
 end
 
