@@ -66,6 +66,20 @@ function dailyWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
+function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    defaultTableGNGSSDM(TV,UP)
+
+    test1GNGSSDM(UP,LV)
+
+    testUserAgentGNGSSDM(UP,LV)
+
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+    ;
+
+end
+
 function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
 
     pageGroupDetailsTables(TV,UP,mobileView,desktopView)
