@@ -215,3 +215,31 @@ function individualStreamlineWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   finalUrlTableOutput(TV,UP,SP,topUrls)
 
 end
+
+function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    defaultBeaconView(TV,UP,SP);
+
+    joinTables = DataFrame()
+    joinTables = gatherSizeDataALI(UP,SP)
+    ;
+
+    joinTableSummary = DataFrame()
+    joinTableSummary = tableSummaryALI(joinTables,SP)
+    ;
+
+    i = 0
+    for row in eachrow(joinTableSummary)
+        i += 1
+        detailsPrint(UP,joinTableSummary,i)
+        statsDetailsPrint(UP,joinTableSummary,i)
+        if (i >= SP.showLines)
+            break;
+        end
+    end
+    ;
+
+    q = query(""" drop view if exists $(UP.btView);""")
+    ;
+
+end
