@@ -56,32 +56,32 @@ function timeVariables(
     showTime::Bool=true
     )
     try
-        tv = TimeVarsInit()
+        tempTime = TimeVarsInit()
 
-        tv.startTime = DateTime(Y1,M1,D1,H1,MM1)
-        tv.endTime = DateTime(Y2,M2,D2,H2,MM2)
-        tv.startTimeMs = datetimeToMs(tv.startTime)
-        tv.endTimeMs = datetimeToMs(tv.endTime)
+        tempTime.startTime = DateTime(Y1,M1,D1,H1,MM1)
+        tempTime.endTime = DateTime(Y2,M2,D2,H2,MM2)
+        tempTime.startTimeMs = datetimeToMs(tempTime.startTime)
+        tempTime.endTimeMs = datetimeToMs(tempTime.endTime)
 
-        tv.startTimeUTC = datetimeToUTC(tv.startTime, TimeZone("America/New_York"))
-        tv.endTimeUTC = datetimeToUTC(tv.endTime, TimeZone("America/New_York"))
-        tv.startTimeMsUTC = datetimeToMs(tv.startTimeUTC)
-        tv.endTimeMsUTC = datetimeToMs(tv.endTimeUTC)
+        tempTime.startTimeUTC = datetimeToUTC(tempTime.startTime, TimeZone("America/New_York"))
+        tempTime.endTimeUTC = datetimeToUTC(tempTime.endTime, TimeZone("America/New_York"))
+        tempTime.startTimeMsUTC = datetimeToMs(tempTime.startTimeUTC)
+        tempTime.endTimeMsUTC = datetimeToMs(tempTime.endTimeUTC)
 
-        tv.datePart = :hour
-        tv.datePart = bestDatePart(tv.startTimeUTC,tv.endTimeUTC,tv.datePart)
+        tempTime.datePart = :hour
+        tempTime.datePart = bestDatePart(tempTime.startTimeUTC,tempTime.endTimeUTC,tempTime.datePart)
 
-        tv.timeString = "$(padDateTime(tv.startTime)) to $(padDateTime(tv.endTime)) Local Time"
-        tv.timeStringUTC = "$(padDateTime(tv.startTimeUTC)) to $(padDateTime(tv.endTimeUTC)) UTC Time"
+        tempTime.timeString = "$(padDateTime(tempTime.startTime)) to $(padDateTime(tempTime.endTime)) Local Time"
+        tempTime.timeStringUTC = "$(padDateTime(tempTime.startTimeUTC)) to $(padDateTime(tempTime.endTimeUTC)) UTC Time"
 
         if (showTime)
-            println(tv.timeString);
-            println(tv.timeStringUTC);
+            println(tempTime.timeString);
+            println(tempTime.timeStringUTC);
         end
 
-        return tv;
+        return tempTime;
     catch y
-        println("timeVariables Exception ",y)
+        println("TV = timeVariables Exception ",y)
     end
 end
 
@@ -91,29 +91,29 @@ function anyTimeVar(
     showTime::Bool=true
     )
     try
-        localtv = TimeVarsInit()
-        localtv.startTime = DateTime(Y1,M1,D1,H1,MM1)
-        localtv.endTime = DateTime(Y2,M2,D2,H2,MM2)
-        localtv.startTimeMs = datetimeToMs(localtv.startTime)
-        localtv.endTimeMs = datetimeToMs(localtv.endTime)
+        localTimeVar = TimeVarsInit()
+        localTimeVar.startTime = DateTime(Y1,M1,D1,H1,MM1)
+        localTimeVar.endTime = DateTime(Y2,M2,D2,H2,MM2)
+        localTimeVar.startTimeMs = datetimeToMs(localTimeVar.startTime)
+        localTimeVar.endTimeMs = datetimeToMs(localTimeVar.endTime)
 
-        localtv.startTimeUTC = datetimeToUTC(localtv.startTime, TimeZone("America/New_York"))
-        localtv.endTimeUTC = datetimeToUTC(localtv.endTime, TimeZone("America/New_York"))
-        localtv.startTimeMsUTC = datetimeToMs(localtv.startTimeUTC)
-        localtv.endTimeMsUTC = datetimeToMs(localtv.endTimeUTC)
+        localTimeVar.startTimeUTC = datetimeToUTC(localTimeVar.startTime, TimeZone("America/New_York"))
+        localTimeVar.endTimeUTC = datetimeToUTC(localTimeVar.endTime, TimeZone("America/New_York"))
+        localTimeVar.startTimeMsUTC = datetimeToMs(localTimeVar.startTimeUTC)
+        localTimeVar.endTimeMsUTC = datetimeToMs(localTimeVar.endTimeUTC)
 
-        localtv.datePart = :hour
-        localtv.datePart = bestDatePart(localtv.startTimeUTC,localtv.endTimeUTC,localtv.datePart)
+        localTimeVar.datePart = :hour
+        localTimeVar.datePart = bestDatePart(localTimeVar.startTimeUTC,localTimeVar.endTimeUTC,localTimeVar.datePart)
 
-        localtv.timeString = "$(padDateTime(localtv.startTime)) to $(padDateTime(localtv.endTime)) Local Time"
-        localtv.timeStringUTC = "$(padDateTime(localtv.startTimeUTC)) to $(padDateTime(localtv.endTimeUTC)) UTC Time"
+        localTimeVar.timeString = "$(padDateTime(localTimeVar.startTime)) to $(padDateTime(localTimeVar.endTime)) Local Time"
+        localTimeVar.timeStringUTC = "$(padDateTime(localTimeVar.startTimeUTC)) to $(padDateTime(localTimeVar.endTimeUTC)) UTC Time"
 
         if (showTime)
-            println(localtv.timeString);
-            println(localtv.timeStringUTC);
+            println(localTimeVar.timeString);
+            println(localTimeVar.timeStringUTC);
         end
 
-        return localtv
+        return localTimeVar
     catch y
         println("anyTimeVar Exception ",y)
     end
@@ -142,7 +142,7 @@ function weeklyTimeVariables(;days::Int64=7)
         return localtv
 
     catch y
-        println("weeklyTimeVariables Exception ",y)
+        println("TV = weeklyTimeVariables Exception ",y)
     end
 end
 

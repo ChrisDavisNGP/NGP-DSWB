@@ -19,7 +19,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
       #println("part 1 done with ",recordsFound, " records")
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
-          #println("$(UP.urlFull) for $(deviceType) was not found during $(tv.timeString)")
+          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
@@ -35,7 +35,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
       #println("part 1 done with ",recordsFound, " records")
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
-          #println("$(UP.urlFull) for $(deviceType) was not found during $(tv.timeString)")
+          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
@@ -513,7 +513,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       end
 
       if (SP.devView)
-          waterFallFinder(UP.beaconTable,studySession,studyTime,TV)
+          waterFallFinder(TV,UP,studySession,studyTime)
       end
 
       if (SP.debugLevel > 0)

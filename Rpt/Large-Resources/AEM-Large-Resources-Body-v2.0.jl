@@ -7,7 +7,7 @@ function defaultLocalTableAemOnlyALR(TV::TimeVars,UP::UrlParams)
             create or replace view $localTable as (
                 select * from $table
                     where
-                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
+                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group in ('News Articles','Travel AEM','Photography AEM','Nat Geo Homepage','Magazine','Magazine AEM') and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)'
@@ -29,7 +29,7 @@ function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)
             create or replace view $localTable as (
                 select * from $table
                     where
-                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
+                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)'
@@ -66,7 +66,7 @@ function resourceSummary(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        displayTitle(chart_title = "Mobile Big Pages Details (Min $(minEncoded) KB), File Type $(fileType)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Mobile Big Pages Details (Min $(minEncoded) KB), File Type $(fileType)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y

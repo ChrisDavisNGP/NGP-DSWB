@@ -5,15 +5,17 @@
 # studyTime =  1474476831224;
 
 # Better version using TimeVars structure to pass the time around
-function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,tv::TimeVars;limit::Int64=30)
+function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
     try
+        table = UP.beaconTable
+
         waterfall = query("""\
             select
                 page_group,geo_cc,geo_rg, user_agent_os, user_agent_osversion, user_agent_device_type, user_agent_family, user_agent_major
                 FROM $table
-                where "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
+                where "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
                 order by "timestamp" asc
-                LIMIT $(limit)
+                LIMIT $(SP.showLines)
         """)
 
         whenUTC = msToDateTime(studyTime)
@@ -34,51 +36,6 @@ function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime:
         #println("studyTime ",studyTime," local ",whenString)
 
     catch y
-        println("showAvailSessions Exception ",y)
-    end
-end
-
-# Assume TV variable is set
-function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64;limit::Int64=30)
-    try
-    waterfall = query("""\
-        select
-            page_group,geo_cc,geo_rg, user_agent_os, user_agent_osversion, user_agent_device_type, user_agent_family, user_agent_major
-            FROM $table
-            where "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
-            order by "timestamp" asc
-            LIMIT $(limit)
-    """)
-
-    println("Obsolete: Old WaterFallFinder.  See utilities-package.")
-    when = msToDateTime(studyTime)
-
-    displayTitle(chart_title = "mPulse Waterfall Finder Assistant", chart_info = [when,"NOTE: Remember to substract 4 hours EDT (5 when EST) from the time as time is in UTC",
-        "Use the time range and columns to find your waterfall graph in mPulse.","Session ID is $(studySession)"],showTimeStamp=false)
-    display(waterfall)
-
-    catch y
-        println("showAvailSessions Exception ",y)
-    end
-end
-
-function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,startTimeMs::Int64,endTimeMs::Int64;limit::Int64=30)
-    try
-    waterfall = query("""\
-        select
-            page_group,geo_cc,geo_rg, user_agent_os, user_agent_osversion, user_agent_device_type, user_agent_family, user_agent_major
-            FROM $table
-            where "timestamp" between $startTimeMs and $endTimeMs and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
-            order by "timestamp" asc
-            LIMIT $(limit)
-    """)
-
-    when = msToDateTime(studyTime)
-        displayTitle(chart_title = "mPulse Waterfall Finder Assistant", chart_info = [when,"NOTE: Remember to substract 4 hours EDT (5 when EST) from the time as time is in UTC",
-        "Use the time range and columns to find your waterfall graph in mPulse.","Session ID is $(studySession)"],showTimeStamp=false)
-    display(waterfall)
-
-    catch y
-        println("showAvailSessions Exception ",y)
+        println("waterFallFinder Exception ",y)
     end
 end

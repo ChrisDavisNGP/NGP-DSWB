@@ -90,7 +90,7 @@ function detailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
 
         recordsFound = nrow(joinTablesDetails)
         if (recordsFound > 0)
-            displayTitle(chart_title = "Large Requests for: $(topTitle)", chart_info = [tv.timeString], showTimeStamp=false)
+            displayTitle(chart_title = "Large Requests for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
             scrubUrlToPrint(joinTablesDetails,limit=250)
             beautifyDF(joinTablesDetails[1:end,:])
         end
@@ -128,7 +128,7 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
         statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
+            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
             dispDMT[1:1,:Unit] = statsDF2[2:2,:unit]
             dispDMT[1:1,:Count] = statsDF2[2:2,:count]
             dispDMT[1:1,:Mean] = statsDF2[2:2,:mean]
@@ -140,7 +140,7 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
         statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
+            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
             dispDMT[2:2,:Unit] = statsDF2[2:2,:unit]
             dispDMT[2:2,:Count] = statsDF2[2:2,:count]
             dispDMT[2:2,:Mean] = statsDF2[2:2,:mean]
@@ -152,7 +152,7 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
         statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
+            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
             dispDMT[3:3,:Unit] = statsDF2[2:2,:unit]
             dispDMT[3:3,:Count] = statsDF2[2:2,:count]
             dispDMT[3:3,:Mean] = statsDF2[2:2,:mean]
@@ -161,7 +161,7 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
             dispDMT[3:3,:Max] = statsDF2[2:2,:max]
         end
 
-        displayTitle(chart_title = "Large Request Stats for: $(topTitle)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Large Request Stats for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
         beautifyDF(dispDMT)
     catch y
         println("statsTableDF2 Exception ",y)

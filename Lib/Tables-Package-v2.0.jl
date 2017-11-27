@@ -339,7 +339,7 @@ function groupSamplesTableDF(table::ASCIIString,productPageGroup::ASCIIString)
     try
 
         samplesDF = query("""\
-                select * from $table where page_group ilike '$(productPageGroup)' and "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and beacon_type = 'page view'
+                select * from $table where page_group ilike '$(productPageGroup)' and "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and beacon_type = 'page view'
         """);
 
         return samplesDF

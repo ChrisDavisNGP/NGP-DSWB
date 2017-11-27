@@ -81,7 +81,7 @@ end
 function customReferralsTable0ld(localTable::ASCIIString, productPageGroup::ASCIIString)
 
     try
-        displayTitle(chart_title = "Google Analytics Fields - Top Referrers for $(productPageGroup)", chart_info = [tv.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Google Analytics Fields - Top Referrers for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
 
         fb = query("""\
             select 'Facebook' AS " ", count(*)

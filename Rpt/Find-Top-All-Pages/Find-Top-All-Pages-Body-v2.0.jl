@@ -1,7 +1,7 @@
 function firstAndLast(localTable::ASCIIString,pageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
-    allLimitedTable(localTable,table,pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
+    allLimitedTable(localTable,table,pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
     setTable(localTable)
-    topUrlTableForWPF(localTable,pageGroup,tv.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
+    topUrlTableForWPF(localTable,pageGroup,TV.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
     q = query(""" drop view if exists $localTable;""")
 end
 
@@ -12,12 +12,12 @@ function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         topurl = query("""\
 
         select count(*),
-        CASE 
+        CASE
         when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
         else trim('/' from params_u)
         end urlgroup
         FROM $(ltName)
-        where 
+        where
         beacon_type = 'page view'
         group by urlgroup
         order by count(*) desc
@@ -27,7 +27,7 @@ function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         scrubUrlToPrint(topurl)
         newDF = topurl[Bool[x > beaconsLimit for x in topurl[:count]],:]
         printDF = names!(newDF[:,:],[symbol("Views"),symbol("Url - $(pageGroup)")])
-        
+
         if (paginate)
             paginatePrintDf(printDF)
         else
@@ -45,7 +45,7 @@ function paginatePrintDf(printDF::DataFrame)
         currentLine = 1
         linesOut = 25
         linesToPrint = size(printDF,1)
-        
+
         while currentLine < linesToPrint
             beautifyDF(printDF[currentLine:min(currentLine+linesOut-1,end),:])
             currentLine += linesOut
@@ -58,14 +58,14 @@ function paginatePrintDf(printDF::DataFrame)
 end
 
 function cleanupTableFTWP(TV::TimeVars,UP::UrlParams)
-    
+
     CleanupTable = query("""\
-        select 
+        select
             page_group,
             count(*) as "Page Views"
         FROM $(UP.beaconTable)
-        where 
-            beacon_type = 'page view' 
+        where
+            beacon_type = 'page view'
             and "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             and page_group in ('Adventure WPF','Animals WPF','Environment WPF','Games WPF','Images WPF',
                                 'Movies WPF','Ocean WPF','Photography WPF','Science WPF','Travel WPF')
@@ -75,4 +75,3 @@ function cleanupTableFTWP(TV::TimeVars,UP::UrlParams)
 
     beautifyDF(CleanupTable[1:min(10,end),:])
 end
-

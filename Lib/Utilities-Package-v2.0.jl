@@ -55,30 +55,30 @@ function timeVariables(
     showTime::Bool=true
     )
     try
-        tv.startTime = DateTime(Y1,M1,D1,H1,MM1)
-        tv.endTime = DateTime(Y2,M2,D2,H2,MM2)
-        tv.startTimeMs = datetimeToMs(tv.startTime)
-        tv.endTimeMs = datetimeToMs(tv.endTime)
+        timeInit.startTime = DateTime(Y1,M1,D1,H1,MM1)
+        timeInit.endTime = DateTime(Y2,M2,D2,H2,MM2)
+        timeInit.startTimeMs = datetimeToMs(timeInit.startTime)
+        timeInit.endTimeMs = datetimeToMs(timeInit.endTime)
 
-        tv.startTimeUTC = datetimeToUTC(tv.startTime, TimeZone("America/New_York"))
-        tv.endTimeUTC = datetimeToUTC(tv.endTime, TimeZone("America/New_York"))
-        tv.startTimeMsUTC = datetimeToMs(tv.startTimeUTC)
-        tv.endTimeMsUTC = datetimeToMs(tv.endTimeUTC)
+        timeInit.startTimeUTC = datetimeToUTC(timeInit.startTime, TimeZone("America/New_York"))
+        timeInit.endTimeUTC = datetimeToUTC(timeInit.endTime, TimeZone("America/New_York"))
+        timeInit.startTimeMsUTC = datetimeToMs(timeInit.startTimeUTC)
+        timeInit.endTimeMsUTC = datetimeToMs(timeInit.endTimeUTC)
 
-        tv.datePart = :hour
-        tv.datePart = bestDatePart(tv.startTimeUTC,tv.endTimeUTC,tv.datePart)
+        timeInit.datePart = :hour
+        timeInit.datePart = bestDatePart(timeInit.startTimeUTC,timeInit.endTimeUTC,timeInit.datePart)
 
-        tv.timeString = "$(padDateTime(tv.startTime)) to $(padDateTime(tv.endTime)) Local Time"
-        tv.timeStringUTC = "$(padDateTime(tv.startTimeUTC)) to $(padDateTime(tv.endTimeUTC)) UTC Time"
+        timeInit.timeString = "$(padDateTime(timeInit.startTime)) to $(padDateTime(timeInit.endTime)) Local Time"
+        timeInit.timeStringUTC = "$(padDateTime(timeInit.startTimeUTC)) to $(padDateTime(timeInit.endTimeUTC)) UTC Time"
 
         if (showTime)
-            println(tv.timeString);
-            println(tv.timeStringUTC);
+            println(timeInit.timeString);
+            println(timeInit.timeStringUTC);
         end
 
-        return;
+        return timeInit;
     catch y
-        println("timeVariables Exception ",y)
+        println("TV = timeVariables Exception ",y)
     end
 end
 
@@ -88,29 +88,29 @@ function anyTimeVar(
     showTime::Bool=true
     )
     try
-        localtv = TimeVarsInit()
-        localtv.startTime = DateTime(Y1,M1,D1,H1,MM1)
-        localtv.endTime = DateTime(Y2,M2,D2,H2,MM2)
-        localtv.startTimeMs = datetimeToMs(localtv.startTime)
-        localtv.endTimeMs = datetimeToMs(localtv.endTime)
+        anyTimeVar = TimeVarsInit()
+        anyTimeVar.startTime = DateTime(Y1,M1,D1,H1,MM1)
+        anyTimeVar.endTime = DateTime(Y2,M2,D2,H2,MM2)
+        anyTimeVar.startTimeMs = datetimeToMs(anyTimeVar.startTime)
+        anyTimeVar.endTimeMs = datetimeToMs(anyTimeVar.endTime)
 
-        localtv.startTimeUTC = datetimeToUTC(localtv.startTime, TimeZone("America/New_York"))
-        localtv.endTimeUTC = datetimeToUTC(localtv.endTime, TimeZone("America/New_York"))
-        localtv.startTimeMsUTC = datetimeToMs(localtv.startTimeUTC)
-        localtv.endTimeMsUTC = datetimeToMs(localtv.endTimeUTC)
+        anyTimeVar.startTimeUTC = datetimeToUTC(anyTimeVar.startTime, TimeZone("America/New_York"))
+        anyTimeVar.endTimeUTC = datetimeToUTC(anyTimeVar.endTime, TimeZone("America/New_York"))
+        anyTimeVar.startTimeMsUTC = datetimeToMs(anyTimeVar.startTimeUTC)
+        anyTimeVar.endTimeMsUTC = datetimeToMs(anyTimeVar.endTimeUTC)
 
-        localtv.datePart = :hour
-        localtv.datePart = bestDatePart(localtv.startTimeUTC,localtv.endTimeUTC,localtv.datePart)
+        anyTimeVar.datePart = :hour
+        anyTimeVar.datePart = bestDatePart(anyTimeVar.startTimeUTC,anyTimeVar.endTimeUTC,anyTimeVar.datePart)
 
-        localtv.timeString = "$(padDateTime(localtv.startTime)) to $(padDateTime(localtv.endTime)) Local Time"
-        localtv.timeStringUTC = "$(padDateTime(localtv.startTimeUTC)) to $(padDateTime(localtv.endTimeUTC)) UTC Time"
+        localTV.timeString = "$(padDateTime(anyTimeVar.startTime)) to $(padDateTime(anyTimeVar.endTime)) Local Time"
+        localTV.timeStringUTC = "$(padDateTime(anyTimeVar.startTimeUTC)) to $(padDateTime(anyTimeVar.endTimeUTC)) UTC Time"
 
         if (showTime)
-            println(localtv.timeString);
-            println(localtv.timeStringUTC);
+            println(localTV.timeString);
+            println(localTV.timeStringUTC);
         end
 
-        return localtv
+        return anyTimeVar
     catch y
         println("anyTimeVar Exception ",y)
     end
@@ -135,7 +135,7 @@ function weeklyTimeVariables(;days::Int64=7)
             Dates.minute(endTime)
         );
     catch y
-        println("weeklyTimeVariables Exception ",y)
+        println("TV = weeklyTimeVariables Exception ",y)
     end
 end
 
@@ -169,13 +169,13 @@ end
 # studyTime =  1474476831224;
 
 # Better version using TimeVars structure to pass the time around
-function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,tv::TimeVars;limit::Int64=30)
+function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime::Int64,TV::TimeVars;limit::Int64=30)
     try
         waterfall = query("""\
             select
                 page_group,geo_cc,geo_rg, user_agent_os, user_agent_osversion, user_agent_device_type, user_agent_family, user_agent_major
                 FROM $table
-                where "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
+                where "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
                 order by "timestamp" asc
                 LIMIT $(limit)
         """)
@@ -209,7 +209,7 @@ function waterFallFinder(table::ASCIIString,studySession::ASCIIString,studyTime:
         select
             page_group,geo_cc,geo_rg, user_agent_os, user_agent_osversion, user_agent_device_type, user_agent_family, user_agent_major
             FROM $table
-            where "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
+            where "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
             order by "timestamp" asc
             LIMIT $(limit)
     """)

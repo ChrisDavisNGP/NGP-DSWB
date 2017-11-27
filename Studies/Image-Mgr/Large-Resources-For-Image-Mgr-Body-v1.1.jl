@@ -11,7 +11,7 @@ function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)
             create or replace view $localTable as (
                 select * from $table
                     where
-                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
+                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)'
