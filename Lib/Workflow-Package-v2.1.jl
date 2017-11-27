@@ -70,7 +70,7 @@ function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     defaultTableGNGSSDM(TV,UP)
 
-    test1GNGSSDM(UP,LV)
+    test1GNGSSDM(UP,SP)
 
     testUserAgentGNGSSDM(UP,LV)
 

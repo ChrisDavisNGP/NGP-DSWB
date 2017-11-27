@@ -402,7 +402,7 @@ function defaultTableGNGSSDM(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function test1GNGSSDM(UP::UrlParams,LV::LocalVars)
+function test1GNGSSDM(UP::UrlParams,SP::ShowParams)
 
     try
 
@@ -413,13 +413,13 @@ function test1GNGSSDM(UP::UrlParams,LV::LocalVars)
                 Order by count(*) desc
         """)
 
-        beautifyDF(test1Table[1:min(LV.linesOutput,end),:])
+        beautifyDF(test1Table[1:min(SP.showLines,end),:])
     catch y
         println("test1GNGSSDM Exception ",y)
     end
 end
 
-function testUserAgentGNGSSDM(UP::UrlParams,LV::LocalVars)
+function testUserAgentGNGSSDM(UP::UrlParams,SP::ShowParams)
 
     try
         CleanupTable = query("""\
@@ -430,10 +430,10 @@ function testUserAgentGNGSSDM(UP::UrlParams,LV::LocalVars)
                 beacon_type = 'page view'
             group by user_agent_raw
             order by count(*) desc
-        limit 1000
+        limit $(SP.showLines)
     """)
 
-        beautifyDF(CleanupTable[1:min(LV.linesOutput,end),:])
+        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
 
     catch y
         println("test2GNGSSDM Exception ",y)
