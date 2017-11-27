@@ -99,7 +99,7 @@ function detailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
     end
 end
 
-function statsTableDF2(UP::UrlParams,startTimeMs::Int64, endTimeMs::Int64)
+function statsTableDF2(TV::TimeVars,UP::UrlParams)
     try
         table = UP.btView
 
@@ -108,7 +108,7 @@ function statsTableDF2(UP::UrlParams,startTimeMs::Int64, endTimeMs::Int64)
                 page_group ilike '$(UP.pageGroup)' and
                 params_u ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
-                "timestamp" between $startTimeMs and $endTimeMs and
+                "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 params_rt_quit IS NULL
         """);
         return localStats
@@ -125,7 +125,7 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
         dispDMT = DataFrame(RefGroup=["","",""],Unit=["","",""],Count=[0,0,0],Mean=[0.0,0.0,0.0],Median=[0.0,0.0,0.0],Min=[0.0,0.0,0.0],Max=[0.0,0.0,0.0])
 
         UP.deviceType = "Desktop"
-        statsFullDF2 = statsTableDF2(UP,tv.startTimeMsUTC,tv.endTimeMsUTC)
+        statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2,UP.pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
@@ -137,7 +137,7 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
             dispDMT[1:1,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Mobile"
-        statsFullDF2 = statsTableDF2(UP,tv.startTimeMsUTC,tv.endTimeMsUTC)
+        statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2,UP.pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
@@ -149,7 +149,7 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
             dispDMT[2:2,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Tablet"
-        statsFullDF2 = statsTableDF2(UP,tv.startTimeMsUTC,tv.endTimeMsUTC)
+        statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2,UP.pageGroup,tv.startTimeMsUTC,tv.endTimeMsUTC)
