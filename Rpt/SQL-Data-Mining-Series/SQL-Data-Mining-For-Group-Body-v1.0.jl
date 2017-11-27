@@ -1,8 +1,4 @@
-type LocalVars
-    linesOutput::Int64
-end
-
-function displayGroup(TV::TimeVars,UP::UrlParams,LV::LocalVars)
+function displayGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         currentPageGroupDF = groupSamplesTableDF(UP.beaconTable,UP.pageGroup)
         #println("$pageGroup Beacons: ",size(currentPageGroupDF)[1])
@@ -16,11 +12,11 @@ function displayGroup(TV::TimeVars,UP::UrlParams,LV::LocalVars)
             push!(finalPrintDF,[size(subDF,1);subDF[1:1,:url];subDF[1:1,:params_u]])
         end
 
-        displayTitle(chart_title = "Top Beacons Counts (limit $(LV.linesOutput)) For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Top Beacons Counts (limit $(SP.showLines)) For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         sort!(finalPrintDF, cols=(order(:count, rev=true)))
-        scrubUrlFieldToPrint(finalPrintDF,:params_u)        
-        beautifyDF(finalPrintDF[1:min(LV.linesOutput,end),:])        
+        scrubUrlFieldToPrint(finalPrintDF,:params_u)
+        beautifyDF(finalPrintDF[1:min(SP.showLines,end),:])
     catch y
         println("displayGroup Exception ",y)
     end
-end    
+end

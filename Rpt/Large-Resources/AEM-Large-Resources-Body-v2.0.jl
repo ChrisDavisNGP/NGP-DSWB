@@ -2,12 +2,12 @@ function defaultLocalTableAemOnlyALR(TV::TimeVars,UP::UrlParams)
     try
         table = UP.beaconTable
         localTable = UP.btView
-        
+
         query("""\
             create or replace view $localTable as (
-                select * from $table 
-                    where 
-                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and 
+                select * from $table
+                    where
+                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
                         page_group in ('News Articles','Travel AEM','Photography AEM','Nat Geo Homepage','Magazine','Magazine AEM') and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)'
@@ -24,12 +24,12 @@ function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)
     try
         table = UP.beaconTable
         localTable = UP.btView
-        
+
         query("""\
             create or replace view $localTable as (
-                select * from $table 
-                    where 
-                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and 
+                select * from $table
+                    where
+                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)'
@@ -43,13 +43,13 @@ function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)
 end
 
 function resourceSummary(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
-    
+
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         joinTables = query("""\
-        select 
+        select
             avg($tableRt.encoded_size) as encoded,
             avg($tableRt.transferred_size) as transferred,
             avg($tableRt.decoded_size) as decoded,
@@ -60,9 +60,9 @@ function resourceSummary(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,
             on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > $(minEncoded) and
             $tableRt.url ilike '$(fileType)'
-        group by 
+        group by
             $localTable.user_agent_family,
-            $localTable.user_agent_os    
+            $localTable.user_agent_os
         order by encoded desc, transferred desc, decoded desc
         """);
 
@@ -72,16 +72,16 @@ function resourceSummary(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,
     catch y
         println("bigTable5 Exception ",y)
     end
-end 
+end
 
 function resourceSizes2(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
-    
+
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         joinTables = query("""\
-        select 
+        select
             avg($tableRt.encoded_size) as encoded,
             avg($tableRt.transferred_size) as transferred,
             avg($tableRt.decoded_size) as decoded,
@@ -92,27 +92,25 @@ function resourceSizes2(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,m
         on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > $(minEncoded) and
         $tableRt.url not like '%/interactive-assets/%' and ($tableRt.url ilike '$(fileType)' or $tableRt.url ilike '$(fileType)?%')
-        group by 
+        group by
         $localTable.params_u,$tableRt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
         println("bigTable5 Exception ",y)
     end
-end 
+end
 
 function resourceSizes12(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
-    
+
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         joinTables = query("""\
-        select 
+        select
             $localTable.user_agent_os,
             $localTable.user_agent_family,
             $tableRt.url,
@@ -124,20 +122,18 @@ function resourceSizes12(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,
         on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > $(minEncoded) and
         $tableRt.url not like '%/interactive-assets/%' and $tableRt.url ilike '$(fileType)'
-        group by 
+        group by
             $localTable.user_agent_family,
-            $localTable.user_agent_os,    
+            $localTable.user_agent_os,
             $tableRt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
         println("bigTable5 Exception ",y)
     end
-end 
+end
 
 function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
 
@@ -148,7 +144,7 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
         tableRt = UP.resourceTable
 
         joinTables = query("""\
-        select 
+        select
             $localTable.user_agent_os,
             $localTable.user_agent_family,
             $localTable.user_agent_device_type,
@@ -160,11 +156,11 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
         from $localTable join $tableRt
         on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > 1 and
-        $tableRt.url not ilike '%/interactive-assets/%' and 
+        $tableRt.url not ilike '%/interactive-assets/%' and
         $tableRt.url not ilike '%png' and
         $tableRt.url not ilike '%svg' and
         $tableRt.url not ilike '%jpg' and
-        $tableRt.url not ilike '%mp3' and 
+        $tableRt.url not ilike '%mp3' and
         $tableRt.url not ilike '%mp4' and
         $tableRt.url not ilike '%gif' and
         $tableRt.url not ilike '%wav' and
@@ -174,16 +170,14 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
         $tableRt.url not ilike '%css' and
         $tableRt.url not ilike '%ttf' and
         $tableRt.url not ilike '%woff%'
-        group by 
+        group by
             $localTable.user_agent_family,
-            $localTable.user_agent_os,    
+            $localTable.user_agent_os,
             $localTable.user_agent_device_type,
             $tableRt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOutput,end),:])
     catch y
         println("lookForLeftOversALR Exception ",y)
@@ -200,7 +194,7 @@ function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)
         tableRt = UP.resourceTable
 
         joinTables = query("""\
-            select 
+            select
                 $tableRt.url,
                 avg($tableRt.encoded_size) as encoded,
                 avg($tableRt.transferred_size) as transferred,
@@ -221,8 +215,6 @@ function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)
             order by encoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOutput,end),:])
     catch y
         println("lookForLeftOversDetailsALR Exception ",y)

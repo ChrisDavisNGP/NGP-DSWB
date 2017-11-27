@@ -1,15 +1,10 @@
-type LocalVars
-    linesOutput::Int64
-end
-
-    
-function gatherSizeDataALI(UP::UrlParams,LV::LocalVars)
+function gatherSizeDataALI(UP::UrlParams,SP::ShowParams)
     try
         bt = UP.btView
         rt = UP.resourceTable
-        
+
         joinTables = query("""\
-        select 
+        select
             CASE WHEN (position('?' in $bt.params_u) > 0) then trim('/' from (substring($bt.params_u for position('?' in substring($bt.params_u from 9)) +7))) else trim('/' from $bt.params_u) end as urlgroup,
             $bt.session_id,
             $bt."timestamp",
@@ -23,9 +18,7 @@ function gatherSizeDataALI(UP::UrlParams,LV::LocalVars)
             order by encoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
 
         return joinTables
     catch y
@@ -33,7 +26,7 @@ function gatherSizeDataALI(UP::UrlParams,LV::LocalVars)
     end
 end
 
-function tableSummaryALI(joinTables::DataFrame,LV::LocalVars)
+function tableSummaryALI(joinTables::DataFrame,SP::ShowParams)
 
     joinTableSummary[:urlgroup] = "delete"
     joinTableSummary[:session_id] = ""
@@ -48,10 +41,10 @@ function tableSummaryALI(joinTables::DataFrame,LV::LocalVars)
         #beautifyDF(subDf[1:1,:])
         i = 1
         for row in eachrow(subDf)
-            if (i == 1) 
+            if (i == 1)
                 i +=1
                 push!(joinTableSummary,[row[:urlgroup],row[:session_id],row[:timestamp],row[:encoded],row[:transferred],row[:decoded],row[:count]])
-            end            
+            end
         end
     end
 
@@ -63,9 +56,9 @@ function tableSummaryALI(joinTables::DataFrame,LV::LocalVars)
         i += 1
     end
     sort!(joinTableSummary,cols=[order(:encoded,rev=true)])
-    
-    beautifyDF(joinTableSummary[1:min(LV.linesOutput,end),[:urlgroup,:encoded,:transferred,:decoded]])    
-    
+
+    beautifyDF(joinTableSummary[1:min(SP.showLines,end),[:urlgroup,:encoded,:transferred,:decoded]])
+
     return joinTableSummary
 end
 
@@ -73,13 +66,13 @@ function detailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         topSessionId = joinTableSummary[row:row,:session_id][1]
         topTimeStamp = joinTableSummary[row:row,:timestamp][1]
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 
         joinTablesDetails = query("""\
-            select 
+            select
                 $tableRt.start_time,
                 $tableRt.encoded_size,
                 $tableRt.transferred_size,
@@ -87,9 +80,9 @@ function detailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
                 $tableRt.url as urlgroup
             from $localTable join $tableRt
                 on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-            where 
+            where
                 $localTable.session_id = '$(topSessionId)' and
-                $localTable."timestamp" = $(topTimeStamp) and 
+                $localTable."timestamp" = $(topTimeStamp) and
                 $tableRt.encoded_size > 1000000 and
                 $tableRt.url not like '%/interactive-assets/%'
             order by $tableRt.start_time
@@ -109,12 +102,12 @@ end
 function statsTableDF2(UP::UrlParams,startTimeMs::Int64, endTimeMs::Int64)
     try
         table = UP.btView
-        
+
         localStats = query("""\
-            select timers_t_done from $table where 
+            select timers_t_done from $table where
                 page_group ilike '$(UP.pageGroup)' and
                 params_u ilike '$(UP.urlRegEx)' and
-                user_agent_device_type ilike '$(UP.deviceType)' and        
+                user_agent_device_type ilike '$(UP.deviceType)' and
                 "timestamp" between $startTimeMs and $endTimeMs and
                 params_rt_quit IS NULL
         """);
@@ -128,9 +121,9 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
     try
         topUrl = string(joinTableSummary[row:row,:urlgroup][1],"%")
         topTitle = joinTableSummary[row:row,:urlgroup][1]
-        
+
         dispDMT = DataFrame(RefGroup=["","",""],Unit=["","",""],Count=[0,0,0],Mean=[0.0,0.0,0.0],Median=[0.0,0.0,0.0],Min=[0.0,0.0,0.0],Max=[0.0,0.0,0.0])
-        
+
         UP.deviceType = "Desktop"
         statsFullDF2 = statsTableDF2(UP,tv.startTimeMsUTC,tv.endTimeMsUTC)
         dispDMT[1:1,:RefGroup] = "Desktop"
@@ -174,4 +167,3 @@ function statsDetailsPrint(UP::UrlParams,joinTableSummary::DataFrame,row::Int64)
         println("statsTableDF2 Exception ",y)
     end
 end
-

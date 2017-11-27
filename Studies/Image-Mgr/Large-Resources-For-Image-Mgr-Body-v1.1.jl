@@ -1,5 +1,4 @@
 type LocalVars
-    linesOutput::Int64
     fileType::ASCIIString
 end
 
@@ -7,12 +6,12 @@ function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)
     try
         table = UP.beaconTable
         localTable = UP.btView
-        
+
         query("""\
             create or replace view $localTable as (
-                select * from $table 
-                    where 
-                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and 
+                select * from $table
+                    where
+                        "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)'
@@ -25,14 +24,14 @@ function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function resourceSummaryLRFIMB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
-    
+function resourceSummaryLRFIMB(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
+
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         joinTables = query("""\
-            select 
+            select
                 avg($tableRt.encoded_size) as encoded,
                 avg($tableRt.transferred_size) as transferred,
                 avg($tableRt.decoded_size) as decoded,
@@ -42,29 +41,29 @@ function resourceSummaryLRFIMB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
             from $localTable join $tableRt
                 on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
             where $tableRt.encoded_size > $(UP.sizeMin) and
-                $tableRt.url ilike '$(LV.fileType)'
-            group by 
+                $tableRt.url ilike '$(fileType)'
+            group by
                 $localTable.user_agent_family,
-                $localTable.user_agent_os    
+                $localTable.user_agent_os
             order by encoded desc, transferred desc, decoded desc
         """);
 
-        displayTitle(chart_title = "Pages Details (Min $(UP.sizeMin) KB), File Type $(LV.fileType)", chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Pages Details (Min $(UP.sizeMin) KB), File Type $(fileType)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceSummaryLRFIMB Exception ",y)
     end
-end 
+end
 
-function resourceSizes2(TV::TimeVars,UP::UrlParams,LV::LocalVars)
-    
+function resourceSizes2Old(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
+
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         joinTables = query("""\
-        select 
+        select
             avg($tableRt.encoded_size) as encoded,
             avg($tableRt.transferred_size) as transferred,
             avg($tableRt.decoded_size) as decoded,
@@ -79,22 +78,20 @@ function resourceSizes2(TV::TimeVars,UP::UrlParams,LV::LocalVars)
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceSizes2 Exception ",y)
     end
-end 
+end
 
 function resourceSizes12(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
-    
+
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         joinTables = query("""\
-        select 
+        select
             $localTable.user_agent_os,
             $localTable.user_agent_family,
             $tableRt.url,
@@ -106,20 +103,18 @@ function resourceSizes12(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,
         on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > $(minEncoded) and
         $tableRt.url not like '%/interactive-assets/%' and $tableRt.url ilike '$(fileType)'
-        group by 
+        group by
             $localTable.user_agent_family,
-            $localTable.user_agent_os,    
+            $localTable.user_agent_os,
             $tableRt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
         println("bigTable5 Exception ",y)
     end
-end 
+end
 
 function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
 
@@ -130,7 +125,7 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
         tableRt = UP.resourceTable
 
         joinTables = query("""\
-        select 
+        select
             $localTable.user_agent_os,
             $localTable.user_agent_family,
             $localTable.user_agent_device_type,
@@ -142,11 +137,11 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
         from $localTable join $tableRt
         on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > 1 and
-        $tableRt.url not ilike '%/interactive-assets/%' and 
+        $tableRt.url not ilike '%/interactive-assets/%' and
         $tableRt.url not ilike '%png' and
         $tableRt.url not ilike '%svg' and
         $tableRt.url not ilike '%jpg' and
-        $tableRt.url not ilike '%mp3' and 
+        $tableRt.url not ilike '%mp3' and
         $tableRt.url not ilike '%mp4' and
         $tableRt.url not ilike '%gif' and
         $tableRt.url not ilike '%wav' and
@@ -156,16 +151,14 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
         $tableRt.url not ilike '%css' and
         $tableRt.url not ilike '%ttf' and
         $tableRt.url not ilike '%woff%'
-        group by 
+        group by
             $localTable.user_agent_family,
-            $localTable.user_agent_os,    
+            $localTable.user_agent_os,
             $localTable.user_agent_device_type,
             $tableRt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOutput,end),:])
     catch y
         println("lookForLeftOversALR Exception ",y)
@@ -182,7 +175,7 @@ function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)
         tableRt = UP.resourceTable
 
         joinTables = query("""\
-            select 
+            select
                 $tableRt.url,
                 avg($tableRt.encoded_size) as encoded,
                 avg($tableRt.transferred_size) as transferred,
@@ -203,22 +196,20 @@ function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)
             order by encoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [tv.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOutput,end),:])
     catch y
         println("lookForLeftOversDetailsALR Exception ",y)
     end
 end
 
-function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,LV::LocalVars)
-    
+function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
+
     try
         localTable = UP.btView
         tableRt = UP.resourceTable
-        
+
         joinTables = query("""\
-        select 
+        select
             avg($tableRt.encoded_size) as encoded,
             avg($tableRt.transferred_size) as transferred,
             avg($tableRt.decoded_size) as decoded,
@@ -227,25 +218,23 @@ function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,LV::LocalVars)
         from $localTable join $tableRt
             on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > $(UP.sizeMin) and
-            ($tableRt.url ilike '$(LV.fileType)' or $tableRt.url ilike '$(LV.fileType)?%') and
+            ($tableRt.url ilike '$(fileType)' or $tableRt.url ilike '$(fileType)?%') and
             $tableRt.url ilike 'http://www.nationalgeographic.com%'
         group by $tableRt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        #displayTitle(chart_title = "Big Pages Details (Min $(minSize) KB)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
         if (SP.debugLevel > 4)
-            beautifyDF(joinTables[1:min(LV.linesOutput,end),:])
+            beautifyDF(joinTables[1:min(SP.showLines,end),:])
         end
-        
+
         return joinTables
     catch y
         println("resourceImage Exception ",y)
     end
-end 
+end
 
-function idImageMgrPolicy(SP::ShowParams,LV::LocalVars,imageDf::DataFrame)
+function idImageMgrPolicy(SP::ShowParams,imageDf::DataFrame)
     try
 
         urlPatterns = knownPatterns()
@@ -253,8 +242,8 @@ function idImageMgrPolicy(SP::ShowParams,LV::LocalVars,imageDf::DataFrame)
             found = false
             for key in keys(urlPatterns)
                 if (ismatch(key,url))
-                    value = get(urlPatterns,key,"None")                
-                    #println("Found ",value)                  
+                    value = get(urlPatterns,key,"None")
+                    #println("Found ",value)
                     found = true
                     urlPatterns[key] = [value[1],value[2],value[3],value[4],value[5]+1,url]
                     break
@@ -266,7 +255,7 @@ function idImageMgrPolicy(SP::ShowParams,LV::LocalVars,imageDf::DataFrame)
                 regExpStr = url[regExpStart:end]
                 regExpEnd = min(60,length(regExpStr))
                 regExpStr = regExpStr[1:regExpEnd]
-                
+
                 #println("(r\".*",regExpStr)
                 println("Not Found: (r\".*",regExpStr,"\",[\"\",\"\",\"",regExpStr,"\",\"",regExpStr,"\",0,\"\"]),")
 #(r".*/adventure/features/everest/first-woman-to-climb-everest-jun",["/adventure/features/everest/first-woman-to-climb-everest-jun"","",",0,""]),
@@ -274,7 +263,7 @@ function idImageMgrPolicy(SP::ShowParams,LV::LocalVars,imageDf::DataFrame)
         end
 
         println("\n\n\nHere are other patterns matched")
-        
+
         for key in keys(urlPatterns)
             value = get(urlPatterns,key,"None")
             if (value[5] > 0)
@@ -282,21 +271,21 @@ function idImageMgrPolicy(SP::ShowParams,LV::LocalVars,imageDf::DataFrame)
             end
         end
 
-        
+
     catch y
         println("idImageMgrPolicy Exception ",y)
     end
-end        
+end
 
 
 function knownPatterns()
     try
-        
+
         urlPatterns = Dict([
 
             (r".*/content/dam/.*",["Image Mgr(1)","Default",".*/content/dam/.*","Content Dam",0,""]),
             (r".*/interactive-assets/.*",["","",".*/interactive-assets/.*","Interactive Assets",0,""]),
-            
+
 #            (r".*/content/dam/travel/.*",["Content Dam Travel",0,""]),
 #            (r".*/content/dam/photography/.*",["Photography",0,""]),
 #            (r".*/content/dam/adventure/.*",["Content Dam Adventure",0,""]),
@@ -312,8 +301,8 @@ function knownPatterns()
 #            (r".*/content/dam/ngdotcom/.*",["Content Dam Ngdotcom",0,""]),
 #            (r".*/content/dam/peopleandculture/.*",["Content Dam People and Culture",0,""]),
 #            (r".*/content/dam/books/.*",["Content Dam Books",0,""]),
-            
-            (r".*/adventure/features/.*",["","",".*/adventure/features/.*","Adventure Features",0,""]),            
+
+            (r".*/adventure/features/.*",["","",".*/adventure/features/.*","Adventure Features",0,""]),
             (r".*/contributors/r/melody-rowell/.*",["","",".*/contributors/r/melody-rowell/.*","Contributors Melody Rowell",0,""]),
             (r".*/countryman/assets/.*",["","","/countryman/assets/.*","Countryman",0,""]),
             (r".*/foodfeatures/.*",["","",".*/foodfeatures/.*","Food Features",0,""]),
@@ -358,21 +347,21 @@ function knownPatterns()
             (r".*/west-snow-fail/.*",["","",".*/west-snow-fail/.*","West Snow Fail",0,""]),
             (r".*/year-in-review-.*",["","",".*/year-in-review-.*","Year In Review",0,""]),
 
-            
+
             (r".*/visitpandora/.*",["Sponsor","None",".*/visitpandora/.*","Visit Pandora",0,""]),
             (r".*/microsoft/.*",["Sponsor","None",".*/microsoft/.*","Microsoft",0,""]),
             (r".*/stellaartois/.*",["Sponsor","None",".*/stellaartois/.*","Stella Artois",0,""]),
             (r".*/subaru/.*",["Sponsor","None",".*/subaru/.*","Subaru",0,""]),
             (r".*/visitcalifornia/.*",["Sponsor","None",".*/visitcalifornia/.*","Visit California",0,""]),
             (r".*/cisco/.*",["Sponsor","None",".*/cisco/.*","Cisco",0,""]),
-                      
-            
+
+
             (r".*/unchartedwaters/.*",["Sponsor","None",".*/unchartedwaters/.*","Unchartedwaters",0,""])
             ]);
-        
+
         return urlPatterns
-        
+
     catch y
         println("knownPatterns Exception ",y)
     end
-end                
+end

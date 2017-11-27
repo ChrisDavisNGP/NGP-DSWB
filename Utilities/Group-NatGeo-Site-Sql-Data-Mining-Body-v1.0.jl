@@ -1,9 +1,4 @@
-type LocalVars
-    linesOutput::Int64
-end
-
-
-function test2GNGSSDM(UP::UrlParams,LV::LocalVars)
+function test2GNGSSDM(UP::UrlParams,SP::ShowParams)
 
     try
         CleanupTable = query("""\
@@ -16,14 +11,14 @@ function test2GNGSSDM(UP::UrlParams,LV::LocalVars)
             Order by count(*) desc
     """)
 
-        beautifyDF(CleanupTable[1:min(LV.linesOutput,end),:])
+        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
 
     catch y
         println("test2GNGSSDM Exception ",y)
     end
 end
 
-function test3GNGSSDM(UP::UrlParams,LV::LocalVars)
+function test3GNGSSDM(UP::UrlParams,SP::ShowParams)
 
     try
         CleanupTable = query("""\
@@ -39,7 +34,7 @@ function test3GNGSSDM(UP::UrlParams,LV::LocalVars)
             Order by count(*) desc
         """)
 
-        beautifyDF(CleanupTable[1:min(LV.linesOutput,end),:])
+        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
 
     catch y
         println("test3GNGSSDM Exception ",y)

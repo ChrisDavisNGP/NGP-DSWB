@@ -1,19 +1,15 @@
-type LocalVars
-    linesOutput::Int64
-end
-
 function defaultBeaconViewUDB(TV::TimeVars,UP::UrlParams)
-    
+
     try
         localTable = UP.btView
         table = UP.beaconTable
 
         query("""create or replace view $localTable as (
-            select * 
-            from $table 
-            where 
-                page_group = '$(UP.pageGroup)' and 
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and 
+            select *
+            from $table
+            where
+                page_group = '$(UP.pageGroup)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 params_u ilike '$(UP.urlRegEx)'
         )""")
 
@@ -30,18 +26,18 @@ function defaultBeaconViewUDB(TV::TimeVars,UP::UrlParams)
 end
 
 function defaultResourceView(TV::TimeVars,UP::UrlParams)
-    
+
     try
         localTableRt = UP.rtView
         localRt = UP.resourceTable
         localTable = UP.btView
 
         query("""create or replace view $localTableRt as (
-            select $tableRt.* 
-            from $localTable join $tableRt 
-                on $tableRt.session_id = $localTable.session_id 
-            where 
-                $tableRt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and 
+            select $tableRt.*
+            from $localTable join $tableRt
+                on $tableRt.session_id = $localTable.session_id
+            where
+                $tableRt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 $localTable.session_id IS NOT NULL
             order by $tableRt.session_id, $tableRt."timestamp", $tableRt.start_time
         )""")
@@ -56,21 +52,21 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function topPageViewsUDB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
-    
+function topPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
     try
         localTable = UP.btView
 
         topurl = query("""\
-            select 
+            select
                 count(*),
                 CASE when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end urlgroup
             FROM $(localTable)
-            where 
-                beacon_type = 'page view' 
+            where
+                beacon_type = 'page view'
             group by urlgroup
             order by count(*) desc
-            limit $(LV.linesOutput)
+            limit $(SP.showLines)
         """);
 
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
@@ -80,20 +76,20 @@ function topPageViewsUDB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     end
 end
 
-function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
-    
+function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
     try
         localTable = UP.btView
 
         topurl = query("""\
-            select 
+            select
                 count(*),params_u
             FROM $(localTable)
-            where 
-                beacon_type = 'page view' 
+            where
+                beacon_type = 'page view'
             group by params_u
             order by count(*) desc
-            limit $(LV.linesOutput)
+            limit $(SP.showLines)
         """)
 
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString,"URL: $(UP.urlRegEx)"])
@@ -102,4 +98,3 @@ function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,LV::LocalVars)
         println("setupLocalTable Exception ",y)
     end
 end
-

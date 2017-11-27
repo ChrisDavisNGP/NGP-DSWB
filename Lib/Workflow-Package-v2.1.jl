@@ -72,7 +72,7 @@ function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     test1GNGSSDM(UP,SP)
 
-    testUserAgentGNGSSDM(UP,LV)
+    testUserAgentGNGSSDM(UP,SP)
 
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")

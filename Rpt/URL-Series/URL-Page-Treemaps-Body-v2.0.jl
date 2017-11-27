@@ -1,5 +1,4 @@
 type LocalVars
-    linesOutput::Int64
     reportLevel::Int64
     rangeLower::Float64
     rangeUpper::Float64
@@ -7,7 +6,7 @@ type LocalVars
     studyTime::Int64
 end
 
-function setRangeUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)
+function setRangeUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         statsDF = DataFrame()
@@ -24,7 +23,7 @@ function setRangeUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)
 
 end
 
-function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)
+function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         toppageurl = DataFrame()
@@ -48,7 +47,7 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)
     end
 end
 
-function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,LV::LocalVars)
+function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         if LV.reportLevel > 0
             i = 0
