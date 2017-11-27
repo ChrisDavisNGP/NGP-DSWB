@@ -269,7 +269,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         timers_t_page > 0
         group by params_u
         order by cnt desc
-        limit $(limit)
+        limit $(SP.showLines)
         """);
 
         scrubUrlToPrint(topurl)
