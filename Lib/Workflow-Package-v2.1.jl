@@ -21,19 +21,19 @@ function dailyWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   topUrlTableByTime(TV,UP,SP)   # use UP.pageGroup = "%" for no group
 
   try
-      browserFamilyTreemap(TV,UP)
+      browserFamilyTreemap(TV,UP,SP)
   catch y
       println("browserFamilyTreemap Exception ",y)
   end
 
   try
-      countryTreemap(TV,UP)
+      countryTreemap(TV,UP,SP)
   catch y
       println("countryTreemap Exception ",y)
   end
 
   try
-    deviceTypeTreemap(TV,UP)
+    deviceTypeTreemap(TV,UP,SP)
   catch y
     println("deviceTypeTreemap Exception ",y)
   end
@@ -139,7 +139,7 @@ function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
         println("cell chartSlowestUrls Exception ",y)
     end
 
-    treemapsPGD(TV,UP)
+    treemapsPGD(TV,UP,SP)
 
     datePartQuartiles(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
 

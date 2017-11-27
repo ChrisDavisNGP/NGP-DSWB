@@ -7,7 +7,6 @@ function datePartQuartiles(startTime::DateTime, endTime::DateTime, datePart::Sym
     end
 end
 
-#function pageGroupQuartiles(table::ASCIIString,productPageGroup::ASCIIString,startTime::DateTime,endTime::DateTime,startTimeMs::Int64,endTimeMs::Int64,timeString::ASCIIString;showTable::Bool=false,limit::Int64=15)
 function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         table = UP.beaconTable

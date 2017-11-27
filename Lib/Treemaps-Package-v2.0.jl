@@ -8,7 +8,7 @@ function displayManyRows(df::DataFrame, nameArr::Array, limit::Int64)
     beautifyDF(names!(df[1:min(limit, end),[1:3;]],nameArr))
 end
 
-function deviceTypeTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limit::Int64=40)
+function deviceTypeTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         fieldNames = [:user_agent_device_type]
@@ -17,13 +17,13 @@ function deviceTypeTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limi
         displayTitle(chart_title = "Device Type for Page Group: $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         drawTree(treeData; titleCol = :x1, fieldNames = fieldNames)
 
-        if (showTable)
+        if (SP.devView)
             # Format beacon output
             sort!(treeData, cols=:beacons, rev=true)
             displayTitle(chart_title = "Device Type for Page Group: $(UP.pageGroup)", chart_info = ["Highest Beacon Counts and Load Time"],showTimeStamp=false)
             # Keep rows with beacon count > 500
             # treeData = treeData[treeData[:beacons].>499,:]
-            displayManyRows(treeData[:,1:3], [symbol("User Agent Family"), symbol("Load Time"), symbol("Beacons")],limit)
+            displayManyRows(treeData[:,1:3], [symbol("User Agent Family"), symbol("Load Time"), symbol("Beacons")],SP.treemapTableLines)
         end
 
     catch y
@@ -44,7 +44,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             displayTitle(chart_title = "$(UP.pageGroup) Page Group", chart_info =["Highest Beacon Counts and Load Times"],showTimeStamp=false)
             # Keep rows with beacon count > 500
             treeData = treeData[treeData[:beacons].>499,:]
-            displayManyRows(treeData[:,1:3], [symbol("Page Group"), symbol("Load Time"), symbol("Beacons")],limit)
+            displayManyRows(treeData[:,1:3], [symbol("Page Group"), symbol("Load Time"), symbol("Beacons")],SP.treemapTableLines)
         end
 
         treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:user_agent_device_type,:page_group])
@@ -59,7 +59,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 displayTitle(chart_title = "Desktop", chart_info = ["Highest Beacon Counts and Load Times"],showTimeStamp=false)
                 # Keep rows with beacon count > 499
                 subTreeData = subTreeData[subTreeData[:beacons].>499,:]
-                displayManyRows(subTreeData[:,2:4], [symbol("Page Group");symbol("Load Time");symbol("Page Views")],limit)
+                displayManyRows(subTreeData[:,2:4], [symbol("Page Group");symbol("Load Time");symbol("Page Views")],SP.treemapTableLines)
             end
         end
 
@@ -73,7 +73,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 displayTitle(chart_title = "Mobile", chart_info = ["Highest Beacon Counts and Load Times"],showTimeStamp=false)
                 # Keep rows with beacon count > 499
                 subTreeData = subTreeData[subTreeData[:beacons].>499,:]
-                displayManyRows(subTreeData[:,2:4], [symbol("Page Group");symbol("Load Time");symbol("Page Views")],limit)
+                displayManyRows(subTreeData[:,2:4], [symbol("Page Group");symbol("Load Time");symbol("Page Views")],SP.treemapTableLines)
             end
         end
     catch y
@@ -81,7 +81,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function browserFamilyTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limit::Int64=40)
+function browserFamilyTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:user_agent_family])
@@ -95,13 +95,13 @@ function browserFamilyTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,l
 
         # Keep rows with beacon count > 500
         # treeData = treeData[treeData[:beacons].>499,:]
-        displayManyRows(treeData[:,[1:3;]], [symbol("User Agent Family"), symbol("Load Time"), symbol("Beacons")],limit)
+        displayManyRows(treeData[:,[1:3;]], [symbol("User Agent Family"), symbol("Load Time"), symbol("Beacons")],SP.treemapTableLines)
     catch y
         println("browserFamilyTreemap Exception ",y)
     end
 end
 
-function countryTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limit::Int64=40)
+function countryTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:geo_cc])
@@ -121,7 +121,7 @@ function countryTreemap(TV::TimeVars,UP::UrlParams;showTable::Bool=false,limit::
         end
 
         treeData[:geo_cc] = countries
-        displayManyRows(treeData[:,[1:3;]], [symbol("Countries"), symbol("Load Time"), symbol("Beacons")],limit)
+        displayManyRows(treeData[:,[1:3;]], [symbol("Countries"), symbol("Load Time"), symbol("Beacons")],SP.treemapTableLines)
     catch y
         println("countryTreemap Exception ",y)
     end
@@ -160,7 +160,7 @@ function notBlocking(localDF::DataFrame)
     end
 end
 
-function bodyTreemap(TV::TimeVars,toppageurl::DataFrame,beaconString::ASCIIString;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)
+function bodyTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame,beaconString::ASCIIString;showPageUrl::Bool=false,showTreemap::Bool=true)
     try
         totalTime = sum(toppageurl[:,:Total])
         currentTime = sum(toppageurl[:,:beacons])
@@ -187,7 +187,7 @@ function bodyTreemap(TV::TimeVars,toppageurl::DataFrame,beaconString::ASCIIStrin
             end
             removeNotBlocking(toppageurl)
 
-            if (showTable)
+            if (SP.devView)
                 list = DataFrame()
                 list[:,:urlpagegroup] = deepcopy(toppageurl[:,:urlpagegroup])
                 list[:,:Total] = deepcopy(toppageurl[:,:Total])
@@ -203,10 +203,10 @@ function bodyTreemap(TV::TimeVars,toppageurl::DataFrame,beaconString::ASCIIStrin
                 list = list[Bool[x > totalPercentTime[1] for x in list[:beacons]],:]
                 if (showPageUrl)
                     map!(x->replace(x,"%","\%"),list[:,:urlgroup])
-                    beautifyDF(names!(list[1:min(limit,end),:],
+                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                     [symbol("URL Page Group"),symbol("Total Time"),symbol(beaconString),symbol("Url Without Params")]))
                 else
-                    beautifyDF(names!(list[1:min(limit,end),:],
+                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                     [symbol("URL Page Group"),symbol("Total Time"),symbol(beaconString)]))
                 end
             end
@@ -218,7 +218,7 @@ function bodyTreemap(TV::TimeVars,toppageurl::DataFrame,beaconString::ASCIIStrin
     end
 end
 
-function gapTreemapV2(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)
+function gapTreemapV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false,showTreemap::Bool=true)
     try
         #beacons on Blocking
         beaconString = "Gap"
@@ -227,14 +227,14 @@ function gapTreemapV2(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,l
             symbol("TCP"),symbol("Request"),symbol("Response"),symbol("beacons"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
 
-        bodyTreemap(TV,toppageurl,beaconString,showTable=showTable,limit=limit,showPageUrl=showPageUrl,showTreemap=showTreemap)
+        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl,showTreemap=showTreemap)
 
     catch y
         println("blockingTreemap Exception ",y)
     end
 end
 
-function blockingTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false,showTreemap::Bool=true)
+function blockingTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false,showTreemap::Bool=true)
     try
         #beacons on Blocking
         beaconString = "Blocking"
@@ -243,14 +243,14 @@ function blockingTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=fals
             symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
 
-        bodyTreemap(TV,toppageurl,beaconString,showTable=showTable,limit=limit,showPageUrl=showPageUrl,showTreemap=showTreemap)
+        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl,showTreemap=showTreemap)
 
     catch y
         println("blockingTreemap Exception ",y)
     end
 end
 
-function dnsTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)
+function dnsTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on DNS
         beaconString = "DNS"
@@ -259,14 +259,14 @@ function dnsTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,lim
             symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
 
-        bodyTreemap(TV,toppageurl,beaconString,showTable=showTable,limit=limit,showPageUrl=showPageUrl)
+        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("dnsTreemap Exception ",y)
     end
 end
 
-function redirectTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)
+function redirectTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Redirect
         beaconString = "Redirect"
@@ -275,14 +275,14 @@ function redirectTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=fals
             symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
 
-        bodyTreemap(TV,toppageurl,beaconString,showTable=showTable,limit=limit,showPageUrl=showPageUrl)
+        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("redirectTreemap Exception ",y)
     end
 end
 
-function requestTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)
+function requestTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Request
         beaconString = "Request"
@@ -291,14 +291,14 @@ function requestTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false
             symbol("TCP"),symbol("beacons"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
 
-        bodyTreemap(TV,toppageurl,beaconString,showTable=showTable,limit=limit,showPageUrl=showPageUrl)
+        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("requestTreemap Exception ",y)
     end
 end
 
-function responseTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)
+function responseTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Response
         beaconString = "Response"
@@ -307,14 +307,14 @@ function responseTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=fals
             symbol("TCP"),symbol("Request"),symbol("beacons"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
 
-        bodyTreemap(TV,toppageurl,beaconString,showTable=showTable,limit=limit,showPageUrl=showPageUrl)
+        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("responseTreemap Exception ",y)
     end
 end
 
-function tcpTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)
+function tcpTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on TCP
         beaconString = "TCP"
@@ -323,7 +323,7 @@ function tcpTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,lim
             symbol("beacons"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
 
-        bodyTreemap(TV,toppageurl,beaconString,showTable=showTable,limit=limit,showPageUrl=showPageUrl)
+        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("tcpTreemap Exception ",y)
@@ -331,7 +331,7 @@ function tcpTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,lim
 end
 
 # Critical Path Display
-function criticalPathTreemapV2(labelField::ASCIIString,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)
+function criticalPathTreemapV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,labelField::ASCIIString,toppageurl::DataFrame)
     try
         #beacons on Critical
         toppageurl = names!(toppageurl[:,:],
@@ -357,7 +357,7 @@ function criticalPathTreemapV2(labelField::ASCIIString,toppageurl::DataFrame;sho
         drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
         removeNotBlocking(toppageurl)
 
-        if (showTable)
+        if (SP.devView)
             currentTime = sum(toppageurl[:,:beacons])
             if currentTime > 0
                 list = DataFrame()
@@ -372,64 +372,16 @@ function criticalPathTreemapV2(labelField::ASCIIString,toppageurl::DataFrame;sho
                 totalPercentTime = list[1:1,:Critical] * 0.1
                 #Skip percent check
                 #list = list[Bool[x > totalPercentTime[1] for x in list[:Critical]],:]
-                beautifyDF(names!(list[1:min(limit,end),:],
+                beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                     [symbol("URL Page Group"),symbol("Total Time"),symbol("Critical Path"),symbol("Url Without Params")]))
             end
         end
     catch y
-        println("criticalPathTreemap Exception ",y)
+        println("criticalPathTreemapV2 Exception ",y)
     end
 end
 
-function criticalPathTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)
-    try
-        #beacons on Critical
-        toppageurl = names!(toppageurl[:,:],
-            [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("beacons"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
-
-        notBlocking(toppageurl);
-        toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:urlpagegroup] = "Waiting For Threads"
-        toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:Gap] = 0
-        toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:beacons] = sum(toppageurl[:,:Gap])
-
-        treeDF = DataFrame()
-        treeDF[:,:urlpagegroup] = toppageurl[:,:urlpagegroup]
-        treeDF[:,:beacons] = toppageurl[:,:beacons]
-        treeDF[:,:label] = toppageurl[:,:label]
-        treeDF[:,:load_time] = toppageurl[:,:load_time]
-
-        #display(treeDF[1:3,:])
-        fieldNames = [:urlpagegroup]
-        treeDF[:label] = "Critical Path"
-        drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
-        removeNotBlocking(toppageurl)
-
-        if (showTable)
-            currentTime = sum(toppageurl[:,:beacons])
-            if currentTime > 0
-                list = DataFrame()
-                list[:,:urlpagegroup] = deepcopy(toppageurl[:,:urlpagegroup])
-                list[:,:Total] = deepcopy(toppageurl[:,:Total])
-                list[:,:Critical] = deepcopy(toppageurl[:,:beacons])
-                list[:,:urlgroup] = deepcopy(toppageurl[:,:urlgroup])
-
-                totalPercentTime = sum(list[:,:Critical]) * 0.010
-                sort!(list,cols=[order(:Critical,rev=true)])
-                displayTitle(chart_title = "Top Times By Critical Path Time (ms)",showTimeStamp=false)
-                totalPercentTime = list[1:1,:Critical] * 0.1
-                list = list[Bool[x > totalPercentTime[1] for x in list[:Critical]],:]
-                beautifyDF(names!(list[1:min(limit,end),:],
-                    [symbol("URL Page Group"),symbol("Total Time"),symbol("Critical Path"),symbol("Url Without Params")]))
-            end
-        end
-    catch y
-        println("criticalPathTreemap Exception ",y)
-    end
-end
-
-function endToEndTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)
+function endToEndTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Total
         toppageurl = names!(toppageurl[:,:],
@@ -457,7 +409,7 @@ function endToEndTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=fals
             drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
             removeNotBlocking(toppageurl)
 
-            if (showTable)
+            if (SP.devView)
                 list = DataFrame()
                 list[:,:urlpagegroup] = deepcopy(toppageurl[:,:urlpagegroup])
                 #list[:,:Total] = deepcopy(toppageurl[:,:Total])
@@ -477,14 +429,14 @@ function endToEndTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=fals
                 totalPercentTime = 1
                 list = list[Bool[x > totalPercentTime[1] for x in list[:beacons]],:]
                 if (showPageUrl)
-                    #beautifyDF(names!(list[1:min(limit,end),:],
+                    #beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                     #    [symbol("URL Page Group"),symbol("Total Time"),symbol("Redirect"),symbol("Url Without Params")]))
-                    beautifyDF(names!(list[1:min(limit,end),:],
+                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                         [symbol("URL Page Group"),symbol("End to End Time"),symbol("Url Without Params")]))
                 else
-                    #beautifyDF(names!(list[1:min(limit,end),:],
+                    #beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                     #    [symbol("URL Page Group"),symbol("Total Time"),symbol("Redirect"),symbol("Url Without Params")]))
-                    beautifyDF(names!(list[1:min(limit,end),:],
+                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                         [symbol("URL Page Group"),symbol("End to End Time")]))
                 end
             end
@@ -494,55 +446,7 @@ function endToEndTreemap(TV::TimeVars,toppageurl::DataFrame;showTable::Bool=fals
     end
 end
 
-function gapTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40)
-    try
-        #beacons on Gap
-        toppageurl = names!(toppageurl[:,:],
-            [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("beacons"),symbol("Critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
-
-        notBlocking(toppageurl);
-        toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:urlpagegroup] = "Critical Path(Not Gap)"
-        toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:Critical] = 0
-        toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:beacons] = sum(toppageurl[:,:Critical])
-
-        treeDF = DataFrame()
-        treeDF[:,:urlpagegroup] = toppageurl[:,:urlpagegroup]
-        treeDF[:,:beacons] = toppageurl[:,:beacons]
-        treeDF[:,:label] = toppageurl[:,:label]
-        treeDF[:,:load_time] = toppageurl[:,:load_time]
-
-        #display(treeDF[1:3,:])
-        fieldNames = [:urlpagegroup]
-        treeDF[:label] = "GAP"
-        drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
-        removeNotBlocking(toppageurl)
-
-        if (showTable)
-            currentTime = sum(toppageurl[:,:beacons])
-            if currentTime > 0
-                list = DataFrame()
-                list[:,:urlpagegroup] = deepcopy(toppageurl[:,:urlpagegroup])
-                list[:,:Total] = deepcopy(toppageurl[:,:Total])
-                list[:,:Gap] = deepcopy(toppageurl[:,:beacons])
-                list[:,:urlgroup] = deepcopy(toppageurl[:,:urlgroup])
-
-                totalPercentTime = sum(list[:,:Gap]) * 0.010
-                sort!(list,cols=[order(:Gap,rev=true)])
-                displayTitle(chart_title = "Top Times By Gap Time (ms)",showTimeStamp=false)
-                totalPercentTime = list[1:1,:Gap] * 0.1
-                list = list[Bool[x > totalPercentTime[1] for x in list[:Gap]],:]
-                beautifyDF(names!(list[1:min(limit,end),:],
-                    [symbol("URL Page Group"),symbol("Total Time"),symbol("Gap"),symbol("Url Without Params")]))
-            end
-        end
-    catch y
-        println("gapTreemap Exception ",y)
-    end
-end
-
-function itemCountTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int64=40,showPageUrl::Bool=false)
+function itemCountTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #Note: This one is not time based.  Do not use this one as a template for others
 
@@ -571,7 +475,7 @@ function itemCountTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int
             drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
             removeNotBlocking(toppageurl)
 
-            if (showTable)
+            if (SP.devView)
                 list = DataFrame()
                 list[:,:urlpagegroup] = deepcopy(toppageurl[:,:urlpagegroup])
                 list[:,:request_count] = deepcopy(toppageurl[:,:beacons])
@@ -585,15 +489,15 @@ function itemCountTreemap(toppageurl::DataFrame;showTable::Bool=false,limit::Int
                 totalPercentTime = list[1:1,:request_count] * 0.1
                 list = list[Bool[x > totalPercentTime[1] for x in list[:request_count]],:]
                 if (showPageUrl)
-                    beautifyDF(names!(list[1:min(limit,end),:],
+                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                         [symbol("URL Page Group"),symbol("Request Count"),symbol("Url Without Params")]))
                 else
-                    beautifyDF(names!(list[1:min(limit,end),:],
+                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
                         [symbol("URL Page Group"),symbol("Request Count")]))
                 end
             end
         end
     catch y
-        println("redirectTreemap Exception ",y)
+        println("itemCountTreemap Exception ",y)
     end
 end

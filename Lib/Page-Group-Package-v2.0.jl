@@ -6,8 +6,8 @@ function stdRefPGD(TV::TimeVars,UP::UrlParams)
     standardReferrals(UP.btView,UP.pageGroup,TV.startTimeUTC,TV.endTimeUTC,TV.timeString; limit=UP.limitRows)
 end
 
-function treemapsPGD(TV::TimeVars,UP::UrlParams)
-    deviceTypeTreemap(TV,UP)
-    browserFamilyTreemap(TV,UP)
-    countryTreemap(TV,UP)
+function treemapsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+    deviceTypeTreemap(TV,UP,SP)
+    browserFamilyTreemap(TV,UP,SP)
+    countryTreemap(TV,UP,SP)
 end

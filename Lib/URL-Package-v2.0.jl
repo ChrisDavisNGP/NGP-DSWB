@@ -263,7 +263,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         FROM $(ltName)
         where
         beacon_type = 'page view' and
-        "timestamp" between $startTimeMs and $endTimeMs and
+        "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
         page_group ilike '$(UP.pageGroup)' and
         params_dom_sz > 0 and
         timers_t_page > 0
