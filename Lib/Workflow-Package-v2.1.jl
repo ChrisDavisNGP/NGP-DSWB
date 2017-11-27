@@ -80,6 +80,38 @@ function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
+function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    firstAndLastBeaconReport(TV,UP)
+
+    try
+        setTable(UP.btView)
+        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    catch y
+        println("sessionsBeacons Exception ",y)
+    end
+
+    try
+        setTable(UP.btView)
+        chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    catch y
+        println("loadTime Exception ",y)
+    end
+
+    setTable(UP.btView)
+    topUrlTable(UP.btView,UP.pageGroup,TV.timeString;limit=15)
+
+    setTable(UP.btView)
+    showPeakTable(TV,UP,SP)
+
+    statsTableFAPVSB(TV,UP)
+
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+    ;
+
+end
+
 function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
 
     pageGroupDetailsTables(TV,UP,mobileView,desktopView)
