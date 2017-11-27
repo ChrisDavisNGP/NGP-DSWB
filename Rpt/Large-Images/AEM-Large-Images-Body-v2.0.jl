@@ -26,7 +26,7 @@ function gatherSizeDataALI(UP::UrlParams,SP::ShowParams)
     end
 end
 
-function tableSummaryALI(joinTables::DataFrame,SP::ShowParams)
+function tableSummaryALI(joinTableSummary::DataFrame,joinTables::DataFrame,SP::ShowParams)
 
     joinTableSummary[:urlgroup] = "delete"
     joinTableSummary[:session_id] = ""

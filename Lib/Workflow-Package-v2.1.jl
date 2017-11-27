@@ -225,7 +225,7 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     ;
 
     joinTableSummary = DataFrame()
-    joinTableSummary = tableSummaryALI(joinTables,SP)
+    joinTableSummary = tableSummaryALI(joinTableSummary,joinTables,SP)
     ;
 
     i = 0

@@ -355,7 +355,9 @@ function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         localTable = UP.btView
         timeLowerMs = UP.timeLowerMs > 0 ? UP.timeLowerMs : 1000
         timeUpperMs = UP.timeUpperMs > 0 ? UP.timeUpperMs : 600000
-        println("Low=",timeLowerMs," High=", timeUpperMs)
+        if (SP.debugLevel > 0)
+            println("Low=",timeLowerMs," High=", timeUpperMs)
+        end
 
         query("""\
             create or replace view $localTable as (
