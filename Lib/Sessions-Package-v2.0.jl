@@ -6,8 +6,11 @@ function showAvailableSessions(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTa
         for subdf in groupby(full,[:session_id,:timestamp])
             i += 1
             s = size(subdf)
+
             if (SP.debugLevel > 8)
                 println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+            end
+
             if (subdf[1,:timers_t_done] >= UP.timeLowerMs && subdf[1,:timers_t_done] <= UP.timeUpperMs)
                 io += 1
                 if io <= SP.showLines
