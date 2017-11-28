@@ -21,7 +21,7 @@ function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Int64)
+function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         localTable = UP.btView
@@ -46,7 +46,7 @@ function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
     end
 end
 
-function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Int64)
+function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         localTable = UP.btView
@@ -74,7 +74,7 @@ function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
     end
 end
 
-function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Int64)
+function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         localTable = UP.btView
@@ -102,7 +102,7 @@ function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
     end
 end
 
-function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Int64)
+function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         localTable = UP.btView
@@ -133,7 +133,7 @@ function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
     end
 end
 
-function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Int64)
+function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         localTable = UP.btView
