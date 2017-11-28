@@ -54,7 +54,7 @@ function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
             limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(bigPagesDF)
+        scrubUrlToPrint(bigPagesDF;limit=SP.scrubUrlChars)
         beautifyDF(names!(bigPagesDF[1:min(SP.showLines,end),:],[symbol("Size");symbol("Load Time (ms)");symbol("URL")]))
     catch y
         println("bigPages2SRFLP Exception ",y)
@@ -82,7 +82,7 @@ function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
             limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(bigAveragePagesDF)
+        scrubUrlToPrint(bigAveragePagesDF;limit=SP.scrubUrlChars)
         beautifyDF(names!(bigAveragePagesDF[1:min(SP.showLines,end),:],[symbol("Count");symbol("Size");symbol("Load Time (ms)");symbol("URL")]))
     catch y
         println("bigPages3SRFLP Exception ",y)
@@ -110,7 +110,7 @@ function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
             limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(bigPagesSessionsDF)
+        scrubUrlToPrint(bigPagesSessionsDF;limit=SP.scrubUrlChars)
         beautifyDF(names!(bigPagesSessionsDF[1:min(end,SP.showLines),:],[symbol("Size");symbol("Session ID");symbol("Timestamp");symbol("URL")]))
     catch y
         println("bigPages4SRFLP Exception ",y)
@@ -175,7 +175,7 @@ function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         """);
 
         displayTitle(chart_title = "Big Pages Details (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(joinTables)
+        scrubUrlToPrint(joinTables;limit=SP.scrubUrlChars)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("bigPages6SRFLP Exception ",y)

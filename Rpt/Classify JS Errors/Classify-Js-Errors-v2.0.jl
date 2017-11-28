@@ -42,7 +42,7 @@ function resourceSummaryFARB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """);
 
         displayTitle(chart_title = "Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
+        #scrubUrlToPrint(joinTables;limit=SP.scrubUrlChars)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceSummaryFARB Exception ",y)

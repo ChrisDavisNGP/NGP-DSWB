@@ -505,7 +505,7 @@ function gatherSizeData(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             order by encoded desc
         """);
 
-        scrubUrlToPrint(joinTables,limit=SP.showLines)
+        scrubUrlToPrint(joinTables;limit=SP.scrubUrlChars)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
 
         return joinTables
@@ -543,7 +543,7 @@ function joinTablesDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTa
         recordsFound = nrow(joinTablesDetails)
         if (recordsFound > 0)
             displayTitle(chart_title = "Large Requests for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
-            scrubUrlToPrint(joinTablesDetails,limit=SP.showLines)
+            scrubUrlToPrint(joinTablesDetails;limit=SP.scrubUrlChars)
             beautifyDF(joinTablesDetails[1:end,:])
         end
     catch y

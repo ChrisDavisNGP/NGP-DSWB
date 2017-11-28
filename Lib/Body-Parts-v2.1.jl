@@ -496,7 +496,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKn
       if (SP.debugLevel > 2)
         println("Scrub Data");
       end
-      scrubUrlToPrint(toppageurl);
+      scrubUrlToPrint(toppageurl;limit=SP.scrubUrlChars);
 
       if (SP.debugLevel > 2)
         println("Classify Data");
@@ -913,7 +913,7 @@ function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         displayTitle(chart_title = "RT Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(summaryStatsDF[:,:])
 
-        scrubUrlToPrint(toppageurl);
+        scrubUrlToPrint(toppageurl;limit=SP.scrubUrlChars);
         classifyUrl(toppageurl);
 
         summaryPageGroup = summarizePageGroups(toppageurl)

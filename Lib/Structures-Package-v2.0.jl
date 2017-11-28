@@ -42,10 +42,11 @@ type ShowParams
     reportLevel::Int64       #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
     showLines::Int64
     treemapTableLines::Int64
+    scrubUrlChars::Int64
 end
 
 function ShowParamsInit()
-    SP = ShowParams(false,true,false,true,false,0,1,10,20)
+    SP = ShowParams(false,true,false,true,false,0,1,10,20,150)
     return SP
 end
 

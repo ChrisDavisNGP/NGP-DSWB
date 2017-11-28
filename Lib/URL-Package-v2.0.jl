@@ -1,6 +1,6 @@
 using URIParser
 
-function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=120)
+function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=150)
     try
     i = 0
     todo = 0
@@ -254,7 +254,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(topurl)
+        scrubUrlToPrint(topurl;limit=SP.scrubUrlChars)
         beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Url - With Grouping After Parameters Dropped")]))
 
         topurl = query("""\
@@ -272,7 +272,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(topurl)
+        scrubUrlToPrint(topurl;limit=SP.scrubUrlChars)
         beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Avg MB"),symbol("Avg MS"),symbol("Url - Individual")]))
     catch y
         println("topUrlTableByTime Exception ",y)
