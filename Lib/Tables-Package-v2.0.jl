@@ -227,17 +227,26 @@ function treemapsLocalTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function treemapsLocalTableRtDF(table::ASCIIString,tableRt::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,localUrl::ASCIIString;maxTime::Int64=600000)
+function treemapsLocalTableRtDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+    rt = UP.resourceTable
+
     try
         localTableRtDF = query("""\
-            select $tableRt.* from $table join $tableRt on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
-                where $tableRt."timestamp" between $startTimeMs and $endTimeMs
-                and $table.session_id IS NOT NULL
-                and $table.page_group = '$(productPageGroup)'
-                and $table.params_u ilike '$(localUrl)'
-                and $table.timers_t_done < $(maxTime)
-                and $table.params_rt_quit IS NULL
-            order by $tableRt.session_id, $tableRt."timestamp", $tableRt.start_time
+            select $rt.*
+            from $bt join $rt
+                on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
+            where
+                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $bt.session_id IS NOT NULL and
+                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.timers_t_done >= $(UP.timeLowerMs) and $bt.timers_t_done < $(UP.timeUpperMs) and
+                $bt.user_agent_device_type ilike '$(UP.deviceType)' and
+                $bt.user_agent_os ilike '$(UP.agentOs)' and
+                $bt.params_rt_quit IS NULL
+            order by $rt.session_id, $rt."timestamp", $rt.start_time
         """)
         return localTableRtDF
     catch y

@@ -1,11 +1,3 @@
-type LocalVars
-    reportLevel::Int64
-    rangeLower::Float64
-    rangeUpper::Float64
-    studySession::ASCIIString
-    studyTime::Int64
-end
-
 function setRangeUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
