@@ -203,16 +203,23 @@ function statsTableDF(table::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int
     end
 end
 
-function treemapsLocalTableDF(table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,localUrl::ASCIIString;maxTime::Int64=600000)
+function treemapsLocalTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+
     try
         localTableDF = query("""\
-        select * from $table where
-            "timestamp" between $startTimeMs and $endTimeMs and
+        select *
+        from $bt
+        where
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
             session_id IS NOT NULL and
-            page_group = '$(productPageGroup)' and
-            params_u ilike '$(localUrl)' and
-            timers_t_done >= 1000 and timers_t_done < $(maxTime)
-            AND params_rt_quit IS NULL
+            page_group ilike '$(UP.pageGroup)' and
+            params_u ilike '$(UP.urlRegEx)' and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            params_rt_quit IS NULL
         """)
         return localTableDF
     catch y
