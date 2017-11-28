@@ -20,7 +20,7 @@ function setRangeUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
-function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
 
     try
         toppageurl = DataFrame()
