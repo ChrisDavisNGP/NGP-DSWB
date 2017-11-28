@@ -1016,3 +1016,94 @@ function statsTableFAPVSB(TV::TimeVars,UP::UrlParams)
         println("statsTableFAPVSB Exception ",y)
     end
 end
+
+# Large Pages
+
+function createJoinTableSummary(SP::ShowParams,joinTableSummary::DataFrame,joinTables::DataFrame)
+
+    joinTableSummary[:urlgroup] = "delete"
+    joinTableSummary[:session_id] = ""
+    joinTableSummary[:timestamp] = 0
+    joinTableSummary[:encoded] = 0
+    joinTableSummary[:transferred] = 0
+    joinTableSummary[:decoded] = 0
+    joinTableSummary[:count] = 0
+
+    sort!(joinTables,cols=[order(:encoded,rev=true)])
+    for subDf in groupby(joinTables,:urlgroup)
+        #beautifyDF(subDf[1:1,:])
+        i = 1
+        for row in eachrow(subDf)
+            if (i == 1)
+                i +=1
+                push!(joinTableSummary,[row[:urlgroup],row[:session_id],row[:timestamp],row[:encoded],row[:transferred],row[:decoded],row[:count]])
+            end
+        end
+    end
+
+    i = 1
+    for x in joinTableSummary[:,:urlgroup]
+        if x == "delete"
+            deleterows!(joinTableSummary,i)
+        end
+        i += 1
+    end
+    sort!(joinTableSummary,cols=[order(:encoded,rev=true)])
+
+    beautifyDF(joinTableSummary[1:min(SP.showLines,end),[:urlgroup,:encoded,:transferred,:decoded]])
+
+    return joinTableSummary
+end
+
+# Large Pages
+
+function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSummary::DataFrame,row::Int64)
+    try
+        topUrl = string(joinTableSummary[row:row,:urlgroup][1],"%")
+        topTitle = joinTableSummary[row:row,:urlgroup][1]
+
+        dispDMT = DataFrame(RefGroup=["","",""],Unit=["","",""],Count=[0,0,0],Mean=[0.0,0.0,0.0],Median=[0.0,0.0,0.0],Min=[0.0,0.0,0.0],Max=[0.0,0.0,0.0])
+
+        UP.deviceType = "Desktop"
+        statsFullDF2 = statsTableDF2(TV,UP)
+        dispDMT[1:1,:RefGroup] = "Desktop"
+        if (size(statsFullDF2)[1] > 0)
+            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+            dispDMT[1:1,:Unit] = statsDF2[2:2,:unit]
+            dispDMT[1:1,:Count] = statsDF2[2:2,:count]
+            dispDMT[1:1,:Mean] = statsDF2[2:2,:mean]
+            dispDMT[1:1,:Median] = statsDF2[2:2,:median]
+            dispDMT[1:1,:Min] = statsDF2[2:2,:min]
+            dispDMT[1:1,:Max] = statsDF2[2:2,:max]
+        end
+        UP.deviceType = "Mobile"
+        statsFullDF2 = statsTableDF2(TV,UP)
+        dispDMT[2:2,:RefGroup] = "Mobile"
+        if (size(statsFullDF2)[1] > 0)
+            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+            dispDMT[2:2,:Unit] = statsDF2[2:2,:unit]
+            dispDMT[2:2,:Count] = statsDF2[2:2,:count]
+            dispDMT[2:2,:Mean] = statsDF2[2:2,:mean]
+            dispDMT[2:2,:Median] = statsDF2[2:2,:median]
+            dispDMT[2:2,:Min] = statsDF2[2:2,:min]
+            dispDMT[2:2,:Max] = statsDF2[2:2,:max]
+        end
+        UP.deviceType = "Tablet"
+        statsFullDF2 = statsTableDF2(TV,UP)
+        dispDMT[3:3,:RefGroup] = "Tablet"
+        if (size(statsFullDF2)[1] > 0)
+            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+            dispDMT[3:3,:Unit] = statsDF2[2:2,:unit]
+            dispDMT[3:3,:Count] = statsDF2[2:2,:count]
+            dispDMT[3:3,:Mean] = statsDF2[2:2,:mean]
+            dispDMT[3:3,:Median] = statsDF2[2:2,:median]
+            dispDMT[3:3,:Min] = statsDF2[2:2,:min]
+            dispDMT[3:3,:Max] = statsDF2[2:2,:max]
+        end
+
+        displayTitle(chart_title = "Large Request Stats for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
+        beautifyDF(dispDMT)
+    catch y
+        println("statsDetailsPrint Exception ",y)
+    end
+end

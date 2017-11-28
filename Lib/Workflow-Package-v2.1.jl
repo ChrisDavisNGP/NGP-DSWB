@@ -237,18 +237,18 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     defaultBeaconView(TV,UP,SP);
 
     joinTables = DataFrame()
-    joinTables = gatherSizeDataALI(UP,SP)
+    joinTables = gatherSizeData(TV,UP,SP)
     ;
 
     joinTableSummary = DataFrame()
-    joinTableSummary = tableSummaryALI(joinTableSummary,joinTables,SP)
+    joinTableSummary = createJoinTableSummary(SP,joinTableSummary,joinTables)
     ;
 
     i = 0
     for row in eachrow(joinTableSummary)
         i += 1
-        detailsPrint(UP,joinTableSummary,i)
-        statsDetailsPrint(UP,joinTableSummary,i)
+        joinTablesDetailsPrint(TV,UP,SP,joinTableSummary,i)
+        statsDetailsPrint(TV,UP,SP,joinTableSummary,i)
         if (i >= SP.showLines)
             break;
         end

@@ -484,3 +484,89 @@ function test3GNGSSDM(UP::UrlParams,SP::ShowParams)
         println("test3GNGSSDM Exception ",y)
     end
 end
+
+function gatherSizeData(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+    try
+        bt = UP.btView
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+        select
+            CASE WHEN (position('?' in $bt.params_u) > 0) then trim('/' from (substring($bt.params_u for position('?' in substring($bt.params_u from 9)) +7))) else trim('/' from $bt.params_u) end as urlgroup,
+            $bt.session_id,
+            $bt."timestamp",
+            sum($rt.encoded_size) as encoded,
+            sum($rt.transferred_size) as transferred,
+            sum($rt.decoded_size) as decoded,
+            count(*)
+        from $bt join $rt on $bt.session_id = $rt.session_id and $bt."timestamp" = $rt."timestamp"
+            where $rt.encoded_size > 1
+            group by urlgroup,$bt.session_id,$bt."timestamp"
+            order by encoded desc
+        """);
+
+        scrubUrlToPrint(joinTables,limit=SP.showLines)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+
+        return joinTables
+    catch y
+        println("gatherSizeData Exception ",y)
+    end
+end
+
+function joinTablesDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSummary::DataFrame,row::Int64)
+    try
+        localTable = UP.btView
+        tableRt = UP.resourceTable
+
+        topSessionId = joinTableSummary[row:row,:session_id][1]
+        topTimeStamp = joinTableSummary[row:row,:timestamp][1]
+        topTitle = joinTableSummary[row:row,:urlgroup][1]
+
+        joinTablesDetails = query("""\
+            select
+                $tableRt.start_time,
+                $tableRt.encoded_size,
+                $tableRt.transferred_size,
+                $tableRt.decoded_size,
+                $tableRt.url as urlgroup
+            from $localTable join $tableRt
+                on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
+            where
+                $localTable.session_id = '$(topSessionId)' and
+                $localTable."timestamp" = $(topTimeStamp) and
+                $tableRt.encoded_size > 1000000 and
+                $tableRt.url not like '%/interactive-assets/%'
+            order by $tableRt.start_time
+        """);
+
+        recordsFound = nrow(joinTablesDetails)
+        if (recordsFound > 0)
+            displayTitle(chart_title = "Large Requests for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
+            scrubUrlToPrint(joinTablesDetails,limit=SP.showLines)
+            beautifyDF(joinTablesDetails[1:end,:])
+        end
+    catch y
+        println("joinTablesDetailsPrint Exception ",y)
+    end
+end
+
+function statsTableDF2(TV::TimeVars,UP::UrlParams)
+    try
+        table = UP.btView
+
+        localStats = query("""\
+            select timers_t_done
+            from $table
+            where
+                page_group ilike '$(UP.pageGroup)' and
+                params_u ilike '$(UP.urlRegEx)' and
+                user_agent_device_type ilike '$(UP.deviceType)' and
+                "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                params_rt_quit IS NULL
+        """);
+        return localStats
+    catch y
+        println("statsTableDF2 Exception ",y)
+    end
+end
