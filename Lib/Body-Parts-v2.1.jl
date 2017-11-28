@@ -4,7 +4,6 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
   deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64)
   try
 
-      #customer = "Nat Geo"
       UP.deviceType = deviceType
       UP.timeLowerMs = rangeLowerMs
       UP.timeUpperMs = rangeUpperMs

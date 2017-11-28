@@ -50,15 +50,6 @@ function ShowParamsInit()
     return SP
 end
 
-type SoastaGraphs
-    customer::ASCIIString
-end
-
-function SoastaGraphsInit()
-    SG = SoastaGraphs("NGP")
-    return SG
-end
-
 type TimeVars
     startTime::DateTime
     endTime::DateTime
