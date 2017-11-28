@@ -80,6 +80,22 @@ function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
+function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    defaultTableGNGSSDM(TV,UP)
+
+    test1GNGSSDM(UP,SP)
+
+    test2GNGSSDM(UP,SP)
+
+    test3GNGSSDM(UP,SP)
+
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+    ;
+
+end
+
 function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     firstAndLastBeaconReport(TV,UP)
