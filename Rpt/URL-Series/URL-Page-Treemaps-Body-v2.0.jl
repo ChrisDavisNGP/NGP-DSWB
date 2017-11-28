@@ -7,8 +7,8 @@ function setRangeUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(statsDF[:,:])
-        UP.timeLowerMs = statsDF[1:1,:LowerBy3Stddev][1] * 1000
-        UP.timeUpperMs = statsDF[1:1,:UpperBy3Stddev][1] * 1000
+        UP.timeLowerMs = statsDF[1:1,:LowerBy3Stddev][1]
+        UP.timeUpperMs = statsDF[1:1,:UpperBy3Stddev][1]
 
         if (SP.debugLevel > 4)
             println("Found Time range $(UP.timeLowerMs) and $(UP.timeUpperMs)")
