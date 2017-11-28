@@ -20,26 +20,68 @@ function defaultLocalTableAemOnlyALR(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function defaultLocalTableALR(TV::TimeVars,UP::UrlParams)
-    try
-        table = UP.beaconTable
-        localTable = UP.btView
+function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=1000)
 
-        query("""\
-            create or replace view $localTable as (
-                select * from $table
-                    where
-                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                        page_group ilike '$(UP.pageGroup)' and
-                        params_u ilike '$(UP.urlRegEx)' and
-                        user_agent_device_type ilike '$(UP.deviceType)'
-            )
-        """)
-        cnt = query("""SELECT count(*) FROM $localTable""")
-        println("$localTable count is ",cnt[1,1])
+    # Create the summary table
+
+    try
+        btv = UP.btView
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+        select
+            avg($rt.encoded_size) as encoded,
+            avg($rt.transferred_size) as transferred,
+            avg($rt.decoded_size) as decoded,
+            $btv.user_agent_os,
+            $btv.user_agent_family,
+            count(*)
+        from $btv join $rt
+            on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
+        where $rt.encoded_size > $(minEncoded) and
+            $rt.url not like '%/interactive-assets/%' and
+           ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
+            $btv.deviceType ilike '$(UP.deviceType)'
+        group by
+            $btv.user_agent_family,
+            $btv.user_agent_os
+        order by encoded desc, transferred desc, decoded desc
+        """);
+
+        displayTitle(chart_title = "$(UP.deviceType) Big Pages Details (Min $(minEncoded) KB), File Type $(fileType)", chart_info = [TV.timeString], showTimeStamp=false)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
-        println("setupLocalTable Exception ",y)
+        println("bigPageSizeDetails 1 Exception ",y)
     end
+
+    # Create the details table
+
+    try
+
+        joinTables = query("""\
+        select
+            avg($rt.encoded_size) as encoded,
+            avg($rt.transferred_size) as transferred,
+            avg($rt.decoded_size) as decoded,
+            count(*),
+            CASE WHEN (position('?' in $btv.params_u) > 0) then trim('/' from (substring($btv.params_u for position('?' in substring($btv.params_u from 9)) +7))) else trim('/' from $btv.params_u) end as urlgroup,
+            $rt.url
+        from $btv join $rt
+            on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
+        where $rt.encoded_size > $(minEncoded) and
+            $rt.url not like '%/interactive-assets/%' and
+            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
+            $btv.deviceType ilike '$(UP.deviceType)'
+        group by
+            $btv.params_u,$rt.url
+        order by encoded desc, transferred desc, decoded desc
+        """);
+
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+    catch y
+        println("bigPageSizeDetails 2 Exception ",y)
+    end
+
 end
 
 function resourceSummary(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
