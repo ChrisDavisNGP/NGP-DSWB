@@ -24,10 +24,10 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
 
     # Create the summary table
 
-    try
-        btv = UP.btView
-        rt = UP.resourceTable
+    btv = UP.btView
+    rt = UP.resourceTable
 
+    try
         joinTables = query("""\
         select
             avg($rt.encoded_size) as encoded,
@@ -41,14 +41,14 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $btv.deviceType ilike '$(UP.deviceType)'
+            $btv.user_agent_device_type ilike '$(UP.deviceType)'
         group by
             $btv.user_agent_family,
             $btv.user_agent_os
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        displayTitle(chart_title = "$(UP.deviceType) Big Pages Details (Min $(minEncoded) KB), File Type $(fileType)", chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "$(UP.deviceType) Big Pages Details (Min $(minEncoded) Bytes), File Type $(fileType)", chart_info = [TV.timeString], showTimeStamp=false)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("bigPageSizeDetails 1 Exception ",y)
@@ -71,7 +71,7 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
             ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $btv.deviceType ilike '$(UP.deviceType)'
+            $btv.user_agent_device_type ilike '$(UP.deviceType)'
         group by
             $btv.params_u,$rt.url
         order by encoded desc, transferred desc, decoded desc
@@ -82,99 +82,6 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
         println("bigPageSizeDetails 2 Exception ",y)
     end
 
-end
-
-function resourceSummary(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
-
-    try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
-
-        joinTables = query("""\
-        select
-            avg($tableRt.encoded_size) as encoded,
-            avg($tableRt.transferred_size) as transferred,
-            avg($tableRt.decoded_size) as decoded,
-            $localTable.user_agent_os,
-            $localTable.user_agent_family,
-            count(*)
-        from $localTable join $tableRt
-            on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-        where $tableRt.encoded_size > $(minEncoded) and
-            $tableRt.url ilike '$(fileType)'
-        group by
-            $localTable.user_agent_family,
-            $localTable.user_agent_os
-        order by encoded desc, transferred desc, decoded desc
-        """);
-
-        displayTitle(chart_title = "Mobile Big Pages Details (Min $(minEncoded) KB), File Type $(fileType)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
-    catch y
-        println("bigTable5 Exception ",y)
-    end
-end
-
-function resourceSizes2(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
-
-    try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
-
-        joinTables = query("""\
-        select
-            avg($tableRt.encoded_size) as encoded,
-            avg($tableRt.transferred_size) as transferred,
-            avg($tableRt.decoded_size) as decoded,
-            count(*),
-            CASE WHEN (position('?' in $localTable.params_u) > 0) then trim('/' from (substring($localTable.params_u for position('?' in substring($localTable.params_u from 9)) +7))) else trim('/' from $localTable.params_u) end as urlgroup,
-            $tableRt.url
-        from $localTable join $tableRt
-        on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-        where $tableRt.encoded_size > $(minEncoded) and
-        $tableRt.url not like '%/interactive-assets/%' and ($tableRt.url ilike '$(fileType)' or $tableRt.url ilike '$(fileType)?%')
-        group by
-        $localTable.params_u,$tableRt.url
-        order by encoded desc, transferred desc, decoded desc
-        """);
-
-        beautifyDF(joinTables[1:min(linesOut,end),:])
-    catch y
-        println("bigTable5 Exception ",y)
-    end
-end
-
-function resourceSizes12(UP::UrlParams,fileType::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
-
-    try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
-
-        joinTables = query("""\
-        select
-            $localTable.user_agent_os,
-            $localTable.user_agent_family,
-            $tableRt.url,
-            avg($tableRt.encoded_size) as encoded,
-            avg($tableRt.transferred_size) as transferred,
-            avg($tableRt.decoded_size) as decoded,
-            count(*)
-        from $localTable join $tableRt
-        on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-        where $tableRt.encoded_size > $(minEncoded) and
-        $tableRt.url not like '%/interactive-assets/%' and $tableRt.url ilike '$(fileType)'
-        group by
-            $localTable.user_agent_family,
-            $localTable.user_agent_os,
-            $tableRt.url
-        order by encoded desc, transferred desc, decoded desc
-        """);
-
-        beautifyDF(joinTables[1:min(linesOut,end),:])
-    catch y
-        println("bigTable5 Exception ",y)
-    end
 end
 
 function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
