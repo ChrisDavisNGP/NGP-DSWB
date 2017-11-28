@@ -379,31 +379,6 @@ function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-
-function defaultTableGNGSSDM(TV::TimeVars,UP::UrlParams)
-
-    try
-        localTable = UP.btView
-        table = UP.beaconTable
-
-        query("""\
-            create or replace view $localTable as (
-                select *
-                    from $table
-                    where
-                        page_group ilike '$(UP.pageGroup)' and
-                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                        beacon_type = 'page view' and
-                        url ilike '$(UP.urlRegEx)'
-        )""")
-
-        cnt = query("""SELECT count(*) FROM $localTable""")
-        println("$localTable count is ",cnt[1,1])
-    catch y
-        println("defaultTableGNGSSDM Exception ",y)
-    end
-end
-
 function test1GNGSSDM(UP::UrlParams,SP::ShowParams)
 
     try

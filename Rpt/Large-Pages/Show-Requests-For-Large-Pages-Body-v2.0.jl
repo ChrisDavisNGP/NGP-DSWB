@@ -1,18 +1,3 @@
-function defaultTableSRFLP(TV::TimeVars,UP::UrlParams)
-
-    try
-        localTable = UP.btView
-        table = UP.beaconTable
-        query("""create or replace view $localTable as (select * from $table where "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC))""")
-
-        cnt = query("""SELECT count(*) FROM $localTable""")
-        #Hide output from final report
-        println("$localTable count is ",cnt[1,1])
-    catch y
-        println("setupLocalTable Exception ",y)
-    end
-end
-
 function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try

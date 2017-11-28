@@ -68,7 +68,7 @@ end
 
 function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultTableGNGSSDM(TV,UP)
+    defaultBeaconView(TV,UP,SP)
 
     test1GNGSSDM(UP,SP)
 
@@ -82,7 +82,7 @@ end
 
 function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultTableGNGSSDM(TV,UP)
+    defaultBeaconView(TV,UP,SP)
 
     test1GNGSSDM(UP,SP)
 
