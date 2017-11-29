@@ -198,7 +198,7 @@ function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
         println("sunburst Exception ",y)
     end
 
-    # General Context for All groupSamplesTableDF
+    # General Context for All
 
     setTable(UP.beaconTable)
 

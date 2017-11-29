@@ -12,7 +12,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,Well
       localTableRtDF = DataFrame()
       statsDF = DataFrame()
 
-      localTableDF = estimateBeacons(TV,UP,SP)
+      localTableDF = defaultBeaconsToDF(TV,UP,SP)
       recordsFound = nrow(localTableDF)
 
       #println("part 1 done with ",recordsFound, " records")
@@ -851,7 +851,7 @@ end
 function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         # Is there data?
-        localTableDF = estimateBeacons(TV,UP,SP)
+        localTableDF = defaultBeaconsToDF(TV,UP,SP)
         if (SP.debugLevel > 0)
           println("$(UP.beaconTable) count is ",size(localTableDF))
           println("")
@@ -1128,7 +1128,7 @@ end
 
 function displayGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
-        currentPageGroupDF = groupSamplesTableDF(UP.beaconTable,UP.pageGroup)
+        currentPageGroupDF = defaultBeaconsToDF(TV,UP,SP)
         #println("$pageGroup Beacons: ",size(currentPageGroupDF)[1])
 
         finalPrintDF = DataFrame(count=Int64[],url=ASCIIString[],params_u=ASCIIString[])

@@ -146,30 +146,6 @@ function sessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
     end
 end
 
-#function estimateBeacons(table::ASCIIString, startTimeMs::Int64, endTimeMs::Int64;
-#    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
-#    )
-function estimateBeacons(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-    try
-        localTableDF = query("""\
-            select * from $(UP.beaconTable)
-            where
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-            session_id IS NOT NULL and
-            params_rt_quit IS NULL and
-            params_u ilike '$(UP.urlRegEx)' and
-            user_agent_device_type ilike '$(UP.deviceType)' and
-            page_group ilike '$(UP.pageGroup)' and
-            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
-        """)
-        return localTableDF
-    catch y
-        println("urlDetailTables Exception ",y)
-    end
-end
-
-
 #function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,
 #    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
 #    )
@@ -210,30 +186,6 @@ function statsTableDF(table::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int
         return localStats
     catch y
         println("statsTableDF Exception ",y)
-    end
-end
-
-function treemapsLocalTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-    bt = UP.beaconTable
-
-    try
-        localTableDF = query("""\
-        select *
-        from $bt
-        where
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-            session_id IS NOT NULL and
-            page_group ilike '$(UP.pageGroup)' and
-            params_u ilike '$(UP.urlRegEx)' and
-            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
-            user_agent_device_type ilike '$(UP.deviceType)' and
-            user_agent_os ilike '$(UP.agentOs)' and
-            params_rt_quit IS NULL
-        """)
-        return localTableDF
-    catch y
-        println("treemapsLocalTableDF Exception ",y)
     end
 end
 
@@ -358,19 +310,6 @@ function urlResourceTable(localTableRt::ASCIIString,tableRt::ASCIIString,localTa
         """)
     catch y
         println("urlResourceTables Exception ",y)
-    end
-end
-
-function groupSamplesTableDF(table::ASCIIString,productPageGroup::ASCIIString)
-    try
-
-        samplesDF = query("""\
-                select * from $table where page_group ilike '$(productPageGroup)' and "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and beacon_type = 'page view'
-        """);
-
-        return samplesDF
-    catch y
-        println("groupSamplesTableDF Exception",y)
     end
 end
 
@@ -1087,5 +1026,30 @@ function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCI
         return joinTables
     catch y
         println("resourceImage Exception ",y)
+    end
+end
+
+# Select * from beaconTable into data frame
+
+function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+
+    try
+        localTableDF = query("""\
+            select * from $bt
+            where
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            session_id IS NOT NULL and
+            params_rt_quit IS NULL and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            page_group ilike '$(UP.pageGroup)' and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+        """)
+        return localTableDF
+    catch y
+        println("defaultBeaconsToDF Exception ",y)
     end
 end
