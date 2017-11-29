@@ -73,7 +73,7 @@ function resourceSizes2Old(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::A
         from $localTable join $tableRt
             on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
         where $tableRt.encoded_size > $(UP.sizeMin) and
-            ($tableRt.url ilike '$(LV.fileType)' or $tableRt.url ilike '$(LV.fileType)?%')
+            ($tableRt.url ilike '$(fileType)' or $tableRt.url ilike '$(fileType)?%')
         group by $localTable.params_u,$tableRt.url
         order by encoded desc, transferred desc, decoded desc
         """);

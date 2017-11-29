@@ -46,7 +46,7 @@ end
 
 function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
-        if LV.reportLevel > 0
+        if SP.reportLevel > 0
             i = 0
             for url in toppageurl[:urlgroup]
                 i += 1
@@ -62,6 +62,6 @@ function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             end
         end
     catch y
-        println("cell report on toppageurl Exception ",y)
+        println("findTopPageUrlUPT Exception ",y)
     end
 end
