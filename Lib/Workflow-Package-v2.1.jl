@@ -259,3 +259,177 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     ;
 
 end
+
+function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  #Turn sections on / off to debug
+  wfShowSessions = true
+  wfShowMedLoadTimes = true
+  wfShowTopPages = true
+  wfShowTopUrlPages = true
+  wfShowChartTopPage = true
+  wfShowMedLoadUrl = true
+  wfShowChartCacheHitRatio = true
+  wfShowChartTopPageResources = true
+  wfShowChartResResponse = true
+  wfShowChartResUrlResponse = false # broken like the one above
+  wfShowPercentBelow = true
+  wfShowBounceByUrl = true
+  wfShowResResponseTime = true
+  wfShowAggSessionLength = true
+  wfShowMedLoadByDevice = true
+  wfShowMedLoadByGeo = true
+  wfShowCustomReferrers = true
+  wfShowReferrers = true
+  wfShowMedLoadByReferrers = true
+  wfShowTreemaps = true
+  wfShowSunburst = true
+
+  wfClearViews = true
+
+  defaultBeaconView(TV,UP,SP)
+
+  defaultResourceView(TV,UP)
+
+  if (wfShowSessions)
+    #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup)", chart_info = [timeString])
+    chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+  end
+
+  if (wfShowMedLoadTimes)
+    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, pageUrl=UP.urlRegEx)
+  end
+
+  if (wfShowTopPages)
+    topPageViewsUDB(TV,UP,SP)
+  end
+
+  if (wfShowTopUrlPages)
+    topUrlPageViewsUDB(TV,UP,SP)
+  end
+
+  # Currently broken - need ticket to Soasta
+  if (wfShowChartTopPage)
+    #fail thresholdValues = [1000, 10000, 100000]
+    #fail chartRes = chartResponseTimesVsTargets(startTime, endTime, datePart, thresholdValues)
+    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    try
+        #chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC; beaconTable=UP.btView, resourceTable=UP.rtView,n=10,minPercentage=0.05)
+        chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC)
+        display(chartRes[1:20,:])
+    catch y
+        println("chartTop LocalTable Exception ",y)
+    end
+
+    setTable(UP.btView)
+  end
+
+  if (wfShowMedLoadUrl)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:url,minPercentage=0.1)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_u,minPercentage=0.1)
+  end
+
+  # Known bad - need ticket
+  if (wfShowChartCacheHitRatio)
+    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    chartRes = chartCacheHitRatioByUrl(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.1)
+    setTable(UP.btView)
+    display(chartRes)
+  end
+
+  # Need to test
+  if (wfShowChartTopPageResources)
+    #setTable(localTableRt, tableType = "RESOURCE_TABLE")
+    #chartTopPageResourcesSummary(startTime, endTime)
+    #chartTopPageResourcesSummary(startTime, endTime, datepart = datePart)
+    #setTable(localTable)
+    #display(chartRes)
+  end
+
+  # known bad - need ticket
+  if (wfShowChartResResponse)
+    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC,url=UP.urlRegEx)
+    setTable(UP.btView)
+    display(chartRes)
+  end
+
+  if (wfShowChartResUrlResponse)
+    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    #chartRes = chartResourceResponseTimeDistribution(startTime, endTime,url="http://phenomena.nationalgeographic.com/files/2016/05/BH91DH.jpg")
+    chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC)
+    setTable(UP.btView)
+    display(chartRes)
+  end
+
+  # known bad - need ticket
+  if (wfShowPercentBelow)
+    println(TV.startTimeUTC," and ",TV.endTimeUTC)
+    #chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, :hour; pageGroup=UP.pageGroup, threshold=6000, url=UP.urlRegEx)
+    chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, :hour)
+  end
+
+  if (wfShowBounceByUrl)
+    chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC, url=UP.urlFull)
+    #chartBouncesVsLoadTimes(startTime, endTime)
+  end
+
+  # known bad - need ticket
+  if (wfShowResResponseTime)
+    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    responseDist = getResourceResponseTimeDistribution(TV.startTimeUTC,TV.endTimeUTC, n=15, url=UP.urlFull)
+    setTable(UP.btView)
+    display(responseDist)
+  end
+
+  if (wfShowAggSessionLength)
+    myFilter = SQLFilter[like("params_u",UP.urlRegEx)]
+
+    perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; filters=myFilter)
+    c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Page Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
+        "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Top URL Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"])
+  end
+
+  if (wfShowMedLoadByDevice)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
+  end
+
+  if (wfShowMedLoadByGeo)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:geo_cc,minPercentage=2.5,n=10)
+  end
+
+  if (wfShowCustomReferrers)
+    localTable = UP.btView
+    productPageGroup = UP.pageGroup
+    customRefPGD(TV,UP)
+  end
+
+  if (wfShowReferrers)
+    stdRefPGD(TV,UP)
+  end
+
+  if (wfShowMedLoadByReferrers)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
+    t1 = getMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
+    display(t1)
+
+    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
+    t2 = getMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
+    display(t2)
+  end
+
+  if (wfShowTreemaps)
+    treemapsPGD(TV,UP,SP)
+  end
+
+  if (wfShowSunburst)
+    result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=30, f=getAbandonPaths,useurls=true);
+    drawSunburst(result10[1]; totalPaths=result10[3])
+  end
+
+  if (wfClearViews)
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+  end
+
+end
