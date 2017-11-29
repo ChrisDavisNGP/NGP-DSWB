@@ -1106,3 +1106,20 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         println("statsDetailsPrint Exception ",y)
     end
 end
+
+# from FindATimeSpike
+
+function graphLongTimesFATS(localStats2::DataFrame)
+    dataNames = ["Current Long Page Views Completed"]
+    axisLabels = ["Timestamps", "Milliseconds to Finish"]
+
+    chart_title="Points above 3 Standard Dev"
+    chart_info=["These are the long points only limited to the first 500"]
+
+    colors = ["#EEC584", "rgb(85,134,140)"]
+
+    # kwargs
+    point_r = 2
+
+    drawC3Viz(localStats2[1:500,:];  dataNames=dataNames, axisLabels=axisLabels, chart_title=chart_title, chart_info=chart_info, colors=colors, point_r=point_r);
+end
