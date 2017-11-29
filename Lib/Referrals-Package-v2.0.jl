@@ -77,62 +77,6 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
     end
 end
 
-
-function customReferralsTable0ld(localTable::ASCIIString, productPageGroup::ASCIIString)
-
-    try
-        displayTitle(chart_title = "Google Analytics Fields - Top Referrers for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-
-        fb = query("""\
-            select 'Facebook' AS " ", count(*)
-            FROM $localTable
-            where http_referrer ilike '%facebook%' or params_r ilike '%facebook%' or tp_ga_utm_source ilike '%facebook%'
-        """)
-
-        display(fb)
-
-        fb = query("""\
-            select 'Google' AS " ", count(*)
-            FROM $localTable
-            where http_referrer ilike '%google%' or params_r ilike '%google%' or tp_ga_utm_source ilike '%google%'
-        """)
-
-        display(fb)
-
-        gas = query("""\
-            select tp_ga_utm_source, count(*)
-            FROM $localTable
-            where http_referrer is not null and http_referrer != 'null'
-            group by tp_ga_utm_source
-            order by count(*) desc
-        """)
-
-        display(gas)
-
-        gam = query("""\
-            select tp_ga_utm_medium, count(*)
-            FROM $localTable
-            where http_referrer is not null and http_referrer != 'null'
-            group by tp_ga_utm_medium
-            order by count(*) desc
-        """)
-
-        display(gam)
-
-        gac = query("""\
-            select tp_ga_utm_campaign, count(*)
-            FROM $localTable
-            where http_referrer is not null and http_referrer != 'null'
-            group by tp_ga_utm_campaign
-            order by count(*) desc
-        """)
-
-        display(gac)
-    catch y
-        println("customReferralsTable Exception ",y)
-    end
-end
-
 function standardReferrals(localTable::ASCIIString, productPageGroup::ASCIIString, startTime::DateTime, endTime::DateTime, timeString::ASCIIString; limit::Int64=10)
 
     try
