@@ -493,3 +493,51 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
 end
+
+function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,minimumEncoded::Int64)
+
+    #Turn sections on / off to debug
+    wfShowBigPagesByFileType = true
+    wfShowLeftOvers = true
+    wfShowLeftOversDetails = true
+
+    defaultBeaconView(TV,UP,SP)
+
+    if (wfShowBigPagesByFileType)
+        bigPageSizeDetails(TV,UP,SP,"%jpg";minEncoded=minimumEncoded)
+        bigPageSizeDetails(TV,UP,SP,"%png";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%svg";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%mp3";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%mp4";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%gif";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%wav";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%jog";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%js";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%js?%";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%css";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%ttf";minEncoded=minimumEncoded);
+        bigPageSizeDetails(TV,UP,SP,"%woff";minEncoded=minimumEncoded);
+    end
+
+    if (wfShowLeftOvers)
+        try
+            lookForLeftOversALR(UP,linesOutput)
+        catch y
+            println("lookForLeftOversALR Exception ",y)
+        end
+    end
+
+    if (wfShowLeftOversDetails)
+        try
+            lookForLeftOversDetailsALR(UP,linesOutput)
+        catch y
+            println("lookForLeftOversALR Exception ",y)
+        end
+    end
+
+    if (wfClearViews)
+        q = query(""" drop view if exists $(UP.btView);""")
+        q = query(""" drop view if exists $(UP.rtView);""")
+    end
+
+end
