@@ -1057,3 +1057,35 @@ function cacheHitRatioSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
     displayTitle(chart_title = "$(typeStr): Cache Hit Ratio By URL Groups Across All Sessions", chart_info = [TV.timeString], showTimeStamp=false)
     beautifyDF(names!(ratio[1:min(30, end),[1:4;]],[symbol("Url Group"), symbol("Not Cached Cnt"), symbol("Cached Cnt"), symbol("Cached Ratio")]))
 end
+
+function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
+
+    try
+        localTable = UP.btView
+        tableRt = UP.resourceTable
+
+        joinTables = query("""\
+        select
+            avg($tableRt.encoded_size) as encoded,
+            avg($tableRt.transferred_size) as transferred,
+            avg($tableRt.decoded_size) as decoded,
+            count(*),
+            $tableRt.url
+        from $localTable join $tableRt
+            on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
+        where $tableRt.encoded_size > $(UP.sizeMin) and
+            ($tableRt.url ilike '$(fileType)' or $tableRt.url ilike '$(fileType)?%') and
+            $tableRt.url ilike 'http://www.nationalgeographic.com%'
+        group by $tableRt.url
+        order by encoded desc, transferred desc, decoded desc
+        """);
+
+        if (SP.debugLevel > 4)
+            beautifyDF(joinTables[1:min(SP.showLines,end),:])
+        end
+
+        return joinTables
+    catch y
+        println("resourceImage Exception ",y)
+    end
+end
