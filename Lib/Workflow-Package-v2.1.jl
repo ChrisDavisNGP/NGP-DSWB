@@ -433,3 +433,63 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
 end
+
+function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  #Turn sections on / off to debug
+  wfShowLongTimes = true
+  wfShowBelowThreshold = false # bad output - need ticket
+  wfShowLoadTimes = true
+  wfShowDurationByDate = true
+  wfShowTopUrls = true
+  wfShowSessionsAndBeacons = true
+  wfShowLongTimes = true
+
+  wfClearViews = true
+
+  defaultBeaconView(TV,UP,SP)
+
+  statsDF = DataFrame()
+  localStats2 = DataFrame()
+
+  statsDF = rawStatsFATS(TV,UP)
+  localStats2 = localStatsFATS(TV,UP,statsDF)
+
+  if (wfShowLongTimes)
+    longTimesFATS(TV,UP,localStats2)
+  end
+
+  setTable(UP.btView)
+
+  if (wfShowBelowThreshold)
+    chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+  end
+
+  if (wfShowLoadTimes)
+    #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [timeString])
+    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+  end
+
+  if (wfShowDurationByDate)
+    chartSessionDurationQuantilesByDatepart(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+  end
+
+  if (wfShowTopUrls)
+    chartTopURLsByLoadTime(TV.startTimeUTC, TV.endTimeUTC)
+  end
+
+  if (wfShowSessionsAndBeacons)
+    #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup)", chart_info = [timeString])
+    chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+  end
+
+  if (wfShowLongTimes)
+    graphLongTimesFATS(localStats2)
+  end
+
+  if (wfClearViews)
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+  end
+
+end
