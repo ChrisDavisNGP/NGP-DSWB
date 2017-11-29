@@ -26,10 +26,10 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
         toppageurl = DataFrame()
         tableRt = UP.resourceTable
 
-        if (LV.studyTime > 0)
-            toppageurl = sessionUrlTableDF(tableRt,LV.studySession,LV.studyTime)
-        elseif (LV.studySession != "None")
-            toppageurl = allSessionUrlTableDF(tableRt,LV.studySession,TV.startTimeMsUTC,TV.endTimeMsUTC)
+        if (studyTime > 0)
+            toppageurl = sessionUrlTableDF(TV,UP,SP,studySession,studyTime)
+        elseif (studySession != "None")
+            toppageurl = allSessionUrlTableDF(TV,UP,SP,studySession)
         else
             toppageurl = allPageUrlTableDF(TV,UP)
         end;
@@ -40,7 +40,7 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
             symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
         return toppageurl
     catch y
-        println("cell generate toppageurl Exception ",y)
+        println("findTopPageUrlUPT Exception ",y)
     end
 end
 

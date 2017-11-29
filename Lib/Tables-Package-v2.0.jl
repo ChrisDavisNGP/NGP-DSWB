@@ -75,7 +75,10 @@ function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function allSessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,startTimeMs::Int64,endTimeMs::Int64)
+function allSessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString)
+
+    rt = UP.resourceTable
+
     try
         toppageurl = query("""\
         select
@@ -95,9 +98,11 @@ function allSessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,sta
             'Label' as label,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END) as load,
             0 as beacon_time
-        FROM $(tableRt) where session_id = '$(studySession)' and
-            $tableRt."timestamp" between $startTimeMs and $endTimeMs
-            group by urlgroup,urlpagegroup,label
+        FROM $(rt)
+        where
+            session_id = '$(studySession)' and
+            $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+        group by urlgroup,urlpagegroup,label
         """);
 
         return toppageurl
@@ -106,7 +111,9 @@ function allSessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,sta
     end
 end
 
-function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyTime::Int64)
+function sessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+
+    rt = UP.resourceTable
     try
         toppageurl = query("""\
         select
@@ -126,8 +133,11 @@ function sessionUrlTableDF(tableRt::ASCIIString,studySession::ASCIIString,studyT
             'Label' as label,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END as load,
             0 as beacon_time
-        FROM $(tableRt) where session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
-            order by start_time asc
+        FROM $(rt)
+        where
+            session_id = '$(studySession)' and
+            "timestamp" = '$(studyTime)'
+        order by start_time asc
         """);
 
         return toppageurl

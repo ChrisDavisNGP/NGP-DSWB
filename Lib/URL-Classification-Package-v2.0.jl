@@ -64,7 +64,7 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
             #println("final Group ",toppageurl[i:i,:urlpagegroup])
         end
      catch y
-        println("classifyUrl2 Exception ",y)
+        println("classifyUrl Exception ",y)
     end
 
 end

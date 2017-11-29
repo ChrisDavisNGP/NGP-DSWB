@@ -450,9 +450,9 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
       toppageurl = DataFrame()
 
       if studyTime > 0
-          toppageurl = sessionUrlTableDF(UP.resourceTable,studySession,studyTime)
+          toppageurl = sessionUrlTableDF(TV,UP,SP,studySession,studyTime)
           elseif (studySession != "None")
-              toppageurl = allSessionUrlTableDF(UP.resourceTable,studySession,TV.startTimeMsUTC,TV.endTimeMsUTC)
+              toppageurl = allSessionUrlTableDF(TV,UP,SP,studySession)
           else
               toppageurl = allPageUrlTableDF(TV,UP)
       end;
@@ -676,7 +676,7 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
       return toppageurl
 
    catch y
-      println("gapAndCritcalPath Exception ",y)
+      println("gapAndCritcalPathV2 Exception ",y)
   end
 end
 
@@ -873,9 +873,9 @@ function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         toppageurl = DataFrame()
         if studyTime > 0
-            toppageurl = sessionUrlTableDF(UP.resourceTable,studySession,studyTime)
+            toppageurl = sessionUrlTableDF(TV,UP,SP,studySession,studyTime)
             elseif (studySession != "None")
-              toppageurl = allSessionUrlTableDF(UP.resourceTable,studySession,TV.startTimeMs,TV.endTimeMs)
+              toppageurl = allSessionUrlTableDF(TV,UP,SP,studySession)
             else
                 toppageurl = allPageUrlTableDF(TV,UP)
         end
