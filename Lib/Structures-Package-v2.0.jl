@@ -35,17 +35,17 @@ end
 # Look for known bad values.  Case sensitive values
 function UrlParamsValidate(UP::UrlParams)
 
-    if (UP.orderBy != "time" or UP.orderBy != "size")
+    if (UP.orderBy != "time" || UP.orderBy != "size")
       println("Warning: orderBy unknown value ",UP.orderBy," [time|size] known values. Continuing")
     end
 
     # Todo: build a list and list validate routine to validate against
-    if (UP.deviceType != "Desktop" or UP.deviceType != "Mobile" or UP.deviceType != "Tablet" or UP.deviceType != "Other" or UP.deviceType != "(No Value)" or UP.deviceType != "%")
+    if (UP.deviceType != "Desktop" || UP.deviceType != "Mobile" || UP.deviceType != "Tablet" || UP.deviceType != "Other" || UP.deviceType != "(No Value)" || UP.deviceType != "%")
       println("Warning: deviceType unknown value ",UP.deviceType," [Desktop|Mobile|Tablet|Other|(No Value)|%] common values. Continuing")
     end
 
     # Todo: build a list and list validate routine to validate against
-    if (UP.agentOs != "iOS" or UP.agentOs != "Android OS" or UP.agentOs != "Mac OS X" or UP.agentOs != "Windows" or UP.agentOs != "%")
+    if (UP.agentOs != "iOS" || UP.agentOs != "Android OS" || UP.agentOs != "Mac OS X" || UP.agentOs != "Windows" || UP.agentOs != "%")
       println("Warning: agentOs unusual value ",UP.agentOs," [Android OS|iOS|Mac OS X|Winodws|%] are common values. Continuing")
     end
 
@@ -71,15 +71,15 @@ end
 
 function ShowParamsValidate(SP::ShowParams)
 
-    if (!SP.debug and SP.debugLevel > 0)
+    if (!SP.debug && SP.debugLevel > 0)
       println("Warning: debug flag off but debugLevel greater than 0. Continuing")
     end
 
     if (SP.debug)
-      if (SP.debugLevel < 0 or SP.debugLevel > 10)
+      if (SP.debugLevel < 0 || SP.debugLevel > 10)
         println("Warning: debugLevel value ",SP.debugLevel," outside 0 to 10. Continuing")
       end
-    end      
+    end
 
 end
 
