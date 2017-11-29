@@ -35,18 +35,18 @@ end
 # Look for known bad values.  Case sensitive values
 function UrlParamsValidate(UP::UrlParams)
 
-    if (UP.orderBy != "time" || UP.orderBy != "size")
-      println("Warning: orderBy unknown value ",UP.orderBy," [time|size] known values. Continuing")
+    if (UP.orderBy != "time" && UP.orderBy != "size")
+      println("Warning: orderBy unknown value ",UP.orderBy,", [time|size] known values. Continuing")
     end
 
     # Todo: build a list and list validate routine to validate against
-    if (UP.deviceType != "Desktop" || UP.deviceType != "Mobile" || UP.deviceType != "Tablet" || UP.deviceType != "Other" || UP.deviceType != "(No Value)" || UP.deviceType != "%")
-      println("Warning: deviceType unknown value ",UP.deviceType," [Desktop|Mobile|Tablet|Other|(No Value)|%] common values. Continuing")
+    if (UP.deviceType != "Desktop" && UP.deviceType != "Mobile" && UP.deviceType != "Tablet" && UP.deviceType != "Other" && UP.deviceType != "(No Value)" && UP.deviceType != "%")
+      println("Warning: deviceType unknown value ",UP.deviceType,", [Desktop|Mobile|Tablet|Other|(No Value)|%] common values. Continuing")
     end
 
     # Todo: build a list and list validate routine to validate against
-    if (UP.agentOs != "iOS" || UP.agentOs != "Android OS" || UP.agentOs != "Mac OS X" || UP.agentOs != "Windows" || UP.agentOs != "%")
-      println("Warning: agentOs unusual value ",UP.agentOs," [Android OS|iOS|Mac OS X|Winodws|%] are common values. Continuing")
+    if (UP.agentOs != "iOS" && UP.agentOs != "Android OS" && UP.agentOs != "Mac OS X" && UP.agentOs != "Windows" && UP.agentOs != "%")
+      println("Warning: agentOs unusual value ",UP.agentOs,", [Android OS|iOS|Mac OS X|Winodws|%] are common values. Continuing")
     end
 
 end
