@@ -536,6 +536,16 @@ function VolumeOtherList()
 end
 
 function wellKnownHostEncyclopedia(debug::Bool)
+    if debug == true
+      #wellKnownHostEncyclopediaDebug()
+      wellKnownHostEncyclopedia()  # currently creating
+    else
+      wellKnownHostEncyclopedia()
+    end
+
+end
+
+function wellKnownHostEncyclopedia()
 
     VolumeA = VolumeAList()
     VolumeB = VolumeBList()
@@ -553,13 +563,29 @@ function wellKnownHostEncyclopedia(debug::Bool)
     return WellKnownHostDirectory
 end
 
+# Debug skips all the extra volumes
+function wellKnownHostEncyclopediaDebug()
+
+    VolumeA = VolumeAList()
+    VolumeOther = VolumeOtherList()
+
+    WellKnownHostDirectory = Dict([
+    ("A",VolumeA),
+    ("Other",VolumeOther)
+    ])
+
+    return WellKnownHostDirectory
+end
+
 function lookupHost(host::ASCIIString)
 
-    hostStart = uppercase(host[1])
+    hs = uppercase(host[1])
+    hostStart = string(hs)
     println("[",host,"] and [",hostStart,"]")
 
     try
         if (haskey(WellKnownHostDirectory,hostStart))
+            println("Fetch Volume ",hostStart)
             Volume = get(WellKnownHostDirectory,hostStart,"NoVolume")
             #println(Volume)
         else
@@ -567,12 +593,19 @@ function lookupHost(host::ASCIIString)
             #println(Volume)
         end
 
+        println("")
+        println(Volume)
+        println("")
+
         newUrlPageGroup = "NoneInner"
         if (haskey(Volume,host))
+            println("Fetch Host ",host)
             newUrlPageGroup = get(Volume,host,"NoneInner")
         end
 
         println("New Group ",newUrlPageGroup)
+        println("")
+
         return newUrlPageGroup
     catch y
         println("lookupHost Exception",y)
