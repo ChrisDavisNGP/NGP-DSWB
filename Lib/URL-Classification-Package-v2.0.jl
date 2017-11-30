@@ -24,9 +24,6 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
             if (findHost != "NoneInner")
                 newUrlPageGroup = findHost
                 toppageurl[i:i,:urlpagegroup] = findHost
-            elseif (haskey(WellKnownHost,uri.host))
-                newUrlPageGroup = get(WellKnownHost,uri.host,"None1")
-                toppageurl[i:i,:urlpagegroup] = newUrlPageGroup
             elseif (haskey(WellKnownPath,uri.path))
                 newUrlPageGroup = get(WellKnownPath,uri.path,"None2")
                 toppageurl[i:i,:urlpagegroup] = newUrlPageGroup
