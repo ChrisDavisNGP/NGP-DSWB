@@ -20,7 +20,11 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
                 continue
             end
 
-            if (haskey(WellKnownHost,uri.host))
+            findHost = lookupHost(uri.host)
+            if (findHost != "NoneInner")
+                newUrlPageGroup = findHost
+                toppageurl[i:i,:urlpagegroup] = findHost
+            elseif (haskey(WellKnownHost,uri.host))
                 newUrlPageGroup = get(WellKnownHost,uri.host,"None1")
                 toppageurl[i:i,:urlpagegroup] = newUrlPageGroup
             elseif (haskey(WellKnownPath,uri.path))
@@ -444,6 +448,7 @@ end
 function wellKnownHostDictionaryDebug()
 
     println("Using Short Dictionary for Debug")
+
     WellKnownHost = Dict([
         ("bundle.clearstream.tv","Debug Clearstream.tv"),
         ("cdn-stage.actiflex.org","Debug Actiflex.org"),
@@ -473,7 +478,86 @@ end
 #    return WellKnownPath
 #end
 
+function VolumeAList()
+    VolumeA = Dict([
+        ("a-ams.1rx.io","1rx.io"),
+        ("a-leh-kauneus-terveys.bannerflow.com","a-leh-kauneus-terveys.bannerflow.com"),
+        ("a-lehdet-a-lehdet.bannerflow.com","a-lehdet-a-lehdet.bannerflow.com"),
+        ("a-lehdet-image.bannerflow.com","a-lehdet-image.bannerflow.com"),
+        ("a-lehdet-urheilulehti.bannerflow.com","a-lehdet-urheilulehti.bannerflow.com"),
+        ("a-nj.1rx.io","a-nj.1rx.io"),
+        ("a-nl-ams.netmng.com","a-nl-ams.netmng.com"),
+        ("a-sjo.1rx.io","a-sjo.1rx.io")
+    ])
 
+    return VolumeA
+end
+
+function VolumeBList()
+    VolumeB = Dict([
+        ("bjngoenlgplfldejcemhamoifflkdnpj","bjngoenlgplfldejcemhamoifflkdnpj"),
+        ("bkxjlt.utbl0.mail.login.live.com","bkxjlt.utbl0.mail.login.live.com"),
+        ("blipznchitzcom-a.akamaihd.net","blipznchitzcom-a.akamaihd.net"),
+        ("blmojkbhnkkphngknkmgccmlenfaelkd","blmojkbhnkkphngknkmgccmlenfaelkd"),
+        ("block.opendns.com","block.opendns.com"),
+        ("blockpage.bkd.com","blockpage.bkd.com"),
+        ("blog.izilwane.org","blog.izilwane.org"),
+        ("blog.ucsusa.org","blog.ucsusa.org")
+    ])
+
+    return VolumeB
+end
+
+function VolumeOtherList()
+    VolumeOther = Dict([
+        ("0-edge-chat.facebook.com","Facebook"),
+        ("000ooo1010ooo.sitescoutadserver.com","000ooo1010ooo.sitescoutadserver.com"),
+        ("0069dd9bac104aa19def34c92e5552be.com","0069dd9bac104aa19def34c92e5552be.com"),
+        ("01.creativecdn.com","creativecdn"),
+        ("031kr-1h8ol.ads.tremorhub.com","Tremorhub Ads"),
+        ("031kr-2ct6v.ads.tremorhub.com","Tremorhub Ads"),
+    ])
+
+    return VolumeOther
+end
+
+function wellKnownHostEncyclopedia(debug::Bool)
+
+    VolumeA = VolumeAList()
+    VolumeB = VolumeBList()
+
+    VolumeOther = VolumeOtherList()
+
+    WellKnownHostDirectory = Dict([
+    ("A",VolumeA),
+    ("B",VolumeB),
+    ("Other",VolumeOther)
+    ])
+
+    return WellKnownHostDirectory
+end
+
+function lookupHost(host::ASCIIString)
+
+    hostStart = uppercase(host[1])
+    println(host," and ",hostStart)
+
+    if (haskey(WellKnownHostDirectory,hostStart))
+        Volume = haskey(WellKnownHostDirectory,hostStart)
+        println(Volume)
+    else
+        Volume = haskey(WellKnownHostDirectory,"Other")
+        println(Volume)
+    end
+
+    if (hashkey(Volume,host))
+        newUrlPageGroup = get (Volume,host,"NoneInner")
+    end
+
+    println("New Group ",newUrlPageGroup)
+    return newUrlPageGroup
+
+end
 
 function wellKnownHostDictionary()
 
