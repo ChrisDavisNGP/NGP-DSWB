@@ -44,8 +44,8 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
                         todo += 1
                         #@show todo uri.host  uri.path
                         if (ismatch(r"^.*",uri.host))
-                            println("Host ", uri.host, " Path ",uri.path)
-                            #println(uri.host)
+                            #println("Host ", uri.host, " Path ",uri.path)
+                            println("        (\"", uri.host,"\",\"",uri.host,"\"),")
                         end
                     end
                 end
@@ -108,6 +108,30 @@ function YourshotClassification(uriPath::ASCIIString)
             newString = "Yourshot Features Calls"
         elseif (ismatch(r"/storage-server.*",uriPath))
             newString = "Yourshot Storage"
+        elseif (ismatch(r"/photos.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/daily-doz.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/profile.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/akam.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/_.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/assignments.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/categories.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/widgets.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/search.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/tags.*",uriPath))
+            newString = "Yourshot Misc"
+        elseif (ismatch(r"/upload.*",uriPath))
+            newString = "Yourshot Misc"
         else
             println("Yourshot to do: Classify $(uriPath)")
         end
@@ -413,6 +437,56 @@ function wellKnownHostDictionaryDebug()
 
     println("Using Short Dictionary for Debug")
     WellKnownHost = Dict([
+
+        ("bundle.clearstream.tv","Clearstream.tv"),
+        ("cdn-stage.actiflex.org","Actiflex.org"),
+        ("mpc.nl.mxptint.net","Mxptint.net"),
+        ("pixel-geo.prfct.co","Prfct.co"),
+        ("profitkode.com","profitkode.com"),
+        ("quantcast584928381.s.moatpixel.com","Moatpixel.com"),
+        ("reports.metadsp.co.uk","Metadsp.co.uk"),
+        ("resus.u3.ucweb.com","Ucweb.com"),
+        ("www.google.co.th","Google Adsense Ads"),
+        ("www.google.se","Google Adsense Ads"),
+        ("www.natgeomaps.com","www.natgeomaps.com"),
+
+        ("9v528nau.ztkcdn.net","9v528nau.ztkcdn.net"),
+        ("ade.googlesyndication.com","Google Adsense Ads"),
+        ("adservice.google.co.uk","Www.google.co.uk"),
+        ("adservice.google.com","Google Adsense Ads"),
+        ("ama92y51s.ru","ama92y51s.ru"),
+        ("audex.userreport.com","Userreport.com"),
+        ("b.fox.com","FNG Fox.com"),
+        ("cdn.clearstream.tv","Clearstream.tv"),
+        ("clearstream-vast-production.s3-accelerate.amazonaws.com","Clearstream.tv"),
+        ("consumer.krxd.net","Krux Digital Ads"),
+        ("delivery.b.switchadhub.com","Switchadhub.com"),
+        ("delivery.swid.switchadhub.com","Switchadhub.com"),
+        ("eurads.simpli.fi","Simpli.fi"),
+        ("external.xx.fbcdn.net","Fbcdn.net"),
+        ("files.adspdbl.com","Adspdbl.com"),
+        ("foxentertainment.hb.omtrdc.net","foxentertainment.hb.omtrdc.net"),
+        ("ge.api4load.biz","ge.api4load.biz"),
+        ("graphics8.nytimes.com","NY Times AdX Ads"),
+        ("hlc6nt05mhavn.ru","hlc6nt05mhavn.ru"),
+        ("m.v.fwmrm.net","FreeWheel Video Player"),
+        ("mpd.nl.mxptint.net","Mxptint.net"),
+        ("pixel.clearstream.tv","Clearstream.tv"),
+        ("pixel.clrstm.com","Clearstream.tv"),
+        ("r3---sn-aigl6ney.c.2mdn.net","Google Doubleclick Ads"),
+        ("r9---sn-aigllnzk.c.2mdn.net","Google Doubleclick Ads"),
+        ("sa.scorecardresearch.com","ScoreCard Research Beacon"),
+        ("script.crazyegg.com","CrazyEgg Analytics"),
+        ("secure.surveymonkey.com","Surveymonkey"),
+        ("senurs7723.ru","senurs7723.ru"),
+        ("stage.actiflex.org","Actiflex.org"),
+        ("sync-tm.everesttech.net","Everesttech.net"),
+        ("test.com","test.com"),
+        ("vdna.exelator.com","Exelate Ads"),
+        ("widget.surveymonkey.com","Surveymonkey"),
+        ("www.google.com.tr","Google Doubleclick Ads"),
+        ("www.mdpi.com","www.mdpi.com"),
+        ("yt.wildearth.tv","yt.wildearth.tv"),
         ("appservices.nationalgeographic.com","NGP Requests"),
         ("f.monetate.net","Monetate Personalization"),
         ("sb.monetate.net","Monetate Personalization"),
@@ -465,7 +539,6 @@ end
 function wellKnownHostDictionary()
 
     WellKnownHost = Dict([
-        ("appservices.nationalgeographic.com","NGP Requests"),
         ("f.monetate.net","Monetate Personalization"),
         ("sb.monetate.net","Monetate Personalization"),
         ("se.monetate.net","Monetate Personalization"),
@@ -554,7 +627,7 @@ function wellKnownHostDictionary()
         ("adtag.mediaiqdigital.com","adtag.mediaiqdigital.com"),
         ("adx-winners-us-east-1-rtb.adroll.com","adx-winners-us-east-1-rtb.adroll.com"),
         ("adx-winners-us-west-2-rtb.adroll.com","adx-winners-us-west-2-rtb.adroll.com"),
-        ("aep.mxptint.net","aep.mxptint.net"),
+        ("aep.mxptint.net","Mxptint.net"),
         ("affinityis.s3.amazonaws.com","affinityis.s3.amazonaws.com"),
         ("agenimers.com","agenimers.com"),
         ("aimg.domdex.com","aimg.domdex.com"),
@@ -1063,7 +1136,7 @@ function wellKnownHostDictionary()
         ("qhx.estimablehill.com","qhx.estimablehill.com"),
         ("qph.is.quoracdn.net","qph.is.quoracdn.net"),
         ("quick-searcher-v2.biz","quick-searcher-v2.biz"),
-        ("r5---sn-ab5l6nsr.c.2mdn.net","r5---sn-ab5l6nsr.c.2mdn.net"),
+        ("r5---sn-ab5l6nsr.c.2mdn.net","Google Doubleclick Ads"),
         ("rat.reamp.com.br","rat.reamp.com.br"),
         ("raw.github.com","raw.github.com"),
         ("razorweb-a.akamaihd.net","razorweb-a.akamaihd.net"),
@@ -1078,7 +1151,7 @@ function wellKnownHostDictionary()
         ("robo.argstudio.com","robo.argstudio.com"),
         ("robo.aspenphp.com","robo.aspenphp.com"),
         ("rpt.cedexis.com","rpt.cedexis.com"),
-        ("rtb-pixel-ams1.everesttech.net","rtb-pixel-ams1.everesttech.net"),
+        ("rtb-pixel-ams1.everesttech.net","Everesttech.net"),
         ("rtb-sync.dashbida.com","rtb-sync.dashbida.com"),
         ("rtb-va.wtp101.com","rtb-va.wtp101.com"),
         ("rtzow.com","rtzow.com"),
@@ -1108,7 +1181,7 @@ function wellKnownHostDictionary()
         ("salecharger-a.akamaihd.net","salecharger-a.akamaihd.net"),
         ("saleclipper-a.akamaihd.net","saleclipper-a.akamaihd.net"),
         ("savagekingdom-staging.nationalgeographic.com","savagekingdom-staging.nationalgeographic.com"),
-        ("scontent-hkg3-1.xx.fbcdn.net","scontent-hkg3-1.xx.fbcdn.net"),
+        ("scontent-hkg3-1.xx.fbcdn.net","Fbcdn.net"),
         ("screendly.com","screendly.com"),
         ("screenz.info","screenz.info"),
         ("searchnewwindow-a.akamaihd.net","searchnewwindow-a.akamaihd.net"),
@@ -1174,7 +1247,7 @@ function wellKnownHostDictionary()
         ("s.innovid.com","Innovid Ads"),
         ("static.sevenfiveten.com","static.sevenfiveten.com"),
         ("static.unocdn.com","static.unocdn.com"),
-        ("static.xx.fbcdn.net","static.xx.fbcdn.net"),
+        ("static.xx.fbcdn.net","Fbcdn.net"),
         ("stats.bbc.co.uk","stats.bbc.co.uk"),
         ("sts.batmobi.net","sts.batmobi.net"),
         ("sy.adloads.net","sy.adloads.net"),
@@ -1233,7 +1306,7 @@ function wellKnownHostDictionary()
         ("ucdiva.t5rd1.exchanger.mail.ru","ucdiva.t5rd1.exchanger.mail.ru"),
         ("udrrhk.kzz5f.exchanger.mail.ru","udrrhk.kzz5f.exchanger.mail.ru"),
         ("ue12.splicky.com","ue12.splicky.com"),
-        ("uid.metadsp.co.uk","uid.metadsp.co.uk"),
+        ("uid.metadsp.co.uk","Metadsp.co.uk"),
         ("up.anv.bz","up.anv.bz"),
         ("us-adstatic.sam4m.com","us-adstatic.sam4m.com"),
         ("us-e-node2.bizzclick.com","us-e-node2.bizzclick.com"),
@@ -2072,7 +2145,7 @@ function wellKnownHostDictionary()
         ("ea.willemsefrance.fr","ea.willemsefrance.fr"),
         ("ea.wonderbox.fr","ea.wonderbox.fr"),
         ("earthpulse.nationalgeographic.com","earthpulse.nationalgeographic.com"),
-        ("eastads.simpli.fi","eastads.simpli.fi"),
+        ("eastads.simpli.fi","Simpli.fi"),
         ("ebay.solution.weborama.fr","ebay.solution.weborama.fr"),
         ("ec.sascdn.com","ec.sascdn.com"),
         ("eclips.io","eclips.io"),
@@ -2653,7 +2726,7 @@ function wellKnownHostDictionary()
         ("morepro.info","morepro.info"),
         ("mozbar.moz.com","mozbar.moz.com"),
         ("mp8cb.ads.tremorhub.com","Tremorhub Ads"),
-        ("mps.mxptint.net","mps.mxptint.net"),
+        ("mps.mxptint.net","Mxptint.net"),
         ("mrboardgame.com","mrboardgame.com"),
         ("my.adloads.net","my.adloads.net"),
         ("my.adocean.pl","my.adocean.pl"),
@@ -2811,8 +2884,8 @@ function wellKnownHostDictionary()
         ("pighip.co.kr","pighip.co.kr"),
         ("pioclpoplcdbaefihamjohnefbikjilc","pioclpoplcdbaefihamjohnefbikjilc"),
         ("piratesprincecom-a.akamaihd.net","piratesprincecom-a.akamaihd.net"),
-        ("pixel.everesttech.net","pixel.everesttech.net"),
-        ("pixel.onaudience.com","pixel.onaudience.com"),
+        ("pixel.everesttech.net","Everesttech.net"),
+        ("pixel.onaudience.com","Everesttech.net"),
         ("pixel.sojern.com","pixel.sojern.com"),
         ("pixel.zippormedia.com","pixel.zippormedia.com"),
         ("pk.adloads.net","pk.adloads.net"),
@@ -2908,7 +2981,7 @@ function wellKnownHostDictionary()
         ("report.2016olympics-br.com","report.2016olympics-br.com"),
         ("reporterosenmovimiento.files.wordpress.com","reporterosenmovimiento.files.wordpress.com"),
         ("res.cloudinary.com","res.cloudinary.com"),
-        ("rescn.u3.ucweb.com","rescn.u3.ucweb.com"),
+        ("rescn.u3.ucweb.com","Ucweb.com"),
         ("resources2.news.com.au","resources2.news.com.au"),
         ("resultshub-a.akamaihd.net","resultshub-a.akamaihd.net"),
         ("rg.yieldoptimizer.com","rg.yieldoptimizer.com"),
@@ -3221,7 +3294,7 @@ function wellKnownHostDictionary()
         ("suzuserver.dk","suzuserver.dk"),
         ("swf.mixpo.com","swf.mixpo.com"),
         ("swim.wordeel.com","swim.wordeel.com"),
-        ("sxp.mxptint.net","sxp.mxptint.net"),
+        ("sxp.mxptint.net","Mxptint.net"),
         ("syk3qe022.ru","syk3qe022.ru"),
         ("sync-eu.exe.bid","sync-eu.exe.bid"),
         ("sync.extend.tv","sync.extend.tv"),
@@ -3367,7 +3440,7 @@ function wellKnownHostDictionary()
         ("us-jet-02.sociomantic.com","us-jet-02.sociomantic.com"),
         ("us-nj-e8.bidderrtb.com","us-nj-e8.bidderrtb.com"),
         ("us-sc-e4.bidderrtb.com","us-sc-e4.bidderrtb.com"),
-        ("us-w-event.prfct.co","us-w-event.prfct.co"),
+        ("us-w-event.prfct.co","Prfct.co"),
         ("us.ad4mat.net","us.ad4mat.net"),
         ("us.browserupdatecheck.in","us.browserupdatecheck.in"),
         ("us.yourshoppingwizard.com","us.yourshoppingwizard.com"),
@@ -3430,7 +3503,7 @@ function wellKnownHostDictionary()
         ("webmedia.metropcs.com","webmedia.metropcs.com"),
         ("weld.unitegenius.com","weld.unitegenius.com"),
         ("weltbild.adclear.net","weltbild.adclear.net"),
-        ("westads.simpli.fi","westads.simpli.fi"),
+        ("westads.simpli.fi","Simpli.fi"),
         ("wf.securevid.co","wf.securevid.co"),
         ("wfb.hatedriveapart.com","wfb.hatedriveapart.com"),
         ("whitesky.s3.amazonaws.com","whitesky.s3.amazonaws.com"),
@@ -3689,7 +3762,7 @@ function wellKnownHostDictionary()
         ("ad.adc-srv.net","ad.adc-srv.net"),
         ("ad.adlegend.com","ad.adlegend.com"),
         ("ads.bridgetrack.com","ads.bridgetrack.com"),
-        ("ads.everesttech.net","ads.everesttech.net"),
+        ("ads.everesttech.net","Everesttech.net"),
         ("ads.p.veruta.com","ads.p.veruta.com"),
         ("adserver.monarchads.com","adserver.monarchads.com"),
         ("adsrv-us-west.tapad.com","Tapad Ads"),
@@ -3757,7 +3830,7 @@ function wellKnownHostDictionary()
         ("cdn2.iconfinder.com","cdn2.iconfinder.com"),
         ("cdna.runadtag.com","cdna.runadtag.com"),
         ("cdnfs1.yieldoptimizer.com","cdnfs1.yieldoptimizer.com"),
-        ("centralads.simpli.fi","centralads.simpli.fi"),
+        ("centralads.simpli.fi","Simpli.fi"),
         ("cfs.uzone.id","cfs.uzone.id"),
         ("ci3.googleusercontent.com","ci3.googleusercontent.com"),
         ("cloud.typography.com","cloud.typography.com"),
@@ -3908,8 +3981,8 @@ function wellKnownHostDictionary()
         ("revenueen-fresh-toast.bannerflow.com","revenueen-fresh-toast.bannerflow.com"),
         ("rfb.afy11.net","rfb.afy11.net"),
         ("rt.spongecell.com","rt.spongecell.com"),
-        ("rtb-pixel-or1.everesttech.net","rtb-pixel-or1.everesttech.net"),
-        ("rtb-pixel-va5.everesttech.net","rtb-pixel-va5.everesttech.net"),
+        ("rtb-pixel-or1.everesttech.net","Everesttech.net"),
+        ("rtb-pixel-va5.everesttech.net","Everesttech.net"),
         ("rules.foxydeal.com","rules.foxydeal.com"),
         ("s.desktoprecipe.com","s.desktoprecipe.com"),
         ("s.financenewsalert.com","s.financenewsalert.com"),
@@ -4958,7 +5031,7 @@ function wellKnownHostDictionary()
         ("i.r1-cdn.net","i.r1-cdn.net"),
         ("i.rafnewjs.info","i.rafnewjs.info"),
         ("i.rfgdjs.info","I.rfgdjs.info"),
-        ("i.simpli.fi","Remarketing for Expeditions"),
+        ("i.simpli.fi","Simpli.fi"),
         ("i.tonginjs.info","I.tonginjs.info"),
         ("i.vrtumcjs.info","I.vrtumcjs.info"),
         ("ia.nspmotion.com","Ia.nspmotion.com"),
@@ -5094,7 +5167,7 @@ function wellKnownHostDictionary()
         ("pcdn01.fra02.nsone.co","pcdn01.fra02.nsone.co"),
         ("pd0-imp.revsci.net","pd0-imp.revsci.net"),
         ("pd5-imp.revsci.net","pd5-imp.revsci.net"),
-        ("pdw-usr.userreport.com","pdw-usr.userreport.com"),
+        ("pdw-usr.userreport.com","Userreport.com"),
         ("pe.intentiq.com","Pe.intentiq.com"),
         ("ph-gmtdmp.mookie1.com","Mookie1"),
         ("phenomena.nationalgeographic.com","NGeo Phenomena"),
@@ -5205,7 +5278,7 @@ function wellKnownHostDictionary()
         ("remote.systemprocess.net","Remote.systemprocess.net"),
         ("rep.erate.co.il","rep.erate.co.il"),
         ("report-zt.1rx.io","report-zt.1rx.io"),
-        ("reports.adspdbl.com","reports.adspdbl.com"),
+        ("reports.adspdbl.com","Adspdbl.com"),
         ("resources","Resources"),
         ("rgaudit.1rx.io","rgaudit.1rx.io"),
         ("riu.commander1.com","riu.commander1.com"),
@@ -5448,7 +5521,7 @@ function wellKnownHostDictionary()
         ("video-assets.mathtag.com","Mathtag.com"),
         ("video.ft.com","video.ft.com"),
         ("view.contextualyield.com","view.contextualyield.com"),
-        ("visitanalytics.userreport.com","Visitanalytics.userreport.com"),
+        ("visitanalytics.userreport.com","Userreport.com"),
         ("vw95o5n7nvcypr.ru","Vw95o5n7nvcypr.ru"),
         ("w.soundcloud.com","w.soundcloud.com"),
         ("w3i.co","w3i.co"),

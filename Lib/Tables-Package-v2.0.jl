@@ -332,7 +332,7 @@ function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                         page_group ilike '$(UP.pageGroup)' and
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)' and
-                        $table.user_agent_os ilike '$(UP.agentOs)' and
+                        user_agent_os ilike '$(UP.agentOs)' and
                         timers_t_done >= $timeLowerMs and timers_t_done < $timeUpperMs
             )
         """)
