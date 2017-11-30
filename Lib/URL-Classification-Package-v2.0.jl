@@ -432,28 +432,6 @@ function gapAndCriticalPath(toppageurl::DataFrame)
     end
 end
 
-function wellKnownHostDictionary(debug::Bool)
-  if debug == true
-    wellKnownHostDictionaryDebug()
-  else
-    wellKnownHostDictionary()
-  end
-end
-
-
-#small subset of well known hosts for debug
-function wellKnownHostDictionaryDebug()
-
-    println("Using Short Dictionary for Debug")
-
-    WellKnownHost = Dict([
-        ("bundle.clearstream.tv","Debug Clearstream.tv"),
-        ("cdn-stage.actiflex.org","Debug Actiflex.org"),
-        ("mpc.nl.mxptint.net","Debug Mxptint.net"),
-    ]);
-    return WellKnownHost
-end
-
 function wellKnownPathDictionary(debug::Bool)
   if debug == true
     # There is no debug Path so far
@@ -6541,15 +6519,6 @@ function lookupHost(host::ASCIIString)
         return "NoneInner"
     end
 
-end
-
-function wellKnownHostDictionary()
-
-    WellKnownHost = Dict([
-
-    ]);
-
-    return WellKnownHost
 end
 
 function wellKnownPathDictionary()
