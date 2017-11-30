@@ -2930,7 +2930,7 @@ function wellKnownHostDictionary()
         ("hdadshds-f.akamaihd.net","hdadshds-f.akamaihd.net"),
         ("hdapp1004-a.akamaihd.net","hdapp1004-a.akamaihd.net"),
         ("hdapp1008-a.akamaihd.net","hdapp1008-a.akamaihd.net"),
-        ("hdokiejnpimakedhajhdlcegeplioahd_LastPassLastPassFreePasswordManager_qq0fmhteeht3j",LastPass"),
+        ("hdokiejnpimakedhajhdlcegeplioahd_LastPassLastPassFreePasswordManager_qq0fmhteeht3j","LastPass"),
         ("hdokiejnpimakedhajhdlcegeplioahd","hdokiejnpimakedhajhdlcegeplioahd"),
         ("hdsrc-a.akamaihd.net","hdsrc-a.akamaihd.net"),
         ("hello.distribeo.com","hello.distribeo.com"),
