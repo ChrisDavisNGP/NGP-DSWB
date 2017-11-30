@@ -508,6 +508,20 @@ function VolumeBList()
     return VolumeB
 end
 
+function VolumeCList()
+    VolumeC = Dict([
+        ("cdn.issigpen.com","cdn.issigpen.com"),
+        ("cdn.jsdelivr.net","cdn.jsdelivr.net"),
+        ("cdn.kixer.com","cdn.kixer.com"),
+        ("cdn.krxd.net","Krux Digital"),
+        ("cdn.leafletjs.com","Cdn.leafletjs.com"),
+        ("cdn.lqm.io","cdn.lqm.io"),
+        ("cdn.mathjax.org","cdn.mathjax.org")
+    ])
+
+    return VolumeC
+end
+
 function VolumeOtherList()
     VolumeOther = Dict([
         ("0-edge-chat.facebook.com","Facebook"),
@@ -525,12 +539,14 @@ function wellKnownHostEncyclopedia(debug::Bool)
 
     VolumeA = VolumeAList()
     VolumeB = VolumeBList()
+    VolumeC = VolumeCList()
 
     VolumeOther = VolumeOtherList()
 
     WellKnownHostDirectory = Dict([
     ("A",VolumeA),
     ("B",VolumeB),
+    ("C",VolumeC),
     ("Other",VolumeOther)
     ])
 
@@ -540,22 +556,28 @@ end
 function lookupHost(host::ASCIIString)
 
     hostStart = uppercase(host[1])
-    println(host," and ",hostStart)
+    println("[",host,"] and [",hostStart,"]")
 
-    if (haskey(WellKnownHostDirectory,hostStart))
-        Volume = haskey(WellKnownHostDirectory,hostStart)
-        println(Volume)
-    else
-        Volume = haskey(WellKnownHostDirectory,"Other")
-        println(Volume)
+    try
+        if (haskey(WellKnownHostDirectory,hostStart))
+            Volume = get(WellKnownHostDirectory,hostStart,"NoVolume")
+            #println(Volume)
+        else
+            Volume = get(WellKnownHostDirectory,"Other","NoVolume")
+            #println(Volume)
+        end
+
+        newUrlPageGroup = "NoneInner"
+        if (haskey(Volume,host))
+            newUrlPageGroup = get(Volume,host,"NoneInner")
+        end
+
+        println("New Group ",newUrlPageGroup)
+        return newUrlPageGroup
+    catch y
+        println("lookupHost Exception",y)
+        return "NoneInner"
     end
-
-    if (hashkey(Volume,host))
-        newUrlPageGroup = get (Volume,host,"NoneInner")
-    end
-
-    println("New Group ",newUrlPageGroup)
-    return newUrlPageGroup
 
 end
 
