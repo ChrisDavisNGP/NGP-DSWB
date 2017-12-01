@@ -1,4 +1,4 @@
-function dailyWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
     showPeakTable(TV,UP,SP;showStartTime30=true,showStartTime90=false,tableRange="Daily ")
@@ -128,7 +128,7 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
-function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
+function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
 
     pageGroupDetailsTables(TV,UP,mobileView,desktopView)
     setTable(UP.btView);
@@ -214,7 +214,7 @@ function pageGroupDetailsWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     #todo clean up views
 end
 
-function individualStreamlineWorkFlow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   urlListDF = returnMatchingUrlTableV2(TV,UP)
   if (SP.debugLevel > 4)
@@ -539,5 +539,50 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
         q = query(""" drop view if exists $(UP.btView);""")
         q = query(""" drop view if exists $(UP.rtView);""")
     end
+
+end
+
+function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  #Turn sections on / off to debug
+  wfShowResourcesByUrl = true
+  wfShowResourcesByUrls = true
+  wfShowResourcesAllFields = true
+  wfShowResourcesStats = true
+  wfShowResourcesByTime = true
+  wfShowResourcesByTimeTaken = true
+
+  wfClearViews = true
+
+  defaultBeaconView(TV,UP,SP)
+
+  if (wfShowResourcesByUrl)
+      displayMatchingResourcesByUrl(TV,UP,SP)
+  end
+
+  if (wfShowResourcesByUrls)
+      displayMatchingResourcesByUrls(TV,UP,SP)
+  end
+
+  if (wfShowResourcesAllFields)
+      displayMatchingResourcesAllFields(TV,UP,SP)
+  end
+
+  if (wfShowResourcesStats)
+      displayMatchingResourcesStats(TV,UP,SP)
+  end
+
+  if (wfShowResourcesByTime)
+      displayMatchingResourcesByTime(TV,UP,SP)
+  end
+
+  if (wfShowResourcesByTimeTaken)
+      displayMatchingResourcesByTimeTaken(TV,UP,SP)
+  end
+
+  if (wfClearViews)
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+  end
 
 end

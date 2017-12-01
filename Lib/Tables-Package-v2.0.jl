@@ -1054,3 +1054,181 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         println("defaultBeaconsToDF Exception ",y)
     end
 end
+
+function displayMatchingResourcesByUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+            select
+                count(*), url
+            from $rt
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            group by url
+            order by count(*) desc
+        """);
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+    catch y
+        println("displayMatchingResourcesByUrl Exception ",y)
+    end
+end
+
+function displayMatchingResourcesByUrls(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+        btw = UP.btView
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+            select
+                count(*), $rt.url, $rt.params_u, $btw.url
+            from $btw join $rt
+                on $btw.session_id = $rt.session_id and $btw."timestamp" = $rt."timestamp"
+            where
+            $rt.url ilike '$(UP.resRegEx)'
+            group by $rt.url, $rt.params_u, $btw.url
+            order by count(*) desc
+        """);
+
+        displayTitle(chart_title = "Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+    catch y
+        println("displayMatchingResourcesByUrls Exception ",y)
+    end
+end
+
+function displayMatchingResourcesAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+            select
+                *
+            from $rt
+            where
+              url ilike '$(UP.resRegEx)' and
+              "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            limit 3
+        """);
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+    catch y
+        println("displayMatchingResourcesAllFields Exception ",y)
+    end
+end
+
+function displayMatchingResourcesStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+            select
+                count(*),
+                avg(start_time) as "Start Time",
+                avg(fetch_start) as "Fetch S",
+                avg(dns_end-dns_start) as "DNS ms",
+                avg(tcp_connection_end-tcp_connection_start) as "TCP ms",
+                avg(request_start) as "Req S",
+                avg(response_first_byte) as "Req FB",
+                avg(response_last_byte) as "Req LB",
+                max(response_last_byte) as "Max Req LB",
+                url, params_u,
+                avg(redirect_start) as "Redirect S",
+                avg(redirect_end) as "Redirect E",
+                avg(secure_connection_start) as "Secure Conn S"
+            from $rt
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            group by url, params_u
+            order by count(*) desc
+        """);
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+    catch y
+        println("displayMatchingResourcesStats Exception ",y)
+    end
+end
+
+function displayMatchingResourcesByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+            select
+                (response_last_byte-start_time) as "Time Taken",
+                (start_time) as "Start Time",
+                (fetch_start) as "Fetch S",
+                (dns_end-dns_start) as "DNS ms",
+                (tcp_connection_end-tcp_connection_start) as "TCP ms",
+                (request_start) as "Req S",
+                (response_first_byte) as "Req FB",
+                (response_last_byte) as "Req LB",
+                url, params_u,
+                (redirect_start) as "Redirect S",
+                (redirect_end) as "Redirect E",
+                (secure_connection_start) as "Secure Conn S"
+            from $rt
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                (response_last_byte-start_time) > 5000
+            order by "Time Taken" desc
+        """);
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+    catch y
+        println("displayMatchingResourcesByTime Exception ",y)
+    end
+end
+
+function displayMatchingResourcesByTimeTaken(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+        rt = UP.resourceTable
+
+        joinTables = query("""\
+            select
+                (response_last_byte-start_time) as "Time Taken",
+                (start_time) as "Start Time",
+                (fetch_start) as "Fetch S",
+                (dns_end-dns_start) as "DNS ms",
+                (tcp_connection_end-tcp_connection_start) as "TCP ms",
+                (request_start) as "Req S",
+                (response_first_byte) as "Req FB",
+                (response_last_byte) as "Req LB",
+                url, params_u,
+                (redirect_start) as "Redirect S",
+                (redirect_end) as "Redirect E",
+                (secure_connection_start) as "Secure Conn S"
+            from $rt
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                start_time > 10000
+            order by start_time desc
+        """);
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
+    catch y
+        println("displayMatchingResourcesByTimeTaken Exception ",y)
+    end
+end
