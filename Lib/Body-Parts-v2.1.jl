@@ -1144,3 +1144,10 @@ function displayGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         println("displayGroup Exception ",y)
     end
 end
+
+function firstAndLast(TV::TimeVars,UP::UrlParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
+    allLimitedTable(UP.btView,UP.beaconTable,quickPageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+    setTable(UP.btView)
+    topUrlTableForWPF(UP.btView,pageGroup,TV.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
+    q = query(""" drop view if exists $(UP.btView);""")
+end

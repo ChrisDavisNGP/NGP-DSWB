@@ -1,10 +1,3 @@
-function firstAndLast(localTable::ASCIIString,pageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
-    allLimitedTable(localTable,table,pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
-    setTable(localTable)
-    topUrlTableForWPF(localTable,pageGroup,TV.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
-    q = query(""" drop view if exists $localTable;""")
-end
-
 function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
     try
         displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) WPF URLs for $(pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",timeString],showTimeStamp=false)
