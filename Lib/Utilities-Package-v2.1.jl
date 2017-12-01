@@ -40,3 +40,15 @@ function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession:
         println("waterFallFinder Exception ",y)
     end
 end
+
+function getNotebookName()
+    #whos()
+    #?setenv
+    #display(ENV["PATH"])
+    #display(ENV)
+    #display(notebook_name)
+    nb = replace(notebook_name,"\.ipynb","")
+    nb = replace(nb,"-","_")
+    #display(nb)
+    return nbName
+end

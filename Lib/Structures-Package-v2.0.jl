@@ -20,7 +20,10 @@ end
 
 function UrlParamsInit()
     # Set blank structure and fill later as needed
-    UP = UrlParams(table,"",tableRt,"","%","%","","%",1000,600000,0,0,0,"",true,"%","%")
+    nb = getNotebookName()
+    btView = "$(table)_$(nb)_pview"
+    rtView = "$(tableRt)_$(nb)_pview"
+    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",1000,600000,0,0,0,"",true,"%","%")
     return UP
 end
 
