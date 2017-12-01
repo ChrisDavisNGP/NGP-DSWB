@@ -586,3 +586,45 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
 end
+
+function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  #Turn sections on / off to debug
+  wfShowBigPage2 = true
+  wfShowBigPage3 = true
+  wfShowBigPage4 = true
+  wfShowBigPage5 = true
+  wfShowBigPage6 = true
+
+  wfClearViews = true
+
+  defaultBeaconView(TV,UP,SP)
+
+  minSizeBytes = bigPages1SRFLP(TV,UP,SP)
+
+  if (wfShowBigPage2)
+      bigPages2SRFLP(TV,UP,SP,minSizeBytes)
+  end
+
+  if (wfShowBigPage3)
+      bigPages3SRFLP(TV,UP,SP,minSizeBytes)
+  end
+
+  if (wfShowBigPage4)
+      bigPages4SRFLP(TV,UP,SP,minSizeBytes)
+  end
+
+  if (wfShowBigPag5)
+      bigPages5SRFLP(TV,UP,SP,minSizeBytes)
+  end
+
+  if (wfShowBigPage6)
+      bigPages6SRFLP(TV,UP,SP,minSizeBytes)
+  end
+
+  if (wfClearViews)
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+  end
+
+end
