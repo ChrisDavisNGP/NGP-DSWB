@@ -6404,8 +6404,7 @@ end
 
 function wellKnownHostEncyclopedia(debug::Bool)
     if debug == true
-      #wellKnownHostEncyclopediaDebug()
-      wellKnownHostEncyclopedia()  # currently creating
+      wellKnownHostEncyclopediaDebug()
     else
       wellKnownHostEncyclopedia()
     end

@@ -146,25 +146,26 @@ function sessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
     end
 end
 
-#function getResourcesForBeacon(table::ASCIIString, tableRt::ASCIIString,
-#    pageGroup::ASCIIString="%", localUrl::ASCIIString="%", deviceType::ASCIIString="%", rangeLowerMs::Float64=1000.0, rangeUpperMs::Float64=600000.0
-#    )
 function getResourcesForBeacon(TV::TimeVars,UP::UrlParams)
+
+    bt = UP.beaconTable
+    rt = UP.resourceTable
 
     try
 
         localTableRtDF = query("""\
-            select $(UP.resourceTable).* from $(UP.beaconTable) join $(UP.resourceTable)
-            on $(UP.resourceTable).session_id = $(UP.beaconTable).session_id and $(UP.resourceTable)."timestamp" = $(UP.beaconTable)."timestamp"
+            select $rt.* from $bt join $rt
+            on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
             where
-            $(UP.beaconTable).params_u ilike '$(UP.urlRegEx)'
-            and $(UP.resourceTable)."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-            and $(UP.beaconTable).session_id IS NOT NULL
-            and $(UP.beaconTable).page_group = '$(UP.pageGroup)'
-            and $(UP.beaconTable).timers_t_done >= $(UP.timeLowerMs) and $(UP.beaconTable).timers_t_done < $(UP.timeUpperMs)
-            and $(UP.beaconTable).params_rt_quit IS NULL
-            and $(UP.beaconTable).user_agent_device_type ilike '$(UP.deviceType)'
-            order by $(UP.resourceTable).session_id, $(UP.resourceTable)."timestamp", $(UP.resourceTable).start_time
+            $bt.params_u ilike '$(UP.urlRegEx)'
+            and $bt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            and $bt.session_id IS NOT NULL
+            and $bt.page_group ilike '$(UP.pageGroup)'
+            and $bt.timers_t_done >= $(UP.timeLowerMs) and $bt.timers_t_done < $(UP.timeUpperMs)
+            and $bt.params_rt_quit IS NULL
+            and $bt.user_agent_device_type ilike '$(UP.deviceType)'
+            and $bt.user_agent_os ilike '$(UP.agentOs)'
+            order by $rt.session_id, $rt."timestamp", $rt.start_time
             """)
 
 
