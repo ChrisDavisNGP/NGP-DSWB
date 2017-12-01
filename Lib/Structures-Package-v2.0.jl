@@ -49,6 +49,24 @@ function UrlParamsValidate(UP::UrlParams)
       println("Warning: agentOs unusual value ",UP.agentOs,", [Android OS|iOS|Mac OS X|Winodws|%] are common values. Continuing")
     end
 
+    if (
+        UP.pageGroup != "%" &&
+        UP.pageGroup != "News Article" &&
+        UP.pageGroup != "Channel" &&
+        UP.pageGroup != "Kids" &&
+        UP.pageGroup != "Travel AEM" &&
+        UP.pageGroup != "Photography AEM" &&
+        UP.pageGroup != "Magazine AEM" &&
+        UP.pageGroup != "Video" &&
+        UP.pageGroup != "Your Shot" &&
+        UP.pageGroup != "Animal AEM" &&
+        UP.pageGroup != "Nat Geo Homepage" &&
+        UP.pageGroup != "Environment AEM"
+        )
+        println("Warning: pageGroup is an unusual value ",UP.pageGroup,", See mPulse All Page Group filter for all values.")
+        println("         Common names [News Article|Channel|Kids|Travel AEM|Photography AEM|Nat Get Homepage|Your Shot]")
+    end
+
 end
 
 type ShowParams
