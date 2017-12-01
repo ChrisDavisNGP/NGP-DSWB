@@ -412,7 +412,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                       println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                  suitable  = individualPageReportV2(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
+                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
                   if (!suitable)
                       SP.showLines += 1
                   end
@@ -428,12 +428,11 @@ end
 
 # From Individual-Streamline-Body
 
-function executeSingleSession(TV::TimeVars,UP::UrlParams,SP::ShowParams,
-  timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
+function executeSingleSession(TV::TimeVars,UP::UrlParams,SP::ShowParams,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
   try
 
     sessionPageUrl = individualPageData(TV,UP,SP,studySession,studyTime)
-    individualPageReportV2(TV,UP,SP,sessionPageUrl,timerDone,studySession,studyTime)
+    individualPageReport(TV,UP,SP,sessionPageUrl,timerDone,studySession,studyTime)
 
   catch y
       println("showAvailSessions Exception ",y)
@@ -463,7 +462,7 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
   end
 end
 
-function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,
+function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
   try
 
@@ -509,7 +508,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       if (SP.devView)
-          waterFallFinder(TV,UP,studySession,studyTime)
+          waterFallFinder(TV,UP,SP,studySession,studyTime)
       end
 
       if (SP.debugLevel > 0)
@@ -537,7 +536,7 @@ function individualPageReportV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       return true
 
   catch y
-      println("individualPageReportV2 Exception ",y)
+      println("individualPageReport Exception ",y)
   end
 end
 

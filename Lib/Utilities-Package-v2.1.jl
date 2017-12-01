@@ -7,15 +7,16 @@
 # Better version using TimeVars structure to pass the time around
 function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
     try
-        table = UP.beaconTable
+        bt = UP.beaconTable
 
         waterfall = query("""\
             select
                 page_group,geo_cc,geo_rg, user_agent_os, user_agent_osversion, user_agent_device_type, user_agent_family, user_agent_major
-                FROM $table
-                where "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
-                order by "timestamp" asc
-                LIMIT $(SP.showLines)
+            FROM $bt
+            where
+               "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
+            order by "timestamp" asc
+            LIMIT $(SP.showLines)
         """)
 
         whenUTC = msToDateTime(studyTime)
