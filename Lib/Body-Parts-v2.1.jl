@@ -1145,7 +1145,7 @@ function displayGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function firstAndLast(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
+function displayTopUrlsByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
     UP.pageGroup = quickPageGroup
     defaultBeaconView(TV,UP,SP)
     setTable(UP.btView)
