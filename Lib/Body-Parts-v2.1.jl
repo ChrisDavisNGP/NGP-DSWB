@@ -1145,9 +1145,46 @@ function displayGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function firstAndLast(TV::TimeVars,UP::UrlParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
-    allLimitedTable(UP.btView,UP.beaconTable,quickPageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+function firstAndLast(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
+    UP.pageGroup = quickPageGroup
+    defaultBeaconView(TV,UP,SP)
     setTable(UP.btView)
     topUrlTableForWPF(UP.btView,pageGroup,TV.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
     q = query(""" drop view if exists $(UP.btView);""")
+end
+
+function paginatePrintDf(printDF::DataFrame)
+    try
+        currentLine = 1
+        linesOut = 25
+        linesToPrint = size(printDF,1)
+
+        while currentLine < linesToPrint
+            beautifyDF(printDF[currentLine:min(currentLine+linesOut-1,end),:])
+            currentLine += linesOut
+        end
+
+    catch y
+        println("paginatePrintDf Exception ",y)
+    end
+
+end
+
+function cleanupTableFTWP(TV::TimeVars,UP::UrlParams)
+
+    CleanupTable = query("""\
+        select
+            page_group,
+            count(*) as "Page Views"
+        FROM $(UP.beaconTable)
+        where
+            beacon_type = 'page view'
+            and "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            and page_group in ('Adventure WPF','Animals WPF','Environment WPF','Games WPF','Images WPF',
+                                'Movies WPF','Ocean WPF','Photography WPF','Science WPF','Travel WPF')
+        GROUP BY page_group
+        Order by count(*) desc
+    """)
+
+    beautifyDF(CleanupTable[1:min(10,end),:])
 end

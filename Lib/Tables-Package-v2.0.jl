@@ -1232,3 +1232,66 @@ function displayMatchingResourcesByTimeTaken(TV::TimeVars,UP::UrlParams,SP::Show
         println("displayMatchingResourcesByTimeTaken Exception ",y)
     end
 end
+
+function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
+    try
+
+        dbgtopurl = query("""\
+
+        select
+        *
+        FROM $(ltName)
+        where
+        beacon_type = 'page view'
+        limit 10
+        """);
+
+        println(nrow(dbgtopurl))
+        beautifyDF(dbgtopurl)
+
+        topurl = query("""\
+
+        select count(*),
+        CASE
+        when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+        else trim('/' from params_u)
+        end urlgroup
+        FROM $(ltName)
+        where
+        beacon_type = 'page view'
+        group by urlgroup
+        order by count(*) desc
+        limit $(rowLimit)
+        """);
+
+        #println(nrow(topurl))
+        #beautifyDF(topurl)
+
+        if (nrow(topurl) == 0)
+            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(pageGroup) - No Page Views", showTimeStamp=false)
+            return
+        else
+            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",timeString],showTimeStamp=false)
+        end
+
+        #scrubUrlToPrint(topurl)
+        #println(nrow(topurl))
+
+
+
+        newDF = topurl[Bool[x > beaconsLimit for x in topurl[:count]],:]
+        printDF = names!(newDF[:,:],[symbol("Views"),symbol("Url - $(pageGroup)")])
+
+        #beautifyDF(printDF)
+
+        if (paginate)
+            paginatePrintDf(printDF)
+        else
+            beautifyDF(printDF[:,:])
+        end
+
+    catch y
+        println("topUrlTable Exception ",y)
+    end
+
+end
