@@ -1040,7 +1040,7 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         localTableDF = query("""\
             select * from $bt
             where
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
             session_id IS NOT NULL and
             params_rt_quit IS NULL and
             params_u ilike '$(UP.urlRegEx)' and
