@@ -1238,57 +1238,59 @@ function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit:
 
             ltName = UP.btView
 
-            dbgtopurl = query("""\
+            if (SP.debugLevel > 4)
+                dbgtopurl = query("""\
 
-            select
-                *
-            FROM $(ltName)
-            where
-                beacon_type = 'page view'
-                limit 10
+                select
+                    *
+                FROM $(ltName)
+                where
+                    beacon_type = 'page view'
+                    limit 10
+                """);
+
+                println(nrow(dbgtopurl))
+                beautifyDF(dbgtopurl)
+            end
+
+            topurl = query("""\
+
+            select count(*),
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                    end urlgroup
+                FROM $(ltName)
+                where
+                    beacon_type = 'page view'
+                    group by urlgroup
+                    order by count(*) desc
+                    limit $(rowLimit)
             """);
 
-        println(nrow(dbgtopurl))
-        beautifyDF(dbgtopurl)
+            #println(nrow(topurl))
+            #beautifyDF(topurl)
 
-        topurl = query("""\
+            if (nrow(topurl) == 0)
+                displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(UP.pageGroup) - No Page Views", showTimeStamp=false)
+                return
+            else
+                displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(UP.pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",TV.timeString],showTimeStamp=false)
+            end
 
-        select count(*),
-            CASE
-                when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                else trim('/' from params_u)
-                end urlgroup
-            FROM $(ltName)
-            where
-                beacon_type = 'page view'
-                group by urlgroup
-                order by count(*) desc
-                limit $(rowLimit)
-        """);
+            #scrubUrlToPrint(topurl)
+            #println(nrow(topurl))
 
-        #println(nrow(topurl))
-        #beautifyDF(topurl)
+            newDF = topurl[Bool[x > beaconsLimit for x in topurl[:count]],:]
+            printDF = names!(newDF[:,:],[symbol("Views"),symbol("Url - $(UP.pageGroup)")])
 
-        if (nrow(topurl) == 0)
-            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(UP.pageGroup) - No Page Views", showTimeStamp=false)
-            return
-        else
-            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(UP.pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",timeString],showTimeStamp=false)
-        end
+            #beautifyDF(printDF)
 
-        #scrubUrlToPrint(topurl)
-        #println(nrow(topurl))
-
-        newDF = topurl[Bool[x > beaconsLimit for x in topurl[:count]],:]
-        printDF = names!(newDF[:,:],[symbol("Views"),symbol("Url - $(UP.pageGroup)")])
-
-        #beautifyDF(printDF)
-
-        if (paginate)
-            paginatePrintDf(printDF)
-        else
-            beautifyDF(printDF[:,:])
-        end
+            if (paginate)
+                paginatePrintDf(printDF)
+            else
+                beautifyDF(printDF[:,:])
+            end
 
     catch y
         println("topUrlTableByCount Exception ",y)
