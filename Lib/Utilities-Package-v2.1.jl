@@ -42,13 +42,18 @@ function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession:
 end
 
 function getNotebookName()
-    #whos()
+    #whos(r"^n.*")
     #?setenv
     #display(ENV["PATH"])
     #display(ENV)
     #display(notebook_name)
+    #display("text/html", """<script charset="utf-8">IPython.notebook.kernel.execute('notebook_name = "'+IPython.notebook.notebook_name+'" ');</script>""")
+    if (notebook_name == "")
+        println("problems with notebook_name javascript.  See top of Structures.jl.")
+        notebook_name = "default_name"
+    end
     nb = replace(notebook_name,"\.ipynb","")
     nb = replace(nb,"-","_")
     #display(nb)
-    return nbName
+    return nb
 end

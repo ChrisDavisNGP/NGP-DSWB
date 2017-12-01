@@ -1,3 +1,6 @@
+# Gather the notebook name for later
+display("text/html", """<script charset="utf-8">IPython.notebook.kernel.execute('notebook_name = "'+IPython.notebook.notebook_name+'" ');</script>""")
+
 type UrlParams
     beaconTable::ASCIIString
     btView::ASCIIString
