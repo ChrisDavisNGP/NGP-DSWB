@@ -1233,18 +1233,20 @@ function displayMatchingResourcesByTimeTaken(TV::TimeVars,UP::UrlParams,SP::Show
     end
 end
 
-function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
-    try
+function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
+        try
 
-        dbgtopurl = query("""\
+            ltName = UP.btView
 
-        select
-        *
-        FROM $(ltName)
-        where
-        beacon_type = 'page view'
-        limit 10
-        """);
+            dbgtopurl = query("""\
+
+            select
+                *
+            FROM $(ltName)
+            where
+                beacon_type = 'page view'
+                limit 10
+            """);
 
         println(nrow(dbgtopurl))
         beautifyDF(dbgtopurl)
@@ -1252,35 +1254,33 @@ function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         topurl = query("""\
 
         select count(*),
-        CASE
-        when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-        else trim('/' from params_u)
-        end urlgroup
-        FROM $(ltName)
-        where
-        beacon_type = 'page view'
-        group by urlgroup
-        order by count(*) desc
-        limit $(rowLimit)
+            CASE
+                when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                else trim('/' from params_u)
+                end urlgroup
+            FROM $(ltName)
+            where
+                beacon_type = 'page view'
+                group by urlgroup
+                order by count(*) desc
+                limit $(rowLimit)
         """);
 
         #println(nrow(topurl))
         #beautifyDF(topurl)
 
         if (nrow(topurl) == 0)
-            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(pageGroup) - No Page Views", showTimeStamp=false)
+            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(UP.pageGroup) - No Page Views", showTimeStamp=false)
             return
         else
-            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",timeString],showTimeStamp=false)
+            displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(UP.pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",timeString],showTimeStamp=false)
         end
 
         #scrubUrlToPrint(topurl)
         #println(nrow(topurl))
 
-
-
         newDF = topurl[Bool[x > beaconsLimit for x in topurl[:count]],:]
-        printDF = names!(newDF[:,:],[symbol("Views"),symbol("Url - $(pageGroup)")])
+        printDF = names!(newDF[:,:],[symbol("Views"),symbol("Url - $(UP.pageGroup)")])
 
         #beautifyDF(printDF)
 
@@ -1291,7 +1291,7 @@ function topUrlTableForWPF(ltName::ASCIIString, pageGroup::ASCIIString,timeStrin
         end
 
     catch y
-        println("topUrlTable Exception ",y)
+        println("topUrlTableByCount Exception ",y)
     end
 
 end

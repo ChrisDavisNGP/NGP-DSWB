@@ -1149,7 +1149,7 @@ function displayTopUrlsByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPa
     UP.pageGroup = quickPageGroup
     defaultBeaconView(TV,UP,SP)
     setTable(UP.btView)
-    topUrlTableForWPF(UP.btView,pageGroup,TV.timeString;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
+    topUrlTableByCount(TV,UP,SP;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
     q = query(""" drop view if exists $(UP.btView);""")
 end
 
