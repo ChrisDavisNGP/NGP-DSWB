@@ -21,9 +21,10 @@ type UrlParams
     agentOs::ASCIIString
 end
 
-function UrlParamsInit()
+function UrlParamsInit(nb::ASCIIString)
     # Set blank structure and fill later as needed
-    nb = getNotebookName()
+    #nb = getNotebookName()
+    
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
     UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",1000,600000,0,0,0,"",true,"%","%")
