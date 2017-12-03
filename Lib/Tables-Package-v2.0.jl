@@ -1069,10 +1069,11 @@ function displayMatchingResourcesByUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by url
             order by count(*) desc
+            limit $(UP.limitRows)
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
+        scrubUrlToPrint(joinTables,:url,limit=150)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("displayMatchingResourcesByUrl Exception ",y)

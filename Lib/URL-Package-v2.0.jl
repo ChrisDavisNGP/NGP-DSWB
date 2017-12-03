@@ -1,5 +1,78 @@
 using URIParser
 
+function scrubUrlToPrint(urlDF::DataFrame,urlColumn::Symbol;limit::Int64=150)
+    try
+        i = 0
+        todo = 0
+        for url in urlDF[:,urlColumn]
+            i += 1
+            if Bool[ismatch(r"Not Blocking",url)][1]
+                deleterows!(urlDF,i)
+                continue
+            end
+
+            if Bool[ismatch(r".*/\?utm_source=Facebook.*",url)][1]
+                url = map!(x->replace(x,r"utm_source=Facebook.*","utm_source=Facebook"),[url])[1]
+            end
+
+            # Remove the non-print "%" from all url strings
+            # url = map!(x->replace(x,"%","\045"),[url])[1]
+
+            url = map!(x->replace(x,"%","_"),[url])[1]
+            url = map!(x->replace(x,";","_"),[url])[1]
+            url = map!(x->replace(x,"#","_"),[url])[1]
+            url = map!(x->replace(x,"|","_"),[url])[1]
+            url = map!(x->replace(x,"&","_"),[url])[1]
+            url = map!(x->replace(x,"~","_"),[url])[1]
+            url = map!(x->replace(x,"!","_"),[url])[1]
+            url = map!(x->replace(x,"\$","_"),[url])[1]
+
+            #uri = URI(url)
+            urlLength = length(url)
+
+#            if (urlLength > limit)
+#                println("Fixing length ",urlLength," for ",url[1:50])
+#            end
+
+            groupSize = 0
+            groupStart = 1
+            groupField = ""
+            newUrl = ""
+            for pos=1:urlLength
+                groupSize += 1
+                cChar = url[pos]
+                groupField = "$groupField$cChar"
+                #println("newUrl: ",newUrl," size ",groupSize," pos ",pos)
+                if url[pos] == '/'
+                    if groupSize > 25
+                        newUrl = "$newUrl.../"
+                    else
+                        newUrl = "$newUrl$groupField"
+                    end
+                    groupSize = 0
+                    groupStart = pos
+                    groupField = ""
+                end
+            end
+
+            if groupSize > 25
+                newUrl = "$newUrl..."
+            end
+            #println("newUrl $newUrl")
+            #
+            urlLength = length(newUrl)
+            if (urlLength > limit)
+                urlDF[i,urlColumn] = newUrl[1:limit] * "..."
+            else
+                urlDF[i,urlColumn] = newUrl
+            end
+        end
+    catch y
+        println("scrubUrlToPrint Exception ",y)
+    end
+
+end
+
 function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=150)
     try
     i = 0
