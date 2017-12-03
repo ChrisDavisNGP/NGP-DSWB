@@ -210,8 +210,11 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=UP.limitRows)
 
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+    q = query(""" drop view if exists $(mobileView);""")
+    q = query(""" drop view if exists $(desktopView);""")
     ;
-    #todo clean up views
 end
 
 function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
