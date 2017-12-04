@@ -7,6 +7,10 @@ function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime3
         if UP.pageGroup != "NONE"
             chartTitle *= " for $(UP.pageGroup)"
         end
+
+        # todo SQLFilter for agentOs and other fields
+        # todo Pagegroup parameter for non-empty page groups
+
         displayTitle(chart_title = chartTitle, chart_info = [TV.timeString], showTimeStamp=false)
 
         peakArrivals = getPeak(TV.startTimeUTC, TV.endTimeUTC, [ :day, :hour, :minute])
