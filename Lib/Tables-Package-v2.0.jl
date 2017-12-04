@@ -447,7 +447,7 @@ function gatherSizeData(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             order by encoded desc
         """);
 
-        scrubUrlToPrint(joinTables;limit=SP.scrubUrlChars)
+        scrubUrlToPrint(joinTables,:urlgroup;limit=SP.scrubUrlChars)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
 
         return joinTables
@@ -485,7 +485,7 @@ function joinTablesDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTa
         recordsFound = nrow(joinTablesDetails)
         if (recordsFound > 0)
             displayTitle(chart_title = "Large Requests for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
-            scrubUrlToPrint(joinTablesDetails;limit=SP.scrubUrlChars)
+            scrubUrlToPrint(joinTablesDetails,:urlgroup;limit=SP.scrubUrlChars)
             beautifyDF(joinTablesDetails[1:end,:])
         end
     catch y
@@ -628,7 +628,7 @@ function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
             limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(bigPagesDF;limit=SP.scrubUrlChars)
+        scrubUrlToPrint(bigPagesDF,:urlgroup;limit=SP.scrubUrlChars)
         beautifyDF(names!(bigPagesDF[1:min(SP.showLines,end),:],[symbol("Size");symbol("Load Time (ms)");symbol("URL")]))
     catch y
         println("bigPages2SRFLP Exception ",y)
@@ -656,7 +656,7 @@ function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
             limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(bigAveragePagesDF;limit=SP.scrubUrlChars)
+        scrubUrlToPrint(bigAveragePagesDF,:urlgroup;limit=SP.scrubUrlChars)
         beautifyDF(names!(bigAveragePagesDF[1:min(SP.showLines,end),:],[symbol("Count");symbol("Size");symbol("Load Time (ms)");symbol("URL")]))
     catch y
         println("bigPages3SRFLP Exception ",y)
@@ -684,7 +684,7 @@ function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
             limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(bigPagesSessionsDF;limit=SP.scrubUrlChars)
+        scrubUrlToPrint(bigPagesSessionsDF,:urlgroup;limit=SP.scrubUrlChars)
         beautifyDF(names!(bigPagesSessionsDF[1:min(end,SP.showLines),:],[symbol("Size");symbol("Session ID");symbol("Timestamp");symbol("URL")]))
     catch y
         println("bigPages4SRFLP Exception ",y)
@@ -749,7 +749,7 @@ function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         """);
 
         displayTitle(chart_title = "Big Pages Details (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(joinTables;limit=SP.scrubUrlChars)
+        scrubUrlToPrint(joinTables,:urlgroup;limit=SP.scrubUrlChars)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("bigPages6SRFLP Exception ",y)
@@ -1098,7 +1098,7 @@ function displayMatchingResourcesByUrls(TV::TimeVars,UP::UrlParams,SP::ShowParam
         """);
 
         displayTitle(chart_title = "Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
+        scrubUrlToPrint(joinTables,:url,limit=150)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("displayMatchingResourcesByUrls Exception ",y)
@@ -1121,7 +1121,7 @@ function displayMatchingResourcesAllFields(TV::TimeVars,UP::UrlParams,SP::ShowPa
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
+        scrubUrlToPrint(joinTables,:url,limit=150)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("displayMatchingResourcesAllFields Exception ",y)
@@ -1157,7 +1157,7 @@ function displayMatchingResourcesStats(TV::TimeVars,UP::UrlParams,SP::ShowParams
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
+        scrubUrlToPrint(joinTables,:url,limit=150)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("displayMatchingResourcesStats Exception ",y)
@@ -1192,7 +1192,7 @@ function displayMatchingResourcesByTime(TV::TimeVars,UP::UrlParams,SP::ShowParam
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
+        scrubUrlToPrint(joinTables,:url,limit=150)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("displayMatchingResourcesByTime Exception ",y)
@@ -1227,7 +1227,7 @@ function displayMatchingResourcesByTimeTaken(TV::TimeVars,UP::UrlParams,SP::Show
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
+        scrubUrlToPrint(joinTables,:url,limit=150)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("displayMatchingResourcesByTimeTaken Exception ",y)
@@ -1279,7 +1279,7 @@ function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit:
                 displayTitle(chart_title = "Top $(rowLimit) (min $(beaconsLimit)) URLs for $(UP.pageGroup)", chart_info = ["Note: If you see AEM URL's in this list tell Chris Davis",TV.timeString],showTimeStamp=false)
             end
 
-            #scrubUrlToPrint(topurl)
+            scrubUrlToPrint(topurl,:urlgroup)
             #println(nrow(topurl))
 
             newDF = topurl[Bool[x > beaconsLimit for x in topurl[:count]],:]
