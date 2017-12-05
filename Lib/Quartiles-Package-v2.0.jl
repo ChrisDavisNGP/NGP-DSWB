@@ -10,7 +10,7 @@ end
 function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         table = UP.beaconTable
-        pageGroupPercentages = getGroupPercentages(TV.startTimeUTC, TV.endTimeUTC)
+        pageGroupPercentages = getGroupPercentages(TV.startTime, TV.endTime)
         pageGroups = pageGroupPercentages[:page_group][1:min(10,end)]
         pageGroups = "'"*join(pageGroups,"','")*"'"
         maxResources = UP.limitRows
@@ -23,13 +23,18 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY timers_t_done) OVER (PARTITION BY page_group) AS maximum,
             COUNT(*)OVER (PARTITION BY page_group)
             --MAX(timers_t_done) OVER (PARTITION BY page_group) AS maximum
-            FROM $table
-            WHERE "timestamp" BETWEEN $(TV.startTimeMs) AND $(TV.endTimeMs)
-            AND params_rt_quit IS NULL
-            AND timers_t_done BETWEEN 1 AND 600000
-            AND page_group IN ($(pageGroups))
-            ORDER BY count DESC
-            limit $(UP.limitRows)
+        FROM $table
+        WHERE
+            page_group IN ($(pageGroups)) and
+            beacon_type = 'page view' and
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            params_rt_quit IS NULL and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+        ORDER BY count DESC
+        limit $(UP.limitRows)
         """);
 
         if (SP.devView)

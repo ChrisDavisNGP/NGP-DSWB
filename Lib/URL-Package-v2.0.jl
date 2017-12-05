@@ -308,7 +308,8 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       try
 
         ltName = UP.beaconTable
-        displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup) Dev=$(UP.deviceType), OS=$(UP.agentOs)",
+         chart_info = [TV.timeString],showTimeStamp=false)
 
         topurl = query("""\
 
@@ -321,7 +322,13 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         where
           beacon_type = 'page view' and
           "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-          page_group ilike '$(UP.pageGroup)'
+          session_id IS NOT NULL and
+          params_rt_quit IS NULL and
+          params_u ilike '$(UP.urlRegEx)' and
+          user_agent_device_type ilike '$(UP.deviceType)' and
+          user_agent_os ilike '$(UP.agentOs)' and
+          page_group ilike '$(UP.pageGroup)' and
+          timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
         group by urlgroup
         order by count(*) desc
         limit $(SP.showLines)
@@ -335,11 +342,17 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_page) ,params_u as urlgroup
         FROM $(ltName)
         where
-        beacon_type = 'page view' and
-        "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-        page_group ilike '$(UP.pageGroup)' and
-        params_dom_sz > 0 and
-        timers_t_page > 0
+            beacon_type = 'page view' and
+            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            params_dom_sz > 0 and
+            timers_t_page > 0 and
+            session_id IS NOT NULL and
+            params_rt_quit IS NULL and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            page_group ilike '$(UP.pageGroup)' and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
         group by params_u
         order by cnt desc
         limit $(SP.showLines)
