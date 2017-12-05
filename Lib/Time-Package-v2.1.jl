@@ -151,7 +151,7 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17)
     try
         firstAndLast = getBeaconsFirstAndLast()
         endTime = DateTime(firstAndLast[1,2] - Hour(24-endHour))
-        startTime = DateTime(endTime - Hour(endHour-startHour))
+        startTime = DateTime(endTime - Hour(endHour-startHour) + Second(1))
 
         localtv =
         timeVariables(
