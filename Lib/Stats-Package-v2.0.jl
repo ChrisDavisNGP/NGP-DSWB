@@ -164,7 +164,12 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         medianThreshold = statsDF[1:1,:median][1]
 
         displayTitle(chart_title = "Stats for current view", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(statsDF[:,:])
+        if SP.devView
+            beautifyDF(statsDF[:,:])
+        else
+            beautifyDF(statsDF[2:2,:])
+        end
+
         #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
         #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
     catch y
