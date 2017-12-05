@@ -171,7 +171,7 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         return statsDF
-        
+
         #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
         #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
     catch y
@@ -272,7 +272,7 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams)
                     timers_t_done
                 from $(UP.beaconTable)
                 where
-                    page_group = '$(UP.pageGroup)' and
+                    page_group ilike '$(UP.pageGroup)' and
                     "timestamp" between $startTimeMs and $endTimeMs and
                     timers_t_done >= 1 and timers_t_done < 600000
             """)
@@ -385,7 +385,7 @@ function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
             select
                 "timestamp", timers_t_done, session_id
             from $(UP.btView) where
-                page_group = '$(UP.pageGroup)' and
+                page_group ilike '$(UP.pageGroup)' and
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 timers_t_done > $(UpperBy25p)
         """)
