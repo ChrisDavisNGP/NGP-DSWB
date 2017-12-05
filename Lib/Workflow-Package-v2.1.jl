@@ -493,12 +493,14 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   wfClearViews = true
 
+  openingTitle(TV,UP,SP)
+
   defaultBeaconView(TV,UP,SP)
 
   statsDF = DataFrame()
   localStats2 = DataFrame()
 
-  statsDF = rawStatsFATS(TV,UP)
+  statsDF = beaconViewStats(TV,UP)
   localStats2 = localStatsFATS(TV,UP,statsDF)
 
   if (wfShowLongTimes)

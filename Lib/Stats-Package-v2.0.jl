@@ -373,27 +373,6 @@ function drawC3VizConverter(UP::UrlParams,AllStatsDF::DataFrame;graphType::Int64
     end
 end
 
-function rawStatsFATS(TV::TimeVars,UP::UrlParams)
-
-    localStatsDF = DataFrame()
-    medianThreshold = Int64
-    try
-        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
-        statsDF = basicStats(localStatsDF, UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
-        medianThreshold = statsDF[1:1,:median][1]
-
-        displayTitle(chart_title = "Raw Data Stats Including Those above 600 seconds for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(statsDF[:,:])
-        #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(productPageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
-        #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
-
-        return statsDF
-
-    catch y
-        println("rawStatsFATS Exception ",y)
-    end
-end
-
 function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
     try
         LowerBy3Stddev = statsDF[1:1,:LowerBy3Stddev][1]
@@ -450,7 +429,11 @@ function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
         stats[:rangeUpperByStd] = statsArr(rangeUpperByStd)
 
         displayTitle(chart_title = "Table Data Stats Outside 3 Stddev for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(stats[:,:])
+        if (SP.devView)
+            beautifyDF(stats[:,:])
+        else
+            beautifyDF(stats[2:2,:])
+        end
         #by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1)))
         #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(productPageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
         #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
