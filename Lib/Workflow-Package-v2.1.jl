@@ -141,7 +141,7 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    firstAndLastBeaconReport(TV,UP)
+    defaultBeaconView(TV,UP)
 
     try
         setTable(UP.btView)

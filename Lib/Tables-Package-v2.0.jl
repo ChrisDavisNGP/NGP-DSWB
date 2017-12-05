@@ -220,25 +220,6 @@ end
 #  Functions which create views
 #
 
-function limitedTable(TV::TimeVars,UP::UrlParams)
-    try
-        query("""\
-            drop view if exists $(UP.btView)
-        """)
-
-        query("""\
-            create or replace view $(UP.btView) as
-            (select * from $(UP.beaconTable) where
-            page_group = '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
-            params_rt_quit IS NULL
-        )""")
-    catch y
-        println("limitedTable Exception ",y)
-    end
-end
-
 function pageGroupDetailsTables(TV::TimeVars,UP::UrlParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
       try
 

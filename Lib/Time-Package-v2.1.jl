@@ -123,7 +123,7 @@ function weeklyTimeVariables(;days::Int64=7)
     try
         firstAndLast = getBeaconsFirstAndLast()
         endTime = DateTime(firstAndLast[1,2])
-        startTime = DateTime(endTime - Day(days))
+        startTime = DateTime(endTime - Day(days) + Minute(1))
 
         localtv =
         timeVariables(
