@@ -170,6 +170,8 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             beautifyDF(statsDF[2:2,:])
         end
 
+        return statsDF
+        
         #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
         #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
     catch y
