@@ -1,68 +1,109 @@
 function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
+  wfShowPeakTable = true
+  wfShowSessionBeacons = true
+  wfShowChartLoad = true
+  wfShowTopUrls = true
+  wfShowBrowserTreemap = true
+  wfShowCountryTreemap = true
+  wfShowDeviceTypeTreemap = true
+  wfShowPageGroupTreemp = true
+  wfShowGroupQuartiles = true
+  wfShowActvitityImpact = true
+  wfShowAggSession = true
+
+  wfClearViews = true
+
+# todo SQLFILTER Everywhere and use the view tables where possible
+
+  defaultBeaconView(TV,UP,SP)
+
   try
-    showPeakTable(TV,UP,SP;showStartTime30=true,showStartTime90=false,tableRange="Daily ")
+    if (wfShowPeakTable)
+        showPeakTable(TV,UP,SP;showStartTime30=true,showStartTime90=false,tableRange="Daily ")
+    end
   catch y
     println("showPeakTable Exception")
   end
 
   try
-      chartConcurrentSessionsAndBeaconsOverTime(TV.startTime, TV.endTime, TV.datePart)
+    if (wfShowSessionBeacons)
+          chartConcurrentSessionsAndBeaconsOverTime(TV.startTime, TV.endTime, TV.datePart; table=UP.btView)
+    end
   catch y
       println("chartConcurrentSessionsAndBeaconsOverTime Exception ",y)
   end
 
   try
-      chartLoadTimes(TV.startTime, TV.endTime, TV.datePart)
+      if (wfShowChartLoad)
+          chartLoadTimes(TV.startTime, TV.endTime, TV.datePart;table=UP.btView)
+      end
   catch y
       println("chartLoadTimes Exception ",y)
   end
 
-  topUrlTableByTime(TV,UP,SP)   # use UP.pageGroup = "%" for no group
+  if (wfShowTopUrls)
+      topUrlTableByTime(TV,UP,SP)   # use UP.pageGroup = "%" for no group
+  end
+
+  setTable(UP.btView)
 
   try
-      browserFamilyTreemap(TV,UP,SP)
+      if (wfShowBrowserTreemap)
+          browserFamilyTreemap(TV,UP,SP)
+      end
   catch y
       println("browserFamilyTreemap Exception ",y)
   end
 
   try
-      countryTreemap(TV,UP,SP)
+      if (wfShowCountryTreemap)
+          countryTreemap(TV,UP,SP)
+      end
   catch y
       println("countryTreemap Exception ",y)
   end
 
   try
-    deviceTypeTreemap(TV,UP,SP)
+      if (wfShowDeviceTypeTreemap)
+          deviceTypeTreemap(TV,UP,SP)
+      end
   catch y
     println("deviceTypeTreemap Exception ",y)
   end
 
-  pageGroupTreemap(TV,UP,SP)
+  if (wfShowPageGroupTreemp)
+      pageGroupTreemap(TV,UP,SP)
+  end
 
-  pageGroupQuartiles(TV,UP,SP);
-
-  try
-    chartLoadTimes(TV.startTime, TV.endTime, :hour)
-  catch y
-    println("chartLoadTimes 2 Exception ",y)
+  if (wfShowGroupQuartiles)
+      pageGroupQuartiles(TV,UP,SP);
   end
 
   try
-    chartActivityImpactByPageGroup(TV.startTime, TV.endTime;n=10);
+      if (wfShowActvitityImpact)
+          chartActivityImpactByPageGroup(TV.startTime, TV.endTime;n=10,table=UP.btView);
+      end
   catch y
     println("chartActivityImpactByPageGroup Exception ",y)
   end
 
-
   try
-      perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTime, TV.endTime);
+      if (wfShowAggSession)
+          perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTime, TV.endTime; table=UP.btView);
 
-      c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
-          "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Session Load for All Pages", y2Data=["data2"], vizTypes=["area","line"]);
+          c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
+              "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Session Load for All Pages", y2Data=["data2"], vizTypes=["area","line"]);
+      end
   catch y
       println("getAggregateSessionLengthAndDurationByLoadTime Exception ",y)
   end
+
+  if (wfClearViews)
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+  end
+
 
 end
 
@@ -98,7 +139,9 @@ end
 
 function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    firstAndLastBeaconReport(TV,UP)
+    openingTitle(TV,UP,SP)
+
+    defaultBeaconView(TV,UP,SP)
 
     try
         setTable(UP.btView)
@@ -120,7 +163,7 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     setTable(UP.btView)
     showPeakTable(TV,UP,SP)
 
-    statsTableFAPVSB(TV,UP)
+    beaconViewStats(TV,UP,SP)
 
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")
@@ -218,6 +261,8 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 end
 
 function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  openingTitle(TV,UP,SP)
 
   urlListDF = returnMatchingUrlTableV2(TV,UP)
   if (SP.debugLevel > 4)
@@ -386,7 +431,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowAggSessionLength)
-    myFilter = SQLFilter[like("params_u",UP.urlRegEx)]
+    myFilter = SQLFilter[ilike("params_u",UP.urlRegEx)]
 
     perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; filters=myFilter)
     c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Page Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
@@ -450,12 +495,14 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   wfClearViews = true
 
+  openingTitle(TV,UP,SP)
+
   defaultBeaconView(TV,UP,SP)
 
   statsDF = DataFrame()
   localStats2 = DataFrame()
 
-  statsDF = rawStatsFATS(TV,UP)
+  statsDF = beaconViewStats(TV,UP,SP)
   localStats2 = localStatsFATS(TV,UP,statsDF)
 
   if (wfShowLongTimes)
@@ -556,6 +603,8 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   wfShowResourcesByTimeTaken = true
 
   wfClearViews = true
+
+  openingTitle(TV,UP,SP)
 
   defaultBeaconView(TV,UP,SP)
 

@@ -24,7 +24,7 @@ end
 function UrlParamsInit(nb::ASCIIString)
     # Set blank structure and fill later as needed
     #nb = getNotebookName()
-    
+
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
     UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",1000,600000,0,0,0,"",true,"%","%")
@@ -96,8 +96,9 @@ end
 
 function ShowParamsValidate(SP::ShowParams)
 
-    if (!SP.debug && SP.debugLevel > 0)
-      println("Warning: debug flag off but debugLevel greater than 0. Continuing")
+    SP.debug = false
+    if (SP.debugLevel != 0)
+      SP.debug = true
     end
 
     if (SP.debug)
