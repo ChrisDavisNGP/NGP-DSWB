@@ -211,6 +211,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
             params_u ilike '$(UP.urlRegEx)' and
             timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
             user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
             params_rt_quit IS NULL
         group by urlgroup
         order by cnt desc

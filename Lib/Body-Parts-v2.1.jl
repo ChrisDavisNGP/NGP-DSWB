@@ -81,7 +81,7 @@ function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;r
       return row
 
   catch y
-      println("Individual Streamline Table Exception ",y)
+      println("individualStreamlineTableV2 Exception ",y)
   end
 end
 
@@ -91,30 +91,30 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
       table = UP.beaconTable
-      tableRt = UP.resourceTable
+      rt = UP.resourceTable
 
       if (UP.usePageLoad)
           localTableDF = query("""\
           select
               'None' as urlpagegroup,
-              avg($tableRt.start_time),
-              avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.start_time) END) as total,
-              avg($tableRt.redirect_end-$tableRt.redirect_start) as redirect,
-              avg(CASE WHEN ($tableRt.dns_start = 0 and $tableRt.request_start = 0) THEN (0) WHEN ($tableRt.dns_start = 0) THEN ($tableRt.request_start-$tableRt.fetch_start) ELSE ($tableRt.dns_start-$tableRt.fetch_start) END) as blocking,
-              avg($tableRt.dns_end-$tableRt.dns_start) as dns,
-              avg($tableRt.tcp_connection_end-$tableRt.tcp_connection_start) as tcp,
-              avg($tableRt.response_first_byte-$tableRt.request_start) as request,
-              avg(CASE WHEN ($tableRt.response_first_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.response_first_byte) END) as response,
+              avg($rt.start_time),
+              avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.start_time) END) as total,
+              avg($rt.redirect_end-$rt.redirect_start) as redirect,
+              avg(CASE WHEN ($rt.dns_start = 0 and $rt.request_start = 0) THEN (0) WHEN ($rt.dns_start = 0) THEN ($rt.request_start-$rt.fetch_start) ELSE ($rt.dns_start-$rt.fetch_start) END) as blocking,
+              avg($rt.dns_end-$rt.dns_start) as dns,
+              avg($rt.tcp_connection_end-$rt.tcp_connection_start) as tcp,
+              avg($rt.response_first_byte-$rt.request_start) as request,
+              avg(CASE WHEN ($rt.response_first_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.response_first_byte) END) as response,
               avg(0) as gap,
               avg(0) as critical,
-              CASE WHEN (position('?' in $tableRt.url) > 0) then trim('/' from (substring($tableRt.url for position('?' in substring($tableRt.url from 9)) +7))) else trim('/' from $tableRt.url) end as urlgroup,
+              CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
               count(*) as request_count,
               'Label' as label,
-              avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE (($tableRt.response_last_byte-$tableRt.start_time)/1000.0) END) as load,
+              avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
               avg($table.timers_t_done) as beacon_time
-          FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
               where
-              $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.session_id IS NOT NULL
               and $table.page_group ilike '$(UP.pageGroup)'
               and $table.params_u ilike '$(UP.urlRegEx)'
@@ -130,9 +130,9 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               #debugTableDF = query("""\
               #select
               #    count(*) as Count
-              #FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+              #FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
               #    where
-              #    $tableRt."timestamp" between $startTimeMs and $endTimeMs
+              #    $rt."timestamp" between $startTimeMs and $endTimeMs
               #    and $table.session_id IS NOT NULL
               #    and $table.page_group ilike '$(UP.pageGroup)'
               #    and $table.params_u ilike '$(UP.urlRegEx)'
@@ -147,9 +147,9 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               debugTableDF = query("""\
               select
                   *
-              FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+              FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
                   where
-                  $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+                  $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
                   and $table.session_id IS NOT NULL
                   and $table.page_group ilike '$(UP.pageGroup)'
                   and $table.params_u ilike '$(UP.urlRegEx)'
@@ -170,12 +170,12 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
               count(*) as request_count,
               avg($table.timers_domready) as beacon_time,
-              sum($tableRt.encoded_size) as encoded_size,
+              sum($rt.encoded_size) as encoded_size,
               $table.errors as errors, $table.session_id,$table."timestamp"
 
-          FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
               where
-              $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.session_id IS NOT NULL
               and $table.page_group ilike '$(UP.pageGroup)'
               and $table.params_u ilike '$(UP.urlRegEx)'
