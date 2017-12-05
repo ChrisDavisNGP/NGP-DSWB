@@ -602,6 +602,8 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   wfClearViews = true
 
+  openingTitle(TV,UP,SP)
+
   defaultBeaconView(TV,UP,SP)
 
   if (wfShowResourcesByUrl)
