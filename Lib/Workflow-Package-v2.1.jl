@@ -262,6 +262,8 @@ end
 
 function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
+  openingTitle(TV,UP,SP)
+
   urlListDF = returnMatchingUrlTableV2(TV,UP)
   if (SP.debugLevel > 4)
       beautifyDF(urlListDF[1:min(10,end),:])
