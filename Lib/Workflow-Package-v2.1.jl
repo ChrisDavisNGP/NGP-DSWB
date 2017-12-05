@@ -141,7 +141,7 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    defaultBeaconView(TV,UP)
+    defaultBeaconView(TV,UP,SP)
 
     try
         setTable(UP.btView)
@@ -163,7 +163,7 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     setTable(UP.btView)
     showPeakTable(TV,UP,SP)
 
-    statsTableFAPVSB(TV,UP)
+    beaconViewStats(TV,UP,SP)
 
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")
