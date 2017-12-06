@@ -1054,7 +1054,7 @@ function displayMatchingResourcesByParamsU(TV::TimeVars,UP::UrlParams,SP::ShowPa
         """);
 
         displayTitle(chart_title = "Any resource Url (params_u) Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(SP,joinTables,:url)
+        scrubUrlToPrint(SP,joinTables,:params_u)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("displayMatchingResourcesByUrl Exception ",y)
