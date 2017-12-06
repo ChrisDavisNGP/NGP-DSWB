@@ -194,13 +194,13 @@ function limitedStatsFromDV(dv::DataVector)
     end
 end
 
-function dataframeFieldStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localStatsDF::DataFrame,statsField::Symbol)
+function dataframeFieldStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localStatsDF::DataFrame,statsField::Symbol,statsFieldTitle::ASCIIString)
     try
 
         statsDF = basicFieldStats(localStatsDF,statsField)
         #medianThreshold = statsDF[1:1,:median][1]
 
-        displayTitle(chart_title = "Dataframe Stats", chart_info = [TV.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Dataframe Stats $statsFieldTitle", chart_info = [TV.timeString],showTimeStamp=false)
         if SP.devView
             beautifyDF(statsDF[:,:])
         else

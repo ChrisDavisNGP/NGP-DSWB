@@ -595,13 +595,13 @@ end
 function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   #Turn sections on / off to debug
-  wfShowResourcesByParamsU = false
+  wfShowResourcesByParamsU = true
   wfShowResourcesByUrl = true
-  wfShowResourcesByUrls =  false
-  wfShowResourcesAllFields = false
-  wfShowResourcesStats = false # true
+  wfShowResourcesByUrls = true
+  wfShowResourcesStats = true
   wfShowResourcesByTime = false # true
   wfShowResourcesByTimeTaken = false # true
+  wfShowResourcesAllFields = false
 
   wfClearViews = false # true
 
@@ -621,10 +621,6 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       displayMatchingResourcesByUrls(TV,UP,SP)
   end
 
-  if (wfShowResourcesAllFields)
-      displayMatchingResourcesAllFields(TV,UP,SP)
-  end
-
   if (wfShowResourcesStats)
       displayMatchingResourcesStats(TV,UP,SP)
   end
@@ -635,6 +631,10 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowResourcesByTimeTaken)
       displayMatchingResourcesByTimeTaken(TV,UP,SP)
+  end
+
+  if (wfShowResourcesAllFields)
+      displayMatchingResourcesAllFields(TV,UP,SP)
   end
 
   if (wfClearViews)

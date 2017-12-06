@@ -1043,19 +1043,25 @@ function displayMatchingResourcesByParamsU(TV::TimeVars,UP::UrlParams,SP::ShowPa
 
         joinTablesDF = query("""\
             select
-                count(*), params_u
+                count(*), params_u as paramsu
             from $rt
             where
                 params_u ilike '$(UP.resRegEx)' and
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-            group by params_u
+            group by paramsu
             order by count(*) desc
             limit $(UP.limitRows)
         """);
 
-        displayTitle(chart_title = "Any resource Url (params_u) Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(SP,joinTablesDF,:params_u)
-        beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+        if (size(joinTablesDF)[1] > 0)
+            displayTitle(chart_title = "Any resource Url (params_u) Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+            scrubUrlToPrint(SP,joinTablesDF,:paramsu)
+            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
+        else
+            displayTitle(chart_title = "Any resource Url (params_u) for pattern $(UP.resRegEx) is empty", showTimeStamp=false)
+        end
+
     catch y
         println("displayMatchingResourcesByParamsU Exception ",y)
     end
@@ -1078,10 +1084,15 @@ function displayMatchingResourcesByUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams
             limit $(UP.limitRows)
         """);
 
-        displayTitle(chart_title = "Any resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(SP,joinTablesDF,:url)
-        beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
-        dataframeFieldStats(TV,UP,SP,joinTablesDF,:count)
+        if (size(joinTablesDF)[1] > 0)
+            displayTitle(chart_title = "Any resource Parent Url (url) for pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+            scrubUrlToPrint(SP,joinTablesDF,:url)
+            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
+        else
+            displayTitle(chart_title = "Any resource Parent Url (url) for pattern $(UP.resRegEx) is empty", showTimeStamp=false)
+        end
+
     catch y
         println("displayMatchingResourcesByUrl Exception ",y)
     end
@@ -1104,9 +1115,15 @@ function displayMatchingResourcesByUrls(TV::TimeVars,UP::UrlParams,SP::ShowParam
             order by count(*) desc
         """);
 
-        displayTitle(chart_title = "Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(SP,joinTablesDF,:url)
-        beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+        if (size(joinTablesDF)[1] > 0)
+            displayTitle(chart_title = "Beacon table and resources joined with Url pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+            scrubUrlToPrint(SP,joinTablesDF,:url)
+            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
+        else
+            displayTitle(chart_title = "Beacon table and resources joined with Url pattern $(UP.resRegEx) is empty", showTimeStamp=false)
+        end
+
     catch y
         println("displayMatchingResourcesByUrls Exception ",y)
     end
@@ -1127,9 +1144,14 @@ function displayMatchingResourcesAllFields(TV::TimeVars,UP::UrlParams,SP::ShowPa
             limit 3
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(SP,joinTablesDF,:url)
-        beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+        if (size(joinTablesDF)[1] > 0)
+            displayTitle(chart_title = " All fields for resources with parent Url pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+            scrubUrlToPrint(SP,joinTablesDF,:url)
+            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+        else
+            displayTitle(chart_title = "All fields for resources with parent Url pattern $(UP.resRegEx) is empty", showTimeStamp=false)
+        end
+
     catch y
         println("displayMatchingResourcesAllFields Exception ",y)
     end
@@ -1143,29 +1165,37 @@ function displayMatchingResourcesStats(TV::TimeVars,UP::UrlParams,SP::ShowParams
         joinTablesDF = query("""\
             select
                 count(*),
-                avg(start_time) as "Start Time",
-                avg(fetch_start) as "Fetch S",
-                avg(dns_end-dns_start) as "DNS ms",
-                avg(tcp_connection_end-tcp_connection_start) as "TCP ms",
-                avg(request_start) as "Req S",
-                avg(response_first_byte) as "Req FB",
-                avg(response_last_byte) as "Req LB",
-                max(response_last_byte) as "Max Req LB",
-                url, params_u,
-                avg(redirect_start) as "Redirect S",
-                avg(redirect_end) as "Redirect E",
-                avg(secure_connection_start) as "Secure Conn S"
+                avg(start_time) as "start",
+                avg(fetch_start) as "fetch",
+                avg(dns_end-dns_start) as "dnstimems",
+                avg(tcp_connection_end-tcp_connection_start) as "tcptimems",
+                avg(request_start) as "request",
+                avg(response_first_byte) as "responsefirstbyte",
+                avg(response_last_byte) as "responselastbyte",
+                max(response_last_byte) as "maxresponselastbyte",
+                url, params_u as paramsu,
+                avg(redirect_end - redirect_start) as "redirecttimems",
+                avg(secure_connection_start) as "secureconnection"
             from $rt
             where
                 url ilike '$(UP.resRegEx)' and
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-            group by url, params_u
+            group by url, paramsu
             order by count(*) desc
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        scrubUrlToPrint(SP,joinTablesDF,:url)
-        beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+        if (size(joinTablesDF)[1] > 0)
+            displayTitle(chart_title = "Average Times for parent Url pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+            scrubUrlToPrint(SP,joinTablesDF,:url)
+            scrubUrlToPrint(SP,joinTablesDF,:paramsu)
+            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
+            dataframeFieldStats(TV,UP,SP,joinTablesDF,:responselastbyte,"on Average Response Last Byte")
+            dataframeFieldStats(TV,UP,SP,joinTablesDF,:maxresponselastbyte,"on Maximum Response Last Byte")
+        else
+            displayTitle(chart_title = "Average Times for parent Url pattern $(UP.resRegEx) is empty", showTimeStamp=false)
+        end
+
     catch y
         println("displayMatchingResourcesStats Exception ",y)
     end
