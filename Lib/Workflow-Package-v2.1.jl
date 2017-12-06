@@ -596,13 +596,13 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   #Turn sections on / off to debug
   wfShowResourcesByUrl = true
-  wfShowResourcesByUrls = true
-  wfShowResourcesAllFields = true
-  wfShowResourcesStats = true
-  wfShowResourcesByTime = true
-  wfShowResourcesByTimeTaken = true
+  wfShowResourcesByUrls = false # true
+  wfShowResourcesAllFields = false # true
+  wfShowResourcesStats = false # true
+  wfShowResourcesByTime = false # true
+  wfShowResourcesByTimeTaken = false # true
 
-  wfClearViews = true
+  wfClearViews = false # true
 
   openingTitle(TV,UP,SP)
 
