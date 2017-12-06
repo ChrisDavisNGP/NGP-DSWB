@@ -1,4 +1,42 @@
-function basicStats(localStatsDF::DataFrame,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMS::Int64)
+function basicFieldStats(localStatsDF::DataFrame,fieldStat::Symbol)
+    try
+
+        dv = localStatsDF[fieldStat]
+        statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000.0,1)]
+
+        dv = dropna(dv)
+        stats = DataFrame()
+        stats[:unit] = ["milliseconds","seconds","minutes"]
+        stats[:count] = size(dv,1)
+        stats[:mean] = statsArr(mean(dv))
+        stats[:median] = statsArr(median(dv))
+        stats[:stddev] = statsArr(std(dv))
+        #stats[:variance] = statsArr(var(dv))
+        stats[:min] = statsArr(minimum(dv))
+        stats[:max] = statsArr(maximum(dv))
+
+        # Range by percent
+        tenpercent = stats[1,:median] * 0.25
+        rangeLowerBy25p = stats[1,:median] - tenpercent
+        if (rangeLowerBy25p < 1.0) rangeLowerBy25p = 1000.0 end
+        rangeUpperBy25p = stats[1,:median] + tenpercent
+
+        # Range 1 Std Dev
+        rangeLowerByStd = stats[1,:median] - (3 * stats[1,:stddev])
+        if (rangeLowerByStd < 0.0) rangeLowerByStd = 1000.0 end
+        rangeUpperByStd = stats[1,:median] + (3 * stats[1,:stddev])
+
+        stats[:LowerBy25p] = statsArr(rangeLowerBy25p)
+        stats[:UpperBy25p] = statsArr(rangeUpperBy25p)
+        stats[:LowerBy3Stddev] = statsArr(rangeLowerByStd)
+        stats[:UpperBy3Stddev] = statsArr(rangeUpperByStd)
+        return stats
+    catch y
+        println("basicFieldStats Exception ",y)
+    end
+end
+
+function basicStats(localStatsDF::DataFrame)
     try
 
         dv = localStatsDF[:timers_t_done]
@@ -156,11 +194,32 @@ function limitedStatsFromDV(dv::DataVector)
     end
 end
 
+function dataframeFieldStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localStatsDF::DataFrame,statsField::Symbol)
+    try
+
+        statsDF = basicFieldStats(localStatsDF,statsField)
+        #medianThreshold = statsDF[1:1,:median][1]
+
+        displayTitle(chart_title = "Dataframe Stats", chart_info = [TV.timeString],showTimeStamp=false)
+        if SP.devView
+            beautifyDF(statsDF[:,:])
+        else
+            beautifyDF(statsDF[2:2,:])
+        end
+
+        return statsDF
+
+    catch y
+        println("dataframeFieldStats Exception ",y)
+    end
+end
+
+
 function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
         localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
-        statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
+        statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
 
         displayTitle(chart_title = "Stats for current view", chart_info = [TV.timeString],showTimeStamp=false)
@@ -209,7 +268,7 @@ function rawStatsSROS(TV::TimeVars,UP::UrlParams)
     medianThreshold = Int64
     try
         localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
-        statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
+        statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
 
         displayTitle(chart_title = "Raw Data Stats Including Those above 600 seconds for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
@@ -436,9 +495,6 @@ function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
         else
             beautifyDF(stats[2:2,:])
         end
-        #by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1)))
-        #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(productPageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
-        #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
     catch y
         println("longTimesFATS Exception",y)
     end

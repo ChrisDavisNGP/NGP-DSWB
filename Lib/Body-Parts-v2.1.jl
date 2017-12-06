@@ -735,7 +735,7 @@ end
 function statsPGD(TV::TimeVars,UP::UrlParams)
     try
         localStatsDF = statsTableDF(UP.btView, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC);
-        statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
+        statsDF = basicStats(localStatsDF)
 
         displayTitle(chart_title = "Raw Data Stats $(UP.pageGroup) Based On Beacon Page Load Time", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(statsDF[2:2,:])
@@ -1045,7 +1045,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+            statsDF2 = basicStats(statsFullDF2)
             dispDMT[1:1,:Unit] = statsDF2[2:2,:unit]
             dispDMT[1:1,:Count] = statsDF2[2:2,:count]
             dispDMT[1:1,:Mean] = statsDF2[2:2,:mean]
@@ -1057,7 +1057,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+            statsDF2 = basicStats(statsFullDF2)
             dispDMT[2:2,:Unit] = statsDF2[2:2,:unit]
             dispDMT[2:2,:Count] = statsDF2[2:2,:count]
             dispDMT[2:2,:Mean] = statsDF2[2:2,:mean]
@@ -1069,7 +1069,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         statsFullDF2 = statsTableDF2(TV,UP)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC)
+            statsDF2 = basicStats(statsFullDF2)
             dispDMT[3:3,:Unit] = statsDF2[2:2,:unit]
             dispDMT[3:3,:Count] = statsDF2[2:2,:count]
             dispDMT[3:3,:Mean] = statsDF2[2:2,:mean]
