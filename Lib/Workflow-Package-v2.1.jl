@@ -606,7 +606,7 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   openingTitle(TV,UP,SP)
 
   if (wfShowResourcesByParamsU)
-      displayMatchingResourcesByParamsU(TV,UP,SP)
+      displayMatchingResourcesByParentUrl(TV,UP,SP)
   end
 
   if (wfShowResourcesByUrl)
