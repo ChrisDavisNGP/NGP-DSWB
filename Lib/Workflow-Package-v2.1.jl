@@ -158,7 +158,7 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 
     setTable(UP.btView)
-    topUrlTable(UP.btView,UP.pageGroup,TV.timeString;limit=15)
+    topUrlTable(TV,UP,SP)
 
     setTable(UP.btView)
     showPeakTable(TV,UP,SP)
@@ -188,7 +188,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     loadTimesPGD(TV,UP,SP,mobileView,desktopView)
 
-    topUrlTable(UP.btView,UP.pageGroup,TV.timeString; limit=UP.limitRows)
+    topUrlTable(TV,UP,SP)
 
     try
         chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; threshold = medianThreshold)
@@ -596,8 +596,8 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   #Turn sections on / off to debug
   wfShowResourcesByUrl = true
-  wfShowResourcesByUrls = false # true
-  wfShowResourcesAllFields = false # true
+  wfShowResourcesByUrls =  true
+  wfShowResourcesAllFields = true
   wfShowResourcesStats = false # true
   wfShowResourcesByTime = false # true
   wfShowResourcesByTimeTaken = false # true
@@ -606,11 +606,15 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  defaultBeaconView(TV,UP,SP)
+  if (wfShowResourcesByUrl)
+      displayMatchingResourcesByParamsU(TV,UP,SP)
+  end
 
   if (wfShowResourcesByUrl)
       displayMatchingResourcesByUrl(TV,UP,SP)
   end
+
+  defaultBeaconView(TV,UP,SP)
 
   if (wfShowResourcesByUrls)
       displayMatchingResourcesByUrls(TV,UP,SP)

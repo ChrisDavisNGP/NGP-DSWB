@@ -87,10 +87,11 @@ type ShowParams
     showLines::Int64
     treemapTableLines::Int64
     scrubUrlChars::Int64
+    scrubUrlSections::Int64
 end
 
 function ShowParamsInit()
-    SP = ShowParams(false,true,false,true,false,0,1,10,20,150)
+    SP = ShowParams(false,true,false,true,false,0,1,10,20,150,25)
     return SP
 end
 

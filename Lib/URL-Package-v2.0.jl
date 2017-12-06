@@ -1,6 +1,6 @@
 using URIParser
 
-function scrubUrlToPrint(urlDF::DataFrame,urlColumn::Symbol;limit::Int64=150)
+function scrubUrlToPrint(SP::ShowParams,urlDF::DataFrame,urlColumn::Symbol)
     try
         i = 0
         todo = 0
@@ -11,60 +11,13 @@ function scrubUrlToPrint(urlDF::DataFrame,urlColumn::Symbol;limit::Int64=150)
                 continue
             end
 
-            if Bool[ismatch(r".*/\?utm_source=Facebook.*",url)][1]
-                url = map!(x->replace(x,r"utm_source=Facebook.*","utm_source=Facebook"),[url])[1]
-            end
+            newUrl = scrubUrlString(SP,url)
 
-            # Remove the non-print "%" from all url strings
-            # url = map!(x->replace(x,"%","\045"),[url])[1]
-
-            url = map!(x->replace(x,"%","_"),[url])[1]
-            url = map!(x->replace(x,";","_"),[url])[1]
-            url = map!(x->replace(x,"#","_"),[url])[1]
-            url = map!(x->replace(x,"|","_"),[url])[1]
-            url = map!(x->replace(x,"&","_"),[url])[1]
-            url = map!(x->replace(x,"~","_"),[url])[1]
-            url = map!(x->replace(x,"!","_"),[url])[1]
-            url = map!(x->replace(x,"\$","_"),[url])[1]
-
-            #uri = URI(url)
-            urlLength = length(url)
-
-#            if (urlLength > limit)
-#                println("Fixing length ",urlLength," for ",url[1:50])
-#            end
-
-            groupSize = 0
-            groupStart = 1
-            groupField = ""
-            newUrl = ""
-            for pos=1:urlLength
-                groupSize += 1
-                cChar = url[pos]
-                groupField = "$groupField$cChar"
-                #println("newUrl: ",newUrl," size ",groupSize," pos ",pos)
-                if url[pos] == '/'
-                    if groupSize > 25
-                        newUrl = "$newUrl.../"
-                    else
-                        newUrl = "$newUrl$groupField"
-                    end
-                    groupSize = 0
-                    groupStart = pos
-                    groupField = ""
-                end
-            end
-
-            if groupSize > 25
-                newUrl = "$newUrl..."
-            else
-                newUrl = "$newUrl$groupField"
-            end
             #println("newUrl $newUrl")
             #
             urlLength = length(newUrl)
-            if (urlLength > limit)
-                urlDF[i,urlColumn] = newUrl[1:limit] * "..."
+            if (urlLength > SP.scrubUrlChars)
+                urlDF[i,urlColumn] = newUrl[1:SP.scrubUrlChars] * "..."
             else
                 urlDF[i,urlColumn] = newUrl
             end
@@ -75,45 +28,59 @@ function scrubUrlToPrint(urlDF::DataFrame,urlColumn::Symbol;limit::Int64=150)
 
 end
 
-function scrubUrlToPrint(urlDF::DataFrame;limit::Int64=150)
-    try
-    i = 0
-    todo = 0
-    for url in urlDF[:,:urlgroup]
-        i += 1
-        if Bool[ismatch(r"Not Blocking",url)][1]
-            deleterows!(urlDF,i)
-            continue
-        end
+function scrubUrlString(SP::ShowParams,url::ASCIIString)
 
-        if Bool[ismatch(r".*/\?utm_source=Facebook.*",url)][1]
-            url = map!(x->replace(x,r"utm_source=Facebook.*","utm_source=Facebook"),[url])[1]
-        end
-
-        # Remove the non-print "%" from all url strings
-        # url = map!(x->replace(x,"%","\045"),[url])[1]
-
-        url = map!(x->replace(x,"%","_"),[url])[1]
-        url = map!(x->replace(x,";","_"),[url])[1]
-        url = map!(x->replace(x,"#","_"),[url])[1]
-        url = map!(x->replace(x,"|","_"),[url])[1]
-        url = map!(x->replace(x,"&","_"),[url])[1]
-        url = map!(x->replace(x,"~","_"),[url])[1]
-        url = map!(x->replace(x,"!","_"),[url])[1]
-        url = map!(x->replace(x,"\$","_"),[url])[1]
-
-        #uri = URI(url)
-        urlLength = length(url)
-        if (urlLength > limit)
-            urlDF[i,:urlgroup] = url[1:limit] * "..."
-        else
-            urlDF[i,:urlgroup] = url
-        end
-    end
-    catch y
-        println("scrubUrlToPrint Exception ",y)
+    if Bool[ismatch(r".*/\?utm_source=Facebook.*",url)][1]
+        url = map!(x->replace(x,r"utm_source=Facebook.*","utm_source=Facebook"),[url])[1]
     end
 
+    # Remove the non-print "%" from all url strings
+    # url = map!(x->replace(x,"%","\045"),[url])[1]
+
+    url = map!(x->replace(x,"%","_"),[url])[1]
+    url = map!(x->replace(x,";","_"),[url])[1]
+    url = map!(x->replace(x,"#","_"),[url])[1]
+    url = map!(x->replace(x,"|","_"),[url])[1]
+    url = map!(x->replace(x,"&","_"),[url])[1]
+    url = map!(x->replace(x,"~","_"),[url])[1]
+    url = map!(x->replace(x,"!","_"),[url])[1]
+    url = map!(x->replace(x,"\$","_"),[url])[1]
+
+    #uri = URI(url)
+    urlLength = length(url)
+
+#            if (urlLength > SP.scrubUrlChars)
+#                println("Fixing length ",urlLength," for ",url[1:50])
+#            end
+
+    groupSize = 0
+    groupStart = 1
+    groupField = ""
+    newUrl = ""
+    for pos=1:urlLength
+        groupSize += 1
+        cChar = url[pos]
+        groupField = "$groupField$cChar"
+        #println("newUrl: ",newUrl," size ",groupSize," pos ",pos)
+        if url[pos] == '/'
+            if groupSize > SP.scrubUrlSections
+                newUrl = "$newUrl.../"
+            else
+                newUrl = "$newUrl$groupField"
+            end
+            groupSize = 0
+            groupStart = pos
+            groupField = ""
+        end
+    end
+
+    if groupSize > SP.scrubUrlSections
+        newUrl = "$newUrl..."
+    else
+        newUrl = "$newUrl$groupField"
+    end
+
+    return newUrl
 end
 
 function scrubUrlFieldToPrint(urlDF::DataFrame,urlField::Symbol;limit::Int64=120;)
@@ -259,9 +226,16 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
 end
 
 
-function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASCIIString; limit::Int64=20, showCount::Bool=true, showCountDetails::Bool=true)
+function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+
+    showCount=true
+    showCountDetails=true
+
     try
-        displayTitle(chart_title = "Top URL Page Views for $(pageGroup)", chart_info = ["Pages Load Used",timeString],showTimeStamp=false)
+        btv = UP.btView
+
+        displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = ["Pages Load Used",TV.timeString],showTimeStamp=false)
 
         if (showCount)
             topurl = query("""\
@@ -271,15 +245,15 @@ function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASC
             when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
             else trim('/' from params_u)
             end urlgroup
-            FROM $(ltName)
+            FROM $(btv)
             where
             beacon_type = 'page view'
             group by urlgroup
             order by count(*) desc
-            limit $(limit)
+            limit $(UP.limitRows)
             """);
 
-            scrubUrlToPrint(topurl)
+            scrubUrlToPrint(SP,topurl,:urlgroup)
             beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Url - With Grouping After Parameters Dropped")]))
         end
 
@@ -287,17 +261,17 @@ function topUrlTable(ltName::ASCIIString, pageGroup::ASCIIString,timeString::ASC
             topurl = query("""\
 
             select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
-            FROM $(ltName)
+            FROM $(btv)
             where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             timers_t_done > 0
             group by params_u
             order by cnt desc
-            limit $(limit)
+            limit $(UP.limitRows)
             """);
 
-            scrubUrlToPrint(topurl)
+            scrubUrlToPrint(SP,topurl,:urlgroup)
             beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Avg MB"),symbol("Avg MS"),symbol("Url - Individual")]))
         end
 
@@ -337,7 +311,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(topurl;limit=SP.scrubUrlChars)
+        scrubUrlToPrint(SP,topurl,:urlgroup)
         beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Url - With Grouping After Parameters Dropped")]))
 
         topurl = query("""\
@@ -361,7 +335,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         limit $(SP.showLines)
         """);
 
-        scrubUrlToPrint(topurl;limit=SP.scrubUrlChars)
+        scrubUrlToPrint(SP,topurl,:urlgroup)
         beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Avg MB"),symbol("Avg MS"),symbol("Url - Individual")]))
     catch y
         println("topUrlTableByTime Exception ",y)
