@@ -57,6 +57,8 @@ function scrubUrlToPrint(urlDF::DataFrame,urlColumn::Symbol;limit::Int64=150)
 
             if groupSize > 25
                 newUrl = "$newUrl..."
+            else
+                newUrl = "$newUrl$groupField"
             end
             #println("newUrl $newUrl")
             #
