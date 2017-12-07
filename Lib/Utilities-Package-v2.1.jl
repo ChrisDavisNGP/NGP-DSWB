@@ -69,3 +69,17 @@ function openingTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     displayTitle(chart_title = chartTitle, chart_info = [TV.timeString;chartInfo;chartInfo2;chartInfo3], showTimeStamp=false)
 
 end
+
+function standardChartTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams,openingString::ASCIIString)
+    chartTitle = openingString
+    chartTitle *= " ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
+
+    if (SP.debugLevel > 4)
+        chartInfo  = "Other Settings: limitRows=$(UP.limitRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"
+        chartInfo2 = "urlRegEx=$(UP.urlRegEx)"
+        chartInfo3 = "urlFull=$(UP.urlFull)"
+        displayTitle(chart_title = chartTitle, chart_info = [TV.timeString;chartInfo;chartInfo2;chartInfo3], showTimeStamp=false)
+    else
+        displayTitle(chart_title = chartTitle, chart_info = [TV.timeString], showTimeStamp=false)
+    end
+end

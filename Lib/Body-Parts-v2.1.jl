@@ -823,7 +823,7 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         dv = localTableDF[:timers_t_done]
         statsDF = basicStatsFromDV(dv)
 
-        displayTitle(chart_title = "Beacon Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        standardChartTitle(TV,UP,SP,"Beacon Data Stats")
         beautifyDF(statsDF[:,:])
 
         rangeLower = statsDF[1:1,:q25][1]
@@ -870,11 +870,11 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         dv = toppageurl[:Total]
         summaryStatsDF = basicStatsFromDV(dv)
 
-        displayTitle(chart_title = "RT Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        standardChartTitle(TV,UP,SP,"RT Data Stats")
         beautifyDF(summaryStatsDF[:,:])
 
-        scrubUrlToPrint(SP,toppageurl,:urlgroup);
         classifyUrl(toppageurl);
+        scrubUrlToPrint(SP,toppageurl,:urlgroup);
 
         summaryPageGroup = summarizePageGroups(toppageurl)
         beautifyDF(summaryPageGroup[1:min(end,10),:])
