@@ -157,8 +157,6 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
         limit $(UP.limitRows)
          """);
 
-#                    user_agent_device_type ilike '$(UP.deviceType)' and
-
         return topUrl
 
     catch y

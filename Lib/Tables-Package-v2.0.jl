@@ -487,6 +487,7 @@ function statsTableDF2(TV::TimeVars,UP::UrlParams)
                 page_group ilike '$(UP.pageGroup)' and
                 params_u ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
+                user_agent_os ilike '$(UP.agentOs)' and
                 "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 params_rt_quit IS NULL
         """);
@@ -760,7 +761,8 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $btv.user_agent_device_type ilike '$(UP.deviceType)'
+            $btv.user_agent_device_type ilike '$(UP.deviceType)' and
+            $btv.user_agent_os ilike '$(UP.agentOs)'
         group by
             $btv.user_agent_family,
             $btv.user_agent_os
@@ -790,7 +792,8 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
             ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $btv.user_agent_device_type ilike '$(UP.deviceType)'
+            $btv.user_agent_device_type ilike '$(UP.deviceType)' and
+            $btv.user_agent_os ilike '$(UP.agentOs)'
         group by
             $btv.params_u,$rt.url
         order by encoded desc, transferred desc, decoded desc

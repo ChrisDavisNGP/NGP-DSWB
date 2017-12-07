@@ -820,6 +820,9 @@ end
 
 function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
+
+        UrlParamsValidate(UP)
+
         # Is there data?
         localTableDF = defaultBeaconsToDF(TV,UP,SP)
         if (SP.debugLevel > 0)
