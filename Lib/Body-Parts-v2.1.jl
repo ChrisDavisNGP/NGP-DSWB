@@ -1,12 +1,7 @@
 # From Individual-Streamline-Body
 
-function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnownHost::Dict,WellKnownPath::Dict,
-  deviceType::ASCIIString,rangeLowerMs::Float64,rangeUpperMs::Float64)
+function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   try
-
-      UP.deviceType = deviceType
-      UP.timeLowerMs = rangeLowerMs
-      UP.timeUpperMs = rangeUpperMs
 
       localTableDF = DataFrame()
       localTableRtDF = DataFrame()
