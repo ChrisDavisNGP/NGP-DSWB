@@ -10,7 +10,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
       recordsFound = nrow(localTableDF)
 
-      #println("part 1 done with ",recordsFound, " records")
+      println("part 1 done with ",recordsFound, " records")
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
@@ -18,28 +18,28 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       end
 
       # Stats on the data
-      statsDF = beaconStats(TV,UP,SP;showAdditional=true)
+      statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
       rangeLowerMs = statsDF[1:1,:median][1] * 0.95
       rangeUpperMs = statsDF[1:1,:median][1] * 1.05
 
-      #println("part 2 done")
+      println("part 2 done")
       localTableRtDF = getResourcesForBeacon(TV,UP)
       recordsFound = nrow(localTableRtDF)
 
-      #println("part 1 done with ",recordsFound, " records")
+      println("part 2 done with ",recordsFound, " records")
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
-      #println("part 3 done")
-      showAvailableSessionsStreamline(TV,UP,SP,WellKnownHost,WellKnownPath,localTableDF,localTableRtDF)
+      println("part 3 done")
+      showAvailableSessionsStreamline(TV,UP,SP,localTableDF,localTableRtDF)
       #println("part 4 done")
 
 
   catch y
-      println("Individual Streamline Main Exception ",y)
+      println("IndividualStreamlineMain Exception ",y)
   end
 end
 
@@ -354,10 +354,54 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
   return row
 end
 
+function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
+  try
+      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
+      io = 0
+      s1String = ASCIIString("")
+
+      for subdf in groupby(full,[:session_id,:timestamp])
+          s = size(subdf)
+          if(SP.debug)
+              println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+          end
+          if (UP.usePageLoad)
+              timeVar = subdf[1,:timers_t_done]
+          else
+              timeVar = subdf[1,:timers_domready]
+          end
+          if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
+              io += 1
+              #println("Testing $(io) against $(SP.showLines)")
+              if io <= SP.showLines
+                  s1 = subdf[1,:session_id]
+                  #println("Session_id $(s1)")
+                  s1String = ASCIIString(s1)
+                  timeStampVar = subdf[1,:timestamp]
+                  timeVarSec = timeVar / 1000.0
+                  # We may be missing requests such that the timers_t_done is a little bigger than the treemap
+                  labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
+                  if (SP.debug)
+                      println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
+                  end
+                  topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
+                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
+                  if (!suitable)
+                      SP.showLines += 1
+                  end
+              else
+                  return
+              end
+          end
+      end
+  catch y
+      println("showAvailSessions Exception ",y)
+  end
+end
+
 # From Individual-Streamline-Body
 
-function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,WellKnownHost::Dict,WellKnownPath::Dict,
-     localTableDF::DataFrame,localTableRtDF::DataFrame)
+function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
   try
       full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
       io = 0

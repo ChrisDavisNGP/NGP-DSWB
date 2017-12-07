@@ -1035,6 +1035,11 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             page_group ilike '$(UP.pageGroup)' and
             timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
         """)
+
+        if (SP.debugLevel > 8)
+            beautifyDF(localTableDF[1:min(3,end),:])
+        end
+
         return localTableDF
     catch y
         println("defaultBeaconsToDF Exception ",y)

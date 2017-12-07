@@ -239,7 +239,7 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 end
 
 
-function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams;showAdditional::Bool=true)
+function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;showAdditional::Bool=true)
 
     if (UP.usePageLoad)
         dv = localTableDF[:timers_t_done]
