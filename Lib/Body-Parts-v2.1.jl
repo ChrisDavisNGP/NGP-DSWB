@@ -1,3 +1,47 @@
+function critialPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+  try
+
+      localTableDF = DataFrame()
+      localTableRtDF = DataFrame()
+      statsDF = DataFrame()
+
+      localTableDF = defaultBeaconsToDF(TV,UP,SP)
+      recordsFound = nrow(localTableDF)
+
+      println("part 1 done with ",recordsFound, " records")
+      if recordsFound == 0
+          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
+          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
+          return
+      end
+
+      # Stats on the data
+      statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
+      rangeLowerMs = statsDF[1:1,:median][1] * 0.95
+      rangeUpperMs = statsDF[1:1,:median][1] * 1.05
+
+      println("part 2 done")
+      localTableRtDF = getResourcesForBeacon(TV,UP)
+      recordsFound = nrow(localTableRtDF)
+
+      println("part 2 done with ",recordsFound, " records")
+      if recordsFound == 0
+          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
+          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
+          return
+      end
+
+      println("part 3 done")
+      criticalPathStreamline(TV,UP,SP,localTableDF,localTableRtDF)
+      #println("part 4 done")
+
+
+  catch y
+      println("critialPathAggregationMain Exception ",y)
+  end
+end
+
+
 # From Individual-Streamline-Body
 
 function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
@@ -385,7 +429,7 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,l
                       println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
+                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
                   if (!suitable)
                       SP.showLines += 1
                   end
@@ -400,6 +444,51 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,l
 end
 
 # From Individual-Streamline-Body
+function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
+  try
+      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
+      io = 0
+      s1String = ASCIIString("")
+
+      for subdf in groupby(full,[:session_id,:timestamp])
+          s = size(subdf)
+          if(SP.debug)
+              println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+          end
+          if (UP.usePageLoad)
+              timeVar = subdf[1,:timers_t_done]
+          else
+              timeVar = subdf[1,:timers_domready]
+          end
+          if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
+              io += 1
+              #println("Testing $(io) against $(SP.showLines)")
+              if io <= SP.showLines
+                  s1 = subdf[1,:session_id]
+                  #println("Session_id $(s1)")
+                  s1String = ASCIIString(s1)
+                  timeStampVar = subdf[1,:timestamp]
+                  timeVarSec = timeVar / 1000.0
+                  # We may be missing requests such that the timers_t_done is a little bigger than the treemap
+                  labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
+                  if (SP.debugLevel > 8)
+                      println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
+                  end
+                  topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
+                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
+                  if (!suitable)
+                      SP.showLines += 1
+                  end
+              else
+                  return
+              end
+          end
+      end
+  catch y
+      println("showAvailSessions Exception ",y)
+  end
+end
+
 
 function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
   try
@@ -481,6 +570,56 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
       println("individualPageData Exception ",y)
   end
 end
+
+function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
+  toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
+  try
+
+      toppageurl = names!(toppageurl[:,:],
+      [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
+          symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
+          symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+
+      if (SP.debugLevel > 8)
+          beautifyDF(toppageurl)
+      end
+
+      removeNegitiveTime(toppageurl,:Total)
+      removeNegitiveTime(toppageurl,:Redirect)
+      removeNegitiveTime(toppageurl,:Blocking)
+      removeNegitiveTime(toppageurl,:DNS)
+      removeNegitiveTime(toppageurl,:TCP)
+      removeNegitiveTime(toppageurl,:Request)
+      removeNegitiveTime(toppageurl,:Response)
+
+      if (SP.debugLevel > 2)
+        println("Classify Data");
+      end
+      classifyUrl(SP,toppageurl);
+
+      if (SP.debugLevel > 2)
+        println("Add Gap and Critical Path")
+      end
+
+      toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
+      if (!suitableTest(UP,SP,toppageurl))
+          return false
+      end
+
+      if (SP.debugLevel > 0)
+          beautifyDF(toppageurl)
+      end
+
+      # Save the fields
+
+
+      return true
+
+  catch y
+      println("individualPageReport Exception ",y)
+  end
+end
+
 
 function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
