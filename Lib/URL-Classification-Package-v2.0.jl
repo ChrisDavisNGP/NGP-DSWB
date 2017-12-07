@@ -5,6 +5,18 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
         for url in toppageurl[:,:urlgroup]
             i += 1
             #@show url
+            #if (SP.debugLevel > 8)
+            #    println("url ",url)
+            #end
+
+            if (ismatch(r"data:application.*",url)
+                if (showProblems)
+                    println("Problem data:app:",url)
+                end
+                toppageurl[i:i,:urlpagegroup] = "Data:application String"
+                continue
+            end
+
             uri = ""
             newUrlPageGroup = "Not Done"
             if (url == "Not Blocking")

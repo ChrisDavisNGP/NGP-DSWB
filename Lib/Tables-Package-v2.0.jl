@@ -28,15 +28,16 @@ function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
                 avg($table.timers_t_done) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
             WHERE
-                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
-                and $table.session_id IS NOT NULL
-                and $table.page_group ilike '$(UP.pageGroup)'
-                and $table.params_u ilike '$(UP.urlRegEx)'
-                and $table.user_agent_device_type ilike '$(UP.deviceType)'
-                and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
-                and $table.params_rt_quit IS NULL
-                group by urlgroup,urlpagegroup,label
-                """);
+                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $table.session_id IS NOT NULL and
+                $table.page_group ilike '$(UP.pageGroup)' and
+                $table.params_u ilike '$(UP.urlRegEx)' and
+                $table.user_agent_device_type ilike '$(UP.deviceType)' and
+                $table.user_agent_os ilike '$(UP.agentOs)' and
+                $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs) and
+                $table.params_rt_quit IS NULL
+            group by urlgroup,urlpagegroup,label
+            """);
         else
             toppageurl = query("""\
             select
@@ -58,15 +59,16 @@ function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
                 avg($table.timers_domready) as beacon_time
             FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
                 where
-                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
-                and $table.session_id IS NOT NULL
-                and $table.page_group ilike '$(UP.pageGroup)'
-                and $table.params_u ilike '$(UP.urlRegEx)'
-                and $table.user_agent_device_type ilike '$(UP.deviceType)'
-                and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
-                and $table.params_rt_quit IS NULL
-                group by urlgroup,urlpagegroup,label
-                """);
+                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $table.session_id IS NOT NULL and
+                $table.page_group ilike '$(UP.pageGroup)' and
+                $table.params_u ilike '$(UP.urlRegEx)' and
+                $table.user_agent_device_type ilike '$(UP.deviceType)' and
+                $table.user_agent_os ilike '$(UP.agentOs)' and
+                $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs) and
+                $table.params_rt_quit IS NULL
+            group by urlgroup,urlpagegroup,label
+            """);
         end
 
         return toppageurl

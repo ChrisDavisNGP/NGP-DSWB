@@ -489,14 +489,14 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       removeNegitiveTime(toppageurl,:Response)
 
       if (SP.debugLevel > 2)
-        println("Scrub Data");
-      end
-      scrubUrlToPrint(SP,toppageurl,:urlgroup);
-
-      if (SP.debugLevel > 2)
         println("Classify Data");
       end
       classifyUrl(toppageurl);
+
+      if (SP.debugLevel > 2)
+        println("Scrub Data");
+      end
+      scrubUrlToPrint(SP,toppageurl,:urlgroup);
 
       if (SP.debugLevel > 2)
         println("Add Gap and Critical Path")
@@ -825,10 +825,12 @@ end
 
 # From 3rd Party Body TypeALl
 
-function typeAllBodyQuick(TV::TimeVars,UP::UrlParams,SP::ShowParams,qPageGroup::ASCIIString,qUrlRegEx::ASCIIString,qDeviceType::ASCIIString)
+function typeAllBodyQuick(TV::TimeVars,UP::UrlParams,SP::ShowParams,qPageGroup::ASCIIString,
+    qUrlRegEx::ASCIIString,qDeviceType::ASCIIString;qAgentOs::ASCIIString="%")
     UP.pageGroup = qPageGroup
     UP.urlRegEx = qUrlRegEx
     UP.deviceType = qDeviceType
+    UP.agentOs = qAgentOs
 
     if (qDeviceType == "desktop")
       SP.desktop = true

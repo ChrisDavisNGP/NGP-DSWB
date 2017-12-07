@@ -11,15 +11,15 @@ function scrubUrlToPrint(SP::ShowParams,urlDF::DataFrame,urlColumn::Symbol)
                 continue
             end
 
-            if (SP.debugLevel > 8)
-                println("str ",url,typeof(url))
-            end
+            #if (SP.debugLevel > 8) very noisy
+            #    println("str ",url,typeof(url))
+            #end
 
             newUrl = scrubUrlString(SP,url)
 
-            if (SP.debugLevel > 8)
-                println("newUrl $newUrl")
-            end
+            #if (SP.debugLevel > 8)
+            #    println("newUrl $newUrl")
+            #end
 
             urlLength = length(newUrl)
             if (urlLength > SP.scrubUrlChars)
