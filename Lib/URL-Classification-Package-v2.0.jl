@@ -79,6 +79,7 @@ function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
         end
      catch y
         println("classifyUrl Exception ",y)
+        println("exc: url=",url," uri=",uri)
     end
 
 end
@@ -193,6 +194,8 @@ function PartialKnownHost(uriHost::ASCIIString)
             newuristring = "Livefyre Commenting"
             elseif (ismatch(r".*zergnet.com",uriHost))
             newuristring = "Zergnet"
+            elseif (ismatch(r"^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$",uriHost))
+            newuristring = "xxx.xxx.xxx.xxx"
 
             # Less used
 

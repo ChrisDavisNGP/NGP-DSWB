@@ -878,6 +878,7 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         scrubUrlToPrint(SP,toppageurl,:urlgroup);
 
         summaryPageGroup = summarizePageGroups(toppageurl)
+        standardChartTitle(TV,UP,SP,"Top 10 Largest Classifications")
         beautifyDF(summaryPageGroup[1:min(end,10),:])
 
         # This is the non-Url specific report so get the summary table and overwrite toppageurl
