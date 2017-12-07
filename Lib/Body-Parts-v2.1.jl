@@ -446,6 +446,7 @@ end
 function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
   try
+      UrlParamsValidate(UP)
 
       if (SP.debugLevel > 0)
         println("Clean Up Data table")
@@ -472,7 +473,7 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       if (SP.debugLevel > 2)
         println("Classify Data");
       end
-      classifyUrl(toppageurl);
+      classifyUrl(SP,toppageurl);
 
       if (SP.debugLevel > 2)
         println("Scrub Data");
@@ -873,7 +874,7 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         standardChartTitle(TV,UP,SP,"RT Data Stats")
         beautifyDF(summaryStatsDF[:,:])
 
-        classifyUrl(toppageurl);
+        classifyUrl(SP,toppageurl);
         scrubUrlToPrint(SP,toppageurl,:urlgroup);
 
         summaryPageGroup = summarizePageGroups(toppageurl)
@@ -882,14 +883,17 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         # This is the non-Url specific report so get the summary table and overwrite toppageurl
         toppageurl = deepcopy(summaryPageGroup);
 
-        itemCountTreemap(TV,UP,SP,toppageurl)
         endToEndTreemap(TV,UP,SP,toppageurl)
-        blockingTreemap(TV,UP,SP,toppageurl)
-        requestTreemap(TV,UP,SP,toppageurl)
-        responseTreemap(TV,UP,SP,toppageurl)
-        dnsTreemap(TV,UP,SP,toppageurl)
-        tcpTreemap(TV,UP,SP,toppageurl)
-        redirectTreemap(TV,UP,SP,toppageurl)
+        itemCountTreemap(TV,UP,SP,toppageurl)
+
+        if (SP.reportLevel > 1)
+            blockingTreemap(TV,UP,SP,toppageurl)
+            requestTreemap(TV,UP,SP,toppageurl)
+            responseTreemap(TV,UP,SP,toppageurl)
+            dnsTreemap(TV,UP,SP,toppageurl)
+            tcpTreemap(TV,UP,SP,toppageurl)
+            redirectTreemap(TV,UP,SP,toppageurl)
+        end
     catch y
         println("statsAndTreemaps Exception ",y)
     end

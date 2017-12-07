@@ -1,4 +1,4 @@
-function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify::Bool=true)
+function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
     try
         i = 0
         todo = 0
@@ -10,7 +10,7 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
             #end
 
             if (ismatch(r"data:application.*",url))
-                if (showProblems)
+                if (SP.reportLEvel > 4)
                     println("Problem data:app:",url)
                 end
                 toppageurl[i:i,:urlpagegroup] = "Data:application String"
@@ -25,7 +25,7 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
             try
                 uri = URI(url)
             catch
-                if (showProblems)
+                if (SP.reportLevel > 4)
                     println("Problem url:",url)
                 end
                 toppageurl[i:i,:urlpagegroup] = "Bad URL String"
@@ -62,7 +62,7 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
                         end
                     end
                 end
-                if ((newuristring == "None") && showClassify)
+                if (newuristring == "None")
                     println("Host ", uri.host, " Path ",uri.path, " *** None ***")
                         #println(uri.host)
                 end

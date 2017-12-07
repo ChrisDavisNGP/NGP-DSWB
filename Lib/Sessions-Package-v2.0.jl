@@ -17,7 +17,7 @@ function showAvailableSessions(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTa
                     s1 = subdf[1,:session_id]
                     s2 = subdf[1,:timestamp]
                     s3 = subdf[1,:timers_t_done]
-                    if (SP.reportLevel > 1) println("executeSingleSession(TV,UP,SP,",s3,",\"",s1,"\",",s2,") #    Time=",s3) end
+                    if (SP.reportLevel > 0) println("executeSingleSession(TV,UP,SP,",s3,",\"",s1,"\",",s2,") #    Time=",s3) end
                 end
             end
         end
