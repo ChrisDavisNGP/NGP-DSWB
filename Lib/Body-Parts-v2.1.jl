@@ -8,7 +8,10 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
       recordsFound = nrow(localTableDF)
 
-      println("part 1 done with ",recordsFound, " records")
+      if (SP.debugLevel > 4)
+          println("part 1 done with ",recordsFound, " records")
+      end
+
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
@@ -20,20 +23,20 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       rangeLowerMs = statsDF[1:1,:median][1] * 0.95
       rangeUpperMs = statsDF[1:1,:median][1] * 1.05
 
-      println("part 2 done")
       localTableRtDF = getResourcesForBeacon(TV,UP)
       recordsFound = nrow(localTableRtDF)
 
-      println("part 2 done with ",recordsFound, " records")
+      if (SP.debugLevel > 4)
+          println("part 2 done with ",recordsFound, " records")
+      end
+
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
-      println("part 3 done")
       criticalPathStreamline(TV,UP,SP,localTableDF,localTableRtDF)
-      #println("part 4 done")
 
 
   catch y
@@ -437,11 +440,12 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
                       SP.showLines += 1
                   end
               else
-                  return
+                  break
               end
           end
       end
 
+      println("size of criticalPathDF is ",size(criticalPathDF))
       finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
 
       beautifyDF(finalCriticalPathDF)
@@ -1378,17 +1382,18 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
     end
 
     try
-        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Int64[],maximum=Int64[])
+        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],maximum=Int64[],median=Float64)
 
         for subDF in groupby(criticalPathDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
-            currentAvg = avg(subDF[:,:time])
-            currentMax = max(subDF[:,:time])
-            push!(finalCriticalPathDF,[currentGroup;currentAvg;currentMax])
+            currentMean = mean(subDF[:,:time])
+            currentMax = maximum(subDF[:,:time])
+            currentMedian = median(subDF[:,:time])
+            push!(finalCriticalPathDF,[currentGroup;currentMean;currentMax;currentMedian])
         end
 
         return finalCriticalPathDF
     catch y
-        println("reduceCriticalPath Exception ",y)
+        println("finalCriticalPath Exception ",y)
     end
 end
