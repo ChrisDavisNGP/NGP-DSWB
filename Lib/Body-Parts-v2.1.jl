@@ -535,10 +535,6 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
           symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
 
-      if (SP.debugLevel > 8)
-          beautifyDF(toppageurl)
-      end
-
       removeNegitiveTime(toppageurl,:Total)
       removeNegitiveTime(toppageurl,:Redirect)
       removeNegitiveTime(toppageurl,:Blocking)
@@ -564,6 +560,8 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       if (SP.debugLevel > 0)
           beautifyDF(toppageurl)
       end
+
+      reducedPageUrl = reduceCriticalPath(TV,UP,SP,toppageurl)
 
       # Save the fields
 
@@ -1340,4 +1338,15 @@ function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     catch y
         println("cell report on toppageurl Exception ",y)
     end
+end
+
+function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::DataFrame)
+
+    for subDF in groupby(pageDF,[:urlpagegroup])
+        currentGroup = subDF[1:1,:urlpagegroup]
+        currentCriticalPath = sum(subDF[:,:critical])
+        println("$currentGroup cp=$currentCriticalPath")
+    end
+
+    return pageDF
 end
