@@ -11,11 +11,15 @@ function scrubUrlToPrint(SP::ShowParams,urlDF::DataFrame,urlColumn::Symbol)
                 continue
             end
 
-            #if (SP.debugLevel > 8) very noisy
-            #    println("str ",url,typeof(url))
-            #end
-
-            newUrl = scrubUrlString(SP,url)
+            newUrl = "None"
+            try
+                newUrl = scrubUrlString(SP,url)
+            catch y
+                #if (SP.debugLevel > 8) very noisy
+                #    println("str ",url,typeof(url))
+                #end
+                newUrl = url
+            end
 
             #if (SP.debugLevel > 8)
             #    println("newUrl $newUrl")
@@ -36,7 +40,7 @@ end
 
 function scrubUrlString(SP::ShowParams,url::UTF8String)
 
-    try
+    #try
 
         if Bool[ismatch(r".*/\?utm_source=Facebook.*",url)][1]
             url = map!(x->replace(x,r"utm_source=Facebook.*","utm_source=Facebook"),[url])[1]
@@ -89,9 +93,10 @@ function scrubUrlString(SP::ShowParams,url::UTF8String)
         end
 
         return newUrl
-    catch y
-        println("scrubUrlString Exception ",y)
-    end
+    #catch y
+    #    println("scrubUrlString Exception ",y)
+    #    println("Exception Extra $url")
+    #end
 end
 
 function cleanupTopUrlTable(topUrlList::DataVector)
