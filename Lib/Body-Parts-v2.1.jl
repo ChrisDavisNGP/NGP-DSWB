@@ -1,4 +1,4 @@
-function critialPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   try
 
       localTableDF = DataFrame()
@@ -398,51 +398,6 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
   return row
 end
 
-function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
-  try
-      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
-      io = 0
-      s1String = ASCIIString("")
-
-      for subdf in groupby(full,[:session_id,:timestamp])
-          s = size(subdf)
-          if(SP.debug)
-              println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
-          end
-          if (UP.usePageLoad)
-              timeVar = subdf[1,:timers_t_done]
-          else
-              timeVar = subdf[1,:timers_domready]
-          end
-          if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
-              io += 1
-              #println("Testing $(io) against $(SP.showLines)")
-              if io <= SP.showLines
-                  s1 = subdf[1,:session_id]
-                  #println("Session_id $(s1)")
-                  s1String = ASCIIString(s1)
-                  timeStampVar = subdf[1,:timestamp]
-                  timeVarSec = timeVar / 1000.0
-                  # We may be missing requests such that the timers_t_done is a little bigger than the treemap
-                  labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
-                  if (SP.debug)
-                      println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
-                  end
-                  topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
-                  if (!suitable)
-                      SP.showLines += 1
-                  end
-              else
-                  return
-              end
-          end
-      end
-  catch y
-      println("showAvailSessions Exception ",y)
-  end
-end
-
 # From Individual-Streamline-Body
 function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
   try
@@ -475,7 +430,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
                       println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
+                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
                   if (!suitable)
                       SP.showLines += 1
                   end
@@ -616,7 +571,7 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       return true
 
   catch y
-      println("individualPageReport Exception ",y)
+      println("individualCriticalPath Exception ",y)
   end
 end
 
