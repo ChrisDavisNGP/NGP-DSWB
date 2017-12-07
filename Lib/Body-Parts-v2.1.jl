@@ -127,23 +127,6 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       else
 
           if (SP.debugLevel > 8)
-              #debugTableDF = query("""\
-              #select
-              #    count(*) as Count
-              #FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
-              #    where
-              #    $rt."timestamp" between $startTimeMs and $endTimeMs
-              #    and $table.session_id IS NOT NULL
-              #    and $table.page_group ilike '$(UP.pageGroup)'
-              #    and $table.params_u ilike '$(UP.urlRegEx)'
-              #    and $table.user_agent_device_type ilike '$(UP.deviceType)'
-              #    and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
-              #    and $table.params_rt_quit IS NULL
-              #group by $table.params_u,$table.session_id,$table."timestamp",errors
-              #    """);
-
-              #beautifyDF(debugTableDF[1:min(30,end),:])
-
               debugTableDF = query("""\
               select
                   *
@@ -236,8 +219,7 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
       #UP.urlFull = string("/",ASCIIString(testUrl),"/")
       UP.urlRegEx = string("%",ASCIIString(testUrl))
       UP.urlFull = testUrl
-      if (SP.mobile)
-          UP.deviceType = "mobile"
+      if (UP.deviceType == "Mobile")
           row = individualStreamlineTableV2(TV,UP,SP,repeat=1)
 
           if (UP.orderBy == "size")
@@ -271,8 +253,7 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
           push!(finalTable,[row[:url];row[:beacon_time];row[:request_count];row[:encoded_size];row[:samples]])
       end
 
-      if (SP.desktop)
-          UP.deviceType = "desktop"
+      if (UP.deviceType == "Desktop")
           row = individualStreamlineTableV2(TV,UP,SP,repeat=1)
 
           if (UP.orderBy == "size")
@@ -749,11 +730,11 @@ end
 
 function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
     try
-        if (!SP.mobile && !SP.desktop)
+        if (UP.deviceType == "%")
             chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
         end
 
-        if (SP.mobile)
+        if (UP.deviceType == "Mobile")
             timeString2 = timeString * " - Mobile Only"
             #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - MOBILE ONLY", chart_info = [timeString2],showTimeStamp=false)
             setTable(mobileView)
@@ -761,7 +742,7 @@ function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileV
             setTable(UP.btView)
         end
 
-        if (SP.desktop)
+        if (UP.deviceType == "Desktop")
             timeString2 = timeString * " - Desktop Only"
             #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - DESKTOP ONLY", chart_info = [timeString],showTimeStamp=false)
             setTable(desktopView)
@@ -781,19 +762,21 @@ function loadTimesPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCI
 
         #todo turn off title in chartLoadTimes
         #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
-        if (!SP.mobile && !SP.desktop)
+        if (UP.deviceType == "%")
+
             chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
         end
 
         #cannot use the other forms without creating the code for the charts.  Titles cannot be overwritten.
-        if (SP.mobile)
+        if (UP.deviceType == "Mobile")
+
             displayTitle(chart_title = "Median Load Times for $(UP.pageGroup) - MOBILE ONLY", chart_info = [TV.timeString],showTimeStamp=false)
             setTable(mobileView)
             chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
             setTable(UP.btView)
         end
 
-        if (SP.desktop)
+        if (UP.deviceType == "Desktop")
             displayTitle(chart_title = "Median Load Times for $(UP.pageGroup) - DESKTOP ONLY", chart_info = [TV.timeString],showTimeStamp=false)
             setTable(desktopView)
             chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
@@ -832,21 +815,10 @@ function typeAllBodyQuick(TV::TimeVars,UP::UrlParams,SP::ShowParams,qPageGroup::
     UP.deviceType = qDeviceType
     UP.agentOs = qAgentOs
 
-    if (qDeviceType == "desktop")
-      SP.desktop = true
-    end
-    if (qDeviceType == "mobile")
-      SP.mobile = true
-    end
-    if (qDeviceType == "%")
-      SP.desktop = true
-      SP.mobile = true
-    end
-
-    typeAllBody(TV,UP,SP)
+    statsAndTreemaps(TV,UP,SP)
 end
 
-function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         # Is there data?
         localTableDF = defaultBeaconsToDF(TV,UP,SP)
@@ -928,7 +900,7 @@ function typeAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         tcpTreemap(TV,UP,SP,toppageurl)
         redirectTreemap(TV,UP,SP,toppageurl)
     catch y
-        println("typeAll Exception ",y)
+        println("statsAndTreemaps Exception ",y)
     end
 end
 

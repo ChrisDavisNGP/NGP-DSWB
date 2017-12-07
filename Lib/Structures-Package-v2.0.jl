@@ -77,8 +77,6 @@ function UrlParamsValidate(UP::UrlParams)
 end
 
 type ShowParams
-    desktop::Bool
-    mobile::Bool
     devView::Bool
     criticalPathOnly::Bool
     debug::Bool
@@ -91,7 +89,7 @@ type ShowParams
 end
 
 function ShowParamsInit()
-    SP = ShowParams(false,true,false,true,false,0,1,10,20,150,75)
+    SP = ShowParams(false,true,false,0,1,10,20,150,75)
     return SP
 end
 

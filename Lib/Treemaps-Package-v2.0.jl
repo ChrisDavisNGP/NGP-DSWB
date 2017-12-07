@@ -49,7 +49,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:user_agent_device_type,:page_group])
 
-        if (SP.desktop)
+        if (UP.deviceType == "Desktop" || UP.deviceType == "%")
             subTreeData = treeData[treeData[:, :user_agent_device_type] .== "Desktop", :]
             subTreeData[:x1] = "Natgeo - Desktop"
             displayTitle(chart_title = "Page Group - Desktop", chart_info = [TV.timeString],showTimeStamp=false)
@@ -63,7 +63,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             end
         end
 
-        if (SP.mobile)
+        if (UP.deviceType == "Mobile" || UP.deviceType == "%")
             subTreeData = treeData[treeData[:, :user_agent_device_type] .== "Mobile", :]
             subTreeData[:x1] = "Natgeo - Mobile"
             displayTitle(chart_title = "Mobile", chart_info = [TV.timeString],showTimeStamp=false)
