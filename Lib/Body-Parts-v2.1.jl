@@ -806,18 +806,6 @@ function loadTimesParamsUPGD(TV::TimeVars,UP::UrlParams)
     end
 end
 
-# From 3rd Party Body TypeALl
-
-function typeAllBodyQuick(TV::TimeVars,UP::UrlParams,SP::ShowParams,qPageGroup::ASCIIString,
-    qUrlRegEx::ASCIIString,qDeviceType::ASCIIString;qAgentOs::ASCIIString="%")
-    UP.pageGroup = qPageGroup
-    UP.urlRegEx = qUrlRegEx
-    UP.deviceType = qDeviceType
-    UP.agentOs = qAgentOs
-
-    statsAndTreemaps(TV,UP,SP)
-end
-
 function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
 
