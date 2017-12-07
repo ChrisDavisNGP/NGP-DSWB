@@ -405,6 +405,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
       io = 0
       s1String = ASCIIString("")
 
+      criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
+
       for subdf in groupby(full,[:session_id,:timestamp])
           s = size(subdf)
           if(SP.debug)
@@ -430,7 +432,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
                       println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
+                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,s1String,timeStampVar)
                   if (!suitable)
                       SP.showLines += 1
                   end
@@ -439,6 +441,12 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
               end
           end
       end
+
+      finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
+
+      beautifyDF(finalCriticalPathDF)
+      #todo treemap
+
   catch y
       println("showAvailSessions Exception ",y)
   end
@@ -527,7 +535,7 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
 end
 
 function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
-  toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
+  toppageurl::DataFrame,criticalPathDF::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
   try
 
       toppageurl = names!(toppageurl[:,:],
@@ -543,12 +551,12 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       removeNegitiveTime(toppageurl,:Request)
       removeNegitiveTime(toppageurl,:Response)
 
-      if (SP.debugLevel > 2)
+      if (SP.debugLevel > 8)
         println("Classify Data");
       end
       classifyUrl(SP,toppageurl);
 
-      if (SP.debugLevel > 2)
+      if (SP.debugLevel > 8)
         println("Add Gap and Critical Path")
       end
 
@@ -557,11 +565,11 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           return false
       end
 
-      if (SP.debugLevel > 0)
+      if (SP.debugLevel > 6)
           beautifyDF(toppageurl)
       end
 
-      reducedPageUrl = reduceCriticalPath(TV,UP,SP,toppageurl)
+      reduceCriticalPath(TV,UP,SP,toppageurl,criticalPathDF)
 
       # Save the fields
 
@@ -1340,13 +1348,47 @@ function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::DataFrame)
+function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::DataFrame,criticalPathDF::DataFrame)
 
-    for subDF in groupby(pageDF,[:urlpagegroup])
-        currentGroup = subDF[1:1,:urlpagegroup]
-        currentCriticalPath = sum(subDF[:,:critical])
-        println("$currentGroup cp=$currentCriticalPath")
+    if (SP.debugLevel > 8)
+        println("Starting reduceCriticalPath")
     end
 
-    return pageDF
+    try
+
+        for subDF in groupby(pageDF,[:urlpagegroup])
+            currentGroup = subDF[1:1,:urlpagegroup]
+            currentCriticalPath = sum(subDF[:,:Critical])
+            #println("$currentGroup cp=$currentCriticalPath")
+            if (currentCriticalPath > 0)
+                push!(criticalPathDF,[currentGroup;currentCriticalPath])
+            end
+        end
+
+        return
+    catch y
+        println("reduceCriticalPath Exception ",y)
+    end
+end
+
+function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPathDF::DataFrame)
+
+    if (SP.debugLevel > 8)
+        println("Starting finalCriticalPathDF")
+    end
+
+    try
+        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Int64[],maximum=Int64[])
+
+        for subDF in groupby(criticalPathDF,[:urlgroup])
+            currentGroup = subDF[1:1,:urlgroup]
+            currentAvg = avg(subDF[:,:time])
+            currentMax = max(subDF[:,:time])
+            push!(finalCriticalPathDF,[currentGroup;currentAvg;currentMax])
+        end
+
+        return finalCriticalPathDF
+    catch y
+        println("reduceCriticalPath Exception ",y)
+    end
 end
