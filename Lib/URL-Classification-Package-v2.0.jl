@@ -9,7 +9,7 @@ function classifyUrl(toppageurl::DataFrame;showProblems::Bool=true,showClassify:
             #    println("url ",url)
             #end
 
-            if (ismatch(r"data:application.*",url)
+            if (ismatch(r"data:application.*",url))
                 if (showProblems)
                     println("Problem data:app:",url)
                 end
