@@ -457,18 +457,6 @@ function wellKnownPathDictionary(debug::Bool)
   end
 end
 
-# Path is so small it does not need debug
-#
-#function wellKnownPathDictionaryDebug()
-#
-#    WellKnownPath = Dict([
-#        ("/Assets/ErrorPages/WpcBlockFrame.htm","NGP Assets"),
-#        ("/ads/measurement/l","Google Doubleclick Ads"),
-#        ("/etc/designs/platform/v2/styles/main.ngsversion.aa8c51dd.css","NGP Script")
-#    ]);
-#    return WellKnownPath
-#end
-
 function VolumeAList()
     VolumeA = Dict([
     ("a-ams.1rx.io","1rx.io"),
@@ -605,7 +593,6 @@ function VolumeAList()
     ("ad.atdmt.com","Atdmt Ads"),
     ("ad.crwdcntrl.net","Lotame Ads"),
     ("ad.davidzhangwei.com","ad.davidzhangwei.com"),
-    ("ad.doubleclick.net","Google Doubleclick Ads"),
     ("ad.dsp.linksynergy.com","linksynergy.com"),
     ("ad.eanalyzer.de","ad.eanalyzer.de"),
     ("ad.ipredictive.com","Ipredictive.com"),
@@ -2727,7 +2714,6 @@ function VolumeGList()
     ("google-sync.rutarget.ru","google-sync.rutarget.ru"),
     ("google.com","google.com"),
     ("google2waycm.netmng.com","google2waycm.netmng.com"),
-    ("googleads.g.doubleclick.net","Google Doubleclick Ads"),
     ("googlest.ru","googlest.ru"),
     ("googst2.ru","Googst2.ru"),
     ("gopro-online.info","gopro-online.info"),
@@ -3079,7 +3065,7 @@ function VolumeIList()
     ("inmedia.xyz","inmedia.xyz"),
     ("innoapi.info","innoapi.info"),
     ("innovatedirect-a.akamaihd.net","innovatedirect-a.akamaihd.net"),
-    ("innovid.box.com","innovid.box.com"),
+    ("innovid.box.com","Innovid Ads"),
     ("insight-store.s3.amazonaws.com","insight-store.s3.amazonaws.com"),
     ("insight.adsrvr.org","TradeDesk Ads"),
     ("insight.randomhouse.com","insight.randomhouse.com"),
@@ -4220,7 +4206,6 @@ function VolumePList()
     ("pt.adloads.net","Adloads.net"),
     ("pt1.rqtrk.eu","pt1.rqtrk.eu"),
     ("pub.propelplus.com","pub.propelplus.com"),
-    ("pubads.g.doubleclick.net","Google Doubleclick Ads"),
     ("public.sonataplatform.com","public.sonataplatform.com"),
     ("publicate.it","publicate.it"),
     ("publisherconsole.appspot.com","publisherconsole.appspot.com"),
@@ -4768,7 +4753,6 @@ function VolumeSList()
     ("securenet.vodafone.pt","Securenet.vodafone.pt"),
     ("securepaths.com","securepaths.com"),
     ("secureplugin.com","secureplugin.com"),
-    ("securepubads.g.doubleclick.net","Google Doubleclick Ads"),
     ("secureserv.brandaffinity.net","secureserv.brandaffinity.net"),
     ("securityguard1.net","securityguard1.net"),
     ("seemoreresultshu-a.akamaihd.net","seemoreresultshu-a.akamaihd.net"),
@@ -5072,7 +5056,6 @@ function VolumeSList()
     ("stats-public.grammarly.io","grammarly.io"),
     ("stats-tm.everesttech.net","everesttech.net"),
     ("stats.bbc.co.uk","stats.bbc.co.uk"),
-    ("stats.g.doubleclick.net","Google Doubleclick Ads"),
     ("stats.mediaforge.com","stats.mediaforge.com"),
     ("stats.redditmedia.com","reddit.com"),
     ("stats.tubemogul.com","stats.tubemogul.com"),
