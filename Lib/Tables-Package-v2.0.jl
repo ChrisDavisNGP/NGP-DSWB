@@ -4,69 +4,69 @@
 
 function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
     try
-        table = UP.beaconTable
-        tableRt = UP.resourceTable
+        bt = UP.beaconTable
+        rt = UP.resourceTable
 
         if (UP.usePageLoad)
             toppageurl = query("""\
             select
                 'None' as urlpagegroup,
-                avg($tableRt.start_time),
-                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.start_time) END) as total,
-                avg($tableRt.redirect_end-$tableRt.redirect_start) as redirect,
-                avg(CASE WHEN ($tableRt.dns_start = 0 and $tableRt.request_start = 0) THEN (0) WHEN ($tableRt.dns_start = 0) THEN ($tableRt.request_start-$tableRt.fetch_start) ELSE ($tableRt.dns_start-$tableRt.fetch_start) END) as blocking,
-                avg($tableRt.dns_end-$tableRt.dns_start) as dns,
-                avg($tableRt.tcp_connection_end-$tableRt.tcp_connection_start) as tcp,
-                avg($tableRt.response_first_byte-$tableRt.request_start) as request,
-                avg(CASE WHEN ($tableRt.response_first_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.response_first_byte) END) as response,
+                avg($rt.start_time),
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.start_time) END) as total,
+                avg($rt.redirect_end-$rt.redirect_start) as redirect,
+                avg(CASE WHEN ($rt.dns_start = 0 and $rt.request_start = 0) THEN (0) WHEN ($rt.dns_start = 0) THEN ($rt.request_start-$rt.fetch_start) ELSE ($rt.dns_start-$rt.fetch_start) END) as blocking,
+                avg($rt.dns_end-$rt.dns_start) as dns,
+                avg($rt.tcp_connection_end-$rt.tcp_connection_start) as tcp,
+                avg($rt.response_first_byte-$rt.request_start) as request,
+                avg(CASE WHEN ($rt.response_first_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.response_first_byte) END) as response,
                 avg(0) as gap,
                 avg(0) as critical,
-                CASE WHEN (position('?' in $tableRt.url) > 0) then trim('/' from (substring($tableRt.url for position('?' in substring($tableRt.url from 9)) +7))) else trim('/' from $tableRt.url) end as urlgroup,
+                CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
                 count(*) as request_count,
                 'Label' as label,
-                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE (($tableRt.response_last_byte-$tableRt.start_time)/1000.0) END) as load,
-                avg($table.timers_t_done) as beacon_time
-            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
+                avg($bt.timers_t_done) as beacon_time
+            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
             WHERE
-                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-                $table.session_id IS NOT NULL and
-                $table.page_group ilike '$(UP.pageGroup)' and
-                $table.params_u ilike '$(UP.urlRegEx)' and
-                $table.user_agent_device_type ilike '$(UP.deviceType)' and
-                $table.user_agent_os ilike '$(UP.agentOs)' and
-                $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs) and
-                $table.params_rt_quit IS NULL
+                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $bt.session_id IS NOT NULL and
+                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.user_agent_device_type ilike '$(UP.deviceType)' and
+                $bt.user_agent_os ilike '$(UP.agentOs)' and
+                $bt.timers_t_done >= $(UP.timeLowerMs) and $bt.timers_t_done <= $(UP.timeUpperMs) and
+                $bt.params_rt_quit IS NULL
             group by urlgroup,urlpagegroup,label
             """);
         else
             toppageurl = query("""\
             select
                 'None' as urlpagegroup,
-                avg($tableRt.start_time),
-                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.start_time) END) as total,
-                avg($tableRt.redirect_end-$tableRt.redirect_start) as redirect,
-                avg(CASE WHEN ($tableRt.dns_start = 0 and $tableRt.request_start = 0) THEN (0) WHEN ($tableRt.dns_start = 0) THEN ($tableRt.request_start-$tableRt.fetch_start) ELSE ($tableRt.dns_start-$tableRt.fetch_start) END) as blocking,
-                avg($tableRt.dns_end-$tableRt.dns_start) as dns,
-                avg($tableRt.tcp_connection_end-$tableRt.tcp_connection_start) as tcp,
-                avg($tableRt.response_first_byte-$tableRt.request_start) as request,
-                avg(CASE WHEN ($tableRt.response_first_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.response_first_byte) END) as response,
+                avg($rt.start_time),
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.start_time) END) as total,
+                avg($rt.redirect_end-$rt.redirect_start) as redirect,
+                avg(CASE WHEN ($rt.dns_start = 0 and $rt.request_start = 0) THEN (0) WHEN ($rt.dns_start = 0) THEN ($rt.request_start-$rt.fetch_start) ELSE ($rt.dns_start-$rt.fetch_start) END) as blocking,
+                avg($rt.dns_end-$rt.dns_start) as dns,
+                avg($rt.tcp_connection_end-$rt.tcp_connection_start) as tcp,
+                avg($rt.response_first_byte-$rt.request_start) as request,
+                avg(CASE WHEN ($rt.response_first_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.response_first_byte) END) as response,
                 avg(0) as gap,
                 avg(0) as critical,
-                CASE WHEN (position('?' in $tableRt.url) > 0) then trim('/' from (substring($tableRt.url for position('?' in substring($tableRt.url from 9)) +7))) else trim('/' from $tableRt.url) end as urlgroup,
+                CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
                 count(*) as request_count,
                 'Label' as label,
-                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE (($tableRt.response_last_byte-$tableRt.start_time)/1000.0) END) as load,
-                avg($table.timers_domready) as beacon_time
-            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
+                avg($bt.timers_domready) as beacon_time
+            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
                 where
-                $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-                $table.session_id IS NOT NULL and
-                $table.page_group ilike '$(UP.pageGroup)' and
-                $table.params_u ilike '$(UP.urlRegEx)' and
-                $table.user_agent_device_type ilike '$(UP.deviceType)' and
-                $table.user_agent_os ilike '$(UP.agentOs)' and
-                $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs) and
-                $table.params_rt_quit IS NULL
+                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $bt.session_id IS NOT NULL and
+                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.user_agent_device_type ilike '$(UP.deviceType)' and
+                $bt.user_agent_os ilike '$(UP.agentOs)' and
+                $bt.timers_domready >= $(UP.timeLowerMs) and $bt.timers_domready <= $(UP.timeUpperMs) and
+                $bt.params_rt_quit IS NULL
             group by urlgroup,urlpagegroup,label
             """);
         end
@@ -103,7 +103,7 @@ function allSessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySes
         FROM $(rt)
         where
             session_id = '$(studySession)' and
-            $tableRt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+            $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
         group by urlgroup,urlpagegroup,label
         """);
 
@@ -156,7 +156,8 @@ function getResourcesForBeacon(TV::TimeVars,UP::UrlParams)
     try
 
         localTableRtDF = query("""\
-            select $rt.* from $bt join $rt
+            select $rt.*
+            FROM $bt join $rt
             on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
             where
             $bt.params_u ilike '$(UP.urlRegEx)'
@@ -178,10 +179,11 @@ function getResourcesForBeacon(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function statsTableDF(table::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function statsTableDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         localStats = query("""\
-        select timers_t_done from $table where
+        select timers_t_done
+        FROM $bt where
         page_group ilike '$(pageGroup)' and
         "timestamp" between $startTimeMs and $endTimeMs and
         params_rt_quit IS NULL
@@ -200,7 +202,7 @@ function treemapsLocalTableRtDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         localTableRtDF = query("""\
             select $rt.*
-            from $bt join $rt
+            FROM $bt join $rt
                 on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
             where
                 $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
@@ -231,7 +233,7 @@ function pageGroupDetailsTables(TV::TimeVars,UP::UrlParams,localMobileTable::ASC
 
         query("""\
             create or replace view $(UP.btView) as
-            (select * from $(UP.beaconTable)
+            (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
             "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
             )
@@ -239,7 +241,7 @@ function pageGroupDetailsTables(TV::TimeVars,UP::UrlParams,localMobileTable::ASC
 
         query("""\
             create or replace view $localMobileTable as
-            (select * from $(UP.beaconTable)
+            (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
             "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
             user_agent_device_type = 'Mobile'
@@ -248,7 +250,7 @@ function pageGroupDetailsTables(TV::TimeVars,UP::UrlParams,localMobileTable::ASC
 
         query("""\
             create or replace view $localDesktopTable as
-            (select * from $(UP.beaconTable)
+            (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
             "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
             user_agent_device_type = 'Desktop'
@@ -260,15 +262,15 @@ function pageGroupDetailsTables(TV::TimeVars,UP::UrlParams,localMobileTable::ASC
     end
 end
 
-function urlBeaconTable(localTable::ASCIIString,table::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,params_u::ASCIIString)
+function urlBeaconTable(inView::ASCIIString,bt::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,params_u::ASCIIString)
     try
         query("""\
-            drop view if exists $localTable
+            drop view if exists $inView
         """)
 
     query("""\
-        create or replace view $localTable as
-        (select * from $table
+        create or replace view $inView as
+        (select * FROM $bt
         where page_group = '$(productPageGroup)' and
         "timestamp" between $startTimeMs and $endTimeMs and
         params_u ilike '$(localUrl)'
@@ -279,17 +281,17 @@ function urlBeaconTable(localTable::ASCIIString,table::ASCIIString,productPageGr
     end
 end
 
-function urlResourceTable(localTableRt::ASCIIString,tableRt::ASCIIString,localTable::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function urlResourceTable(rtv::ASCIIString,rt::ASCIIString,bt::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         query("""\
-            drop view if exists $localTableRt
+            drop view if exists $rtv
         """)
 
         query("""\
-            create or replace view $localTableRt as (
-            select $tableRt.* from $localTable join $tableRt on $tableRt.session_id = $localTable.session_id
-            where $tableRt."timestamp" between $startTimeMs and $endTimeMs and $localTable.session_id IS NOT NULL
-            order by $tableRt.session_id, $tableRt."timestamp", $tableRt.start_time
+            create or replace view $rtv as (
+            select $rt.* FROM $bt join $rt on $rt.session_id = $bt.session_id
+            where $rt."timestamp" between $startTimeMs and $endTimeMs and $bt.session_id IS NOT NULL
+            order by $rt.session_id, $rt."timestamp", $rt.start_time
             )
         """)
     catch y
@@ -310,7 +312,7 @@ function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         query("""\
             create or replace view $btv as (
-                select * from $bt
+                select * FROM $bt
                     where
                         "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
@@ -424,7 +426,7 @@ function gatherSizeData(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             sum($rt.transferred_size) as transferred,
             sum($rt.decoded_size) as decoded,
             count(*)
-        from $bt join $rt on $bt.session_id = $rt.session_id and $bt."timestamp" = $rt."timestamp"
+        FROM $bt join $rt on $bt.session_id = $rt.session_id and $bt."timestamp" = $rt."timestamp"
             where $rt.encoded_size > 1
             group by urlgroup,$bt.session_id,$bt."timestamp"
             order by encoded desc
@@ -441,8 +443,8 @@ end
 
 function joinTablesDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSummary::DataFrame,row::Int64)
     try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
+        btv = UP.btView
+        rt = UP.resourceTable
 
         topSessionId = joinTableSummary[row:row,:session_id][1]
         topTimeStamp = joinTableSummary[row:row,:timestamp][1]
@@ -450,19 +452,19 @@ function joinTablesDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTa
 
         joinTablesDetails = query("""\
             select
-                $tableRt.start_time,
-                $tableRt.encoded_size,
-                $tableRt.transferred_size,
-                $tableRt.decoded_size,
-                $tableRt.url as urlgroup
-            from $localTable join $tableRt
-                on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
+                $rt.start_time,
+                $rt.encoded_size,
+                $rt.transferred_size,
+                $rt.decoded_size,
+                $rt.url as urlgroup
+            FROM $btv join $rt
+                on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
             where
-                $localTable.session_id = '$(topSessionId)' and
-                $localTable."timestamp" = $(topTimeStamp) and
-                $tableRt.encoded_size > 1000000 and
-                $tableRt.url not like '%/interactive-assets/%'
-            order by $tableRt.start_time
+                $btv.session_id = '$(topSessionId)' and
+                $btv."timestamp" = $(topTimeStamp) and
+                $rt.encoded_size > 1000000 and
+                $rt.url not like '%/interactive-assets/%'
+            order by $rt.start_time
         """);
 
         recordsFound = nrow(joinTablesDetails)
@@ -478,11 +480,11 @@ end
 
 function statsTableDF2(TV::TimeVars,UP::UrlParams)
     try
-        table = UP.btView
+        btv = UP.btView
 
         localStats = query("""\
             select timers_t_done
-            from $table
+            from $btv
             where
                 page_group ilike '$(UP.pageGroup)' and
                 params_u ilike '$(UP.urlRegEx)' and
@@ -500,25 +502,25 @@ end
 function defaultResourceView(TV::TimeVars,UP::UrlParams)
 
     try
-        localTableRt = UP.rtView
-        localRt = UP.resourceTable
-        localTable = UP.btView
+        rtv = UP.rtView
+        rt = UP.resourceTable
+        btv = UP.btView
 
-        query("""create or replace view $localTableRt as (
-            select $tableRt.*
-            from $localTable join $tableRt
-                on $tableRt.session_id = $localTable.session_id
+        query("""create or replace view $rtv as (
+            select $rt.*
+            from $btv join $rt
+                on $rt.session_id = $btv.session_id
             where
-                $tableRt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                $localTable.session_id IS NOT NULL
-            order by $tableRt.session_id, $tableRt."timestamp", $tableRt.start_time
+                $rt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $btv.session_id IS NOT NULL
+            order by $rt.session_id, $rt."timestamp", $rt.start_time
         )""")
 
         # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
         # where beacon_type = 'page view'
-        localTableRtDF = query("""SELECT * FROM $localTableRt""")
+        localTableRtDF = query("""SELECT * FROM $rtv""")
         #Hide output from final report
-        println("$localTableRt count is ",size(localTableRtDF))
+        println("$rtv count is ",size(localTableRtDF))
     catch y
         println("setupLocalTable Exception ",y)
     end
@@ -527,13 +529,13 @@ end
 function topPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        localTable = UP.btView
+        btv = UP.btView
 
         topurl = query("""\
             select
                 count(*),
                 CASE when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end urlgroup
-            FROM $(localTable)
+            FROM $(btv)
             where
                 beacon_type = 'page view'
             group by urlgroup
@@ -551,12 +553,12 @@ end
 function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        localTable = UP.btView
+        btv = UP.btView
 
         topurl = query("""\
             select
                 count(*),params_u
-            FROM $(localTable)
+            FROM $(btv)
             where
                 beacon_type = 'page view'
             group by params_u
@@ -574,11 +576,11 @@ end
 function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        localTable = UP.btView
+        btv = UP.btView
 
         statsDF = DataFrame()
 
-        localDF = query("""SELECT params_dom_sz FROM $localTable""")
+        localDF = query("""SELECT params_dom_sz FROM $btv""")
         dv = localDF[:params_dom_sz]
         statsDF = basicStatsFromDV(dv)
         statsDF[:unit] = "KBytes"
@@ -597,14 +599,14 @@ end
 function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
-        localTable = UP.btView
+        btv = UP.btView
         displayTitle(chart_title = "Big Pages (Min $(minSizeBytes) KB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
         bigPagesDF = query("""\
             select
                 params_dom_sz,
                 timers_t_page load_time,
                 params_u urlgroup
-            from $localTable
+            from $btv
             where
                 params_dom_sz IS NOT NULL and
                 params_dom_sz > $(minSizeBytes)
@@ -622,7 +624,7 @@ end
 function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
-        localTable = UP.btView
+        btv = UP.btView
 
         displayTitle(chart_title = "Big Pages By Average Size (Min $(minSizeBytes) KB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
         bigAveragePagesDF = query("""\
@@ -631,7 +633,7 @@ function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
                 avg(params_dom_sz) as size,
                 avg(timers_t_page) as load,
                 params_u as urlgroup
-            from $localTable
+            from $btv
             where
                 params_dom_sz IS NOT NULL and
                 params_dom_sz > $(minSizeBytes)
@@ -650,7 +652,7 @@ end
 function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
-        localTable = UP.btView
+        btv = UP.btView
 
         displayTitle(chart_title = "Big Pages With Session ID (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
         bigPagesSessionsDF = query("""\
@@ -659,7 +661,7 @@ function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
                 session_id,
                 "timestamp",
                 params_u urlgroup
-            from $localTable
+            from $btv
             where
                 params_dom_sz IS NOT NULL and
                 params_dom_sz > $(minSizeBytes) and
@@ -678,23 +680,23 @@ end
 function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
+        btv = UP.btView
+        rt = UP.resourceTable
 
         joinTablesDF = query("""\
             select
                 count(*) cnt,
-                $localTable.params_dom_sz dom_size,
-                $localTable.session_id s_id,
-                $localTable."timestamp"
-            from $localTable join $tableRt
-                on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
+                $btv.params_dom_sz dom_size,
+                $btv.session_id s_id,
+                $btv."timestamp"
+            from $btv join $rt
+                on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
             where
-                $localTable.params_dom_sz IS NOT NULL and
-                $localTable.params_dom_sz > $(minSizeBytes) and
-                $localTable.session_id IS NOT NULL
-            group by $localTable.params_dom_sz, $localTable.session_id, $localTable."timestamp"
-            order by $localTable.params_dom_sz desc
+                $btv.params_dom_sz IS NOT NULL and
+                $btv.params_dom_sz > $(minSizeBytes) and
+                $btv.session_id IS NOT NULL
+            group by $btv.params_dom_sz, $btv.session_id, $btv."timestamp"
+            order by $btv.params_dom_sz desc
             limit $(SP.showLines)
         """);
 
@@ -709,26 +711,26 @@ end
 function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
-        localTable = UP.btView
-        table = UP.beaconTable
+        btv = UP.btView
+        rt = UP.resourceTable
 
         joinTablesDF = query("""\
             select
-                $localTable.params_dom_sz dom_size,
-                $localTable.session_id,
-                $localTable."timestamp",
-                $tableRt.start_time,
-                $tableRt.encoded_size,
-                $tableRt.transferred_size,
-                $tableRt.decoded_size,
-                $tableRt.url urlgroup
-            from $localTable join $tableRt
-                on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
+                $btv.params_dom_sz dom_size,
+                $btv.session_id,
+                $btv."timestamp",
+                $rt.start_time,
+                $rt.encoded_size,
+                $rt.transferred_size,
+                $rt.decoded_size,
+                $rt.url urlgroup
+            from $btv join $rt
+                on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
             where
-                $localTable.params_dom_sz IS NOT NULL and
-                $localTable.params_dom_sz > $(minSizeBytes) and
-                $localTable.session_id IS NOT NULL
-            order by $localTable.params_dom_sz
+                $btv.params_dom_sz IS NOT NULL and
+                $btv.params_dom_sz > $(minSizeBytes) and
+                $btv.session_id IS NOT NULL
+            order by $btv.params_dom_sz
             limit $(SP.showLines)
         """);
 
@@ -811,41 +813,41 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
     joinTablesDF = DataFrame()
 
     try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
+        btv = UP.btView
+        rt = UP.resourceTable
 
         joinTablesDF = query("""\
         select
-            $localTable.user_agent_os,
-            $localTable.user_agent_family,
-            $localTable.user_agent_device_type,
-            $tableRt.url,
-            avg($tableRt.encoded_size) as encoded,
-            avg($tableRt.transferred_size) as transferred,
-            avg($tableRt.decoded_size) as decoded,
+            $btv.user_agent_os,
+            $btv.user_agent_family,
+            $btv.user_agent_device_type,
+            $rt.url,
+            avg($rt.encoded_size) as encoded,
+            avg($rt.transferred_size) as transferred,
+            avg($rt.decoded_size) as decoded,
             count(*)
-        from $localTable join $tableRt
-        on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-        where $tableRt.encoded_size > 1 and
-        $tableRt.url not ilike '%/interactive-assets/%' and
-        $tableRt.url not ilike '%png' and
-        $tableRt.url not ilike '%svg' and
-        $tableRt.url not ilike '%jpg' and
-        $tableRt.url not ilike '%mp3' and
-        $tableRt.url not ilike '%mp4' and
-        $tableRt.url not ilike '%gif' and
-        $tableRt.url not ilike '%wav' and
-        $tableRt.url not ilike '%jog' and
-        $tableRt.url not ilike '%js' and
-        $tableRt.url not ilike '%.js?%' and
-        $tableRt.url not ilike '%css' and
-        $tableRt.url not ilike '%ttf' and
-        $tableRt.url not ilike '%woff%'
+        from $btv join $rt
+        on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
+        where $rt.encoded_size > 1 and
+        $rt.url not ilike '%/interactive-assets/%' and
+        $rt.url not ilike '%png' and
+        $rt.url not ilike '%svg' and
+        $rt.url not ilike '%jpg' and
+        $rt.url not ilike '%mp3' and
+        $rt.url not ilike '%mp4' and
+        $rt.url not ilike '%gif' and
+        $rt.url not ilike '%wav' and
+        $rt.url not ilike '%jog' and
+        $rt.url not ilike '%js' and
+        $rt.url not ilike '%.js?%' and
+        $rt.url not ilike '%css' and
+        $rt.url not ilike '%ttf' and
+        $rt.url not ilike '%woff%'
         group by
-            $localTable.user_agent_family,
-            $localTable.user_agent_os,
-            $localTable.user_agent_device_type,
-            $tableRt.url
+            $btv.user_agent_family,
+            $btv.user_agent_os,
+            $btv.user_agent_device_type,
+            $rt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
@@ -861,28 +863,28 @@ function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)
     joinTablesDF = DataFrame()
 
     try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
+        btv = UP.btView
+        rt = UP.resourceTable
 
         joinTablesDF = query("""\
             select
-                $tableRt.url,
-                avg($tableRt.encoded_size) as encoded,
-                avg($tableRt.transferred_size) as transferred,
-                avg($tableRt.decoded_size) as decoded,
-                $localTable.compression_types,$localTable.domain,$localTable.geo_netspeed,$localTable.mobile_connection_type,$localTable.params_scr_bpp,$localTable.params_scr_dpx,$localTable.params_scr_mtp,$localTable.params_scr_orn,params_scr_xy,
-                $localTable.user_agent_family,$localTable.user_agent_major,$localTable.user_agent_minor,$localTable.user_agent_mobile,$localTable.user_agent_model,$localTable.user_agent_os,$localTable.user_agent_osversion,$localTable.user_agent_raw,
-                $localTable.user_agent_manufacturer,$localTable.user_agent_device_type,$localTable.user_agent_isp,$localTable.geo_isp,$localTable.params_ua_plt,$localTable.params_ua_vnd,
-                $tableRt.initiator_type,$tableRt.height,$tableRt.width,$tableRt.x,$tableRt.y,
+                $rt.url,
+                avg($rt.encoded_size) as encoded,
+                avg($rt.transferred_size) as transferred,
+                avg($rt.decoded_size) as decoded,
+                $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
+                $btv.user_agent_family,$btv.user_agent_major,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.user_agent_os,$btv.user_agent_osversion,$btv.user_agent_raw,
+                $btv.user_agent_manufacturer,$btv.user_agent_device_type,$btv.user_agent_isp,$btv.geo_isp,$btv.params_ua_plt,$btv.params_ua_vnd,
+                $rt.initiator_type,$rt.height,$rt.width,$rt.x,$rt.y,
                 count(*)
-            from $localTable join $tableRt
-                on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-            where $tableRt.encoded_size > 1 and $tableRt.url not like '%/interactive-assets/%'
-            group by $tableRt.url,
-                $localTable.compression_types,$localTable.domain,$localTable.geo_netspeed,$localTable.mobile_connection_type,$localTable.params_scr_bpp,$localTable.params_scr_dpx,$localTable.params_scr_mtp,$localTable.params_scr_orn,params_scr_xy,
-                $localTable.user_agent_family,$localTable.user_agent_major,$localTable.user_agent_minor,$localTable.user_agent_mobile,$localTable.user_agent_model,$localTable.user_agent_os,$localTable.user_agent_osversion,$localTable.user_agent_raw,
-                $localTable.user_agent_manufacturer,$localTable.user_agent_device_type,$localTable.user_agent_isp,$localTable.geo_isp,$localTable.params_ua_plt,$localTable.params_ua_vnd,
-                $tableRt.initiator_type,$tableRt.height,$tableRt.width,$tableRt.x,$tableRt.y
+            from $btv join $rt
+                on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
+            where $rt.encoded_size > 1 and $rt.url not like '%/interactive-assets/%'
+            group by $rt.url,
+                $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
+                $btv.user_agent_family,$btv.user_agent_major,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.user_agent_os,$btv.user_agent_osversion,$btv.user_agent_raw,
+                $btv.user_agent_manufacturer,$btv.user_agent_device_type,$btv.user_agent_isp,$btv.geo_isp,$btv.params_ua_plt,$btv.params_ua_vnd,
+                $rt.initiator_type,$rt.height,$rt.width,$rt.x,$rt.y
             order by encoded desc
         """);
 
@@ -987,22 +989,22 @@ end
 function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
 
     try
-        localTable = UP.btView
-        tableRt = UP.resourceTable
+        btv = UP.btView
+        rt = UP.resourceTable
 
         joinTablesDF = query("""\
         select
-            avg($tableRt.encoded_size) as encoded,
-            avg($tableRt.transferred_size) as transferred,
-            avg($tableRt.decoded_size) as decoded,
+            avg($rt.encoded_size) as encoded,
+            avg($rt.transferred_size) as transferred,
+            avg($rt.decoded_size) as decoded,
             count(*),
-            $tableRt.url
-        from $localTable join $tableRt
-            on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
-        where $tableRt.encoded_size > $(UP.sizeMin) and
-            ($tableRt.url ilike '$(fileType)' or $tableRt.url ilike '$(fileType)?%') and
-            $tableRt.url ilike 'http://www.nationalgeographic.com%'
-        group by $tableRt.url
+            $rt.url
+        from $btv join $rt
+            on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
+        where $rt.encoded_size > $(UP.sizeMin) and
+            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
+            $rt.url ilike 'http://www.nationalgeographic.com%'
+        group by $rt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 

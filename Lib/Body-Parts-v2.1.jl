@@ -57,7 +57,10 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
       recordsFound = nrow(localTableDF)
 
-      println("part 1 done with ",recordsFound, " records")
+      if (SP.debugLevel > 4)
+          println("part 1 done with ",recordsFound, " records")
+      end
+
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
@@ -66,21 +69,30 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
       # Stats on the data
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      rangeLowerMs = statsDF[1:1,:median][1] * 0.95
-      rangeUpperMs = statsDF[1:1,:median][1] * 1.05
+      UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
+      UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 
-      println("part 2 done")
+      if (SP.debugLevel > 2)
+          println("part 2 done: selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
+      end
+
       localTableRtDF = getResourcesForBeacon(TV,UP)
       recordsFound = nrow(localTableRtDF)
 
-      println("part 2 done with ",recordsFound, " records")
+      if (SP.debugLevel > 4)
+          println("part 2 done with ",recordsFound, " records")
+      end
+
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
-      println("part 3 done")
+      if (SP.debugLevel > 4)
+          println("part 3 done")
+      end
+
       showAvailableSessionsStreamline(TV,UP,SP,localTableDF,localTableRtDF)
       #println("part 4 done")
 
@@ -432,7 +444,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
                   labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
                   if (SP.debugLevel > 8)
-                      println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
+                      println("$(io) / $(SP.showLines): $(labelString),$(UP.urlRegEx)")
+                      println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,s1String,timeStampVar)
@@ -471,7 +484,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
       for subdf in groupby(full,[:session_id,:timestamp])
           s = size(subdf)
-          if(SP.debug)
+          if(SP.debugLevel > 2)
               println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
           if (UP.usePageLoad)
@@ -490,12 +503,16 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                   timeVarSec = timeVar / 1000.0
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
                   labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
-                  if (SP.debug)
-                      println("$(io) / $(SP.showLines): $(UP.pageGroup),$(labelString),$(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar),$(SP.criticalPathOnly),$(SP.devView)")
+                  if (SP.debugLevel > 2)
+                      println("$(io)/$(SP.showLines): $(labelString),$(UP.urlRegEx)")
+                      println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
                   suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
                   if (!suitable)
+                      if (SP.debugLevel > 2)
+                          println("Not suitable: $(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar)")
+                      end
                       SP.showLines += 1
                   end
               else
@@ -530,12 +547,21 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
       toppageurl = DataFrame()
 
       if studyTime > 0
+          if SP.debugLevel > 2
+              println("calling sessionUrlTableDF")
+          end
           toppageurl = sessionUrlTableDF(TV,UP,SP,studySession,studyTime)
           elseif (studySession != "None")
+              if SP.debugLevel > 2
+                  println("calling allSessionUrlTableDF")
+              end
               toppageurl = allSessionUrlTableDF(TV,UP,SP,studySession)
           else
+              if SP.debugLevel > 2
+                  println("calling allPageUrlTableDF")
+              end
               toppageurl = allPageUrlTableDF(TV,UP)
-      end;
+      end
 
       return toppageurl
 
@@ -547,6 +573,15 @@ end
 function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   toppageurl::DataFrame,criticalPathDF::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
   try
+
+      if size(toppageurl,1) == 0
+          println("Rejecting current page, no data")
+          return false
+      end
+
+      if (!suitableTest(UP,SP,toppageurl))
+          return false
+      end
 
       toppageurl = names!(toppageurl[:,:],
       [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
@@ -597,9 +632,20 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   try
       UrlParamsValidate(UP)
 
-      if (SP.debugLevel > 0)
-        println("Clean Up Data table")
+      if size(toppageurl,1) == 0
+          println("Rejecting current page, no data")
+          return false
       end
+
+      if (SP.debugLevel > 8)
+        println("Clean Up Data table",size(toppageurl))
+      end
+
+      if (!suitableTest(UP,SP,toppageurl))
+          return false
+      end
+
+
       toppageurl = names!(toppageurl[:,:],
       [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
           symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
@@ -607,7 +653,8 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       toppageurlbackup = deepcopy(toppageurl);
       toppageurl = deepcopy(toppageurlbackup)
-      if (SP.debugLevel > 0)
+
+      if (SP.debugLevel > 8)
           beautifyDF(toppageurl)
       end
 
@@ -619,17 +666,17 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       removeNegitiveTime(toppageurl,:Request)
       removeNegitiveTime(toppageurl,:Response)
 
-      if (SP.debugLevel > 2)
+      if (SP.debugLevel > 4)
         println("Classify Data");
       end
       classifyUrl(SP,toppageurl);
 
-      if (SP.debugLevel > 2)
+      if (SP.debugLevel > 4)
         println("Scrub Data");
       end
       scrubUrlToPrint(SP,toppageurl,:urlgroup);
 
-      if (SP.debugLevel > 2)
+      if (SP.debugLevel > 4)
         println("Add Gap and Critical Path")
       end
 
@@ -642,7 +689,7 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           waterFallFinder(TV,UP,SP,studySession,studyTime)
       end
 
-      if (SP.debugLevel > 0)
+      if (SP.debugLevel > 4)
           beautifyDF(toppageurl)
       end
 
@@ -688,9 +735,9 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
       #clear times beyond timerDone, set timerDone high if you wish to see all
       toppageurl2 = deepcopy(toppageurl)
 
-      i = 1
+      i = 0
       lastRow = 0
-      for url in toppageurl[2:end,:urlgroup]
+      for url in toppageurl[1:end,:urlgroup]
           i += 1
           newStartTime = toppageurl[i,:Start]
           newTotalTime = toppageurl[i,:Total]
@@ -717,8 +764,8 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
       #println(" Result ")
       #println("")
 
-      #i = 1
-      #for url in toppageurl2[2:end,:urlgroup]
+      #i = 0
+      #for url in toppageurl2[1:end,:urlgroup]
       #    i += 1
       #    newStartTime = toppageurl2[i,:Start]
       #    newTotalTime = toppageurl2[i,:Total]
@@ -734,10 +781,10 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
 
       prevStartTime = toppageurl[1,:Start]
       prevTotalTime = toppageurl[1,:Total]
-      i = 1
+      i = 0
       toppageurl[:Critical] = toppageurl[1,:Total]
 
-      for url in toppageurl[2:end,:urlgroup]
+      for url in toppageurl[1:end,:urlgroup]
           i += 1
           toppageurl[i,:Gap] = 0
           toppageurl[i,:Critical] = 0
@@ -811,17 +858,19 @@ end
 
 function suitableTest(UP::UrlParams,SP::ShowParams,toppageurl::DataFrame)
   try
-      i = 1
+      i = 0
       lastRow = 0
-      for url in toppageurl[2:end,:urlgroup]
+      newTotalTime = 0
+      for url in toppageurl[1:end,:urlgroup]
           i += 1
-          newTotalTime = toppageurl[i,:Total]
-          if (newTotalTime > UP.timeUpperMs)
-              if (SP.debug)
-                  println("Dropping page $(url) due to total time of $(newTotalTime)")
-              end
-              return false
+          newTotalTime += toppageurl[i,:Total]
+      end
+      #println("newTotalTime = $newTotalTime")
+      if (newTotalTime < UP.timeLowerMs || newTotalTime > UP.timeUpperMs)
+          if (SP.debugLevel > 2)
+              println("Dropping page due to total time of $(newTotalTime)")
           end
+          return false
       end
 
       return true

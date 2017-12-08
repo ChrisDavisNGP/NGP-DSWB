@@ -375,10 +375,10 @@ function gapAndCriticalPath(toppageurl::DataFrame)
 
         prevStartTime = toppageurl[1,:Start]
         prevTotalTime = toppageurl[1,:Total]
-        i = 1
+        i = 0
         toppageurl[:Critical] = toppageurl[1,:Total]
 
-        for url in toppageurl[2:end,:urlgroup]
+        for url in toppageurl[1:end,:urlgroup]
             i += 1
             toppageurl[i,:Gap] = 0
             toppageurl[i,:Critical] = 0
@@ -1859,6 +1859,7 @@ function VolumeDList()
     ("d.instashareonline.com","d.instashareonline.com"),
     ("d.jazzedcdn.com","d.jazzedcdn.com"),
     ("d.lqw.me","Lqw.me"),
+    ("d.lemonpi.io","d.lemonpi.io"),
     ("d.mobilebanner.ru","d.mobilebanner.ru"),
     ("d.moviemodeapp.com","d.moviemodeapp.com"),
     ("d.omg.neodatagroup.com","d.omg.neodatagroup.com"),
@@ -2610,6 +2611,7 @@ function VolumeGList()
     ("gb.adloads.net","gb.adloads.net"),
     ("gb.apiads.biz","apiads.biz"),
     ("gbh.runtogetit.com","gbh.runtogetit.com"),
+    ("gb-gmtdmp.mookie1.com","Mookie1"),
     ("gc.kfp.scr.kaspersky-labs.com","gc.kfp.scr.kaspersky-labs.com"),
     ("gc.kis.scr.kaspersky-labs.com","gc.kis.scr.kaspersky-labs.com"),
     ("gc.kis.v2.scr.kaspersky-labs.com","gc.kis.v2.scr.kaspersky-labs.com"),
