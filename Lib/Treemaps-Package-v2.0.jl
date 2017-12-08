@@ -501,3 +501,56 @@ function itemCountTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::
         println("itemCountTreemap Exception ",y)
     end
 end
+
+function critialPathTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPathDF::DataFrame)
+    try
+        #beacons on Total
+        cpDF = names!(criticalPathDF[:,:],
+        [symbol("urlgroup"),symbol("average"),symbol("maximum"),symbol("label")])
+
+        #totalTime = sum(toppageurl[:,:Total])
+        treeDF = DataFrame()
+        treeDF[:,:urlgroup] = cpDF[:,:urlgroup]
+        treeDF[:,:label] = cpDF[:,:label]
+        treeDF[:,:load_time] = cpDF[:,:average]
+
+        fieldNames = [:urlgroup]
+        treeDF[:label] = "Critical Path Average Time"
+        drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
+
+#            if (SP.devView)
+#                list = DataFrame()#
+#                list[:,:urlpagegroup] = deepcopy(toppageurl[:,:urlpagegroup])
+#                #list[:,:Total] = deepcopy(toppageurl[:,:Total])
+#                list[:,:beacons] = deepcopy(toppageurl[:,:beacons])
+#                if (showPageUrl)
+#                    list[:,:urlgroup] = deepcopy(toppageurl[:,:urlgroup])
+#                end
+#
+#                totalPercentTime = sum(list[:,:beacons]) * 0.010
+#                sort!(list,cols=[order(:beacons,rev=true)])
+#
+#                titlestring = "This includes time which is overlapped."
+#                title2string = "Note: beacons field is used for load time and load_time field is used fractional load time"
+#                displayTitle(chart_title = "Total Time (K ms) For All Pages In Sample", chart_info = [titlestring,title2string,TV.timeString],showTimeStamp=false)
+#
+#                #totalPercentTime = list[1:1,:beacons] * 0.001
+#                totalPercentTime = 1
+#                list = list[Bool[x > totalPercentTime[1] for x in list[:beacons]],:]
+#                if (showPageUrl)
+#                    #beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
+#                    #    [symbol("URL Page Group"),symbol("Total Time"),symbol("Redirect"),symbol("Url Without Params")]))
+#                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
+#                        [symbol("URL Page Group"),symbol("End to End Time"),symbol("Url Without Params")]))
+#                else
+#                    #beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
+#                    #    [symbol("URL Page Group"),symbol("Total Time"),symbol("Redirect"),symbol("Url Without Params")]))
+#                    beautifyDF(names!(list[1:min(SP.treemapTableLines,end),:],
+#                        [symbol("URL Page Group"),symbol("End to End Time")]))
+#                end
+#            end
+        end
+    catch y
+        println("endToEndTreemap Exception ",y)
+    end
+end

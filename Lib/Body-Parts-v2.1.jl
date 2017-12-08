@@ -448,7 +448,9 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
       println("size of criticalPathDF is ",size(criticalPathDF))
       finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
 
-      beautifyDF(finalCriticalPathDF)
+      if (SP.debugLevel > 4)
+          beautifyDF(finalCriticalPathDF)
+      end
       #todo treemap
 
   catch y
@@ -1382,13 +1384,13 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
     end
 
     try
-        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],maximum=Int64[])
+        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],maximum=Int64[],label=ASCIIString)
 
         for subDF in groupby(criticalPathDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
             currentMean = mean(subDF[:,:time])
             currentMax = maximum(subDF[:,:time])
-            push!(finalCriticalPathDF,[currentGroup;currentMean;currentMax)
+            push!(finalCriticalPathDF,[currentGroup;currentMean;currentMax;"label")
         end
 
         return finalCriticalPathDF
