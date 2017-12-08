@@ -1382,14 +1382,13 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
     end
 
     try
-        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],maximum=Int64[],median=Float64)
+        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],maximum=Int64[])
 
         for subDF in groupby(criticalPathDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
             currentMean = mean(subDF[:,:time])
             currentMax = maximum(subDF[:,:time])
-            currentMedian = median(subDF[:,:time])
-            push!(finalCriticalPathDF,[currentGroup;currentMean;currentMax;currentMedian])
+            push!(finalCriticalPathDF,[currentGroup;currentMean;currentMax)
         end
 
         return finalCriticalPathDF
