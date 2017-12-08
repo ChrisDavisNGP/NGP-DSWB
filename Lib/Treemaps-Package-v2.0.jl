@@ -502,7 +502,7 @@ function itemCountTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::
     end
 end
 
-function critialPathTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPathDF::DataFrame)
+function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPathDF::DataFrame)
     try
         #beacons on Total
         cpDF = names!(criticalPathDF[:,:],
@@ -551,6 +551,6 @@ function critialPathTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPa
 #            end
         end
     catch y
-        println("endToEndTreemap Exception ",y)
+        println("critialPathTreemap Exception ",y)
     end
 end

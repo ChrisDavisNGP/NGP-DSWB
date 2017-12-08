@@ -451,7 +451,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
       if (SP.debugLevel > 4)
           beautifyDF(finalCriticalPathDF)
       end
-      #todo treemap
+
+      criticalPathFinalTreemap(TV,UP,SP,finalCriticalPathDF)
 
   catch y
       println("showAvailSessions Exception ",y)
