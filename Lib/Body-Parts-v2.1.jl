@@ -445,7 +445,10 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           end
       end
 
-      println("size of criticalPathDF is ",size(criticalPathDF))
+      if (SP.debugLevel > 4)
+          println("size of criticalPathDF is ",size(criticalPathDF))
+      end
+
       finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
 
       if (SP.debugLevel > 4)
@@ -1385,13 +1388,14 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
     end
 
     try
-        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],maximum=Int64[],label=ASCIIString)
+        finalCriticalPathDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],maximum=Int64[],counter=Int64[],label=ASCIIString[])
 
         for subDF in groupby(criticalPathDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
             currentMean = mean(subDF[:,:time])
             currentMax = maximum(subDF[:,:time])
-            push!(finalCriticalPathDF,[currentGroup;currentMean;currentMax;"label")
+            currentCount = size(subDF[:,:urlgroup],1)
+            push!(finalCriticalPathDF,[currentGroup;currentMean;currentMax;currentCount;"label"])
         end
 
         return finalCriticalPathDF
