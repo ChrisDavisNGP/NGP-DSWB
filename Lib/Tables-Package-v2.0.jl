@@ -300,8 +300,8 @@ end
 function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        table = UP.beaconTable
-        localTable = UP.btView
+        bt = UP.beaconTable
+        btv = UP.btView
         timeLowerMs = UP.timeLowerMs > 0 ? UP.timeLowerMs : 1000
         timeUpperMs = UP.timeUpperMs > 0 ? UP.timeUpperMs : 600000
         if (SP.debugLevel > 0)
@@ -309,8 +309,8 @@ function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         query("""\
-            create or replace view $localTable as (
-                select * from $table
+            create or replace view $btv as (
+                select * from $bt
                     where
                         "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
@@ -321,8 +321,8 @@ function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             )
         """)
         if (SP.debugLevel > 0)
-            cnt = query("""SELECT count(*) FROM $localTable""")
-            println("$localTable count is ",cnt[1,1])
+            cnt = query("""SELECT count(*) FROM $btv""")
+            println("$btv count is ",cnt[1,1])
         end
     catch y
         println("defaultBeaconView Exception ",y)
@@ -1272,7 +1272,7 @@ function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit:
             end
 
     catch y
-        println("topUrlTableByCount Exception ",y)
+        println("topUrlbtByCount Exception ",y)
     end
 
 end
