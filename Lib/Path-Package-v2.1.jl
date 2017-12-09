@@ -868,13 +868,25 @@ function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::Da
     end
 end
 
-function summaryReduce::TimeVars,UP::UrlParams,SP::ShowParams,sumDF::DataFrame)
+function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame)
     if (SP.debugLevel > 8)
         println("Starting summaryReduce")
     end
 
     try
-        println("Think of something to do")
+        WellKnownUrlGroup = wellKnownUrlGroup(SP.debug);
+        classifyUrlGroup(SP,summaryDF)
+        #beautifyDF(summaryDF)
+
+#        for subDF in groupby(pageDF,[:urlpagegroup])
+#            currentGroup = subDF[1:1,:urlpagegroup]
+#            currentCriticalPath = sum(subDF[:,:Critical])
+#            #println("$currentGroup cp=$currentCriticalPath")
+#            if (currentCriticalPath > 0)
+#                push!(criticalPathDF,[currentGroup;currentCriticalPath])
+#            end
+#        end
+
 
     catch y
         println("summaryReduce Exception ",y)
