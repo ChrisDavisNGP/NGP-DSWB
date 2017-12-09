@@ -202,57 +202,16 @@ function classifyUrlGroup(SP::ShowParams,summaryDF::DataFrame)
         for urlgroup in summaryDF[:,:urlgroup]
             i += 1
 
-            newUrlPageGroup = "Other"
+            findSummary = "Other"
 
             findSummary = lookupUrlGroup(url)
 
-
-            if (findHost != "NoneInner")
-                newUrlPageGroup = findHost
-                toppageurl[i:i,:urlpagegroup] = findHost
-            elseif (haskey(WellKnownPath,uri.path))
-                newUrlPageGroup = get(WellKnownPath,uri.path,"None2")
-                toppageurl[i:i,:urlpagegroup] = newUrlPageGroup
-            else
-                newuristring = "None"
-                newuristring = PartialKnownHost(uri.host)
-                if (newuristring == "To Classify")
-                    newuristring = PartialKnownPath(uri.path)
-
-                    if (newuristring == "To Classify")
-                        if ((ismatch(r".*cloudfront.net",uri.host)) && (ismatch(r".*jpg",uri.path)))
-                            newuristring = "AWS Cloud JPG File"
-                        elseif ((ismatch(r".*cloudfront.net",uri.host)) && (ismatch(r".*png",uri.path)))
-                            newuristring = "AWS Cloud PNG File"
-                        end
-                    end
-
-                    if (newuristring == "To Classify")
-                        todo += 1
-                        #@show todo uri.host  uri.path
-                        if (ismatch(r"^.*",uri.host))
-                            #println("Host ", uri.host, " Path ",uri.path)
-                            println("        (\"", uri.host,"\",\"",uri.host,"\"),")
-                        end
-                    end
-                end
-                if (newuristring == "None" && SP.reportLevel > 0)
-                    println("Host ", uri.host, " Path ",uri.path, " *** None ***")
-                        #println(uri.host)
-                end
-
-                toppageurl[i:i,:urlpagegroup] = newuristring
-                newUrlPageGroup = newuristring
-            end
-
-            #println("newUrlPageGroup ",newUrlPageGroup," uri.path ",uri.path)
-            returnValue = SubClassify(newUrlPageGroup,uri.path)
-            toppageurl[i:i,:urlpagegroup] = returnValue
-            #println("final Group ",toppageurl[i:i,:urlpagegroup])
+            summaryDF[i:i,:urlgroup] = findSummary
         end
+
      catch y
-        println("classifyUrl Exception ",y)
-        println("exc: url=",url," uri=",uri)
+        println("classifyUrlGroup Exception ",y)
+        println("exc: urlGroup=",summaryDF[i:i,:urlGroup]," i=",i)
     end
 
 end
@@ -387,27 +346,15 @@ end
 
 function lookupUrlGroup(urlGroup::ASCIIString)
 
-    hostStart = string(hs)
-    #println("[",host,"] and [",hostStart,"]")
-
     try
-        if (haskey(WellKnownHostDirectory,hostStart))
+        if (haskey(WellKnownUrlGroup,urlGroup))
             #println("Fetch Volume ",hostStart)
-            Volume = get(WellKnownHostDirectory,hostStart,"NoVolume")
+            return get(WellKnownUrlGroup,urlGroup,"Other")
         else
-            Volume = get(WellKnownHostDirectory,"Other","NoVolume")
+            println("\(\"$urlGroup\",\"\"),")
+            return "Other"
         end
 
-        newUrlPageGroup = "NoneInner"
-        if (haskey(Volume,host))
-            #println("Fetch Host ",host)
-            newUrlPageGroup = get(Volume,host,"NoneInner")
-        end
-
-        #println("New Group ",newUrlPageGroup)
-        #println("")
-
-        return newUrlPageGroup
     catch y
         println("lookupHost Exception",y)
         return "NoneInner"

@@ -876,7 +876,7 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
     try
         WellKnownUrlGroup = wellKnownUrlGroup(SP.debug);
         classifyUrlGroup(SP,summaryDF)
-        #beautifyDF(summaryDF)
+        beautifyDF(summaryDF)
 
 #        for subDF in groupby(pageDF,[:urlpagegroup])
 #            currentGroup = subDF[1:1,:urlpagegroup]
