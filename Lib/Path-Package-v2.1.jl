@@ -877,15 +877,16 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
         classifyUrlGroup(SP,summaryDF)
         beautifyDF(summaryDF)
 
-#        for subDF in groupby(pageDF,[:urlpagegroup])
-#            currentGroup = subDF[1:1,:urlpagegroup]
-#            currentCriticalPath = sum(subDF[:,:Critical])
-#            #println("$currentGroup cp=$currentCriticalPath")
-#            if (currentCriticalPath > 0)
-#                push!(criticalPathDF,[currentGroup;currentCriticalPath])
-#            end
-#        end
+        for subDF in groupby(summaryDF,[:urlgroup])
+            currentGroup = subDF[1:1,:urlgroup]
+            currentTotal = sum(subDF[:,:Critical])
+            #println("$currentGroup cp=$currentCriticalPath")
+            if (currentTotal > 0)
+                push!(summaryUrlGroupDF,[currentGroup;currentTotal])
+            end
+        end
 
+        return summaryUrlGroupDF
 
     catch y
         println("summaryReduce Exception ",y)
