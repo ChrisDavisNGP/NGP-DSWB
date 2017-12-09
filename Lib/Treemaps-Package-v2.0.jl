@@ -513,7 +513,7 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
         treeDF[:,:urlgroup] = cpDF[:,:urlgroup]
         treeDF[:,:beacons] = cpDF[:,:average]
         treeDF[:,:label] = cpDF[:,:label]
-        treeDF[:,:load_time] = cpDF[:,:counter]/1000.0
+        treeDF[:,:load_time] = cpDF[:,:counter]/100.0
 
         fieldNames = [:urlgroup]
         treeDF[:label] = "Critical Path Average Time"
@@ -523,6 +523,8 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
             list = DataFrame()
             list[:,:urlgroup] = deepcopy(cpDF[:,:urlgroup])
             list[:,:beacons] = deepcopy(cpDF[:,:average])
+            list[:,:maximum] = deepcopy(cpDF[:,:maximum])
+            list[:,:counter] = deepcopy(cpDF[:,:counter])
 
             totalPercentTime = sum(list[:,:beacons]) * 0.010
             sort!(list,cols=[order(:beacons,rev=true)])
@@ -532,7 +534,7 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
             totalPercentTime = 1
             list = list[Bool[x > totalPercentTime[1] for x in list[:beacons]],:]
             beautifyDF(names!(list[:,:],
-                [symbol("URL Page Group"),symbol("Average Critical Path Time")]))
+                [symbol("URL Page Group");symbol("Average Time (ms)");symbol("Maximum");symbol("Occurances")]))
         end
 
     catch y
