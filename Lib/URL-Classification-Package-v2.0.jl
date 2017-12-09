@@ -199,19 +199,22 @@ function classifyUrlGroup(SP::ShowParams,summaryDF::DataFrame)
     try
         i = 0
         todo = 0
-        for urlgroup in summaryDF[:,:urlgroup]
+        println("Starting classifyUrlGroup")
+        beautifyDF(summaryDF)
+
+        for urlGroupItem in summaryDF[:,:urlgroup]
             i += 1
 
             findSummary = "Other"
 
-            findSummary = lookupUrlGroup(url)
+            findSummary = lookupUrlGroup(urlGroupItem)
 
             summaryDF[i:i,:urlgroup] = findSummary
         end
 
      catch y
         println("classifyUrlGroup Exception ",y)
-        println("exc: urlGroup=",summaryDF[i:i,:urlGroup]," i=",i)
+        #println("exc: urlGroup=",summaryDF[i:i,:urlGroup]," i=",i)
     end
 
 end
@@ -347,6 +350,7 @@ end
 function lookupUrlGroup(urlGroup::ASCIIString)
 
     try
+        println("lookupUrlGroup ",urlGroup)
         if (haskey(WellKnownUrlGroup,urlGroup))
             #println("Fetch Volume ",hostStart)
             return get(WellKnownUrlGroup,urlGroup,"Other")
@@ -356,7 +360,7 @@ function lookupUrlGroup(urlGroup::ASCIIString)
         end
 
     catch y
-        println("lookupHost Exception",y)
+        println("lookupUrlGroup Exception",y)
         return "NoneInner"
     end
 

@@ -6337,5 +6337,5 @@ function wellKnownUrlGroup()
 
     ("Unrulymedia.Com","Advertisers")
     ]);
-    return WellKnownPath
+    return WellKnownUrlGroup
 end
