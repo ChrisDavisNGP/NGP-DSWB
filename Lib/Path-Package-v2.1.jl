@@ -198,13 +198,13 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
 
       criticalPathFinalTreemap(TV,UP,SP,finalCriticalPathDF)
 
-      summaryReduce(summaryCriticalPathDF)
+      summaryReduce(TV,UP,SP,summaryCriticalPathDF)
 
       if (SP.debugLevel > 4)
           beautifyDF(summaryCriticalPathDF)
       end
 
-      criticalPathFinalTreemap(TV,UP,SP,summaryCriticalPathDF)
+      #criticalPathFinalTreemap(TV,UP,SP,summaryCriticalPathDF)
 
   catch y
       println("criticalPathStreamline Exception ",y)
@@ -874,7 +874,7 @@ function summaryReduce::TimeVars,UP::UrlParams,SP::ShowParams,sumDF::DataFrame)
     end
 
     try
-
+        println("Think of something to do")
 
     catch y
         println("summaryReduce Exception ",y)
