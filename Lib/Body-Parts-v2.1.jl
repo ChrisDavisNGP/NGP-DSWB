@@ -579,14 +579,14 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           return false
       end
 
-      if (!suitableTest(UP,SP,toppageurl))
-          return false
-      end
-
       toppageurl = names!(toppageurl[:,:],
       [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
           symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
           symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+
+      if (!suitableTest(UP,SP,toppageurl))
+          return false
+      end
 
       removeNegitiveTime(toppageurl,:Total)
       removeNegitiveTime(toppageurl,:Redirect)
@@ -638,18 +638,18 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       if (SP.debugLevel > 8)
-        println("Clean Up Data table",size(toppageurl))
+        println("Clean Up Data table",size(toppageurl,1))
       end
-
-      if (!suitableTest(UP,SP,toppageurl))
-          return false
-      end
-
 
       toppageurl = names!(toppageurl[:,:],
       [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
           symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
           symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+
+      if (!suitableTest(UP,SP,toppageurl))
+          return false
+      end
+
 
       toppageurlbackup = deepcopy(toppageurl);
       toppageurl = deepcopy(toppageurlbackup)
@@ -863,12 +863,16 @@ function suitableTest(UP::UrlParams,SP::ShowParams,toppageurl::DataFrame)
       newTotalTime = 0
       for url in toppageurl[1:end,:urlgroup]
           i += 1
-          newTotalTime += toppageurl[i,:Total]
+          calc = toppageurl[i,:Start] + toppageurl[i,:Total]
+          if calc > newTotalTime
+              newTotalTime = calc
+          end
       end
       #println("newTotalTime = $newTotalTime")
       if (newTotalTime < UP.timeLowerMs || newTotalTime > UP.timeUpperMs)
           if (SP.debugLevel > 2)
               println("Dropping page due to total time of $(newTotalTime)")
+              println("From ",toppageurl[i:i,:])
           end
           return false
       end

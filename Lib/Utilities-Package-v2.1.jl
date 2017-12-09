@@ -19,6 +19,13 @@ function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession:
             LIMIT $(SP.showLines)
         """)
 
+        if size(waterfall,1) == 0
+            if SP.debugLevel > 0
+                println("Waterfall not found.  Make sure your time range matches you single session if you are doing manual traces")
+            end
+            return
+        end
+
         whenUTC = msToDateTime(studyTime)
         whenUTCz = ZonedDateTime(whenUTC,TimeZone("UTC"))
         when = astimezone(whenUTCz,TimeZone("America/New_York"))

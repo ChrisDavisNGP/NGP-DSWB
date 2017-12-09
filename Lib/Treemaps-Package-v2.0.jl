@@ -230,7 +230,7 @@ function gapTreemapV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::Data
         bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl,showTreemap=showTreemap)
 
     catch y
-        println("blockingTreemap Exception ",y)
+        println("gapTreemapV2 Exception ",y)
     end
 end
 
