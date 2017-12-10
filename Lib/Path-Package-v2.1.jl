@@ -879,7 +879,7 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
 
         for subDF in groupby(summaryDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
-            currentTotal = sum(subDF[:,:Critical])
+            currentTotal = sum(subDF[:,:average])
             #println("$currentGroup cp=$currentCriticalPath")
             if (currentTotal > 0)
                 push!(summaryUrlGroupDF,[currentGroup;currentTotal])
