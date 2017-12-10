@@ -20,8 +20,8 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
       # Stats on the data
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      rangeLowerMs = statsDF[1:1,:median][1] * 0.95
-      rangeUpperMs = statsDF[1:1,:median][1] * 1.05
+      rangeLowerMs = statsDF[1:1,:median][1] * 0.90
+      rangeUpperMs = statsDF[1:1,:median][1] * 1.10
 
       localTableRtDF = getResourcesForBeacon(TV,UP)
       recordsFound = nrow(localTableRtDF)
@@ -198,13 +198,13 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
 
       criticalPathFinalTreemap(TV,UP,SP,finalCriticalPathDF)
 
-      summaryReduce(TV,UP,SP,summaryCriticalPathDF)
+      summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF)
 
-      if (SP.debugLevel > 4)
-          beautifyDF(summaryCriticalPathDF)
-      end
+      #if (SP.debugLevel > 4)
+          beautifyDF(summaryUrlGroupDF)
+      #end
 
-      #criticalPathFinalTreemap(TV,UP,SP,summaryCriticalPathDF)
+      criticalPathFinalTreemap(TV,UP,SP,summaryCriticalPathDF)
 
   catch y
       println("criticalPathStreamline Exception ",y)
@@ -869,20 +869,26 @@ function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::Da
 end
 
 function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame)
+
     if (SP.debugLevel > 8)
         println("Starting summaryReduce")
     end
 
     try
+        summaryUrlGroupDF = DataFrame(urlgroup=ASCIIString[],average=Float64[],
+            maximum=Int64[],counter=Int64[],label=ASCIIString[])
+
         classifyUrlGroup(SP,summaryDF)
         beautifyDF(summaryDF)
 
         for subDF in groupby(summaryDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
             currentTotal = sum(subDF[:,:average])
+            currentMax = maximum(subDF[:,:maximum])
+            currentCount = size(subDF[:,:urlgroup],1)
             #println("$currentGroup cp=$currentCriticalPath")
             if (currentTotal > 0)
-                push!(summaryUrlGroupDF,[currentGroup;currentTotal])
+                push!(summaryUrlGroupDF,[currentGroup;currentTotal;currentMax;currentCount;"label"])
             end
         end
 
