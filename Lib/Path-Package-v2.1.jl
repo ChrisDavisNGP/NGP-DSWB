@@ -955,3 +955,31 @@ function printWellKnownUrlGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         println("printWellKnownUrlGroup Exception ",y)
     end
 end
+
+function printCsvWellKnownUrlGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    if (SP.debugLevel > 8)
+        println("Starting printWellKnownUrlGroup")
+    end
+
+    try
+        printDF = DataFrame(urlgroup=ASCIIString[],finalgroup=ASCIIString[])
+
+        for key in keys(WellKnownUrlGroup)
+            push!(printDF,[key;get(WellKnownUrlGroup,key,"Not Found")])
+        end
+
+
+        for subDF in groupby(printDF,[:finalgroup])
+            title = (subDF[1:1,:finalgroup][1])
+            #println("\n\n\nGroup: $title\n")
+            #println(subDF[:,:urlGroup])
+            for value in subDF[:,:urlgroup]
+                println("$title,$value")
+            end
+        end
+
+    catch y
+        println("printCsvWellKnownUrlGroup Exception ",y)
+    end
+end
