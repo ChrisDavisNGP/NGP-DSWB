@@ -196,15 +196,10 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           beautifyDF(finalCriticalPathDF)
       end
 
-      i = 1
-      for x in finalCriticalPathDF[:,:counter]
-          if x < UP.sizeMin
-              deleterows!(finalCriticalPathDF,i)
-          end
-          i += 1
-      end
-
-      criticalPathFinalTreemap(TV,UP,SP,finalCriticalPathDF)
+      # Display critical path Agg but remove outlyiers
+      criticalPathFinalTreemap(TV,UP,SP,
+        finalCriticalPathDF[Bool[isless(UP.sizeMin,x) for x in finalCriticalPathDF[:counter]], :]
+      )
 
       summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF)
 
