@@ -196,17 +196,26 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           beautifyDF(finalCriticalPathDF)
       end
 
-      finalCriticalPathDF = reduceFinalCriticalPath(TV,UP,SP,finalCriticalPathDF)
+      i = 1
+      for x in finalCriticalPathDF[:,:counter]
+          if x < UP.sizeMin
+              deleterows!(finalCriticalPathDF,i)
+          end
+          i += 1
+      end
 
       criticalPathFinalTreemap(TV,UP,SP,finalCriticalPathDF)
 
       summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF)
 
-      #if (SP.debugLevel > 4)
+      if (SP.debugLevel > 4)
           beautifyDF(summaryUrlGroupDF)
-      #end
+      end
 
-      criticalPathFinalTreemap(TV,UP,SP,summaryCriticalPathDF)
+      saveShow = SP.devView
+      SP.devView = false
+      criticalPathFinalTreemap(TV,UP,SP,summaryUrlGroupDF)
+      SP.devView = saveShow
 
   catch y
       println("criticalPathStreamline Exception ",y)
@@ -881,7 +890,7 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
             maximum=Int64[],counter=Int64[],label=ASCIIString[])
 
         classifyUrlGroup(SP,summaryDF)
-        beautifyDF(summaryDF)
+        #beautifyDF(summaryDF)
 
         for subDF in groupby(summaryDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
@@ -921,27 +930,5 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
         return finalCriticalPathDF
     catch y
         println("finalCriticalPath Exception ",y)
-    end
-end
-
-function reduceFinalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,finalCriticalPathDF::DataFrame)
-
-    #if (SP.debugLevel > 8)
-        println("Starting reduceFinalCriticalPath")
-    #end
-
-    try
-
-        i = 1
-        for x in finalCriticalPathDF[:,:counter]
-            if x < UP.sizeMin
-                deleterows!(finalCriticalPathDF,i)
-            end
-            i += 1
-        end
-        returnDf = deepcopy(finalCriticalPathDF)
-        return returnDF
-    catch y
-        println("reduceFinalCriticalPath Exception ",y)
     end
 end
