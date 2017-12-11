@@ -943,10 +943,10 @@ function printWellKnownUrlGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 
         for subDF in groupby(printDF,[:finalgroup])
-            title = (subDF[1:1,:finalgroup])
-            println("Group: $title")
+            title = (subDF[1:1,:finalgroup][1])
+            println("\n\n\nGroup: $title\n")
             #println(subDF[:,:urlGroup])
-            for value in subDF[:,:urlGroup]
+            for value in subDF[:,:urlgroup]
                 println("\t\t$value")
             end
         end

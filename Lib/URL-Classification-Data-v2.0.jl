@@ -6371,7 +6371,7 @@ function wellKnownUrlGroup()
     ("To Classify","Other"),
     ("TradeDesk Ads","Marketing Ads"),
     ("translate.google.com","Internet"),
-    ("Travel Dslabs","Markerting Ads"),
+    ("Travel Dslabs","Marketing Ads"),
     ("TuCows Internet","Internet"),
     ("ul1.dvtps.com","Internet"),
     ("use-tor.adsrvr.org","Internet"),
