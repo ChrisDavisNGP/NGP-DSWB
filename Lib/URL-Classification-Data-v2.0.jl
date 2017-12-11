@@ -1292,7 +1292,8 @@ function VolumeCList()
     ("cdn.myradioplayer.net","cdn.myradioplayer.net"),
     ("cdn.optimatic.com","cdn.optimatic.com"),
     ("cdn.optimizely.com","Optimizely Site Analytics"),
-    ("cdn.optmd.com","cdn.optmd.com"),
+    ("cdn.optmd.com","optmd.com"),
+    ("cdn-sec.optmd.com","optmd.com"),
     ("cdn.pbrd.co","cdn.pbrd.co"),
     ("cdn.picapp.com","cdn.picapp.com"),
     ("cdn.plyr.io","cdn.plyr.io"),
@@ -4253,7 +4254,7 @@ function VolumeSList()
     ("s.krbsjs.info","s.krbsjs.info"),
     ("s.lm15d.com","s.lm15d.com"),
     ("s.lollypopgaming.com","s.lollypopgaming.com"),
-    ("s.mapitquick.net","mapitquick Adware©"),
+    ("s.mapitquick.net","mapitquick Adware"),
     ("s.mapsworldglobal.com","Mapsworldglobal.com"),
     ("s.mapsworldsearch.com","s.mapsworldsearch.com"),
     ("s.mixxen.com","s.mixxen.com"),
@@ -6316,7 +6317,7 @@ function wellKnownUrlGroup()
     ("Google Publisher Tags Ads","Marketing Ads"),
     ("Google Tag Manager","Marketing Analytics"),
     ("Google","Internet"),
-    ("GUID Value","Ohter"),
+    ("GUID Value","Other"),
     ("Hosted Internet","Internet"),
     ("Iasds Ads","Marketing Ads"),
     ("Innovid Ads","Marketing Ads"),
@@ -6390,6 +6391,7 @@ function wellKnownUrlGroup()
     ("mapitquick Adware","Marketing Ads"),
     ("researchnow.com","Ad Analytics"),
     ("Adgear.com","Marketing Ads"),
+    ("optmd.com","Internet"),
 
     ("Unrulymedia.Com","Marketing Ads")
     ]);

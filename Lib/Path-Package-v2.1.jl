@@ -927,3 +927,31 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
         println("finalCriticalPath Exception ",y)
     end
 end
+
+function printWellKnownUrlGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    if (SP.debugLevel > 8)
+        println("Starting printWellKnownUrlGroup")
+    end
+
+    try
+        printDF = DataFrame(urlgroup=ASCIIString[],finalgroup=ASCIIString[])
+
+        for key in keys(WellKnownUrlGroup)
+            push!(printDF,[key;get(WellKnownUrlGroup,key,"Not Found")])
+        end
+
+
+        for subDF in groupby(printDF,[:finalgroup])
+            title = (subDF[1:1,:finalgroup])
+            println("Group: $title")
+            #println(subDF[:,:urlGroup])
+            for value in subDF[:,:urlGroup]
+                println("\t\t$value")
+            end
+        end
+
+    catch y
+        println("printWellKnownUrlGroup Exception ",y)
+    end
+end
