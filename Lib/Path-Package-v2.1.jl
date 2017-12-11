@@ -940,7 +940,7 @@ function reduceFinalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,final
             i += 1
         end
         returnDf = deepcopy(finalCriticalPathDF)
-        return
+        return returnDF
     catch y
         println("reduceFinalCriticalPath Exception ",y)
     end
