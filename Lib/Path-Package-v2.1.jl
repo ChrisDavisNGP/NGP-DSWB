@@ -196,6 +196,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           beautifyDF(finalCriticalPathDF)
       end
 
+      finalCriticalPathDF = reduceFinalCriticalPath(TV,UP,SP,finalCriticalPathDF)
+
       criticalPathFinalTreemap(TV,UP,SP,finalCriticalPathDF)
 
       summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF)
@@ -919,5 +921,27 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
         return finalCriticalPathDF
     catch y
         println("finalCriticalPath Exception ",y)
+    end
+end
+
+function reduceFinalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,finalCriticalPathDF::DataFrame)
+
+    #if (SP.debugLevel > 8)
+        println("Starting reduceFinalCriticalPath")
+    #end
+
+    try
+
+        i = 1
+        for x in finalCriticalPathDF[:,:counter]
+            if x < UP.sizeMin
+                deleterows!(finalCriticalPathDF,i)
+            end
+            i += 1
+        end
+        returnDf = deepcopy(finalCriticalPathDF)
+        return
+    catch y
+        println("reduceFinalCriticalPath Exception ",y)
     end
 end
