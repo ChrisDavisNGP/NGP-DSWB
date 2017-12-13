@@ -16,6 +16,6 @@ include("Tables-Package-v2.0.jl")
 include("Treemaps-Package-v2.0.jl")
 include("URL-Package-v2.0.jl")
 include("Utilities-Package-v2.1.jl")
-include("Views-Package-V2.0.jl")
+include("Views-Package-v2.0.jl")
 include("Workflow-Package-v2.1.jl")
 ;
