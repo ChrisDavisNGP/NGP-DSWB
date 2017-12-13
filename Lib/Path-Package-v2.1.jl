@@ -23,7 +23,7 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       UP.timeLowerMs = statsDF[1:1,:median][1] * 0.90
       UP.timeUpperMs = statsDF[1:1,:median][1] * 1.10
 
-      localTableRtDF = getResourcesForBeacon(TV,UP)
+      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
       recordsFound = nrow(localTableRtDF)
 
       if recordsFound == 0
@@ -72,7 +72,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           println("Individual part 2 done: selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
       end
 
-      localTableRtDF = getResourcesForBeacon(TV,UP)
+      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
       recordsFound = nrow(localTableRtDF)
 
       if (SP.debugLevel > 4)
@@ -164,10 +164,12 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
                   timeStampVar = subdf[1,:timestamp]
                   timeVarSec = timeVar / 1000.0
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
-                  labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
                   if (SP.debugLevel > 8)
-                      println("$(io) / $(SP.showLines): $(labelString),$(UP.urlRegEx)")
-                      println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
+                      labelString = "$(timeVarSec) Seconds"
+                      println("Page $(io) of $(SP.showLines): $(labelString)")
+                      if (SP.debugLevel > 6)
+                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
+                      end
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,s1String,timeStampVar)
@@ -223,7 +225,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
       for subdf in groupby(full,[:session_id,:timestamp])
           s = size(subdf)
           if(SP.debugLevel > 2)
-              println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("Current Page Size=",s," Target Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
           if (UP.usePageLoad)
               timeVar = subdf[1,:timers_t_done]
@@ -240,10 +242,12 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                   timeStampVar = subdf[1,:timestamp]
                   timeVarSec = timeVar / 1000.0
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
-                  labelString = "$(UP.urlFull) $(timeVarSec) Seconds for $(UP.deviceType)"
                   if (SP.debugLevel > 2)
-                      println("$(io)/$(SP.showLines): $(labelString),$(UP.urlRegEx)")
-                      println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
+                      labelString = "$(timeVarSec) Seconds"
+                      println("Page $(io) of $(SP.showLines): $(labelString)")
+                      if (SP.debugLevel > 6)
+                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
+                      end
                   end
                   topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
                   suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
@@ -286,19 +290,19 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
 
       if studyTime > 0
           if SP.debugLevel > 2
-              println("calling sessionUrlTableDF")
+              println("Calling sessionUrlTableCreateDF")
           end
-          toppageurl = sessionUrlTableDF(TV,UP,SP,studySession,studyTime)
+          toppageurl = sessionUrlTableCreateDF(TV,UP,SP,studySession,studyTime)
           elseif (studySession != "None")
               if SP.debugLevel > 2
-                  println("calling allSessionUrlTableDF")
+                  println("Calling allSessionUrlTableCreateDF")
               end
-              toppageurl = allSessionUrlTableDF(TV,UP,SP,studySession)
+              toppageurl = allSessionUrlTableCreateDF(TV,UP,SP,studySession)
           else
               if SP.debugLevel > 2
-                  println("calling allPageUrlTableDF")
+                  println("Calling allPageUrlTableCreateDF")
               end
-              toppageurl = allPageUrlTableDF(TV,UP)
+              toppageurl = allPageUrlTableCreateDF(TV,UP)
       end
 
       return toppageurl
@@ -680,11 +684,11 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         toppageurl = DataFrame()
         if studyTime > 0
-            toppageurl = sessionUrlTableDF(TV,UP,SP,studySession,studyTime)
+            toppageurl = sessionUrlTableCreateDF(TV,UP,SP,studySession,studyTime)
             elseif (studySession != "None")
-              toppageurl = allSessionUrlTableDF(TV,UP,SP,studySession)
+              toppageurl = allSessionUrlTableCreateDF(TV,UP,SP,studySession)
             else
-                toppageurl = allPageUrlTableDF(TV,UP)
+                toppageurl = allPageUrlTableCreateDF(TV,UP)
         end
 
         if (SP.debugLevel > 0)

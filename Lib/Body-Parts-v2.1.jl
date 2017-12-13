@@ -276,7 +276,7 @@ end
 
 function statsPGD(TV::TimeVars,UP::UrlParams)
     try
-        localStatsDF = statsTableDF(UP.btView, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC);
+        localStatsDF = statsTableCreateDF(UP.btView, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC);
         statsDF = basicStats(localStatsDF)
 
         displayTitle(chart_title = "Raw Data Stats $(UP.pageGroup) Based On Beacon Page Load Time", chart_info = [TV.timeString],showTimeStamp=false)
@@ -464,7 +464,7 @@ end
 
 function displayTopUrlsByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
     UP.pageGroup = quickPageGroup
-    defaultBeaconView(TV,UP,SP)
+    defaultBeaconCreateView(TV,UP,SP)
     setTable(UP.btView)
     topUrlTableByCount(TV,UP,SP;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
     q = query(""" drop view if exists $(UP.btView);""")
@@ -535,11 +535,11 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
         tableRt = UP.resourceTable
 
         if (LV.studyTime > 0)
-            toppageurl = sessionUrlTableDF(tableRt,LV.studySession,LV.studyTime)
+            toppageurl = sessionUrlTableCreateDF(tableRt,LV.studySession,LV.studyTime)
         elseif (LV.studySession != "None")
-            toppageurl = allSessionUrlTableDF(tableRt,LV.studySession,TV.startTimeMsUTC,TV.endTimeMsUTC)
+            toppageurl = allSessionUrlTableCreateDF(tableRt,LV.studySession,TV.startTimeMsUTC,TV.endTimeMsUTC)
         else
-            toppageurl = allPageUrlTableDF(TV,UP)
+            toppageurl = allPageUrlTableCreateDF(TV,UP)
         end;
 
         toppageurl = names!(toppageurl[:,:],

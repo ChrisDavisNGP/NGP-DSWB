@@ -16,7 +16,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 # todo SQLFILTER Everywhere and use the view tables where possible
 
-  defaultBeaconView(TV,UP,SP)
+  defaultBeaconCreateView(TV,UP,SP)
 
   try
     if (wfShowPeakTable)
@@ -109,7 +109,7 @@ end
 
 function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultBeaconView(TV,UP,SP)
+    defaultBeaconCreateView(TV,UP,SP)
 
     test1GNGSSDM(UP,SP)
 
@@ -123,7 +123,7 @@ end
 
 function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultBeaconView(TV,UP,SP)
+    defaultBeaconCreateView(TV,UP,SP)
 
     test1GNGSSDM(UP,SP)
 
@@ -141,7 +141,7 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    defaultBeaconView(TV,UP,SP)
+    defaultBeaconCreateView(TV,UP,SP)
 
     try
         chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; table=UP.btView)
@@ -170,7 +170,7 @@ end
 
 function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
 
-    pageGroupDetailsTables(TV,UP,mobileView,desktopView)
+    pageGroupDetailsCreateView(TV,UP,mobileView,desktopView)
     setTable(UP.btView);
 
     localStatsDF = DataFrame()
@@ -279,7 +279,7 @@ end
 
 function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultBeaconView(TV,UP,SP);
+    defaultBeaconCreateView(TV,UP,SP);
 
     joinTables = DataFrame()
     joinTables = gatherSizeData(TV,UP,SP)
@@ -332,7 +332,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   wfClearViews = true
 
-  defaultBeaconView(TV,UP,SP)
+  defaultBeaconCreateView(TV,UP,SP)
 
   defaultResourceView(TV,UP)
 
@@ -494,7 +494,7 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  defaultBeaconView(TV,UP,SP)
+  defaultBeaconCreateView(TV,UP,SP)
 
   statsDF = DataFrame()
   localStats2 = DataFrame()
@@ -548,7 +548,7 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
     wfShowLeftOvers = true
     wfShowLeftOversDetails = true
 
-    defaultBeaconView(TV,UP,SP)
+    defaultBeaconCreateView(TV,UP,SP)
 
     if (wfShowBigPagesByFileType)
         bigPageSizeDetails(TV,UP,SP,"%jpg";minEncoded=minimumEncoded)
@@ -610,7 +610,7 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       displayMatchingResourcesByUrl(TV,UP,SP)
   end
 
-  defaultBeaconView(TV,UP,SP)
+  defaultBeaconCreateView(TV,UP,SP)
 
   if (wfShowResourcesByUrls)
       displayMatchingResourcesByUrls(TV,UP,SP)
@@ -642,7 +642,7 @@ function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
 
   wfClearViews = true
 
-  defaultBeaconView(TV,UP,SP)
+  defaultBeaconCreateView(TV,UP,SP)
 
   minSizeBytes = bigPages1SRFLP(TV,UP,SP)
 

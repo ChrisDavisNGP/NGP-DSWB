@@ -345,11 +345,11 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
         tableRt = UP.resourceTable
 
         if (studyTime > 0)
-            toppageurl = sessionUrlTableDF(TV,UP,SP,studySession,studyTime)
+            toppageurl = sessionUrlTableCreateDF(TV,UP,SP,studySession,studyTime)
         elseif (studySession != "None")
-            toppageurl = allSessionUrlTableDF(TV,UP,SP,studySession)
+            toppageurl = allSessionUrlTableCreateDF(TV,UP,SP,studySession)
         else
-            toppageurl = allPageUrlTableDF(TV,UP)
+            toppageurl = allPageUrlTableCreateDF(TV,UP)
         end;
 
         toppageurl = names!(toppageurl[:,:],

@@ -2,7 +2,7 @@
 # Functions which return a data frame
 #
 
-function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
+function allPageUrlTableCreateDF(TV::TimeVars,UP::UrlParams)
     try
         bt = UP.beaconTable
         rt = UP.resourceTable
@@ -73,11 +73,11 @@ function allPageUrlTableDF(TV::TimeVars,UP::UrlParams)
 
         return toppageurl
     catch y
-        println("allPageUrlTableDF Exception ",y)
+        println("allPageUrlTableCreateDF Exception ",y)
     end
 end
 
-function allSessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString)
+function allSessionUrlTableCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString)
 
     rt = UP.resourceTable
 
@@ -109,11 +109,11 @@ function allSessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySes
 
         return toppageurl
     catch y
-        println("allSessionUrlTableDF Exception ",y)
+        println("allSessionUrlTableCreateDF Exception ",y)
     end
 end
 
-function sessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+function sessionUrlTableCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
 
     rt = UP.resourceTable
     try
@@ -144,11 +144,11 @@ function sessionUrlTableDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
 
         return toppageurl
     catch y
-        println("sessionUrlTableDF Exception ",y)
+        println("sessionUrlTableCreateDF Exception ",y)
     end
 end
 
-function getResourcesForBeacon(TV::TimeVars,UP::UrlParams)
+function getResourcesForBeaconCreateDF(TV::TimeVars,UP::UrlParams)
 
     bt = UP.beaconTable
     rt = UP.resourceTable
@@ -179,7 +179,7 @@ function getResourcesForBeacon(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function statsTableDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function statsTableCreateDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         localStats = query("""\
         select timers_t_done
@@ -190,11 +190,11 @@ function statsTableDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,
         """);
         return localStats
     catch y
-        println("statsTableDF Exception ",y)
+        println("statsTableCreateDF Exception ",y)
     end
 end
 
-function treemapsLocalTableRtDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function treemapsLocalTableRtCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     bt = UP.beaconTable
     rt = UP.resourceTable
@@ -217,119 +217,12 @@ function treemapsLocalTableRtDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """)
         return localTableRtDF
     catch y
-        println("treemapsLocalTableRtDF Exception ",y)
+        println("treemapsLocalTableRtCreateDF Exception ",y)
     end
 end
 #
 #  Functions which create views
 #
-
-function pageGroupDetailsTables(TV::TimeVars,UP::UrlParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
-      try
-
-        query("""\
-            drop view if exists $(UP.btView)
-        """)
-
-        query("""\
-            create or replace view $(UP.btView) as
-            (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
-            )
-        """)
-
-        query("""\
-            create or replace view $localMobileTable as
-            (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-            user_agent_device_type = 'Mobile'
-            )
-        """)
-
-        query("""\
-            create or replace view $localDesktopTable as
-            (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-            user_agent_device_type = 'Desktop'
-            )
-        """);
-
-    catch y
-        println("pageGroupDetailTables Exception ",y)
-    end
-end
-
-function urlBeaconTable(inView::ASCIIString,bt::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64,params_u::ASCIIString)
-    try
-        query("""\
-            drop view if exists $inView
-        """)
-
-    query("""\
-        create or replace view $inView as
-        (select * FROM $bt
-        where page_group = '$(productPageGroup)' and
-        "timestamp" between $startTimeMs and $endTimeMs and
-        params_u ilike '$(localUrl)'
-        )
-    """)
-    catch y
-        println("urlDetailTables Exception ",y)
-    end
-end
-
-function urlResourceTable(rtv::ASCIIString,rt::ASCIIString,bt::ASCIIString,productPageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
-    try
-        query("""\
-            drop view if exists $rtv
-        """)
-
-        query("""\
-            create or replace view $rtv as (
-            select $rt.* FROM $bt join $rt on $rt.session_id = $bt.session_id
-            where $rt."timestamp" between $startTimeMs and $endTimeMs and $bt.session_id IS NOT NULL
-            order by $rt.session_id, $rt."timestamp", $rt.start_time
-            )
-        """)
-    catch y
-        println("urlResourceTables Exception ",y)
-    end
-end
-
-function defaultBeaconView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-    try
-        bt = UP.beaconTable
-        btv = UP.btView
-        timeLowerMs = UP.timeLowerMs > 0 ? UP.timeLowerMs : 1000
-        timeUpperMs = UP.timeUpperMs > 0 ? UP.timeUpperMs : 600000
-        if (SP.debugLevel > 0)
-            println("Low=",timeLowerMs," High=", timeUpperMs)
-        end
-
-        query("""\
-            create or replace view $btv as (
-                select * FROM $bt
-                    where
-                        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                        page_group ilike '$(UP.pageGroup)' and
-                        params_u ilike '$(UP.urlRegEx)' and
-                        user_agent_device_type ilike '$(UP.deviceType)' and
-                        user_agent_os ilike '$(UP.agentOs)' and
-                        timers_t_done >= $timeLowerMs and timers_t_done < $timeUpperMs
-            )
-        """)
-        if (SP.debugLevel > 0)
-            cnt = query("""SELECT count(*) FROM $btv""")
-            println("$btv count is ",cnt[1,1])
-        end
-    catch y
-        println("defaultBeaconView Exception ",y)
-    end
-end
 
 function test1GNGSSDM(UP::UrlParams,SP::ShowParams)
 
@@ -496,33 +389,6 @@ function statsTableDF2(TV::TimeVars,UP::UrlParams)
         return localStats
     catch y
         println("statsTableDF2 Exception ",y)
-    end
-end
-
-function defaultResourceView(TV::TimeVars,UP::UrlParams)
-
-    try
-        rtv = UP.rtView
-        rt = UP.resourceTable
-        btv = UP.btView
-
-        query("""create or replace view $rtv as (
-            select $rt.*
-            from $btv join $rt
-                on $rt.session_id = $btv.session_id
-            where
-                $rt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                $btv.session_id IS NOT NULL
-            order by $rt.session_id, $rt."timestamp", $rt.start_time
-        )""")
-
-        # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
-        # where beacon_type = 'page view'
-        localTableRtDF = query("""SELECT * FROM $rtv""")
-        #Hide output from final report
-        println("$rtv count is ",size(localTableRtDF))
-    catch y
-        println("setupLocalTable Exception ",y)
     end
 end
 

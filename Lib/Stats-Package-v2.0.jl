@@ -218,7 +218,7 @@ end
 function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
-        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
+        localStatsDF = statsTableCreateDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
         statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
 
@@ -252,9 +252,9 @@ function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::Dat
 
     if (showAdditional)
         if (UP.usePageLoad)
-            chartTitle = "Page Load Time Stats: $(UP.urlFull) for $(UP.deviceType)"
+            chartTitle = "Page Load Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
         else
-            chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for $(UP.deviceType)"
+            chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
         end
         showLimitedStats(TV,statsDF,chartTitle)
     end
@@ -267,7 +267,7 @@ function rawStatsSROS(TV::TimeVars,UP::UrlParams)
     statsDF = DataFrame()
     medianThreshold = Int64
     try
-        localStatsDF = statsTableDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
+        localStatsDF = statsTableCreateDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
         #statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
         statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
