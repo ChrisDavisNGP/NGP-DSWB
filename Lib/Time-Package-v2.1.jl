@@ -147,8 +147,15 @@ function weeklyTimeVariables(;days::Int64=7)
 end
 
 # Take 10 hours from yesterday by default
-function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17)
+function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
     try
+        if (hours > 0)
+            startHour = 13
+            endHour = startHour + hours
+            if (endHour > 23)
+                endHour = 23
+            end
+        end
         firstAndLast = getBeaconsFirstAndLast()
         endTime = DateTime(firstAndLast[1,2] - Hour(24-endHour))
         startTime = DateTime(endTime - Hour(endHour-startHour) + Second(1))

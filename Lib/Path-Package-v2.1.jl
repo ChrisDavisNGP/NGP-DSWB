@@ -8,27 +8,23 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
       recordsFound = nrow(localTableDF)
 
-      if (SP.debugLevel > 4)
-          println("part 1 done with ",recordsFound, " records")
-      end
-
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
+      if (SP.debugLevel > 4)
+          println("CritPath part 1 done with ",recordsFound, " records")
+      end
+
       # Stats on the data
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      rangeLowerMs = statsDF[1:1,:median][1] * 0.90
-      rangeUpperMs = statsDF[1:1,:median][1] * 1.10
+      UP.timeLowerMs = statsDF[1:1,:median][1] * 0.90
+      UP.timeUpperMs = statsDF[1:1,:median][1] * 1.10
 
       localTableRtDF = getResourcesForBeacon(TV,UP)
       recordsFound = nrow(localTableRtDF)
-
-      if (SP.debugLevel > 4)
-          println("part 2 done with ",recordsFound, " records")
-      end
 
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
@@ -57,14 +53,14 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
       recordsFound = nrow(localTableDF)
 
-      if (SP.debugLevel > 4)
-          println("part 1 done with ",recordsFound, " records")
-      end
-
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
           #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
+      end
+
+      if (SP.debugLevel > 4)
+          println("Individual part 1 done with ",recordsFound, " records")
       end
 
       # Stats on the data
@@ -73,7 +69,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 
       if (SP.debugLevel > 2)
-          println("part 2 done: selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
+          println("Individual part 2 done: selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
       end
 
       localTableRtDF = getResourcesForBeacon(TV,UP)
