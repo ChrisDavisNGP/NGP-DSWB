@@ -6286,7 +6286,6 @@ function wellKnownUrlGroup()
     ("Cmptch Adware","3rd Party Ad Operations"),
     ("CrazyEgg Analytics","Digital Operations Analytics"),
     ("Criteo Targetting","Digital Business Addins"),
-    ("d2iawws3g2vnru.cloudfront.net","3rd Party Internet Operations"),
     ("DataXu Ads","3rd Party Ad Operations"),
     ("Dc121677.com","3rd Party Internet Operations"),
     ("Digital Envoy Marketing","Marketing Analytics"),
