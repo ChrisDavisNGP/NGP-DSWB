@@ -3,7 +3,7 @@ function PartialKnownHost(uriHost::ASCIIString)
         newuristring = "To Classify"
 
         if (ismatch(r"^www.nationalgeographic.com",uriHost))
-            newuristring = "NGP Requests"
+            newuristring = "NGP Page Content"
         elseif (ismatch(r".*fls\.doubleclick.*",uriHost))
             newuristring = "Google DoubleClick Floodlight Ads"
         elseif (ismatch(r"bid.g.doubleclick.net",uriHost))
@@ -16,8 +16,8 @@ function PartialKnownHost(uriHost::ASCIIString)
             newuristring = "Google DoubleClick Ads"
         elseif (ismatch(r"adservice.google.*",uriHost))
             newuristring = "Google Adsense"
-        elseif (ismatch(r"www.google\..*",uriHost))
-            newuristring = "Google Adsense"
+#        elseif (ismatch(r"www.google\..*",uriHost))
+#            newuristring = "Google Adsense"
         elseif (ismatch(r".*nationalgeographic.siteintercept.qualtrics.com.*",uriHost))
             newuristring = "Qualtrics Site Analytics"
         elseif (ismatch(r"^news.nationalgeographic.com",uriHost))
@@ -123,10 +123,6 @@ function PartialKnownHost(uriHost::ASCIIString)
             newuristring = "Twenga.com"
             elseif (ismatch(r"dnn.*cloudfront.net",uriHost))
             newuristring = "CrazyEgg Analytics"
-            elseif (ismatch(r"dc8xl0ndzn2cb.cloudfront.net",uriHost))
-            newuristring = "Keywee.co"
-            elseif (ismatch(r"desv383oqqc0.cloudfront.net",uriHost))
-            newuristring = "Popcorn Metrics"
             elseif (ismatch(r"dc8.*cloudfront.net",uriHost))
             newuristring = "Snowplow Analytics"
             elseif (ismatch(r".*api4load.biz",uriHost))
@@ -231,7 +227,7 @@ function PartialKnownPath(uriPath::ASCIIString)
             elseif (ismatch(r"/bmi/media-channel.nationalgeographic.com.*",uriPath))
             newuristring = "NGP Page Content"
             elseif (ismatch(r"/bmi/www.nationalgeographic.com.*",uriPath))
-            newuristring = "NGP Requests"
+            newuristring = "NGP Page Content"
             elseif (ismatch(r"/bmi/images.nationalgeographic.com.*",uriPath))
             newuristring = "NGP Page Content"
             elseif (ismatch(r"/bmi/kids.nationalgeographic.com.*",uriPath))
@@ -1685,7 +1681,8 @@ function VolumeDList()
     ("d264myipchf2hh.cloudfront.net","d264myipchf2hh.cloudfront.net"),
     ("d2a8a4q9.ssl.hwcdn.net","d2a8a4q9.ssl.hwcdn.net"),
     ("d2e24t2jgcnor2.webhostoid.com","d2e24t2jgcnor2.webhostoid.com"),
-    ("d2iawws3g2vnru.cloudfront.net","d2iawws3g2vnru.cloudfront.net"),
+    ("d2iawws3g2vnru.cloudfront.net","Ad Slot"),
+    ("d2x3bkdslnxkuj.cloudfront.net","Zergnet"),
     ("d2xvc2nqkduarq.cloudfront.net","d2xvc2nqkduarq.cloudfront.net"),
     ("d3-pub.bizrate.com","d3-pub.bizrate.com"),
     ("d3.cnnx.io","d3.cnnx.io"),
@@ -1794,6 +1791,7 @@ function VolumeDList()
     ("dc6.s79.research.de.com","research.de.com"),
     ("dc7.s79.research.de.com","research.de.com"),
     ("dc80.s290.meetrics.net","meetrics.net"),
+    ("dc8xl0ndzn2cb.cloudfront.net","Keywee.co"),
     ("dcc4iyjchzom0.cloudfront.net","dcc4iyjchzom0.cloudfront.net"),
     ("dcj.rebelsoftijuana.com","dcj.rebelsoftijuana.com"),
     ("dclog.taotaosou.com","Dclog.taotaosou.com"),
@@ -1821,6 +1819,7 @@ function VolumeDList()
     ("desk-customers.s3.amazonaws.com","Desk-customers"),
     ("desolate-lake-30493.herokuapp.com","desolate-lake-30493.herokuapp.com"),
     ("destinarcade.com","destinarcade.com"),
+    ("desv383oqqc0.cloudfront.net","Popcorn Metrics"),
     ("dev.day.com","dev.day.com"),
     ("dev.e-webtrack.net","dev.e-webtrack.net"),
     ("dev.virtualearth.net","Virtualearth.net"),
@@ -3287,7 +3286,7 @@ function VolumeMList()
     ("mecuktechnology.turbobytes.net","mecuk"),
     ("media-channel.nationalgeographic.com","NGP Page Content"),
     ("media-members.nationalgeographic.com","NGP Page Content"),
-    ("media-mmdb.nationalgeographic.com","NGP Page Content"),
+    ("media-mmdb.nationalgeographic.com","NGP Requests"),
     ("media-wajam.netdna-ssl.com","media-wajam.netdna-ssl.com"),
     ("media.aacps.org","media.aacps.org"),
     ("media.adfrontiers.com","Media.adfrontiers.com"),
@@ -3371,12 +3370,12 @@ function VolumeMList()
     ("mm.eulerian.net","mm.eulerian.net"),
     ("mm.melia.com","Hosted Internet"),
     ("mmae.qtmojo.com","mmae.qtmojo.com"),
-    ("mmdb-staging-media.nationalgeographic.com","NGP Page Content"),
-    ("mmdb-staging.nationalgeographic.com","NGP Page Content"),
-    ("mmdb-test3-media.nationalgeographic.com","NGP Page Content"),
-    ("mmdb-test3.nationalgeographic.com","NGP Page Content"),
-    ("mmdb.dev.nationalgeographic.com","NGP Page Content"),
-    ("mmdb.nationalgeographic.com","NGP Page Content"),
+    ("mmdb-staging-media.nationalgeographic.com","NGP Requests"),
+    ("mmdb-staging.nationalgeographic.com","NGP Requests"),
+    ("mmdb-test3-media.nationalgeographic.com","NGP Requests"),
+    ("mmdb-test3.nationalgeographic.com","NGP Requests"),
+    ("mmdb.dev.nationalgeographic.com","NGP Requests"),
+    ("mmdb.nationalgeographic.com","NGP Requests"),
     ("mmtro.com","mmtro.com"),
     ("mn.adloads.net","mn.adloads.net"),
     ("mnbiiidkialopoakajjpeghipbpljffi","mnbiiidkialopoakajjpeghipbpljffi"),
@@ -3738,7 +3737,7 @@ function VolumePList()
     ("pakhet.misterbell.com","pakhet.misterbell.com"),
     ("panel.goextension.com","panel.goextension.com"),
     ("parserworld.info","parserworld.info"),
-    ("partner.googleadservices.com","Google DoubleClick Ads"),
+    ("partner.googleadservices.com","Google Adsense"),
     ("partner.shop.vorwerk.de","partner.shop.vorwerk.de"),
     ("partnercontent.cargurus.com","partnercontent.cargurus.com"),
     ("partners-api.pinterest.com","partners-api.pinterest.com"),
@@ -3865,7 +3864,7 @@ function VolumePList()
     ("player.ooyala.com","player.ooyala.com"),
     ("player.p.nationalgeographic.com","Fox Player"),
     ("player.soundcloud.com","player.soundcloud.com"),
-    ("player.theplatform.com","Video Player"),
+    ("player.theplatform.com","Theplatform.com"),
     ("player.videologygroup.com","Videology Ads"),
     ("player.vimeo.com","Player.vimeo.com"),
     ("player1.mixpo.com","player1.mixpo.com"),
@@ -5545,7 +5544,7 @@ function VolumeWList()
     ("www.merriam-webster.com","www.merriam-webster.com"),
     ("www.oxfordlearnersdictionaries.com","www.oxfordlearnersdictionaries.com"),
     ("www-qa.nationalgeographic.com","NGP Page Content"),
-    ("www-s.nationalgeographic.com","NGP Requests"),
+    ("www-s.nationalgeographic.com","NGP Page Content"),
     ("www-staging.nationalgeographic.com","NGP Page Content"),
     ("www.11street.my","www.11street.my"),
     ("www.123trailers.net","www.123trailers.net"),
@@ -5656,7 +5655,7 @@ function VolumeWList()
     ("www.gocloudly.com","www.gocloudly.com"),
     ("www.google-analytics.com","Google Analytics"),
     ("www.google.ad","www.google.ad"),
-    ("www.googleadservices.com","Google DoubleClick Ads"),
+    ("www.googleadservices.com","Google Adsense"),
     ("www.googleapis.com","www.googleapis.com"),
     ("www.googletagmanager.com","Google Tag Manager"),
     ("www.googletagservices.com","Google Publisher Tags Ads"),
@@ -6272,6 +6271,7 @@ function wellKnownUrlGroup()
     ("Adgrx.com","3rd Party Ad Operations"),
     ("Adobe Audience Manager Ads","3rd Party Ad Operations"),
     ("Adsafeprotected.com","3rd Party Ad Operations"),
+    ("Ad Slot","3rd Party Ad Operations"),
     ("AppNexus Ads","3rd Party Ad Operations"),
     ("Atdmt Tracking Cookie","3rd Party Ad Operations"),
     ("AWS Cloud JPG File","Digital Engineering"),
@@ -6307,13 +6307,13 @@ function wellKnownUrlGroup()
     ("FreeWheel Video Player","Digital Video Player"),
     ("Ghostery Tracker","User Browser Extensions"),
     ("GMM","3rd Party Internet Operations"),
-    ("Google Adsense","3rd Party Ad Operations"),
+    ("Google Adsense","3rd Party Ad Operations (DFP)"),
     ("Google Analytics","Digital Operations Analytics"),
-    ("Google DoubleClick Ads","3rd Party Ad Operations"),
-    ("Google DoubleClick Bid Manager Ads","3rd Party Ad Operations"),
-    ("Google DoubleClick Bid Manager","3rd Party Ad Operations"),
-    ("Google DoubleClick Floodlight Ads","3rd Party Ad Operations"),
-    ("Google DoubleClick Spotlight Ads","3rd Party Ad Operations"),
+    ("Google DoubleClick Ads","3rd Party Ad Operations (DFP)"),
+    ("Google DoubleClick Bid Manager Ads","3rd Party Ad Operations (DFP)"),
+    ("Google DoubleClick Bid Manager","3rd Party Ad Operations (DFP)"),
+    ("Google DoubleClick Floodlight Ads","3rd Party Ad Operations (DFP)"),
+    ("Google DoubleClick Spotlight Ads","3rd Party Ad Operations (DFP)"),
     ("Google Maps","User Browser Extensions"),
     ("Google Publisher Tags Ads","3rd Party Ad Operations"),
     ("Google Tag Manager","Digital Operations Analytics"),
