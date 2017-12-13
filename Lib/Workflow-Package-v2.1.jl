@@ -144,23 +144,20 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     defaultBeaconView(TV,UP,SP)
 
     try
-        setTable(UP.btView)
-        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; table=UP.btView)
     catch y
-        println("sessionsBeacons Exception ",y)
+        println("chartconcurrentsessionsBeacons Exception ",y)
     end
 
     try
-        setTable(UP.btView)
-        chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+        chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; table=UP.btView)
     catch y
-        println("loadTime Exception ",y)
+        println("chartloadTime Exception ",y)
     end
 
     setTable(UP.btView)
     topUrlTable(TV,UP,SP)
 
-    setTable(UP.btView)
     showPeakTable(TV,UP,SP)
 
     beaconViewStats(TV,UP,SP)

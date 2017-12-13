@@ -70,11 +70,12 @@ function openingTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     chartTitle = "Report Paramaters:"
     chartTitle *= " Page Group=$(UP.pageGroup), DeviceType=$(UP.deviceType), Browser OS=$(UP.agentOs)"
     chartInfo  = "Other Settings: limitRows=$(UP.limitRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"
-    chartInfo2 = "urlRegEx=$(UP.urlRegEx)"
-    chartInfo3 = "urlFull=$(UP.urlFull)"
-    chartInfo4 = "resRegEx=$(UP.resRegEx)"
+    chartInfoOptional = ""
+    if $(UP.urlRegEx) != "%" || $(UP.urlFull) != "%" || $(UP.regRegEx != "%")
+        chartInfoOptional = "urlRegEx=$(UP.urlRegEx)\nurlFull=$(UP.urlFull)\nresRegEx=$(UP.resRegEx)"
+    end
 
-    displayTitle(chart_title = chartTitle, chart_info = [TV.timeString;chartInfo;chartInfo2;chartInfo3;chartInfo4], showTimeStamp=false)
+    displayTitle(chart_title = chartTitle, chart_info = [TV.timeString;chartInfo;chartInfoOptional], showTimeStamp=false)
 
 end
 
