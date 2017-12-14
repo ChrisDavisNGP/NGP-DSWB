@@ -527,12 +527,12 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
 
           newStartTime = toppageurl[i,:Start]
           newTotalTime = toppageurl[i,:Total]
-          #println("Url ",url," newStartTime=$(newStartTime), newTotalTime=$(newTotalTime), target=$(timerDone)")
-
+          #println("Url ",url," newStartTime=$(newStartTime), newTotalTime=$(newTotalTime), prevStartTime=$(prevStartTime)")
+          
           #Sorted by start time ascending and largest total time decending
           #Anyone with same time has the previous is nested inside the current one and has no time
 
-          if (newStartTime == prevStartTime)
+          if (newStartTime == prevStartTime && i > 1)
               #println("Matched line $i start time $newStartTime")
               toppageurl[i,:Gap] = 0
               toppageurl[i,:Critical] = 0
@@ -548,6 +548,14 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
 
               prevMarker = prevStartTime + prevTotalTime
               newMarker = newStartTime + newTotalTime
+
+              #println("\tprevMarker=$prevMarker, newMarker=$newMarker")
+              if (i == 1)
+                prevTotalTime = prevMarker
+                toppageurl[i,:Critical] = prevMarker
+                prevStartTime = 0
+                continue
+              end
 
               if (prevMarker >= newMarker)
                   # Still nested inside a larger request already donetoppageurl[i,:critical] = 0
