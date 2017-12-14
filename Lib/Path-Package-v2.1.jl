@@ -59,7 +59,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           return
       end
 
-      if (SP.debugLevel > 4)
+      if (SP.debugLevel > 8)
           println("Individual part 1 done with ",recordsFound, " records")
       end
 
@@ -69,14 +69,14 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 
       if (SP.debugLevel > 2)
-          println("Individual part 2 done: selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
+          println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
       end
 
       localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
       recordsFound = nrow(localTableRtDF)
 
       if (SP.debugLevel > 4)
-          println("part 2 done with ",recordsFound, " records")
+          println("part 2 done with ",recordsFound, " resource table records")
       end
 
       if recordsFound == 0
@@ -85,7 +85,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           return
       end
 
-      if (SP.debugLevel > 4)
+      if (SP.debugLevel > 8)
           println("part 3 done")
       end
 
@@ -223,7 +223,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
       s1String = ASCIIString("")
 
       for subdf in groupby(full,[:session_id,:timestamp])
-          s = size(subdf)
+          s = size(subdf,1)
           if(SP.debugLevel > 2)
               println("Current Page Size=",s," Target Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
@@ -380,7 +380,7 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       if (SP.debugLevel > 8)
-        println("Clean Up Data table",size(toppageurl,1))
+        println("Clean Up Data table ",size(toppageurl,1))
       end
 
       toppageurl = names!(toppageurl[:,:],
