@@ -2,7 +2,7 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   try
 
       localTableDF = DataFrame()
-      localTableRtDF = DataFrame()
+#      localTableRtDF = DataFrame()
       statsDF = DataFrame()
 
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
@@ -10,7 +10,6 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
-          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
@@ -23,16 +22,15 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       UP.timeLowerMs = statsDF[1:1,:median][1] * 0.90
       UP.timeUpperMs = statsDF[1:1,:median][1] * 1.10
 
-      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
-      recordsFound = nrow(localTableRtDF)
+#      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
+#      recordsFound = nrow(localTableRtDF)
+#
+#      if recordsFound == 0
+#          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
+#          return
+#      end
 
-      if recordsFound == 0
-          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
-          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
-          return
-      end
-
-      criticalPathStreamline(TV,UP,SP,localTableDF,localTableRtDF)
+      criticalPathStreamline(TV,UP,SP,localTableDF)
 
 
   catch y
@@ -47,7 +45,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   try
 
       localTableDF = DataFrame()
-      localTableRtDF = DataFrame()
+#      localTableRtDF = DataFrame()
       statsDF = DataFrame()
 
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
@@ -55,7 +53,6 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
       if recordsFound == 0
           displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
-          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
           return
       end
 
@@ -72,25 +69,23 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
       end
 
-      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
-      recordsFound = nrow(localTableRtDF)
+#      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
+#      recordsFound = nrow(localTableRtDF)
+#
+#      if (SP.debugLevel > 4)
+#          println("part 2 done with ",recordsFound, " resource table records")
+#      end
+#
+#      if recordsFound == 0
+#          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
+#          return
+#      end
+#
+#      if (SP.debugLevel > 8)
+#          println("part 3 done")
+#      end
 
-      if (SP.debugLevel > 4)
-          println("part 2 done with ",recordsFound, " resource table records")
-      end
-
-      if recordsFound == 0
-          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
-          #println("$(UP.urlFull) for $(deviceType) was not found during $(TV.timeString)")
-          return
-      end
-
-      if (SP.debugLevel > 8)
-          println("part 3 done")
-      end
-
-      showAvailableSessionsStreamline(TV,UP,SP,localTableDF,localTableRtDF)
-      #println("part 4 done")
+      showAvailableSessionsStreamline(TV,UP,SP,localTableDF)
 
 
   catch y
@@ -136,15 +131,16 @@ function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;r
 end
 
 # From Individual-Streamline-Body
-function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
+function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
   try
-      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
+#      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
       io = 0
       s1String = ASCIIString("")
 
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
-      for subdf in groupby(full,[:session_id,:timestamp])
+#      for subdf in groupby(full,[:session_id,:timestamp])
+      for subdf in groupby(localTableDF,[:session_id,:timestamp])
           s = size(subdf)
           if(SP.debug)
               println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
@@ -156,14 +152,11 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           end
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
-              #println("Testing $(io) against $(SP.showLines)")
               if io <= SP.showLines
                   s1 = subdf[1,:session_id]
-                  #println("Session_id $(s1)")
                   s1String = ASCIIString(s1)
                   timeStampVar = subdf[1,:timestamp]
                   timeVarSec = timeVar / 1000.0
-                  # We may be missing requests such that the timers_t_done is a little bigger than the treemap
                   if (SP.debugLevel > 8)
                       labelString = "$(timeVarSec) Seconds"
                       println("Page $(io) of $(SP.showLines): $(labelString)")
@@ -216,13 +209,14 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
 end
 
 
-function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
+function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
   try
-      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
+#      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
       io = 0
       s1String = ASCIIString("")
 
-      for subdf in groupby(full,[:session_id,:timestamp])
+#      for subdf in groupby(full,[:session_id,:timestamp])
+      for subdf in groupby(localTableDF,[:session_id,:timestamp])
           s = size(subdf,1)
           if(SP.debugLevel > 2)
               println("Current Page Size=",s," Target Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
