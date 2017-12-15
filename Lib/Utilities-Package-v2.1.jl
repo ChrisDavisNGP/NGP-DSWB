@@ -71,7 +71,7 @@ function openingTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     chartTitle *= " Page Group=$(UP.pageGroup), DeviceType=$(UP.deviceType), Browser OS=$(UP.agentOs)"
     chartInfo  = "Other Settings: limitRows=$(UP.limitRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"
     chartInfoOptional = ""
-    if $(UP.urlRegEx) != "%" || $(UP.urlFull) != "%" || $(UP.regRegEx != "%")
+    if UP.urlRegEx != "%" || UP.urlFull != "%" || UP.resRegEx != "%"
         chartInfoOptional = "urlRegEx=$(UP.urlRegEx)\nurlFull=$(UP.urlFull)\nresRegEx=$(UP.resRegEx)"
     end
 

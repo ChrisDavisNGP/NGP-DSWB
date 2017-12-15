@@ -217,6 +217,10 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
 #      for subdf in groupby(full,[:session_id,:timestamp])
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
+          #look for quick out
+          if (io == SP.showLines)
+              return
+          end
           s = size(subdf,1)
           if(SP.debugLevel > 2)
               println("Current Page Size=",s," Target Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
@@ -528,7 +532,7 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
           newStartTime = toppageurl[i,:Start]
           newTotalTime = toppageurl[i,:Total]
           #println("Url ",url," newStartTime=$(newStartTime), newTotalTime=$(newTotalTime), prevStartTime=$(prevStartTime)")
-          
+
           #Sorted by start time ascending and largest total time decending
           #Anyone with same time has the previous is nested inside the current one and has no time
 
