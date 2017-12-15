@@ -13,10 +13,6 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           return
       end
 
-      if (SP.debugLevel > 4)
-          println("CritPath part 1 done with ",recordsFound, " records")
-      end
-
       # Stats on the data
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
       UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
@@ -135,7 +131,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
               break
           end
           if(SP.debugLevel > 4)
-              println(" Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("Finding page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
           if (UP.usePageLoad)
               timeVar = subdf[1,:timers_t_done]
@@ -177,6 +173,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
       summaryCriticalPathDF = deepcopy(finalCriticalPathDF)
 
       if (SP.debugLevel > 4)
+          standardChartTitle(TV,UP,SP,"Debug4: Final Critical Path DF")
           beautifyDF(finalCriticalPathDF)
       end
 
@@ -320,6 +317,9 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
 
       if (!suitableTest(UP,SP,toppageurl))
+          if (SP.debugLevel > 4)
+              println("suitable Test failed")
+          end
           return false
       end
 
@@ -342,10 +342,14 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       toppageurl = gapAndCriticalPathV2(toppageurl,timerDone);
       if (!suitableTest(UP,SP,toppageurl))
+          if (SP.debugLevel > 4)
+              println("Not Suitable after gap calcuation")
+          end
           return false
       end
 
       if (SP.debugLevel > 6)
+          standardChartTitle(TV,UP,SP,"Debug6: After Gap")
           beautifyDF(toppageurl)
       end
 

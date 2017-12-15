@@ -538,6 +538,6 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
         end
 
     catch y
-        println("criticalPathTreemap Exception ",y)
+        println("criticalPathFinalTreemap Exception ",y)
     end
 end
