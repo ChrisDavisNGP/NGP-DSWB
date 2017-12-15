@@ -19,22 +19,13 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
       # Stats on the data
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      UP.timeLowerMs = statsDF[1:1,:median][1] * 0.90
-      UP.timeUpperMs = statsDF[1:1,:median][1] * 1.10
-
-#      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
-#      recordsFound = nrow(localTableRtDF)
-#
-#      if recordsFound == 0
-#          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
-#          return
-#      end
+      UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
+      UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 
       criticalPathStreamline(TV,UP,SP,localTableDF)
 
-
   catch y
-      println("critialPathAggregationMain Exception ",y)
+      println("criticalPathAggregationMain Exception ",y)
   end
 end
 
@@ -133,16 +124,18 @@ end
 # From Individual-Streamline-Body
 function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
   try
-#      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
       io = 0
       s1String = ASCIIString("")
 
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
-#      for subdf in groupby(full,[:session_id,:timestamp])
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
+          # Quick out
+          if (io == UP.showLines)
+              break
+          end
           s = size(subdf)
-          if(SP.debug)
+          if(SP.debugLevel > 4)
               println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
           if (UP.usePageLoad)
@@ -175,8 +168,9 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           end
       end
 
+      $io -= 1
       if (SP.debugLevel > 4)
-          println("size of criticalPathDF is ",size(criticalPathDF))
+          println("size of criticalPathDF is ",size(criticalPathDF,1), " Using $io pages")
       end
 
       finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
@@ -192,7 +186,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
         finalCriticalPathDF[Bool[isless(UP.sizeMin,x) for x in finalCriticalPathDF[:counter]], :]
       )
 
-      summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF)
+      summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF,lineCount)
 
       if (SP.debugLevel > 4)
           beautifyDF(summaryUrlGroupDF)
@@ -287,17 +281,17 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
       toppageurl = DataFrame()
 
       if studyTime > 0
-          if SP.debugLevel > 2
+          if SP.debugLevel > 8
               println("Calling sessionUrlTableCreateDF")
           end
           toppageurl = sessionUrlTableCreateDF(TV,UP,SP,studySession,studyTime)
           elseif (studySession != "None")
-              if SP.debugLevel > 2
+              if SP.debugLevel > 8
                   println("Calling allSessionUrlTableCreateDF")
               end
               toppageurl = allSessionUrlTableCreateDF(TV,UP,SP,studySession)
           else
-              if SP.debugLevel > 2
+              if SP.debugLevel > 8
                   println("Calling allPageUrlTableCreateDF")
               end
               toppageurl = allPageUrlTableCreateDF(TV,UP)
@@ -620,7 +614,6 @@ function suitableTest(UP::UrlParams,SP::ShowParams,toppageurl::DataFrame)
       if (newTotalTime < UP.timeLowerMs || newTotalTime > UP.timeUpperMs)
           if (SP.debugLevel > 2)
               println("Dropping page due to total time of $(newTotalTime)")
-              println("From ",toppageurl[i:i,:])
           end
           return false
       end
@@ -880,7 +873,7 @@ function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::Da
     end
 end
 
-function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame)
+function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame,lineCount::Int64)
 
     if (SP.debugLevel > 8)
         println("Starting summaryReduce")
@@ -895,7 +888,7 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
 
         for subDF in groupby(summaryDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
-            currentTotal = sum(subDF[:,:average])
+            currentTotal = sum(subDF[:,:average])/lineCount
             currentMax = maximum(subDF[:,:maximum])
             currentCount = size(subDF[:,:urlgroup],1)
             #println("$currentGroup cp=$currentCriticalPath")
