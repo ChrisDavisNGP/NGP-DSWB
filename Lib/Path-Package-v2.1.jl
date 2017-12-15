@@ -125,18 +125,17 @@ end
 function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
   try
       io = 0
-      s1String = ASCIIString("")
+      sessionIdString = ASCIIString("")
 
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
           # Quick out
-          if (io == UP.showLines)
+          if (io == SP.showLines)
               break
           end
-          s = size(subdf)
           if(SP.debugLevel > 4)
-              println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println(" Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
           if (UP.usePageLoad)
               timeVar = subdf[1,:timers_t_done]
@@ -146,19 +145,19 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
               if io <= SP.showLines
-                  s1 = subdf[1,:session_id]
-                  s1String = ASCIIString(s1)
+                  sessionId = subdf[1,:session_id]
+                  sessionIdString = ASCIIString(sessionId)
                   timeStampVar = subdf[1,:timestamp]
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 8)
                       labelString = "$(timeVarSec) Seconds"
                       println("Page $(io) of $(SP.showLines): $(labelString)")
                       if (SP.debugLevel > 6)
-                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
+                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",sessionId,"\",",timeStampVar,") #    Time=",timeVar)
                       end
                   end
-                  topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,s1String,timeStampVar)
+                  topPageUrl = individualPageData(TV,UP,SP,sessionIdString,timeStampVar)
+                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,sessionIdString,timeStampVar)
                   if (!suitable)
                       SP.showLines += 1
                   end
@@ -168,9 +167,9 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           end
       end
 
-      $io -= 1
+      lineCount = io - 1
       if (SP.debugLevel > 4)
-          println("size of criticalPathDF is ",size(criticalPathDF,1), " Using $io pages")
+          println("size of criticalPathDF is ",size(criticalPathDF,1)," Using $lineCount pages")
       end
 
       finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
@@ -207,7 +206,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
   try
 #      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
       io = 0
-      s1String = ASCIIString("")
+      sessionIdString = ASCIIString("")
 
 #      for subdf in groupby(full,[:session_id,:timestamp])
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
@@ -228,9 +227,9 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
               io += 1
               #println("Testing $(io) against $(SP.showLines)")
               if io <= SP.showLines
-                  s1 = subdf[1,:session_id]
-                  #println("Session_id $(s1)")
-                  s1String = ASCIIString(s1)
+                  sessionId = subdf[1,:session_id]
+                  #println("Session_id $(sessionId)")
+                  sessionIdString = ASCIIString(sessionId)
                   timeStampVar = subdf[1,:timestamp]
                   timeVarSec = timeVar / 1000.0
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
@@ -238,14 +237,14 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                       labelString = "$(timeVarSec) Seconds"
                       println("Page $(io) of $(SP.showLines): $(labelString)")
                       if (SP.debugLevel > 6)
-                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",s1,"\",",timeStampVar,") #    Time=",timeVar)
+                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",sessionId,"\",",timeStampVar,") #    Time=",timeVar)
                       end
                   end
-                  topPageUrl = individualPageData(TV,UP,SP,s1String,timeStampVar)
-                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,s1String,timeStampVar)
+                  topPageUrl = individualPageData(TV,UP,SP,sessionIdString,timeStampVar)
+                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,sessionIdString,timeStampVar)
                   if (!suitable)
                       if (SP.debugLevel > 2)
-                          println("Not suitable: $(UP.urlRegEx),$(s1String),$(timeStampVar),$(timeVar)")
+                          println("Not suitable: $(UP.urlRegEx),$(sessionIdString),$(timeStampVar),$(timeVar)")
                       end
                       SP.showLines += 1
                   end
@@ -309,7 +308,9 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   try
 
       if size(toppageurl,1) == 0
-          println("Rejecting current page, no data")
+          if (SP.debugLevel > 4)
+              println("Rejecting current page, no data")
+          end
           return false
       end
 
@@ -367,7 +368,9 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       UrlParamsValidate(UP)
 
       if size(toppageurl,1) == 0
-          println("Rejecting current page, no data")
+          if (SP.debugLevel > 4)
+              println("Rejecting current page, no data")
+          end
           return false
       end
 
