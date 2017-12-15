@@ -504,6 +504,12 @@ end
 
 function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPathDF::DataFrame)
     try
+
+        if (SP.debugLevel > 8)
+            standardChartTitle(TV,UP,SP,"Debug8: Critical Path DF")
+            beautifyDF(criticalPathDF)
+        end
+
         #beacons on Total
         cpDF = names!(criticalPathDF[:,:],
         [symbol("urlgroup"),symbol("average"),symbol("maximum"),symbol("counter"),symbol("label")])
@@ -516,7 +522,7 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
         treeDF[:,:load_time] = cpDF[:,:counter]/100.0
 
         fieldNames = [:urlgroup]
-        treeDF[:label] = "Critical Path Average Time"
+        treeDF[:label] = "Critical Path Summary"
         drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
 
         if (SP.devView)

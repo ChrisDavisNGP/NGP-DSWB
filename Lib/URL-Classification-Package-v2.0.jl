@@ -24,7 +24,11 @@ function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
             newUrlPageGroup = "Not Done"
             if (url == "Not Blocking")
                 continue
-                end
+            end
+
+            #remove bad characters
+            url = replace(url,"!","")
+                
             try
                 uri = URI(url)
             catch

@@ -163,7 +163,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           end
       end
 
-      lineCount = io - 1
+      lineCount = io
       if (SP.debugLevel > 4)
           println("size of criticalPathDF is ",size(criticalPathDF,1)," Using $lineCount pages")
       end
