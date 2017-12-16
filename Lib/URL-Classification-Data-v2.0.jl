@@ -4006,7 +4006,7 @@ function VolumeRList()
     ("report.youtube4tr.com","Youtube"),
     ("reporterosenmovimiento.files.wordpress.com","reporterosenmovimiento.files.wordpress.com"),
     ("reports.adspdbl.com","TuCows Internet"),
-    ("reports.metadsp.co.uk","reports.metadsp.co.uk"),
+    ("reports.metadsp.co.uk","metadsp.co.uk"),
     ("req.tidaltv.com","Videology Ads"),
     ("res.cloudinary.com","res.cloudinary.com"),
     ("rescn.u3.ucweb.com","Ucweb.com"),
@@ -5104,7 +5104,7 @@ function VolumeUList()
     ("udsp-eu.exe.bid","udsp-eu.exe.bid"),
     ("ue12.splicky.com","ue12.splicky.com"),
     ("uhu.homedesigntreasure.com","uhu.homedesigntreasure.com"),
-    ("uid.metadsp.co.uk","Metadsp.co.uk"),
+    ("uid.metadsp.co.uk","metadsp.co.uk"),
     ("uip.semasio.net","Uip.semasio.net"),
     ("uipglob.semasio.net","uipglob.semasio.net"),
     ("uk.adadvisor.net","Neustar Adadvisor Ads"),
@@ -6192,7 +6192,7 @@ function wellKnownUrlGroup()
     ("prod-vast.videoamp.com","Digital Video Player"),
     ("pxsrv.net","3rd Party Internet Operations"),
     ("Quantserve Real Time Ads","3rd Party Ad Operations"),
-    ("reports.metadsp.co.uk","3rd Party Internet Operations"),
+    ("metadsp.co.uk","3rd Party Internet Operations"),
     ("researchnow.com","Marketing Analytics"),
     ("Rubicon Project Ads","3rd Party Ad Operations"),
     ("Russian Domains","3rd Party Internet Operations"),
@@ -6232,7 +6232,6 @@ function wellKnownUrlGroup()
     ("Amazon Associates Ads","3rd Party Ad Operations"),
     ("Twitter.com","3rd Party Internet Operations"),
     ("Yastatic.net","3rd Party Internet Operations"),
-
     ("Simpli.fi","3rd Party Ad Operations"),
     ("Tapad Ads","3rd Party Ad Operations"),
     ("Yourshot Ajax Calls","Digital Engineering"),
@@ -6240,6 +6239,12 @@ function wellKnownUrlGroup()
     ("Yourshot Static Files","Digital Engineering"),
     ("contextweb.com","3rd Party Ad Operations"),
 
+    ("Aggregate Knowledge Ads","3rd Party Ad Operations"),
+    ("Eluxer.net","3rd Party Internet Operations"),
+    ("NGP Script","Digital Engineering"),
+    ("Soasta Analytics","Digital Operations Analytics"),
+    ("Yourshot Media Files","Digital Engineering"),
+    ("madeleine","3rd Party Ad Operations"),
 
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
