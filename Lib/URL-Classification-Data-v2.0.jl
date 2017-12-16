@@ -1247,6 +1247,7 @@ function VolumeCList()
     ("cdn.avazutracking.net","cdn.avazutracking.net"),
     ("cdn.avocet.io","cdn.avocet.io"),
     ("cdn.awsli.com.br","cdn.awsli.com.br"),
+    ("cdn.blueconic.net","Blue Conic"),
     ("cdn.bncnt.com","cdn.bncnt.com"),
     ("cdn.brand-display.com","cdn.brand-display.com"),
     ("cdn.bttrack.com","Bidtellect Ads"),
@@ -3472,6 +3473,7 @@ function VolumeNList()
     ("nan.mashfsttest.com","nan.mashfsttest.com"),
     ("naobmfbfjlpgllonjblddocijdfaebla","naobmfbfjlpgllonjblddocijdfaebla"),
     ("napivas.com","Napivas.com"),
+    ("natgeo.blueconic.net","Blue Conic"),
     ("natgeo.cloudant.com","natgeo.cloudant.com"),
     ("natgeo.edgeboss.net","NGP Page Content"),
     ("natgeo.home.reachcreative.com","Livefyre Commenting"),
@@ -6166,6 +6168,7 @@ function VolumeOtherList()
     ("5fb297427f5a47ad9cee770003cd7597.com","5fb297427f5a47ad9cee770003cd7597.com"),
     ("5k9v3bc1-enehfzfv.netdna-ssl.com","5k9v3bc1-enehfzfv.netdna-ssl.com"),
     ("5sqfs-s4yc9.ads.tremorhub.com","Tremorhub Ads"),
+    ("609d93yvzj2e-a.akamaihd.net","609d93yvzj2e-a.akamaihd.net"),
     ("618696d173d34038b9934e74523cf4b2.com","618696d173d34038b9934e74523cf4b2.com"),
     ("64.19.142.10","64.19.142.10"),
     ("64.19.142.11","64.19.142.11"),
@@ -6284,6 +6287,7 @@ function wellKnownUrlGroup()
     ("BidSwitch Ads","3rd Party Ad Operations"),
     ("Bidtellect Ads","3rd Party Ad Operations"),
     ("Bing Ads","3rd Party Ad Operations"),
+    ("Blue Conic","Marketing Analytics"),
     ("BlueKai Ads","Ad Operations"),
     ("Casale Ads","3rd Party Ad Operations"),
     ("Chartbeat","Digital Operations Analytics"),
@@ -6398,6 +6402,8 @@ function wellKnownUrlGroup()
     ("Yahoo Buzz Social","Marketing Analytics"),
     ("Yahoo.com","3rd Party Ad Operations"),
     ("Zergnet","Digital Business Addins"),
+    ("Vizeum","3rd Party Ad Operations"),
+    ("Yourshot Renditions","Digital Engineering"),    
 
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
