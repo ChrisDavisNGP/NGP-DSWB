@@ -121,6 +121,7 @@ end
 function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
   try
       io = 0
+      pageCount = 0
       sessionIdString = ASCIIString("")
 
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
@@ -156,6 +157,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,sessionIdString,timeStampVar)
                   if (!suitable)
                       SP.showLines += 1
+                  else
+                      pageCount += 1
                   end
               else
                   break
@@ -163,9 +166,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           end
       end
 
-      lineCount = io
       if (SP.debugLevel > 4)
-          println("size of criticalPathDF is ",size(criticalPathDF,1)," Using $lineCount pages")
+          println("size of criticalPathDF is ",size(criticalPathDF,1)," Using $pageCount pages")
       end
 
       finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
@@ -177,12 +179,24 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           beautifyDF(finalCriticalPathDF)
       end
 
+      hitMin = 0
+      if (pageCount > 9)
+          hitMin = round((pageCount+5)/10)  # Round Up
+          if (hitMin == 0)
+              hitMin = 1
+          end
+      end
+
+      if (SP.debugLevel > 8)
+          println("hitMin for table is $hitMin")
+      end
+
       # Display critical path Agg but remove outlyiers
       criticalPathFinalTreemap(TV,UP,SP,
-        finalCriticalPathDF[Bool[isless(UP.sizeMin,x) for x in finalCriticalPathDF[:counter]], :]
+        finalCriticalPathDF[Bool[isless(hitMin,x) for x in finalCriticalPathDF[:counter]], :]
       )
 
-      summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF,lineCount)
+      summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
 
       if (SP.debugLevel > 4)
           beautifyDF(summaryUrlGroupDF)
@@ -880,7 +894,7 @@ function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::Da
     end
 end
 
-function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame,lineCount::Int64)
+function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame,pageCount::Int64)
 
     if (SP.debugLevel > 8)
         println("Starting summaryReduce")
@@ -895,7 +909,7 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
 
         for subDF in groupby(summaryDF,[:urlgroup])
             currentGroup = subDF[1:1,:urlgroup]
-            currentTotal = sum(subDF[:,:average])/lineCount
+            currentTotal = sum(subDF[:,:average])/pageCount
             currentMax = maximum(subDF[:,:maximum])
             currentCount = size(subDF[:,:urlgroup],1)
             #println("$currentGroup cp=$currentCriticalPath")
