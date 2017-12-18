@@ -267,13 +267,18 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   newListDF = urlListDF[Bool[x > UP.samplesMin for x in urlListDF[:cnt]],:]
-  topUrlList = newListDF[:urlgroup]
-  topUrls = cleanupTopUrlTable(topUrlList)
-  if (SP.debugLevel > 8)
-      println(topUrls)
+  topUrlListDV = newListDF[:urlgroup]
+  topUrlsDV = cleanupTopUrlTable(topUrlListDV)
+
+  if (SP.debugLevel > 4)
+      println("Started with ",size(urlListDF,1), " Trimmed down to ",size(newListDF,1), " due to $(UP.samplesMin) limit")
+      println("Final DV size is ",size(topUrlsDV,1))
+      if (SP.debugLevel > 8)
+          println(topUrlsDV)
+      end
   end
 
-  finalUrlTableOutput(TV,UP,SP,topUrls)
+  finalUrlTableOutput(TV,UP,SP,topUrlsDV)
 
 end
 

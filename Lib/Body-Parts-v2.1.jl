@@ -234,7 +234,7 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
   statsBeaconTimeDF = limitedStatsFromDV(dv)
   row[:beacon_time] = statsBeaconTimeDF[:median]
   samples = statsBeaconTimeDF[:count]
-  if (SP.debug)
+  if (SP.debugLevel > 4)
       println("bt=",row[:beacon_time][1]," goal=",goal)
   end
 
@@ -266,7 +266,7 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
       showLimitedStats(TV,statsEncodedSizeDF,chartTitle)
   end
 
-  if (SP.debug)
+  if (SP.debugLevel > 8)
       beautifyDF(row[:,:])
   end
   return row

@@ -141,7 +141,7 @@ end
 function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
     try
 
-        topUrl = query("""\
+        topUrlDF = query("""\
 
         select
             count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
@@ -162,7 +162,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
         limit $(UP.limitRows)
          """);
 
-        return topUrl
+        return topUrlDF
 
     catch y
         println("returnTopUrlTableV2 Exception ",y)
