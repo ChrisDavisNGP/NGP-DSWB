@@ -66,9 +66,7 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
               count(*) as request_count,
               avg($table.timers_domready) as beacon_time,
-              sum($rt.encoded_size) as encoded_size,
-              $table.errors as errors, $table.session_id,$table."timestamp"
-
+              sum($rt.encoded_size) as encoded_size
           FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
               where
               $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
@@ -127,9 +125,14 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
   finalTable[:encoded_size] = [0]
   finalTable[:samples] = [0]
 
+  x = 0
   for testUrl in topUrls
       #UP.urlRegEx = string("%",ASCIIString(testUrl),"%")
       #UP.urlFull = string("/",ASCIIString(testUrl),"/")
+      x += 1
+      if (x % 10) == 0
+          println("Urls Completed: $x")
+      end
       UP.urlRegEx = string("%",ASCIIString(testUrl))
       UP.urlFull = testUrl
       if (UP.deviceType == "Mobile")
