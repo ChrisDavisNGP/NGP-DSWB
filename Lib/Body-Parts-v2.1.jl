@@ -127,8 +127,11 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
 
   x = 0
   for testUrl in topUrls
-      #UP.urlRegEx = string("%",ASCIIString(testUrl),"%")
-      #UP.urlFull = string("/",ASCIIString(testUrl),"/")
+
+      if size(finalTable,1) > SP.showLines   #Counting the header line
+          break
+      end
+
       x += 1
       if (x % 10) == 0
           println("Urls Completed: $x")
@@ -207,10 +210,10 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
 
   if (UP.orderBy == "size")
       sort!(finalTable,cols=:encoded_size, rev=true)
-          additional = join(["(Sorted By Size Descending; Min Samples ";UP.samplesMin;"; Top ";UP.limitRows;" Page Views)"]," ")
+          additional = join(["(Sorted By Size Descending; Min Samples ";UP.samplesMin;"; Top ";SP.showLines;" Page Views)"]," ")
   else
       sort!(finalTable,cols=:beacon_time, rev=true)
-          additional = join(["(Sorted By Time Descending; Min Samples ";UP.samplesMin;"; Top ";UP.limitRows;" Page Views)"]," ")
+          additional = join(["(Sorted By Time Descending; Min Samples ";UP.samplesMin;"; Top ";SP.showLines;" Page Views)"]," ")
   end
 
 
