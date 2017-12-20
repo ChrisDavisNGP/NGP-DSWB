@@ -146,6 +146,39 @@ function weeklyTimeVariables(;days::Int64=7)
     end
 end
 
+function prevWorkWeekTimeVariables()
+    try
+        firstAndLast = getBeaconsFirstAndLast()
+        endTime = DateTime(firstAndLast[1,2])
+
+        # Calc previous week M-F ignore holidays
+        while Dates.dayname(endTime) != "Friday"
+            endTime = DateTime(endTime - Day(1))
+        end
+
+        startTime = DateTime(endTime - Day(5) + Minute(1))
+
+        localtv =
+        timeVariables(
+            Dates.year(startTime),
+            Dates.month(startTime),
+            Dates.day(startTime),
+            Dates.hour(startTime),
+            Dates.minute(startTime),
+            Dates.year(endTime),
+            Dates.month(endTime),
+            Dates.day(endTime),
+            Dates.hour(endTime),
+            Dates.minute(endTime)
+        );
+
+        return localtv
+
+    catch y
+        println("TV = weeklyTimeVariables Exception ",y)
+    end
+end
+
 # Take 10 hours from yesterday by default
 function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
     try
