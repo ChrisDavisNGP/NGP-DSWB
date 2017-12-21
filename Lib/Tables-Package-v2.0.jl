@@ -905,6 +905,7 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """)
 
         if (SP.debugLevel > 8)
+            standardChartTitle(TV,UP,SP,"Debug8: defaultBeaconsToDF All Columns")
             beautifyDF(localTableDF[1:min(3,end),:])
         end
 

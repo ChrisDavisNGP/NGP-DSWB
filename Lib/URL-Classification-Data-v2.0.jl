@@ -5,7 +5,7 @@ function PartialKnownHost(uriHost::ASCIIString)
         if (ismatch(r"^www.nationalgeographic.com",uriHost))
             newuristring = "NGP Page Content"
         elseif (ismatch(r".*fls\.doubleclick.*",uriHost))
-            newuristring = "Google DoubleClick Floodlight Ads"
+            newuristring = "Google DoubleClick Floodlight"
         elseif (ismatch(r"bid.g.doubleclick.net",uriHost))
             newuristring = "Google DoubleClick Bid Manager Ads"
         elseif (ismatch(r".*ad.doubleclick.net",uriHost))
@@ -2340,6 +2340,7 @@ function VolumeGList()
     ("gamezblox.com","gamezblox.com"),
     ("gamezpad.com","gamezpad.com"),
     ("gamingspark.com","gamingspark.com"),
+    ("gap","gap"),
     ("gap.sp1.convertro.com","Convertro.com"),
     ("garkogamescom-a.akamaihd.net","garkogamescom"),
     ("gateway.zscalertwo.net","gateway.zscalertwo.net"),
@@ -6143,7 +6144,7 @@ function wellKnownUrlGroup()
     ("Google DoubleClick Ads","3rd Party Ad Operations (DFP)"),
     ("Google DoubleClick Bid Manager Ads","3rd Party Ad Operations (DFP)"),
     ("Google DoubleClick Bid Manager","3rd Party Ad Operations (DFP)"),
-    ("Google DoubleClick Floodlight Ads","3rd Party Ad Operations (DFP)"),
+    ("Google DoubleClick Floodlight","Marketing Analytics"),
     ("Google DoubleClick Spotlight Ads","3rd Party Ad Operations (DFP)"),
     ("Google Maps","User Browser Extensions"),
     ("Google Publisher Tags Ads","3rd Party Ad Operations"),
@@ -6173,7 +6174,7 @@ function wellKnownUrlGroup()
     ("mmtro.com","3rd Party Internet Operations"),
     ("Moat Ads","Ad Operations"),
     ("Moatpixel Adware","Marketing Analytics"),
-    ("Monetate Personalization","Marketing Analytics"),
+    ("Monetate Personalization","Digital Operations Analytics"),
     ("Mookie Tracking Cookie Ads","3rd Party Ad Operations"),
     ("NetRatings SiteCensus Ads","Marketing Analytics"),
     ("New Relic Analytics","Digital Operations Analytics"),
@@ -6245,6 +6246,7 @@ function wellKnownUrlGroup()
     ("Soasta Analytics","Digital Operations Analytics"),
     ("Yourshot Media Files","Digital Engineering"),
     ("madeleine","3rd Party Ad Operations"),
+    ("Gap","Waiting Between Requests"),
 
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);

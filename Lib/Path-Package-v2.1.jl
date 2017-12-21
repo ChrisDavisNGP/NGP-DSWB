@@ -14,11 +14,17 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       end
 
       # Stats on the data
+      saveTimeLowerMs = UP.timeLowerMs
+      saveTimeUpperMs = UP.timeUpperMs
+      
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
       UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
       UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 
       criticalPathStreamline(TV,UP,SP,localTableDF)
+
+      UP.timeLowerMs = saveTimeLowerMs
+      UP.timeUpperMs = saveTimeUpperMs
 
   catch y
       println("criticalPathAggregationMain Exception ",y)
@@ -192,20 +198,25 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
       end
 
       # Display critical path Agg but remove outlyiers
+      # Show no tables
+      saveDevView = SP.devView
+      SP.devView = false
       criticalPathFinalTreemap(TV,UP,SP,
         finalCriticalPathDF[Bool[isless(hitMin,x) for x in finalCriticalPathDF[:counter]], :]
       )
 
+
       summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
+
+      summaryCriticalPathDF = deepcopy(finalCriticalPathDF)
+      summaryTableUrlGroupDF = summaryTableReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
 
       if (SP.debugLevel > 4)
           beautifyDF(summaryUrlGroupDF)
       end
 
-      saveShow = SP.devView
-      SP.devView = false
       criticalPathFinalTreemap(TV,UP,SP,summaryUrlGroupDF)
-      SP.devView = saveShow
+      SP.devView = saveDevView
 
   catch y
       println("criticalPathStreamline Exception ",y)
@@ -888,6 +899,11 @@ function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::Da
             end
         end
 
+        sumGap = sum(pageDF[:,:Gap])
+        if (sumGap > 0)
+            push!(criticalPathDF,["Gap",sumGap])
+        end
+
         return
     catch y
         println("reduceCriticalPath Exception ",y)
@@ -922,6 +938,52 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
 
     catch y
         println("summaryReduce Exception ",y)
+    end
+end
+
+function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame,pageCount::Int64)
+
+    if (SP.debugLevel > 8)
+        println("Starting summaryTableReduce")
+    end
+
+    try
+        summaryTableUrlGroupDF = DataFrame(summaryGroup=ASCIIString[],urlgroup=ASCIIString[],average=Float64[],
+            maximum=Int64[],counter=Int64[])
+
+        beforeDF = deepcopy(summaryDF)
+        classifyUrlGroup(SP,summaryDF)
+        #beautifyDF(summaryDF)
+
+        i = 1
+        nRows = size(beforeDF,1)
+        while i <= nRows
+            push!(summaryTableUrlGroupDF,
+                [
+                summaryDF[i:i,:urlgroup];
+                beforeDF[i:i,:urlgroup];
+                beforeDF[i:i,:average];
+                beforeDF[i:i,:maximum];
+                beforeDF[i:i,:counter]
+                ])
+            i += 1
+        end
+
+        sort!(summaryTableUrlGroupDF,cols=[order(:summaryGroup);order(:urlgroup)])
+        beautifyDF(names!(summaryTableUrlGroupDF,
+            [
+            symbol("Summary Group");
+            symbol("URL Group");
+            symbol("Total Time");
+            symbol("Maximum Time");
+            symbol("Occurances")
+            ])
+        )
+
+        return summaryTableUrlGroupDF
+
+    catch y
+        println("summaryTableReduce Exception ",y)
     end
 end
 
