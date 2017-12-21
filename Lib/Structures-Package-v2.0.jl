@@ -67,6 +67,7 @@ function UrlParamsValidate(UP::UrlParams)
         UP.pageGroup != "Your Shot" &&
         UP.pageGroup != "Animal AEM" &&
         UP.pageGroup != "Nat Geo Homepage" &&
+        UP.pageGroup != "Nat Geo Site" &&
         UP.pageGroup != "Environment AEM"
         )
         println("Warning: pageGroup is an unusual value ",UP.pageGroup,", See mPulse All Page Group filter for all values.")
