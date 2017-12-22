@@ -15,14 +15,14 @@ setTable(table)
 include("../../../Lib/Include-Package-v2.1.jl")
 
 #TV = timeVariables(2017,6,8,10,59,2017,6,8,12,59)
-#TV = weeklyTimeVariables(days=3)
+#TV = weeklyTimeVariables(days=7)
 TV = yesterdayTimeVariables()
 
-UP = UrlParamsInit("Group_NatGeoSite_SQL_Mining")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "%"
 UP.limitRows = 250
-UP.pageGroup = "Nat Geo Site"   #productPageGroup
+UP.pageGroup = "Unknown"   #productPageGroup
 UP.samplesMin = 10
 UP.sizeMin = 10000
 UP.timeLowerMs = 2000.0
@@ -36,7 +36,7 @@ SP = ShowParamsInit()
 SP.criticalPathOnly=true
 SP.devView=false
 SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd number or zero
-SP.showLines = 10
+SP.showLines = 25
 ShowParamsValidate(SP)
 
 dumpDataFieldsV2Workflow(TV,UP,SP)
