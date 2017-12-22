@@ -41,10 +41,10 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         bt = UP.beaconTable
         btv = UP.btView
-        timeLowerMs = UP.timeLowerMs > 0 ? UP.timeLowerMs : 1000
-        timeUpperMs = UP.timeUpperMs > 0 ? UP.timeUpperMs : 600000
         if (SP.debugLevel > 0)
-            println("Low=",timeLowerMs," High=", timeUpperMs)
+            println("page group=$(UP.pageGroup), devType=$(UP.deviceType), os=$(UP.agentOs)")
+            println("params_u=",UP.urlRegEx)
+            println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)
         end
 
         query("""\
@@ -56,7 +56,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)' and
                         user_agent_os ilike '$(UP.agentOs)' and
-                        timers_t_done >= $timeLowerMs and timers_t_done < $timeUpperMs
+                        timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
             )
         """)
         if (SP.debugLevel > 0)
