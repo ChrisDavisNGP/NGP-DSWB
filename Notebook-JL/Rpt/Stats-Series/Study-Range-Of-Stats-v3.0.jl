@@ -26,7 +26,7 @@ UP.pageGroup = "News Article"
 UP.timeLowerMs = 2000.0
 UP.timeUpperMs = 600000.0
 UP.urlRegEx = "%"
-ShowParamsValidate(UP)
+UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
 SP.criticalPathOnly=true
