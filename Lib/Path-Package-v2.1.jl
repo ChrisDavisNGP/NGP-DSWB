@@ -16,7 +16,7 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       # Stats on the data
       saveTimeLowerMs = UP.timeLowerMs
       saveTimeUpperMs = UP.timeUpperMs
-      
+
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
       UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
       UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
@@ -205,11 +205,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
         finalCriticalPathDF[Bool[isless(hitMin,x) for x in finalCriticalPathDF[:counter]], :]
       )
 
-
       summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
-
-      summaryCriticalPathDF = deepcopy(finalCriticalPathDF)
-      summaryTableUrlGroupDF = summaryTableReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
 
       if (SP.debugLevel > 4)
           beautifyDF(summaryUrlGroupDF)
@@ -217,6 +213,9 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
 
       criticalPathFinalTreemap(TV,UP,SP,summaryUrlGroupDF)
       SP.devView = saveDevView
+
+      summaryCriticalPathDF = deepcopy(finalCriticalPathDF)
+      summaryTableUrlGroupDF = summaryTableReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
 
   catch y
       println("criticalPathStreamline Exception ",y)

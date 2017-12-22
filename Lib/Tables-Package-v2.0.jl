@@ -890,6 +890,13 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     bt = UP.beaconTable
 
+    if (SP.debugLevel > 4)
+        println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
+        println("urlRegEx $(UP.urlRegEx)")
+        println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
+        println("time Range: $(UP.timeLowerMs),$(UP.timeUpperMs)")
+    end
+
     try
         localTableDF = query("""\
             select * from $bt

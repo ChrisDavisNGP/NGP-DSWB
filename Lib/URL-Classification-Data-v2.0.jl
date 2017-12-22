@@ -125,8 +125,8 @@ function PartialKnownHost(uriHost::ASCIIString)
             newuristring = "CrazyEgg Analytics"
             elseif (ismatch(r"dc8.*cloudfront.net",uriHost))
             newuristring = "Snowplow Analytics"
-            elseif (ismatch(r".*api4load.biz",uriHost))
-            newuristring = "api4load.biz"
+        elseif (ismatch(r".*api4load\..*",uriHost))
+            newuristring = "Api4load"
         elseif (ismatch(r".*\.ru$",uriHost))
             newuristring = "Russian Domains"
         end
@@ -3599,7 +3599,7 @@ function VolumeOList()
     ("ourfieldtrip.files.wordpress.com","ourfieldtrip.files.wordpress.com"),
     ("oursem1.com","oursem1.com"),
     ("outlook.live.com","outlook.live.com"),
-    ("outrageousdeal-a.akamaihd.net","outrageousdeal"),
+    ("outrageousdeal-a.akamaihd.net","Outrageous Deal Adware"),
     ("outstream.pulsepoint.com","outstream.pulsepoint.com"),
     ("ow.ly","ow.ly"),
     ("owe.unu-mc.org","owe.unu-mc.org"),
@@ -3680,6 +3680,7 @@ function VolumePList()
     ("pd0-imp.revsci.net","pd0-imp.revsci.net"),
     ("pd4-imp.revsci.net","Revsci.net"),
     ("pd5-imp.revsci.net","pd5-imp.revsci.net"),
+    ("pdf.snapandread.com","pdf.snapandread.com"),
     ("pdgpcobaomccdgnjjgbcacofhfnkdhbd","pdgpcobaomccdgnjjgbcacofhfnkdhbd"),
     ("pdk.theplatform.com","Theplatform.com"),
     ("pdw-usr.userreport.com","Userreport.com"),
@@ -4257,6 +4258,7 @@ function VolumeSList()
     ("s3.9765.info","s3.9765.info"),
     ("s3.algovid.com","Algovid.tv"),
     ("s3.amazonaws.com","s3.amazonaws.com"),
+    ("s3-ap-southeast-1.amazonaws.com","s3-ap-southeast-1.amazonaws.com"),
     ("s3.cnnx.io","s3.cnnx.io"),
     ("s3.eu-central-1.amazonaws.com","s3.eu-central-1.amazonaws.com"),
     ("s3.vdoserv.com","Algovid.tv"),
@@ -4389,7 +4391,7 @@ function VolumeSList()
     ("secure.shoppytoolmac.com","secure.shoppytoolmac.com"),
     ("secure.shoptoolmac.com","secure.shoptoolmac.com"),
     ("secure.surfbuyermac.com","Surfbuyermac.com"),
-    ("secure.surveymonkey.com","secure.surveymonkey.com"),
+    ("secure.surveymonkey.com","Survey Monkey"),
     ("secure.uac.advertising.com","secure.uac.advertising.com"),
     ("secure.webshoppermac.com","secure.webshoppermac.com"),
     ("secure.webshoppymac.com","secure.webshoppymac.com"),
@@ -5359,7 +5361,7 @@ function VolumeWList()
     ("whns.images.worldnow.com","whns.images.worldnow.com"),
     ("whos.amung.us","Amung.us"),
     ("wickedtuna5.nationalgeographic.com","NGP Page Content"),
-    ("widget.surveymonkey.com","widget.surveymonkey.com"),
+    ("widget.surveymonkey.com","Survey Monkey"),
     ("widgets.flickr.com","flickr.com"),
     ("widgets.pinterest.com","Pinterest.com"),
     ("widgets.twimg.com","Twimg.com"),
@@ -5658,7 +5660,7 @@ function VolumeWList()
     ("www.sundanceselects.com","www.sundanceselects.com"),
     ("www.super-trooper.net","www.super-trooper.net"),
     ("www.superfish.com","Superfish.com"),
-    ("www.surveymonkey.com","Surveymonkey"),
+    ("www.surveymonkey.com","Survey Monkey"),
     ("www.tagserve.asia","Tagserve.asia"),
     ("www.tailwindapp.com","Tailwindapp.com"),
     ("www.takepart.com","www.takepart.com"),
@@ -6115,7 +6117,7 @@ function wellKnownUrlGroup()
     ("BlueKai Ads","Ad Operations"),
     ("Casale Ads","3rd Party Ad Operations"),
     ("Chartbeat","Digital Operations Analytics"),
-    ("cmcore.com","3rd Party Ad Operations"),
+    ("Cmcore.com","3rd Party Ad Operations"),
     ("Cmptch Adware","3rd Party Ad Operations"),
     ("CrazyEgg Analytics","Digital Operations Analytics"),
     ("Criteo Targetting","Digital Business Addins"),
@@ -6247,6 +6249,8 @@ function wellKnownUrlGroup()
     ("Yourshot Media Files","Digital Engineering"),
     ("madeleine","3rd Party Ad Operations"),
     ("Gap","Waiting Between Requests"),
+    ("Survey Monkey","3rd Party Ad Operations"),
+    ("Outrageous Deal Adware","3rd Party Ad Operations"),
 
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
