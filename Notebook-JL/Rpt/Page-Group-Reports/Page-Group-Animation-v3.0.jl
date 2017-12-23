@@ -20,7 +20,8 @@ productPageGroup = "News Article" # primary page group
 localTable = "$(table)_$(scriptName)_productPage_view_prod"
 localTableRt = "$(tableRt)_productPage_view_prod"
 
-TV = timeVariables(2016,12,21,19,0,2016,12,21,23,59);
+#TV = timeVariables(2016,12,21,19,0,2016,12,21,23,59);
+TV = yesterdayTimeVariables()
 
 # Create view to query only product page_group
 query("""create or replace view $localTable as (select * from $table where page_group = '$(productPageGroup)' and "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC))""")

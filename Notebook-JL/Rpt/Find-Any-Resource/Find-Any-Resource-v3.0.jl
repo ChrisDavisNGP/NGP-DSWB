@@ -15,9 +15,9 @@ setTable(table)
 include("../../../lib/Include-Package-v2.1.jl")
 ;
 
-TV = timeVariables(2017,12,5,13,0,2017,12,5,14,59);
+#TV = timeVariables(2017,12,5,13,0,2017,12,5,14,59);
 #TV = weeklyTimeVariables(days=7);
-#TV = yesterdayTimeVariables()
+TV = yesterdayTimeVariables()
 ;
 
 UP = UrlParamsInit(scriptName)
