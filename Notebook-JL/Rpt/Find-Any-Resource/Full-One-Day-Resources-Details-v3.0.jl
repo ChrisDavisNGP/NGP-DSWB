@@ -203,22 +203,3 @@ end
 
 resourceTime3(tableRt;linesOut=linesOutput)
 ;
-
-## Resource and it parent is also interesting below this point
-
-#try
-#    t1DF = query("""\
-#        create or replace view $localTable as (
-#            select * from $table
-#                where
-#                    "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-#                    page_group ilike '$(productPageGroup)' and
-#                    params_u ilike '$(localUrl)'
-#        )
-#    """)
-#    cnt = query("""SELECT count(*) FROM $localTable""")
-#    println("$localTable count is ",cnt[1,1])
-#catch y
-#    println("setupLocalTable Exception ",y)
-#end
-;
