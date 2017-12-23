@@ -13,7 +13,7 @@ setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 ;
 
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 ;
 
 #TV = timeVariables(2017,6,8,10,59,2017,6,8,12,59)
@@ -21,7 +21,7 @@ include("../../Lib/Include-Package-v2.1.jl")
 TV = yesterdayTimeVariables()
 ;
 
-UP = UrlParamsInit("Show_Requests_For_Large_Pages")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "Mobile"
 UP.limitRows = 250

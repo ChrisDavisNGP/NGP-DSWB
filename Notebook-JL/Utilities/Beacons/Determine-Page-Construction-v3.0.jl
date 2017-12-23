@@ -14,7 +14,7 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 customer = "Nat Geo"
 productPageGroup = "Nat Geo Homepage" # primary page group
-localTable = "$(table)_DOC_view"
+localTable = "$(table)_$(scriptName)_DOC_view"
 
 
 firstAndLast = getBeaconsFirstAndLast()

@@ -15,7 +15,7 @@ setTable(table)
 # setTable(tableRt, tableType = "RESOURCE_TABLE")
 ;
 
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 ;
 
 TV = weeklyTimeVariables(days=1)
@@ -23,7 +23,7 @@ TV = weeklyTimeVariables(days=1)
 #TV = yesterdayTimeVariables()
 ;
 
-UP = UrlParamsInit("Find_Top_WPF_Pages")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "%"
 UP.limitRows = 250

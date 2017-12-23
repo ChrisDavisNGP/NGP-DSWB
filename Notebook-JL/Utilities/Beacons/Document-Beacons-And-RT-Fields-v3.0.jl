@@ -16,7 +16,7 @@ include("../../../Lib/Include-Package-v2.1.jl")
 
 customer = "Nat Geo"
 productPageGroup = "Nat Geo Homepage" # primary page group
-localTable = "$(table)_DOC_view"
+localTable = "$(table)_$(scriptName)_DOC_view"
 localTableRt = "$(tableRt)_DOC_view"
 localTableRt = "$(tableRt)_URL_view_cd"
 localUrl = "%www.nationalgeographic.com/"
@@ -35,9 +35,7 @@ timeString = "$(padDateTime(startTime)) to $(padDateTime(endTime))"
 println(timeString)
 
 try
-    query("""\
-        drop view if exists $localTable
-    """)
+    query("""drop view if exists $localTable""")
 
      query("""\
         create or replace view $localTable as
@@ -62,7 +60,7 @@ end
 
 displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
 
-query("""\
+t1DF = query("""\
 
 select count(*),params_u
 FROM $(localTable)
@@ -73,10 +71,11 @@ order by count(*) desc
 limit 5
 
 """)
+beautifyDF(t1DF)
 
 displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
 
-query("""\
+t2DF = query("""\
 
 select count(*),session_id,params_u
 FROM $(localTable)
@@ -86,12 +85,13 @@ params_u ilike '$(localUrl)'
 group by params_u,session_id
 order by count(*) desc
 """)
+beautifyDF(t2DF)
 
 sessionId = "ad2fd687-691f-4764-a9bb-2182db03634e-oho76h"
 
 displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
 
-query("""\
+t3DF = query("""\
 
 select count(*),session_id,params_u,"timestamp"
 FROM $(localTable)
@@ -101,12 +101,12 @@ session_id = '$sessionId'
 group by params_u,session_id,"timestamp"
 order by "timestamp" asc
 """)
+beautifyDF(t3DF)
+
 
 ts = "('1482106711154','1482106711161','1482107709775')";
 
-query("""\
-    drop view if exists $localTableRt
-""")
+query("""drop view if exists $localTableRt""")
 
 
 
@@ -546,13 +546,8 @@ limit 1000
 """)
 
 try
-    query("""\
-        drop view if exists $localTable
-    """)
-
-    query("""\
-        drop view if exists $localTableRt
-    """)
+    query("""drop view if exists $localTable""")
+    query("""drop view if exists $localTableRt""")
 
 catch y
     println("clean up Exception ",y)

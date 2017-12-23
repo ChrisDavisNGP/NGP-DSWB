@@ -12,12 +12,12 @@ setRedshiftEndpoint(dsn)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 setTable(table)
 
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 
 #TV = timeVariables(2017,6,17,10,0,2017,6,17,10,59);
 TV = weeklyTimeVariables(days=7);
 
-UP = UrlParamsInit("Large_Resrouces_For_Image_Mgr")
+UP = UrlParamsInit(scriptName)
 UP.pageGroup = "%"   #productPageGroup
 UP.urlRegEx = "%"   #localUrl
 UP.deviceType = "Mobile"

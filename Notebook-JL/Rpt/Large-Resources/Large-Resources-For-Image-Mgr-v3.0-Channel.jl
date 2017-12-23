@@ -17,7 +17,7 @@ include("../../../Lib/Include-Package-v2.1.jl")
 #TV = timeVariables(2017,6,17,10,0,2017,6,17,10,59);
 TV = weeklyTimeVariables(days=1)
 
-UP = UrlParamsInit("Channel_Large_Res_For_Image_Mgr")
+UP = UrlParamsInit(scriptName)
 UP.pageGroup = "Channel"   #productPageGroup
 UP.urlRegEx = "%"   #localUrl
 UP.deviceType = "%"

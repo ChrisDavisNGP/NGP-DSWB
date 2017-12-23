@@ -23,7 +23,7 @@ TV = yesterdayTimeVariables()
 customer = "Nat Geo"
 productPageGroup = "Your Shot" # primary page group
 #productPageGroup = "Travel AEM" # primary page group
-localTable = "$(table)_spike_pview_prod"
+localTable = "$(table)_$(scriptName)_spike_pview_prod"
 localTableRt = "$(tableRt)_spike_pview_prod"
 
 toppagecount = query("""\

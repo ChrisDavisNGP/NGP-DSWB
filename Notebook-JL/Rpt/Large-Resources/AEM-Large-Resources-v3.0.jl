@@ -18,7 +18,7 @@ include("../../../Lib/Include-Package-v2.1.jl")
 #TV = weeklyTimeVariables(days=3)
 TV = yesterdayTimeVariables()
 
-UP = UrlParamsInit("AEM_Large_Resources")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "Mobile"
 UP.limitRows = 250

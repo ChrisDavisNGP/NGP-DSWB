@@ -16,8 +16,8 @@ setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 ;
 
-include("../../Lib/Include-Package-v2.1.jl")
-include("../../Lib/URL-Classification-Package-v2.0.jl")
+include("../../../lib/Include-Package-v2.1.jl")
+include("../../../lib/URL-Classification-Package-v2.0.jl")
 ;
 
 #TV = timeVariables(2017,12,6,13,0,2017,12,6,13,59)
@@ -25,7 +25,7 @@ include("../../Lib/URL-Classification-Package-v2.0.jl")
 TV = yesterdayTimeVariables()
 ;
 
-UP = UrlParamsInit("3rd_Party_Url_Auto_Individual_PBears")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "%"
 UP.limitRows = 250

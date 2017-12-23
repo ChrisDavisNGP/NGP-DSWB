@@ -13,7 +13,7 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 setTable(table)
 
 # Packages
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 
 # Time values (tv.) structure created in include above, so init time here
 #TV = timeVariables(2017,1,2,2,30,2017,1,2,2,45);
@@ -23,7 +23,7 @@ TV = timeVariables(2017,3,8,6,0,2017,3,8,11,59);
 customer = "Nat Geo"
 productPageGroup = "News Article" # primary page group
 localUrl = "http://news.nationalgeographic.com/news/2014/05/140518-dogs-war-canines-soldiers-troops-military-japanese-prisoner/"
-localTable = "$(table)_Find_Large_Page_Url_view"
+localTable = "$(table)_$(scriptName)_Find_Large_Page_Url_view"
 deviceType = "Mobile"
 linesOutput = 25
 ;
@@ -47,7 +47,7 @@ catch y
 end
 
 try
-    query("""
+    t1DF = query("""
     select
         user_agent_device_type,
         user_agent_family,
@@ -61,6 +61,7 @@ try
     order by count(*) desc
     limit 30
     """)
+    beautifyDF(t1DF)
 catch y
     println("setupLocalTable Exception ",y)
 end
@@ -68,7 +69,7 @@ end
 
 
 try
-    query("""
+    t2DF = query("""
     select
         user_agent_device_type,
         user_agent_family,
@@ -82,12 +83,13 @@ try
     order by count(*) desc
     limit 25
     """)
+    beautifyDF(t2DF)
 catch y
     println("setupLocalTable Exception ",y)
 end
 
 try
-    query("""
+    t3DF = query("""
     select
         user_agent_device_type,
         user_agent_family,
@@ -103,12 +105,14 @@ try
     order by count(*) desc
     limit 25
     """)
+    beautifyDF(t3DF)
 catch y
     println("setupLocalTable Exception ",y)
 end
 
 try
-    query("""SELECT * FROM $localTable limit 3""")
+    t4DF = query("""SELECT * FROM $localTable limit 3""")
+    beautifyDF(t4DF)
 catch y
     println("setupLocalTable Exception ",y)
 end

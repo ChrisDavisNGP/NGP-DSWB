@@ -17,7 +17,7 @@ include("../../../Lib/Include-Package-v2.1.jl")
 
 customer = "Nat Geo"
 productPageGroup = "News Article" # primary page group
-localTable = "$(table)_productPage_view_prod"
+localTable = "$(table)_$(scriptName)_productPage_view_prod"
 localTableRt = "$(tableRt)_productPage_view_prod"
 
 TV = timeVariables(2016,12,21,19,0,2016,12,21,23,59);
@@ -29,7 +29,7 @@ setTable(localTable)
 
 # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
 # where beacon_type = 'page view'
-#query("""SELECT count(*) FROM $localTable""")
+# t1DF = query("""SELECT count(*) FROM $localTable""")
 
 retailer_results = getLatestResults(hours=1, minutes=30, table_name="$(localTable)")
 size(retailer_results)

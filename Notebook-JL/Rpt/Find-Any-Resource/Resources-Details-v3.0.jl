@@ -13,7 +13,7 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 setTable(table)
 
 # Packages
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 
 #TV = timeVariables(2017,4,15,10,0,2017,4,15,10,9);
 #TV = timeVariables(2017,4,21,10,0,2017,4,21,10,9);
@@ -26,7 +26,7 @@ productPageGroup = "%" # primary page group
 localUrl = "%"
 resourceUrl = "%ng-black-logo.ngsversion.dafe07f7.png%"
 
-localTable = "$(table)_Find_Resource_Details"
+localTable = "$(table)_$(scriptName)_Find_Resource_Details"
 linesOutput = 25
 minimumEncoded = 0
 ;
@@ -207,7 +207,7 @@ resourceTime3(tableRt;linesOut=linesOutput)
 ## Resource and it parent is also interesting below this point
 
 #try
-#    query("""\
+#    t1DF = query("""\
 #        create or replace view $localTable as (
 #            select * from $table
 #                where

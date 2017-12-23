@@ -1,9 +1,7 @@
 function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
       try
 
-        query("""\
-            drop view if exists $(UP.btView)
-        """)
+        query("""drop view if exists $(UP.btView)""")
 
         query("""\
             create or replace view $(UP.btView) as

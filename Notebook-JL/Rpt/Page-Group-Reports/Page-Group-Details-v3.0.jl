@@ -18,7 +18,7 @@ include("../../../Lib/Include-Package-v2.1.jl")
 #TV = weeklyTimeVariables(days=7)
 TV = yesterdayTimeVariables()
 
-UP = UrlParamsInit("Page_Group_Details")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "Mobile"
 UP.limitRows = 10

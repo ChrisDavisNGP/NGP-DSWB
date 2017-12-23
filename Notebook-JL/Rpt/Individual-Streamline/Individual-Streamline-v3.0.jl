@@ -17,7 +17,7 @@ setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 ;
 
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 ;
 
 #TV = timeVariables(2017,5,9,16,0,2017,5,9,16,59)
@@ -27,7 +27,7 @@ TV = yesterdayTimeVariables()
 
 # This is the Mobile Only, Time Based report
 
-UP = UrlParamsInit("Generic_Individual_Streamline_DomReady")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "Mobile"
 UP.limitRows = 250

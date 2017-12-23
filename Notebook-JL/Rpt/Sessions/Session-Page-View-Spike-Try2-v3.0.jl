@@ -14,7 +14,7 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 # Packages
 include("Find-A-Page-View-Spike-Body-v1.3.jl")
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 
 #TV = timeVariables(2017,6,3,10,59,2017,6,3,11,59)
 #TV = weeklyTimeVariables(days=1)
@@ -23,7 +23,7 @@ TV = yesterdayTimeVariables()
 customer = "Nat Geo"
 productPageGroup = "Your Shot" # primary page group
 #productPageGroup = "Travel AEM" # primary page group
-localTable = "$(table)_spike_pview_prod"
+localTable = "$(table)_$(scriptName)_spike_pview_prod"
 localTableRt = "$(tableRt)_spike_pview_prod"
 
 toppagecount = query("""\

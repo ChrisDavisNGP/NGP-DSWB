@@ -12,7 +12,7 @@ setRedshiftEndpoint(dsn)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 setTable(table)
 
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 ;
 
 TV = timeVariables(2017,12,5,13,0,2017,12,5,14,59);
@@ -20,7 +20,7 @@ TV = timeVariables(2017,12,5,13,0,2017,12,5,14,59);
 #TV = yesterdayTimeVariables()
 ;
 
-UP = UrlParamsInit("Find_Any_Resource")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "%"
 UP.limitRows = 250

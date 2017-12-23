@@ -33,9 +33,11 @@ timeSpike  = anyTimeVar(2017,6,8,11,49,2017,6,8,11,59)
 query("""create or replace view $(urlNormal.rtView) as (select * from $(urlNormal.resourceTable) where "timestamp" between $(timeNormal.startTimeMsUTC) and $(timeNormal.endTimeMsUTC))""")
 query("""create or replace view $(urlSpike.rtView)  as (select * from $(urlSpike.resourceTable)  where "timestamp" between  $(timeSpike.startTimeMsUTC) and  $(timeSpike.endTimeMsUTC))""")
 
-query("""SELECT count(*) FROM $(urlNormal.rtView)""")
+t1DF = query("""SELECT count(*) FROM $(urlNormal.rtView)""")
+beautifyDF(t1DF)
 
-query("""SELECT count(*) FROM $(urlSpike.rtView)""")
+t2DF = query("""SELECT count(*) FROM $(urlSpike.rtView)""")
+beautifyDF(t2DF)
 
 requestCountByGroupSDMRS(timeNormal,urlNormal,"Normal")
 requestCountByGroupSDMRS(timeSpike,urlSpike,"Spike")

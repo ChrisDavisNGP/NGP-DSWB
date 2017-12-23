@@ -15,7 +15,7 @@ setTable(table)
 # setTable(tableRt, tableType = "RESOURCE_TABLE")
 ;
 
-include("../../Lib/Include-Package-v2.1.jl")
+include("../../../lib/Include-Package-v2.1.jl")
 ;
 
 #TV = timeVariables(2017,6,21,14,0,2017,6,21,14,59)
@@ -23,7 +23,7 @@ include("../../Lib/Include-Package-v2.1.jl")
 TV = yesterdayTimeVariables()
 ;
 
-UP = UrlParamsInit("Find_A_Time_Spike")
+UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "%"
 UP.limitRows = 250
