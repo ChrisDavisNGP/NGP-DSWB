@@ -15,7 +15,7 @@ setTable(table)
 # setTable(tableRt, tableType = "RESOURCE_TABLE")
 ;
 
-include("../../../lib/Include-Package-v2.1.jl")
+include("../../../Lib/Include-Package-v2.1.jl")
 ;
 
 TV = weeklyTimeVariables(days=1)

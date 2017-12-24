@@ -16,8 +16,8 @@ setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 ;
 
-include("../../../lib/Include-Package-v2.1.jl")
-include("../../../lib/URL-Classification-Package-v2.0.jl")
+include("../../../Lib/Include-Package-v2.1.jl")
+include("../../../Lib/URL-Classification-Package-v2.0.jl")
 ;
 
 #TV = timeVariables(2017,12,6,13,0,2017,12,6,13,59)
@@ -51,7 +51,7 @@ WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
 WellKnownPath = wellKnownPathDictionary(SP.debug);
 WellKnownUrlGroup = wellKnownUrlGroup();
 
-#include("../../../lib/Include-Package-v2.1.jl")
+#include("../../../Lib/Include-Package-v2.1.jl")
 
 UP.agentOs = "%"
 UP.deviceType = "Desktop"

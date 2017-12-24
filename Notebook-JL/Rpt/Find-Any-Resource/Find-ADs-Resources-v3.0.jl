@@ -12,7 +12,7 @@ setRedshiftEndpoint(dsn)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 setTable(table)
 
-include("../../../lib/Include-Package-v2.1.jl")
+include("../../../Lib/Include-Package-v2.1.jl")
 ;
 
 #TV = timeVariables(2017,12,5,13,0,2017,12,5,14,59);
