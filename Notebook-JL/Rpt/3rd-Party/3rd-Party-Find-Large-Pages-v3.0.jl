@@ -26,7 +26,7 @@ localUrl = "http://news.nationalgeographic.com/news/2014/05/140518-dogs-war-cani
 localTable = "$(table)_$(scriptName)_Find_Large_Page_Url_view"
 deviceType = "Mobile"
 linesOutput = 25
-;
+
 
 try
     query("""\

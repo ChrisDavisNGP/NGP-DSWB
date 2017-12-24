@@ -23,11 +23,11 @@ include("../../../lib/URL-Classification-Package-v2.0.jl")
 #TV = timeVariables(2017,12,6,13,0,2017,12,6,13,59)
 #TV = weeklyTimeVariables(days=2)
 TV = yesterdayTimeVariables()
-;
+
 
 UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
-UP.deviceType = "%"
+UP.deviceType = "%""
 UP.limitRows = 10
 UP.pageGroup = "News Article"   #productPageGroup
 UP.samplesMin = 20

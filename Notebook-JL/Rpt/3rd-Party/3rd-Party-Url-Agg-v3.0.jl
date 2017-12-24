@@ -58,7 +58,7 @@ UP.urlRegEx = "%"
 UP.deviceType = "%"
 UP.agentOs = "%"
 statsAndTreemaps(TV,UP,SP)
-;
+
 
 #UP.pageGroup = "News Article"
 #UP.urlRegEx = "%news.nationalgeographic.com/2017/12/tourist-dies-rare-shark-attack-cocos-island-costa-rica-spd%"

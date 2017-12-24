@@ -18,7 +18,7 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 include("../../../lib/Include-Package-v2.1.jl")
 include("../../../lib/URL-Classification-Package-v2.0.jl")
-;
+
 
 #TV = timeVariables(2017,12,6,13,0,2017,12,6,13,59)
 #TV = weeklyTimeVariables(days=2)

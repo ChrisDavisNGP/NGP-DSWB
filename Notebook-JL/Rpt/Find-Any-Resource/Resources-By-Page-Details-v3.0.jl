@@ -19,7 +19,7 @@ include("../../../lib/Include-Package-v2.1.jl")
 #TV = weeklyTimeVariables(days=7);
 TV = yesterdayTimeVariables()
 
-include("RD-By-Page-Body-v1.0.jl")
+#include("RD-By-Page-Body-v1.0.jl")
 customer = "Nat Geo"
 #productPageGroup = "%"
 productPageGroup = "%" # primary page group

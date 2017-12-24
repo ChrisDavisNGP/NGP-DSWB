@@ -43,7 +43,5 @@ SP.devView=false
 SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd number or zero
 ShowParamsValidate(SP)
 
-;
-
 findAPageViewSpikeWorkflow(TV,UP,SP)
 ;

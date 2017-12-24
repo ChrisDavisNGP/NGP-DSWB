@@ -45,7 +45,7 @@ SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd numb
 SP.reportLevel=2
 SP.showLines=50
 ShowParamsValidate(SP)
-;
+
 
 WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
 WellKnownPath = wellKnownPathDictionary(SP.debug);
