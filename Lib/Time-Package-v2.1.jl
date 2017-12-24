@@ -53,7 +53,7 @@ end
 function timeVariables(
     Y1::Int64,M1::Int64,D1::Int64,H1::Int64,MM1::Int64,
     Y2::Int64,M2::Int64,D2::Int64,H2::Int64,MM2::Int64;
-    showTime::Bool=true
+    showTime::Bool=false
     )
     try
         tempTime = TimeVarsInit()
@@ -88,7 +88,7 @@ end
 function anyTimeVar(
     Y1::Int64,M1::Int64,D1::Int64,H1::Int64,MM1::Int64,
     Y2::Int64,M2::Int64,D2::Int64,H2::Int64,MM2::Int64;
-    showTime::Bool=true
+    showTime::Bool=false
     )
     try
         localTimeVar = TimeVarsInit()
@@ -212,4 +212,10 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
     catch y
         println("yesterdayTimeVariables Exception ",y)
     end
+end
+
+function pickTime(timeRange::ASCIIString)
+
+
+
 end

@@ -123,6 +123,8 @@ end
 
 function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
+    openingTitle(TV,UP,SP)
+    
     defaultBeaconCreateView(TV,UP,SP)
 
     test1GNGSSDM(UP,SP)

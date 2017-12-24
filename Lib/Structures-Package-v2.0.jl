@@ -68,9 +68,11 @@ function UrlParamsValidate(UP::UrlParams)
         UP.pageGroup != "Animal AEM" &&
         UP.pageGroup != "Nat Geo Homepage" &&
         UP.pageGroup != "Nat Geo Site" &&
+        UP.pageGroup != "No Page Group" &&
+        UP.pageGroup != "Unknown" &&
         UP.pageGroup != "Environment AEM"
         )
-        println("Warning: pageGroup is an unusual value ",UP.pageGroup,", See mPulse All Page Group filter for all values.")
+        println("Warning: pageGroup is an unusual value \"",UP.pageGroup,"\", See mPulse All Page Group filter for all values.")
         println("         Common names [News Article|Channel|Kids|Travel AEM|Photography AEM|Nat Get Homepage|Your Shot]")
     end
 

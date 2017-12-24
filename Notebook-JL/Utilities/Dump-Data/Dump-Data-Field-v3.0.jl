@@ -14,6 +14,10 @@ setTable(table)
 
 include("../../../Lib/Include-Package-v2.1.jl")
 
+#TV = timeVariables(2017,6,8,10,59,2017,6,8,12,59)
+#TV = weeklyTimeVariables(days=7)
+TV = yesterdayTimeVariables()
+
 UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "%"

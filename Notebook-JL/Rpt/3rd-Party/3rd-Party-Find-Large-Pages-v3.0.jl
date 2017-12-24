@@ -257,7 +257,7 @@ end
 
 
 
-function statsDetailsPrint2(localTable::ASCIIString,tableRt::ASCIIString,joinTableSummary::DataFrame,row::Int64)
+function statsDetailsPrint2(localTable::ASCIIString,joinTableSummary::DataFrame,row::Int64)
     try
         topUrl = string(joinTableSummary[row:row,:urlgroup][1],"%")
         topTitle = joinTableSummary[row:row,:urlgroup][1]
@@ -310,7 +310,7 @@ i = 0
 for row in eachrow(joinTableSummary)
     i += 1
     detailsPrint(localTable,tableRt,joinTableSummary,i)
-    statsDetailsPrint2(localTable,tableRt,joinTableSummary,i)
+    statsDetailsPrint2(localTable,joinTableSummary,i)
     if (i >= linesOutput)
         break;
     end
