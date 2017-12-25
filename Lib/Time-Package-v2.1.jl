@@ -219,16 +219,23 @@ function pickTime()
     # Greater than 10 hours is the usual work day
     if isdefined(:TvHours) && TvHours < 10
         localtv = yesterdayTimeVariables(hours=TvHours)
-    elseif isdefined(:TvDays)
+        return localtv
+    end
+
+    if isdefined(:TvDays)
+        println("TvDays=",TvDays)
         if TvDays > 7
             TvDays = 7
         end
         localtv = weeklyTimeVariables(days=TvDays)
-    elseif isdefined(:TvWorkWeek)
-        localtv = prevWorkWeekTimeVariables()
-    else
-        localtv = yesterdayTimeVariables()
+        return localtv
     end
 
+    if isdefined(:TvWorkWeek)
+        localtv = prevWorkWeekTimeVariables()
+        return localtv
+    end
+
+    localtv = yesterdayTimeVariables()
     return localtv
 end

@@ -25,5 +25,7 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-displayTopUrlsByCount(TV,UP,SP,"%";rowLimit=10000,beaconsLimit=10,paginate=true);
+openingTitle(TV,UP,SP)
+
+displayTopUrlsByCount(TV,UP,SP,UP.pageGroup;rowLimit=10000,beaconsLimit=10,paginate=true);
 ;
