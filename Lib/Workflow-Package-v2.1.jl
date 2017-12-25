@@ -174,14 +174,14 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     openingTitle(TV,UP,SP)
 
-    pageGroupDetailsCreateView(TV,UP,mobileView,desktopView)
+    pageGroupDetailsCreateView(TV,UP,SP,mobileView,desktopView)
     setTable(UP.btView);
 
     statsDF = beaconViewStats(TV,UP,SP)
     if !isdefined(:statDF)
         println("No data")
     end
-    
+
     medianThreshold = statsDF[1:1,:median][1]
 
     showPeakTable(TV,UP,SP;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")

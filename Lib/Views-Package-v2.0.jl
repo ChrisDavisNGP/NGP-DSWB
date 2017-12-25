@@ -1,4 +1,4 @@
-function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
+function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
       try
 
         query("""drop view if exists $(UP.btView)""")
@@ -7,15 +7,22 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,localMobileTable:
             create or replace view $(UP.btView) as
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             )
         """)
+
+        # todo if select count into var for size zero check and dbg output
 
         query("""\
             create or replace view $localMobileTable as
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_os ilike '$(UP.agentOs)' and
             user_agent_device_type = 'Mobile'
             )
         """)
@@ -24,7 +31,9 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,localMobileTable:
             create or replace view $localDesktopTable as
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_os ilike '$(UP.agentOs)' and
             user_agent_device_type = 'Desktop'
             )
         """);
