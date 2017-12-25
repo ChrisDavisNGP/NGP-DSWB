@@ -26,10 +26,26 @@ function UrlParamsInit(nb::ASCIIString)
 
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
-    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,600000,0,0,0,"time",true,"%","%")
+    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,600000,250,10,10000,"time",true,"%","%")
 
     if isdefined(:UpPageGroup)
         UP.pageGroup = UpPageGroup
+    end
+
+    if isdefined(:UpDeviceType)
+        UP.deviceType = UpDeviceType
+    end
+
+    if isdefined(:UpAgentOs)
+        UP.agentOs = UpAgentOs
+    end
+
+    if isdefined(:UpUrlRegEx)
+        UP.urlRegEx = UpUrlRegEx
+    end
+
+    if isdefined(:UpUrlFull)
+        UP.urlFull = UpUrlFull
     end
 
     return UP
@@ -96,10 +112,14 @@ type ShowParams
 end
 
 function ShowParamsInit()
-    SP = ShowParams(false,true,false,0,1,10,20,150,75)
+    SP = ShowParams(false,true,false,0,2,25,20,150,75)
 
     if isdefined(:SpDebugLevel)
         SP.debugLevel = SpDebugLevel
+    end
+
+    if isdefined(:SpShowLines)
+        SP.showLines = SpShowLines
     end
 
     return SP
