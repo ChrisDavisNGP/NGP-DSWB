@@ -553,6 +553,8 @@ end
 
 function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,minimumEncoded::Int64)
 
+    openingTitle(TV,UP,SP)
+
     #Turn sections on / off to debug
     wfShowBigPagesByFileType = true
     wfShowLeftOvers = true
