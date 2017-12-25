@@ -173,11 +173,9 @@ beautifyDF(toppagecount[1:min(10,end),:])
 
 #beautifyDF(toppagecount[1:min(10,end),:])
 
-firstAndLast()
-
-sessionsBeacons()
-
-loadTime()
-topUrls()
-peakTable()
-statsTable()
+#firstAndLast()
+#sessionsBeacons()
+#loadTime()
+#topUrls()
+#peakTable()
+#statsTable()
