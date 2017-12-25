@@ -222,11 +222,7 @@ function pickTime()
         return localtv
     end
 
-    if isdefined(:TvDays)
-        println("TvDays=",TvDays)
-        if TvDays > 7
-            TvDays = 7
-        end
+    if isdefined(:TvDays) && TvDays < 8
         localtv = weeklyTimeVariables(days=TvDays)
         return localtv
     end
