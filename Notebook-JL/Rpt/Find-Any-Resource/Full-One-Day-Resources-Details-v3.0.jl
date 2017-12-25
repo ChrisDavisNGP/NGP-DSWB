@@ -15,11 +15,10 @@ setTable(table)
 # Packages
 include("../../../Lib/Include-Package-v2.1.jl")
 
+TV = pickTime()
 #TV = timeVariables(2017,4,15,10,0,2017,4,15,10,9);
-#TV = timeVariables(2017,4,21,10,0,2017,4,21,10,9);
-TV = weeklyTimeVariables(days=1);
 
-include("RD-Body-v1.0.jl")
+#include("RD-Body-v1.0.jl")
 customer = "Nat Geo"
 #productPageGroup = "%"
 productPageGroup = "%" # primary page group
