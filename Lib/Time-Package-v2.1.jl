@@ -214,8 +214,21 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
     end
 end
 
-function pickTime(timeRange::ASCIIString)
+function pickTime()
 
+    # Greater than 10 hours is the usual work day
+    if isdefined(:TvHours) && TvHours < 10
+        localtv = yesterdayTimeVariables(TvHours)
+    elseif isdefined(:TvDays)
+        if TvDays > 7
+            TvDays = 7
+        end
+        localtv = weeklyTimeVariables(days=TvDays)
+    elseif isdefined(:TvWorkWeek)
+        localtv = prevWorkWeekTimeVariables()
+    else
+        localtv = yesterdayTimeVariables()
+    end
 
-
+    return localtv
 end
