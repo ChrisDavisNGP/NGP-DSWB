@@ -15,10 +15,8 @@ setTable(table)
 # Packages
 include("../../../Lib/Include-Package-v2.1.jl")
 
-# Time values (tv.) structure created in include above, so init time here
+TV = pickTime()
 #TV = timeVariables(2017,1,2,2,30,2017,1,2,2,45);
-TV = yesterdayTimeVariables()
-#TV = weeklyTimeVariables(days=7);
 
 customer = "Nat Geo"
 productPageGroup = "News Article" # primary page group
