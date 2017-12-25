@@ -26,7 +26,12 @@ function UrlParamsInit(nb::ASCIIString)
 
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
-    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",1000,600000,0,0,0,"time",true,"%","%")
+    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,600000,0,0,0,"time",true,"%","%")
+
+    if isdefined(:UpPageGroup)
+        UP.pageGroup = UpPageGroup
+    end
+
     return UP
 end
 
@@ -92,6 +97,11 @@ end
 
 function ShowParamsInit()
     SP = ShowParams(false,true,false,0,1,10,20,150,75)
+
+    if isdefined(:SpDebugLevel)
+        SP.debugLevel = SpDebugLevel
+    end
+
     return SP
 end
 

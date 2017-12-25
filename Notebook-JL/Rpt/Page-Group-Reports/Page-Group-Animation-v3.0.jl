@@ -22,20 +22,16 @@ UP = UrlParamsInit(scriptName)
 UP.agentOs = "%"
 UP.deviceType = "%"
 UP.limitRows = 250
-UP.pageGroup = "News Article"   #productPageGroup
 UP.samplesMin = 10
 UP.sizeMin = 10000
-UP.timeLowerMs = 2000.0
-UP.timeUpperMs = 600000.0
-UP.urlRegEx = "%channel.nationalgeographic.com/genius%"   #localUrl
-UP.urlFull = "http://channel.nationalgeographic.com/genius/"
+#UP.urlRegEx = "%channel.nationalgeographic.com/genius%"   #localUrl
+#UP.urlFull = "http://channel.nationalgeographic.com/genius/"
 UP.usePageLoad=false
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
 SP.criticalPathOnly=true
 SP.devView=false
-SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd number or zero
 SP.showLines = 25
 SP.reportLevel = 2
 ShowParamsValidate(SP)
