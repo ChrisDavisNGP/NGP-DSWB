@@ -219,7 +219,19 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
         localStatsDF = statsTableCreateDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
+
+        if size(localStatsDF,1) == 0
+            println("No data returned")
+            return
+        end
+
         statsDF = basicStats(localStatsDF)
+
+        if size(statsDF,1) == 0
+            println("No statsDF data")
+            return
+        end
+
         medianThreshold = statsDF[1:1,:median][1]
 
         displayTitle(chart_title = "Stats for current view", chart_info = [TV.timeString],showTimeStamp=false)

@@ -280,19 +280,6 @@ end
 
 # From Page Group Details
 
-function statsPGD(TV::TimeVars,UP::UrlParams)
-    try
-        localStatsDF = statsTableCreateDF(UP.btView, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC);
-        statsDF = basicStats(localStatsDF)
-
-        displayTitle(chart_title = "Raw Data Stats $(UP.pageGroup) Based On Beacon Page Load Time", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(statsDF[2:2,:])
-        return statsDF
-    catch y
-        println("statsPGD Exception ",y)
-    end
-end
-
 # From Page Group Details
 
 function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)

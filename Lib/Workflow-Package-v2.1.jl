@@ -177,9 +177,13 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     pageGroupDetailsCreateView(TV,UP,mobileView,desktopView)
     setTable(UP.btView);
 
-    beaconViewStats(TV,UP,SP)
+    statsDF = beaconViewStats(TV,UP,SP)
+    if !isdefined(:statDF)
+        println("No data")
+    end
+    
     medianThreshold = statsDF[1:1,:median][1]
-# delete statsPGD
+
     showPeakTable(TV,UP,SP;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
 
     concurrentSessionsPGD(TV,UP,SP,mobileView,desktopView)
