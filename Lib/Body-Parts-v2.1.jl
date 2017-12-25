@@ -289,7 +289,7 @@ function statsPGD(TV::TimeVars,UP::UrlParams)
         beautifyDF(statsDF[2:2,:])
         return statsDF
     catch y
-        println("setupStats Exception ",y)
+        println("statsPGD Exception ",y)
     end
 end
 

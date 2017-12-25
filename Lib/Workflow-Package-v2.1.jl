@@ -124,7 +124,7 @@ end
 function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
-    
+
     defaultBeaconCreateView(TV,UP,SP)
 
     test1GNGSSDM(UP,SP)
@@ -172,15 +172,14 @@ end
 
 function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
 
+    openingTitle(TV,UP,SP)
+
     pageGroupDetailsCreateView(TV,UP,mobileView,desktopView)
     setTable(UP.btView);
 
-    localStatsDF = DataFrame()
-    statsDF = DataFrame()
-    medianThreshold = 0.0
-    statsDF = statsPGD(TV,UP)
+    beaconViewStats(TV,UP,SP)
     medianThreshold = statsDF[1:1,:median][1]
-
+# delete statsPGD
     showPeakTable(TV,UP,SP;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
 
     concurrentSessionsPGD(TV,UP,SP,mobileView,desktopView)

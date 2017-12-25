@@ -30,7 +30,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,localMobileTable:
         """);
 
     catch y
-        println("pageGroupDetailTables Exception ",y)
+        println("pageGroupDetailsCreateView Exception ",y)
     end
 end
 
