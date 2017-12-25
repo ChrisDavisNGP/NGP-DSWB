@@ -670,7 +670,7 @@ function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
       bigPages4SRFLP(TV,UP,SP,minSizeBytes)
   end
 
-  if (wfShowBigPag5)
+  if (wfShowBigPage5)
       bigPages5SRFLP(TV,UP,SP,minSizeBytes)
   end
 
