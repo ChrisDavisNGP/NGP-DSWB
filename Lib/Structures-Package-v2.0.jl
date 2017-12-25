@@ -123,6 +123,14 @@ function ShowParamsInit()
         SP.showLines = SpShowLines
     end
 
+    if isdefined(:SpDevView)
+        SP.devView = SpDevView
+    end
+
+    if isdefined(:SpReportLevel)
+        SP.reportLevel = SpReportLevel
+    end
+
     return SP
 end
 
