@@ -41,6 +41,8 @@ SP.showLines = 25
 SP.reportLevel = 2
 ShowParamsValidate(SP)
 
+openingTitle(TV,UP,SP)
+
 bt = UP.beaconTable
 rt = UP.resourceTable
 
