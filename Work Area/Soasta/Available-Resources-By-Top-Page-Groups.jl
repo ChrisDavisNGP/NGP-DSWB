@@ -1,19 +1,34 @@
+
 using RT;
+using ODBC
+using DataFrames
+using DSWB
+using Formatting
 
-dsn = "vfdsn";
-bTable = "dillards_beacons";
-rtTable = "$(bTable)_rt";
+dsn = "dswb-natgeo" # Redshift endpoint
+table = "beacons_4744" # beacon table name
+tableRt = "beacons_4744_rt"
 
-connect(Redshift, dsn);
-setRedshiftEndpoint(dsn);
+# Connect to Beacon Data
+setRedshiftEndpoint(dsn)
+setTable(table)
+setTable(tableRt, tableType = "RESOURCE_TABLE")
 
-setTable(bTable);
-setTable(rtTable; tableType=RESOURCE_TABLE);
+include("../../../Lib/Include-Package-v2.1.jl")
 
-startTime = DateTime(2016, 2, 15);
-endTime = DateTime(2016, 2, 15, 23, 59, 59);
-startTimeMs = datetimeToMs(startTime);
-endTimeMs = datetimeToMs(endTime);
+TV = pickTime()
+#TV = timeVariables(2017,10,27,23,59,2017,11,3,23,59)
+
+UP = UrlParamsInit(scriptName)
+UrlParamsValidate(UP)
+
+SP = ShowParamsInit()
+ShowParamsValidate(SP)
+
+#startTime = DateTime(2016, 2, 15);
+#endTime = DateTime(2016, 2, 15, 23, 59, 59);
+#startTimeMs = datetimeToMs(startTime);
+#endTimeMs = datetimeToMs(endTime);
 
 url = "http%://www.dillards.com%";
 conversionMetric = :custom_metrics_0;
