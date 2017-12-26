@@ -45,7 +45,7 @@ function UrlParamsInit(nb::ASCIIString)
     end
 
     if isdefined(:UpResRegEx)
-        UP.resRegEx = UpresRegEx
+        UP.resRegEx = UpResRegEx
     end
 
     if isdefined(:UpUrlFull)
