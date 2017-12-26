@@ -16,6 +16,8 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 # todo SQLFILTER Everywhere and use the view tables where possible
 
+  openingTitle(TV,UP,SP)
+
   defaultBeaconCreateView(TV,UP,SP)
 
   try
@@ -28,7 +30,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
     if (wfShowSessionBeacons)
-          chartConcurrentSessionsAndBeaconsOverTime(TV.startTime, TV.endTime, TV.datePart; table=UP.btView)
+          chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; table=UP.btView)
     end
   catch y
       println("chartConcurrentSessionsAndBeaconsOverTime Exception ",y)
@@ -36,7 +38,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
       if (wfShowChartLoad)
-          chartLoadTimes(TV.startTime, TV.endTime, TV.datePart;table=UP.btView)
+          chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart;table=UP.btView)
       end
   catch y
       println("chartLoadTimes Exception ",y)
@@ -73,11 +75,17 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowPageGroupTreemp)
+      saveUpPageGroup = UP.pageGroup
+      UP.pageGroup = "%"
       pageGroupTreemap(TV,UP,SP)
+      UP.pageGroup = saveUpPageGroup
   end
 
   if (wfShowGroupQuartiles)
+      saveUpPageGroup = UP.pageGroup
+      UP.pageGroup = "%"
       pageGroupQuartiles(TV,UP,SP);
+      UP.pageGroup = saveUpPageGroup
   end
 
   try

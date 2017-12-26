@@ -40,7 +40,7 @@ SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd numb
 ShowParamsValidate(SP)
 
 try
-    chartConcurrentSessionsAndBeaconsOverTime(TV.startTime, TV.endTime, TV.datePart)
+    chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
 catch y
     println("chartConcurrentSessionsAndBeaconsOverTime Exception ",y)
 end
