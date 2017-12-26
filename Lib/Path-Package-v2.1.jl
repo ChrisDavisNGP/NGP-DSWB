@@ -977,7 +977,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
             symbol("Maximum Time");
             symbol("Occurances")
             ]),
-            defaultNumberFormat=(:precision => 0, commas => true)
+            defaultNumberFormat=(:precision => 0, :commas => true)
         )
 
         return summaryTableUrlGroupDF
