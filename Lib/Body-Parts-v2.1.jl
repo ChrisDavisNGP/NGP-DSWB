@@ -728,27 +728,27 @@ function knownPatterns()
     end
 end
 
-function resourceMatched(tableRt::ASCIIString;linesOut::Int64=25)
+function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
 
     try
         joinTables = query("""\
         select
         count(*)
-        from $tableRt
+        from $(UP.resourceTable)
         where
-            "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
-             url ilike '$resourceUrl'
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+             url ilike '$(UP.resRegEx)'
         """);
 
-        displayTitle(chart_title = "Matches For Url Pattern $(resourceUrl)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Matches For Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
-        println("bigTable5 Exception ",y)
+        println("resourceMatched Exception ",y)
     end
 end
 
-function resourceScreen(tableRt::ASCIIString;linesOut::Int64=25)
+function resourceScreen(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
 
     try
         joinTables = query("""\
@@ -760,24 +760,24 @@ function resourceScreen(tableRt::ASCIIString;linesOut::Int64=25)
         x,
         y,
         url
-        from $tableRt
+        from $(UP.resourceTable)
         where
-          url ilike '$resourceUrl' and
-          "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC)
+          url ilike '$(UP.resRegEx)' and
+          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
         group by initiator_type,height,width,x,y,url
         order by count(*) desc
         limit $(linesOut)
         """);
 
-        displayTitle(chart_title = "Screen Details For Resource Pattern $(resourceUrl)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Screen Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
-        println("bigTable5 Exception ",y)
+        println("resourceScreen Exception ",y)
     end
 end
 
-function resourceSize(tableRt::ASCIIString;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25,minEncoded::Int64=1000)
 
     try
         joinTables = query("""\
@@ -787,16 +787,16 @@ function resourceSize(tableRt::ASCIIString;linesOut::Int64=25,minEncoded::Int64=
         transferred_size,
         decoded_size,
         url
-        from $tableRt
+        from $(UP.resourceTable)
         where
-          url ilike '$resourceUrl' and
-          "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
+          url ilike '$(UP.resRegEx)' and
+          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
         encoded_size > $(minEncoded)
         group by encoded_size,transferred_size,decoded_size,url
         order by count(*) desc
         """);
 
-        displayTitle(chart_title = "Size Details For Resource Pattern $(resourceUrl)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Size Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
 
@@ -808,75 +808,215 @@ function resourceSize(tableRt::ASCIIString;linesOut::Int64=25,minEncoded::Int64=
         showLimitedStats(statsDF2,"Transferred Size Stats")
 
     catch y
-        println("bigTable5 Exception ",y)
+        println("resourceSize Exception ",y)
     end
 end
 
-function resourceSummary(tableRt::ASCIIString;linesOut::Int64=25)
+function resourceSummary(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
 
     try
         joinTables = query("""\
         select
         count(*),url
-        from $tableRt
+        from $(UP.resourceTable)
         where
-            "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC) and
-             url ilike '$resourceUrl'
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+             url ilike '$(UP.resRegEx)'
         group by
         url
         order by count(*) desc
         """);
 
-        displayTitle(chart_title = "Resource Pattern $(resourceUrl)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
-        println("bigTable5 Exception ",y)
+        println("resourceSummary Exception ",y)
     end
 end
 
-function resourceSummaryAllFields(tableRt::ASCIIString;linesOut::Int64=25)
+function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
 
     try
         joinTables = query("""\
         select
         *
-        from $tableRt
+        from $(UP.resourceTable)
         where
-          url ilike '$resourceUrl' and
-          "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC)
+          url ilike '$(UP.resRegEx)' and
+          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
         limit $(linesOut)
         """);
 
-        displayTitle(chart_title = "Raw Resource Url Pattern $(resourceUrl)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
-        println("bigTable5 Exception ",y)
+        println("resourceSummaryAllFields Exception ",y)
     end
 end
 
-function resourceSummaryDomainUrl(tableRt::ASCIIString;linesOut::Int64=25)
+function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
 
     try
         joinTables = query("""\
         select
         count(*),
         url,params_u
-        from $tableRt
-        where 
-          url ilike '$resourceUrl' and
-          "timestamp" between $(tv.startTimeMsUTC) and $(tv.endTimeMsUTC)
+        from $(UP.resourceTable)
+        where
+          url ilike '$(UP.resRegEx)' and
+          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
         group by
             url, params_u
         order by count(*) desc
-        limit 25
+        limit $(linesOut)
         """);
 
-        displayTitle(chart_title = "Domain Url For Resource Pattern $(resourceUrl)", chart_info = [tv.timeString], showTimeStamp=false)
+        displayTitle(chart_title = "Domain Url For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
-        println("bigTable5 Exception ",y)
+        println("resourceSummaryDomainUrl Exception ",y)
+    end
+end
+
+function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+
+    try
+        joinTables = query("""\
+        select
+        count(*),
+        avg(start_time) as "Start Time",
+        avg(fetch_start) as "Fetch Start",
+        avg(dns_end-dns_start) as "DNS ms",
+        avg(tcp_connection_end-tcp_connection_start) as "TCP ms",
+        avg(request_start) as "Req Start",
+        avg(response_first_byte) as "Req FB",
+        avg(response_last_byte) as "Req LB",
+        max(response_last_byte) as "Max Req LB",
+        url,
+        avg(redirect_start) as "Redirect Start",
+        avg(redirect_end) as "Redirect End",
+        avg(secure_connection_start) as "Secure Conn Start"
+        from $(UP.resourceTable)
+        where
+          url ilike '$(UP.resRegEx)' and
+          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+        group by url
+        order by count(*) desc
+        """);
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        beautifyDF(joinTables[1:min(linesOut,end),:])
+    catch y
+        println("resourceTime1 Exception ",y)
+    end
+end
+
+function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+
+    try
+        timeTable = query("""\
+        select
+        (response_last_byte-start_time) as "Time Taken",
+        (start_time) as "Start Time",
+        (fetch_start) as "Fetch Start",
+        (dns_end-dns_start) as "DNS ms",
+        (tcp_connection_end-tcp_connection_start) as "TCP ms",
+        (request_start) as "Req Start",
+        (response_first_byte) as "Req FB",
+        (response_last_byte) as "Req LB",
+        url,
+        (redirect_start) as "Redirect Start",
+        (redirect_end) as "Redirect End",
+        (secure_connection_start) as "Secure Conn Start"
+        from $(UP.resourceTable)
+        where
+          url ilike '$(UP.resRegEx)' and
+        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+        (response_last_byte-start_time) > 75 and (response_last_byte-start_time) < 10000
+        order by "Time Taken" desc
+        """);
+
+        #todo remove negitives
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        beautifyDF(timeTable[1:min(linesOut,end),:])
+
+        timeTable = names!(timeTable[:,:],
+        [symbol("taken"),symbol("start"),symbol("fetch"),symbol("dns"),symbol("tcp"),symbol("req_start"),symbol("req_fb"),symbol("req_lb"),symbol("url")
+            ,symbol("redirect_start"),symbol("redirect_end"),symbol("secure_conn_start")])
+
+        dv1 = timeTable[:taken]
+        statsDF1 = limitedStatsFromDV(dv1)
+        showLimitedStats(TV,statsDF1,"Time Taken Stats")
+
+        dv2 = timeTable[:dns]
+        statsDF2 = limitedStatsFromDV(dv2)
+        showLimitedStats(TV,statsDF2,"DNS Stats")
+
+        dv3 = timeTable[:tcp]
+        statsDF3 = limitedStatsFromDV(dv3)
+        showLimitedStats(TV,statsDF3,"TCP Stats")
+
+        dv4 = timeTable[:start]
+        statsDF4 = limitedStatsFromDV(dv4)
+        showLimitedStats(TV,statsDF4,"Start Time On Page Stats")
+
+        dv5 = timeTable[:fetch]
+        statsDF5 = limitedStatsFromDV(dv5)
+        showLimitedStats(TV,statsDF5,"Fetching Request Stats")
+
+        dv6 = timeTable[:req_start]
+        statsDF6 = limitedStatsFromDV(dv6)
+        showLimitedStats(TV,statsDF6,"Request Start Stats")
+
+        dv7 = timeTable[:req_fb]
+        statsDF7 = limitedStatsFromDV(dv7)
+        showLimitedStats(TV,statsDF7,"Request First Byte Stats")
+
+        dv8 = timeTable[:req_lb]
+        statsDF8 = limitedStatsFromDV(dv8)
+        showLimitedStats(TV,statsDF8,"Request Last Byte Stats")
+
+
+
+
+    catch y
+        println("resourceTime2 Exception ",y)
+    end
+end
+
+function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+
+    try
+        joinTables = query("""\
+        select
+        (response_last_byte-start_time) as "Time Taken",
+        (start_time) as "Start Time",
+        (fetch_start) as "Fetch S",
+        (dns_end-dns_start) as "DNS ms",
+        (tcp_connection_end-tcp_connection_start) as "TCP ms",
+        (request_start) as "Req S",
+        (response_first_byte) as "Req FB",
+        (response_last_byte) as "Req LB",
+        url, params_u,
+        (redirect_start) as "Redirect S",
+        (redirect_end) as "Redirect E",
+        (secure_connection_start) as "Secure Conn S"
+        from $(UP.resourceTable)
+        where
+          url ilike '$(UP.resRegEx)' and
+        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+        start_time > 10000
+        order by start_time desc
+        limit 25
+        """);
+
+        displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        beautifyDF(joinTables[1:min(linesOut,end),:])
+    catch y
+        println("resourceTime3 Exception ",y)
     end
 end
