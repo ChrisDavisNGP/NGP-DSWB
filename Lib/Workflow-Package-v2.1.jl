@@ -67,29 +67,23 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   try
-      if (wfShowDeviceTypeTreemap)
+      if (wfShowDeviceTypeTreemap) && deviceType != "%"
           deviceTypeTreemap(TV,UP,SP)
       end
   catch y
     println("deviceTypeTreemap Exception ",y)
   end
 
-  if (wfShowPageGroupTreemp)
-      saveUpPageGroup = UP.pageGroup
-      UP.pageGroup = "%"
+  if (wfShowPageGroupTreemp) && UP.pageGroup == "%"
       pageGroupTreemap(TV,UP,SP)
-      UP.pageGroup = saveUpPageGroup
   end
 
-  if (wfShowGroupQuartiles)
-      saveUpPageGroup = UP.pageGroup
-      UP.pageGroup = "%"
+  if (wfShowGroupQuartiles) && UP.pageGroup == "%"
       pageGroupQuartiles(TV,UP,SP);
-      UP.pageGroup = saveUpPageGroup
   end
 
   try
-      if (wfShowActvitityImpact)
+      if (wfShowActvitityImpact) && UP.pageGroup == "%"
           chartActivityImpactByPageGroup(TV.startTime, TV.endTime;n=10,table=UP.btView);
       end
   catch y
