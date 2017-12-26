@@ -18,8 +18,8 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       saveTimeUpperMs = UP.timeUpperMs
 
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
-      UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
+      UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.75)
+      UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.25)
 
       criticalPathStreamline(TV,UP,SP,localTableDF)
 
@@ -976,7 +976,8 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
             symbol("Total Time");
             symbol("Maximum Time");
             symbol("Occurances")
-            ])
+            ]),
+            defaultNumberFormat=(:precision => 0, commas => true)
         )
 
         return summaryTableUrlGroupDF

@@ -524,6 +524,7 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
         fieldNames = [:urlgroup]
         treeDF[:label] = "Critical Path Summary"
         drawTree(treeDF; titleCol=:label, fieldNames=fieldNames,resourceColors=true)
+        #drawTreev2(treeDF,treeDF[:label],10)
 
         if (SP.devView)
             list = DataFrame()
