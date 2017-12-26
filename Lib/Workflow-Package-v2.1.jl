@@ -20,6 +20,8 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   defaultBeaconCreateView(TV,UP,SP)
 
+  setTable(UP.btView)
+
   try
     if (wfShowPeakTable)
         showPeakTable(TV,UP,SP;showStartTime30=true,showStartTime90=false,tableRange="Daily ")
