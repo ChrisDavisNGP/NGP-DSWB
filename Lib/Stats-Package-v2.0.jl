@@ -340,8 +340,7 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams)
             endTimeMs = datetimeToMs(endTime)
 
             localStatsDF = query("""\
-                select
-                    timers_t_done
+                select timers_t_done
                 from $(UP.beaconTable)
                 where
                     page_group ilike '$(UP.pageGroup)' and
@@ -454,8 +453,7 @@ function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
         UpperBy25p = statsDF[1:1,:UpperBy25p][1]
 
         localStats2 = query("""\
-            select
-                "timestamp", timers_t_done, session_id
+            select "timestamp", timers_t_done, session_id
             from $(UP.btView) where
                 page_group ilike '$(UP.pageGroup)' and
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and

@@ -41,8 +41,7 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
           if (SP.debugLevel > 8)
               debugTableDF = query("""\
-              select
-                  *
+              select *
               FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
                   where
                   $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
@@ -483,9 +482,7 @@ end
 function cleanupTableFTWP(TV::TimeVars,UP::UrlParams)
 
     CleanupTable = query("""\
-        select
-            page_group,
-            count(*) as "Page Views"
+        select page_group, count(*) as "Page Views"
         FROM $(UP.beaconTable)
         where
             beacon_type = 'page view'
@@ -732,8 +729,7 @@ function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int
 
     try
         joinTables = query("""\
-        select
-        count(*)
+        select count(*)
         from $(UP.resourceTable)
         where
             "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -816,8 +812,7 @@ function resourceSummary(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int
 
     try
         joinTables = query("""\
-        select
-        count(*),url
+        select count(*),url
         from $(UP.resourceTable)
         where
             "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -839,8 +834,7 @@ function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams;line
 
     try
         joinTables = query("""\
-        select
-        *
+        select *
         from $(UP.resourceTable)
         where
           url ilike '$(UP.resRegEx)' and

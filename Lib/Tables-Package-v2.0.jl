@@ -245,8 +245,7 @@ function testUserAgentGNGSSDM(UP::UrlParams,SP::ShowParams)
 
     try
         CleanupTable = query("""\
-            select
-                count(*),user_agent_raw
+            select count(*),user_agent_raw
             FROM $(UP.btView)
             where
                 beacon_type = 'page view'
@@ -266,8 +265,7 @@ function test2GNGSSDM(UP::UrlParams,SP::ShowParams)
 
     try
         CleanupTable = query("""\
-            select
-                count(*), URL, params_u
+            select count(*), URL, params_u
             FROM $(UP.btView)
             where
                 beacon_type = 'page view'
@@ -422,8 +420,7 @@ function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         btv = UP.btView
 
         topurl = query("""\
-            select
-                count(*),params_u
+            select count(*),params_u
             FROM $(btv)
             where
                 beacon_type = 'page view'
@@ -928,8 +925,7 @@ function displayMatchingResourcesByParentUrl(TV::TimeVars,UP::UrlParams,SP::Show
         rt = UP.resourceTable
 
         joinTablesDF = query("""\
-            select
-                count(*), params_u as parenturl
+            select count(*), params_u as parenturl
             from $rt
             where
                 params_u ilike '$(UP.resRegEx)' and
@@ -959,8 +955,7 @@ function displayMatchingResourcesByUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams
         rt = UP.resourceTable
 
         joinTablesDF = query("""\
-            select
-                count(*), url
+            select count(*), url
             from $rt
             where
                 url ilike '$(UP.resRegEx)' and
@@ -991,8 +986,7 @@ function displayMatchingResourcesByUrls(TV::TimeVars,UP::UrlParams,SP::ShowParam
         rt = UP.resourceTable
 
         joinTablesDF = query("""\
-            select
-                count(*), $rt.params_u as parenturl, $rt.url
+            select count(*), $rt.params_u as parenturl, $rt.url
             from $btw join $rt
                 on $btw.session_id = $rt.session_id and $btw."timestamp" = $rt."timestamp"
             where
@@ -1022,8 +1016,7 @@ function displayMatchingResourcesAllFields(TV::TimeVars,UP::UrlParams,SP::ShowPa
         rt = UP.resourceTable
 
         joinTablesDF = query("""\
-            select
-                *
+            select *
             from $rt
             where
               url ilike '$(UP.resRegEx)' and
@@ -1096,8 +1089,7 @@ function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit:
             if (SP.debugLevel > 4)
                 dbgtopurl = query("""\
 
-                select
-                    *
+                select *
                 FROM $(ltName)
                 where
                     beacon_type = 'page view'
