@@ -14,7 +14,7 @@ setRedshiftEndpoint(dsn)
 setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 
-include("../../../Lib/Include-Package-v2.1.jl")
+include("../../Lib/Include-Package-v2.1.jl")
 
 TV = pickTime()
 #TV = timeVariables(2017,10,27,23,59,2017,11,3,23,59)
@@ -30,21 +30,22 @@ ShowParamsValidate(SP)
 #startTimeMs = datetimeToMs(startTime);
 #endTimeMs = datetimeToMs(endTime);
 
-url = "http%://www.dillards.com%";
+url = "%www.nationalgeographic.com%";
 conversionMetric = :custom_metrics_0;
-pageGroup = "Category";
+pageGroup = "Nat Geo Homepage";
 os = "iOS";
 defaultCutOff = 98;
 
-dropTables("officedepot_beacons_rt_first_party_summary", "officedepot_beacons_rt_summary",
-    "officedepot_beacons_rt_summary_first_pg", "officedepot_beacons_rt_summary_pg", "officedepot_beacons_rt_summary_third_pg",
-    "officedepot_beacons_rt_third_party_summary")
+#dropTables("officedepot_beacons_rt_first_party_summary", "officedepot_beacons_rt_summary",
+#    "officedepot_beacons_rt_summary_first_pg", "officedepot_beacons_rt_summary_pg", "officedepot_beacons_rt_summary_third_pg",
+#    "officedepot_beacons_rt_third_party_summary")
 
-dropTables( "temp_full_sum",
-"temp_full_sum_first",
-"temp_full_sum_third" )
+#dropTables( "temp_full_sum",
+#"temp_full_sum_first",
+#"temp_full_sum_third" )
 
-showPercentage(url, startTime, endTime; pageGroup = pageGroup)
+#todo find showpercentage
+showPercentage(url, TV.startTime, TV.endTime; pageGroup = pageGroup)
 
 showPercentage(url, startTime, endTime; pageGroup = pageGroup, browser = "Mobile Safari")
 
