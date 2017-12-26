@@ -67,7 +67,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   try
-      if (wfShowDeviceTypeTreemap) && deviceType != "%"
+      if (wfShowDeviceTypeTreemap) && UP.deviceType == "%"
           deviceTypeTreemap(TV,UP,SP)
       end
   catch y
@@ -92,7 +92,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
       if (wfShowAggSession)
-          perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTime, TV.endTime; table=UP.btView);
+          perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; table=UP.btView);
 
           c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
               "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Session Load for All Pages", y2Data=["data2"], vizTypes=["area","line"]);
