@@ -41,8 +41,8 @@ showAvailableSessions(TV,UP,SP,localTableDF,localTableRtDF)
 # Individual pages uses the numbers above make the best tree maps
 
 # Test 1
-studySession = "07c49d94-2cb4-4af8-8115-9a245e3b317e-p032id"
-studyTime =  1511797648155;
+studySession = gStudySession
+studyTime =  gStudyTime
 
 # Group pages work but obscure gaps and critical path
 # Test 2
@@ -59,6 +59,11 @@ if studyTime > 0 && SP.reportLevel > 0
 end
 
 toppageurl = findTopPageUrlUPT(TV,UP,SP,studySession,studyTime)
+
+if size(toppageurl,1) == 0
+    println("No data found")
+    return
+end
 
 findTopPageViewUPT(TV,UP,SP)
 
