@@ -1,6 +1,10 @@
 function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-  wfShowPeakTable = true
+#  if isdefined(:gWfShowPeakTable)
+#        wfShowPeakTable = gWfShowPeakTable
+#  else
+      wfShowPeakTable = true
+#  end
   wfShowSessionBeacons = true
   wfShowChartLoad = true
   wfShowTopUrls = true
