@@ -272,6 +272,7 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if UP.useJson
       urlListDF = newPagesList()
+      finalListToUseDV = urlListDF[:urlgroup]
   else
       urlListDF = returnMatchingUrlTableV2(TV,UP)
   end
@@ -280,25 +281,23 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       beautifyDF(urlListDF[1:min(10,end),:])
   end
 
-  if UP.useJson
-      # Use the list straight from json
-      finalUrlTableOutput(TV,UP,SP,topUrlList)
-  else
+  if !UP.useJson
       # Clean up the list before using
       newListDF = urlListDF[Bool[x > UP.samplesMin for x in urlListDF[:cnt]],:]
       topUrlListDV = newListDF[:urlgroup]
-      topUrlsDV = cleanupTopUrlTable(topUrlListDV)
+      finalListToUseDV = cleanupTopUrlTable(topUrlListDV)
 
       if (SP.debugLevel > 4)
           println("Started with ",size(urlListDF,1), " Trimmed down to ",size(newListDF,1), " due to $(UP.samplesMin) limit")
           println("Final DV size is ",size(topUrlsDV,1))
           if (SP.debugLevel > 8)
-              println(topUrlsDV)
+              println(finalListToUseDV)
           end
       end
 
-      finalUrlTableOutput(TV,UP,SP,topUrlsDV)
   end
+
+  finalUrlTableOutput(TV,UP,SP,finalListToUseDV)
 
 end
 

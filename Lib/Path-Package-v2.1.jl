@@ -661,25 +661,29 @@ end
 function newPagesList()
   try
 
-  jList = JSON.parse(theList)
-
-  dataArray = get(jList,"data","none")
-  urlListDF = DataFrame()
-  urlListDF[:urlgroup] = [""]
-
-  if (dataArray != "none")
-
-      for dataDict in dataArray
-          attribDict = get(dataDict,"attributes","none")
-          urlValue = get(attribDict,"uri","none")
-          #typeof(urlValue)
-          #println(urlValue)
-
-          push!(urlListDF,[urlValue])
+      if !isdefined(:theList)
+          #theList = loadDistributionJsonFile()
       end
-  end
-  deleterows!(urlListDF,1)
-  return urlListDF
+
+      jList = JSON.parse(theList)
+
+      dataArray = get(jList,"data","none")
+      urlListDF = DataFrame()
+      urlListDF[:urlgroup] = [""]
+
+      if (dataArray != "none")
+
+          for dataDict in dataArray
+              attribDict = get(dataDict,"attributes","none")
+              urlValue = get(attribDict,"uri","none")
+              #typeof(urlValue)
+              #println(urlValue)
+
+              push!(urlListDF,[urlValue])
+          end
+      end
+      deleterows!(urlListDF,1)
+      return urlListDF
 
   catch y
       println("newPagesList Exception",y)
