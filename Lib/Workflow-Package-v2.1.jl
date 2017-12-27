@@ -270,24 +270,35 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  urlListDF = returnMatchingUrlTableV2(TV,UP)
+  if UP.useJson
+      urlListDF = newPagesList()
+  else
+      urlListDF = returnMatchingUrlTableV2(TV,UP)
+  end
+
   if (SP.debugLevel > 4)
       beautifyDF(urlListDF[1:min(10,end),:])
   end
 
-  newListDF = urlListDF[Bool[x > UP.samplesMin for x in urlListDF[:cnt]],:]
-  topUrlListDV = newListDF[:urlgroup]
-  topUrlsDV = cleanupTopUrlTable(topUrlListDV)
+  if UP.useJson
+      # Use the list straight from json
+      finalUrlTableOutput(TV,UP,SP,topUrlList)
+  else
+      # Clean up the list before using
+      newListDF = urlListDF[Bool[x > UP.samplesMin for x in urlListDF[:cnt]],:]
+      topUrlListDV = newListDF[:urlgroup]
+      topUrlsDV = cleanupTopUrlTable(topUrlListDV)
 
-  if (SP.debugLevel > 4)
-      println("Started with ",size(urlListDF,1), " Trimmed down to ",size(newListDF,1), " due to $(UP.samplesMin) limit")
-      println("Final DV size is ",size(topUrlsDV,1))
-      if (SP.debugLevel > 8)
-          println(topUrlsDV)
+      if (SP.debugLevel > 4)
+          println("Started with ",size(urlListDF,1), " Trimmed down to ",size(newListDF,1), " due to $(UP.samplesMin) limit")
+          println("Final DV size is ",size(topUrlsDV,1))
+          if (SP.debugLevel > 8)
+              println(topUrlsDV)
+          end
       end
-  end
 
-  finalUrlTableOutput(TV,UP,SP,topUrlsDV)
+      finalUrlTableOutput(TV,UP,SP,topUrlsDV)
+  end
 
 end
 
