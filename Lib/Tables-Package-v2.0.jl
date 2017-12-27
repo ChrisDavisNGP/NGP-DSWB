@@ -1160,3 +1160,33 @@ function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit:
     end
 
 end
+
+function detailsPrint(localTable::ASCIIString,tableRt::ASCIIString,joinTableSummary::DataFrame,row::Int64)
+    try
+        topSessionId = joinTableSummary[row:row,:session_id][1]
+        topTimeStamp = joinTableSummary[row:row,:timestamp][1]
+        topTitle = joinTableSummary[row:row,:urlgroup][1]
+
+        joinTablesDetails = query("""\
+        select
+        $tableRt.start_time,
+        $tableRt.encoded_size,
+        $tableRt.transferred_size,
+        $tableRt.decoded_size,
+        $tableRt.url as urlgroup
+        from $localTable join $tableRt
+        on $localTable.session_id = $tableRt.session_id and $localTable."timestamp" = $tableRt."timestamp"
+        where
+        $localTable.session_id = '$(topSessionId)' and
+        $localTable."timestamp" = $(topTimeStamp) and
+        $tableRt.encoded_size > 1000000
+        order by $tableRt.start_time
+        """);
+
+        displayTitle(chart_title = "Large Requests for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
+        scrubUrlToPrint(SP,joinTablesDetails,:urlgroup)
+        beautifyDF(joinTablesDetails[1:end,:])
+    catch y
+        println("bigTable5 Exception ",y)
+    end
+end
