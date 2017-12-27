@@ -62,7 +62,7 @@ try
     limit 25
     """);
 
-    beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views");symbol("Avg Size");symbol("Avg Load Time (sec)");symbol("URL Group")]))
+    beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views");Symbol("Avg Size");Symbol("Avg Load Time (sec)");Symbol("URL Group")]))
 
     fieldNames = [:urlgroup]
     domSize[:x1] = "URLs Total Size"
@@ -89,8 +89,8 @@ try
     limit 25
     """);
 
-    #display(names!(domSize[1:end,[1:4]],[symbol("Page Views"),symbol("Total Size"),symbol("Avg Load Time(sec)"),symbol("URL Group")]))
-    beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views");symbol("Total Size");symbol("Avg Load Time (sec)");symbol("URL Group")]))
+    #display(names!(domSize[1:end,[1:4]],[Symbol("Page Views"),Symbol("Total Size"),Symbol("Avg Load Time(sec)"),Symbol("URL Group")]))
+    beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views");Symbol("Total Size");Symbol("Avg Load Time (sec)");Symbol("URL Group")]))
     #display(domSize[1:end,:])
 
     fieldNames = [:urlgroup]
@@ -118,7 +118,7 @@ try
     order by avgsize desc
     limit 25
     """);
-    beautifyDF(names!(domSize[1:end,[1:3]],[symbol("Views"),symbol("Avg Domains"),symbol("URL Group")]))
+    beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Avg Domains"),Symbol("URL Group")]))
 catch y
     println("uniqueDomainsUsed Exception ",y)
 end
@@ -138,7 +138,7 @@ end
 #order by cnt desc
 #limit 15
 #""");
-#beautifyDF(names!(domSize[1:end,[1:3]],[symbol("Views"),symbol("Total Domains"),symbol("URL Group")]))
+#beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Total Domains"),Symbol("URL Group")]))
 
 try
     displayTitle(chart_title = "Domains Nodes On Page (20k min)", chart_info = [timeString], showTimeStamp=false)
@@ -159,7 +159,7 @@ try
     limit 25
     """);
 
-    beautifyDF(names!(domSize[1:end,[1:3]],[symbol("Views"),symbol("Avg Nodes"),symbol("URL Group")]))
+    beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Avg Nodes"),Symbol("URL Group")]))
 catch y
     println("domainNodesOnPage Exception ",y)
 end
@@ -175,7 +175,7 @@ end
 #order by avgsize desc
 #limit 25
 #""");
-#beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views"),symbol("Avg Resources"),symbol("Page Group"),symbol("URL")]))
+#beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
 
 #displayTitle(chart_title = "Frequent High Resource in RT", chart_info = [timeString], showTimeStamp=false)
 
@@ -188,7 +188,7 @@ end
 #order by cnt desc
 #limit 25
 #""");
-#beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views"),symbol("Avg Resources"),symbol("Page Group"),symbol("URL")]))
+#beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
 
 try
     displayTitle(chart_title = "Domains Images", chart_info = [timeString], showTimeStamp=false)
@@ -208,7 +208,7 @@ try
     order by avgsize desc
     limit 25
     """);
-    beautifyDF(names!(domSize[:,[1:4]],[symbol("Views"),symbol("Avg Images"),symbol("Avg Images External"),symbol("URL Group")]))
+    beautifyDF(names!(domSize[:,[1:4]],[Symbol("Views"),Symbol("Avg Images"),Symbol("Avg Images External"),Symbol("URL Group")]))
 catch y
     println("domainsImages Exception ",y)
 end
@@ -231,7 +231,7 @@ try
     order by CNT desc
     limit 25
     """);
-    beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views"),symbol("Sum Images"),symbol("Sum Images External"),symbol("URL Group")]))
+    beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Sum Images"),Symbol("Sum Images External"),Symbol("URL Group")]))
 catch y
     println("frequentlyUsedImages Exception ",y)
 end
@@ -257,7 +257,7 @@ try
     order by avgsize desc
     limit 25
     """);
-    beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views"),symbol("Avg Scripts"),symbol("Avg Scripts External"),symbol("URL Group")]))
+    beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Scripts"),Symbol("Avg Scripts External"),Symbol("URL Group")]))
 catch y
     println("domainScripts Exception ",y)
 end
@@ -283,7 +283,7 @@ try
     order by cnt desc
     limit 25
     """);
-    beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views"),symbol("Total Scripts"),symbol("Total Scripts External"),symbol("URL Group")]))
+    beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Total Scripts"),Symbol("Total Scripts External"),Symbol("URL Group")]))
 catch y
     println("frequentlyUsedScripts Exception ",y)
 end
@@ -310,7 +310,7 @@ try
     limit 250
     """);
 
-    #beautifyDF(names!(domSize[1:end,[1:4]],[symbol("Views"),symbol("Avg Size"),symbol("Avg Load Time (sec)"),symbol("URL Group")]))
+    #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Size"),Symbol("Avg Load Time (sec)"),Symbol("URL Group")]))
     sizeof(sizeTrend[1:end,:])
 catch y
     println("setupSizeTrend Exception ",y)
