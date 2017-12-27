@@ -9,7 +9,7 @@ function generateDimensionMatrix(cols::Array{Symbol, 1}, dims::Int64; constraint
     for i in 2:dims
         append!(dimcols, collect(combinations(cols, i)))
     end
-    
+
     filter!(function (dimcol)
             for constraint in constraints
                 # If the constraint key is in, but its prerequisites are not, then drop it
@@ -17,9 +17,9 @@ function generateDimensionMatrix(cols::Array{Symbol, 1}, dims::Int64; constraint
                     return false
                 end
             end
-            return true            
+            return true
         end, dimcols)
-         
+
     return dimcols
 end
 
@@ -34,19 +34,19 @@ end
 
 function getBestGrouping(results::DataFrame, summary::DataFrame; showProgress=true)
     minspread = summary[summary[:spread] .== minimum(summary[:spread]), :]
-    
+
     if showProgress
         newProgress(initial="Best group dimension(s): $(minspread[1, :name]) with $(minspread[1, :n]) groups")
     end
-    
+
     minspreadnames = map(x -> convert(Symbol, x), split(minspread[1, :name], ','))
-    
-    if minspreadnames[1] == symbol("")
+
+    if minspreadnames[1] == Symbol("")
         r = getGroupSummary(results)
     else
         r = by(results, minspreadnames, getGroupSummary)
     end
-    
+
     return sort!(r, cols = (order(:n, rev=true), :median))
 end
 
@@ -74,8 +74,8 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
     nodes = 0
     scripts = 0
     images = 0
-    
-    try        
+
+    try
         fw  = (summary.q75-summary.q25)*1.5
         p2  = percentile(df[:timers_t_done], 2)
         p98 = percentile(df[:timers_t_done], 98)
@@ -87,7 +87,7 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
     catch y
         println("Exceptn 2a ",y);
     end
-    
+
     try
         wh2 = min(summary.max, summary.q75+fw)
     catch y
@@ -96,9 +96,9 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
 
     spread = p98/p2 * wh2/wh1
     n = size(df, 1)
-   
+
     try
-        median = round(Int64, summary.median)        
+        median = round(Int64, summary.median)
     catch y
         println("Exceptn 3a ",y);
     end
@@ -178,7 +178,7 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
         images = 0
     end
     try
-        
+
     f = DataFrame(
         n = n,
         median = median,
@@ -197,24 +197,24 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
         scripts = scripts,
         images = images
     )
-        
+
     cols = names(df)
     cols = cols[Bool[!ismatch(r"^(params_dom_|timers_)", string(x)) for x in cols]]
 
     for col in cols
         local nc = size(unique(df[col]), 1)
-        
+
         if nc > 1
             f[col] = nc
         end
     end
-        
+
     return f
 
     catch y
         println("Exceptn 6 ",y);
     end
-    
+
 end
 
 function getLatestResults(;table_name::ASCIIString="beacons_4744", hours::Int64=3, minutes::Int64=0)
@@ -222,46 +222,46 @@ function getLatestResults(;table_name::ASCIIString="beacons_4744", hours::Int64=
     timestamp_range = query("SELECT min(timestamp) as min, max(timestamp) as max FROM $(table_name)")
 
     timelimit = timestamp_range[1, 2] - (hours*60 + minutes) * 60 * 1000;
-    
+
     query("
-        SELECT 
+        SELECT
             page_group, params_u,
-            geo_cc, geo_rg, geo_city, geo_org, geo_netspeed, 
+            geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
             user_agent_family, user_agent_major, user_agent_os, user_agent_osversion, user_agent_model,
-            params_dom_sz, params_dom_ln, params_dom_script, params_dom_img, 
+            params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
             timers_t_done
           FROM $(table_name)
          WHERE page_group IS NOT NULL
            AND (params_rt_quit IS NULL)
            AND timers_t_done IS NOT NULL
            AND timers_t_done BETWEEN 0 AND 600000
-           AND timestamp > $(timelimit) 
+           AND timestamp > $(timelimit)
     ")
 #           AND (params_rt_quit IS NULL OR params_rt_quit = FALSE)
 end
 
 function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=false, progressID::ASCIIString="")
-    
+
     #showProgress = false
-    
+
     if showProgress
         if progressID == ""
             newProgress()
         end
         updateProgress("Starting...")
     end
-    
+
     totalresults = size(results, 1)
-    
+
     cols = names(results)
-    
+
     cols = cols[Bool[!ismatch(r"^(params_dom_|timers_)", string(x)) for x in cols]]
-    
+
     groups = Array(DataFrame, 0)
     groupsummary = DataFrame(name = ASCIIString[], spread = Float64[], n = Int64[], p = Float64[], count = Int64[])
-    
+
     grouped = getGroupSummary(results)
-    
+
     push!(groupsummary, ["", grouped[1, :spread], grouped[1, :n], grouped[1, :spread]/grouped[1, :n], 1])
 
     cols = generateDimensionMatrix(cols, dims, constraints = Dict(
@@ -271,13 +271,13 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
         (:user_agent_osversion => :user_agent_os)
         )
     )
-    
+
     if showProgress
         updateProgress("Trying $(size(cols, 1)) dimension combinations...")
     end
 
     blacklisteddims = [:geo_netspeed,:user_agent_os,:geo_cc,:user_agent_family]
-        
+
     for (index, colnames) in enumerate(cols)
 
         if showProgress
@@ -304,21 +304,21 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
         grouped = by(results, colnames, getGroupSummary)
 
         gsizebefore = size(grouped, 1)
-        
+
         for colname in colnames
             grouped = grouped[!isna(grouped[colname]), :]
         end
-        
+
         grouped = grouped[grouped[:n] .> 1, :]
-        
+
         gsize = size(grouped, 1)
-        
+
         # If more than 20% of this group's elements were eliminated for being too small or null,
         # Then ignore this group
         if gsize < gsizebefore * 0.8
             continue
         end
-        
+
         if gsize > 1
             if showProgress
                 updateProgress("Found candidate: $(index)/$(size(cols, 1))")
@@ -358,12 +358,10 @@ function newProgress(;initial::ASCIIString="")
             }
         }
     """)
-    
+
     return displayid
 end
 
 function updateProgress(text::ASCIIString)
     display("text/html", """<script>groupResultsProgress("$text");</script>""")
 end
-
-

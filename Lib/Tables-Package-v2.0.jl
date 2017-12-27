@@ -408,7 +408,7 @@ function topPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """);
 
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Url - With Grouping After Parameters Dropped")]))
+        beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
     catch y
         println("setupLocalTable Exception ",y)
     end
@@ -430,7 +430,7 @@ function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """)
 
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString,"URL: $(UP.urlRegEx)"])
-        beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Url - With Grouping After Parameters Dropped")]))
+        beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
     catch y
         println("setupLocalTable Exception ",y)
     end
@@ -478,7 +478,7 @@ function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         """);
 
         scrubUrlToPrint(SP,bigPagesDF,:urlgroup)
-        beautifyDF(names!(bigPagesDF[1:min(SP.showLines,end),:],[symbol("Size");symbol("Load Time (ms)");symbol("URL")]))
+        beautifyDF(names!(bigPagesDF[1:min(SP.showLines,end),:],[Symbol("Size");Symbol("Load Time (ms)");Symbol("URL")]))
     catch y
         println("bigPages2SRFLP Exception ",y)
     end
@@ -506,7 +506,7 @@ function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         """);
 
         scrubUrlToPrint(SP,bigAveragePagesDF,:urlgroup)
-        beautifyDF(names!(bigAveragePagesDF[1:min(SP.showLines,end),:],[symbol("Count");symbol("Size");symbol("Load Time (ms)");symbol("URL")]))
+        beautifyDF(names!(bigAveragePagesDF[1:min(SP.showLines,end),:],[Symbol("Count");Symbol("Size");Symbol("Load Time (ms)");Symbol("URL")]))
     catch y
         println("bigPages3SRFLP Exception ",y)
     end
@@ -534,7 +534,7 @@ function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         """);
 
         scrubUrlToPrint(SP,bigPagesSessionsDF,:urlgroup)
-        beautifyDF(names!(bigPagesSessionsDF[1:min(end,SP.showLines),:],[symbol("Size");symbol("Session ID");symbol("Timestamp");symbol("URL")]))
+        beautifyDF(names!(bigPagesSessionsDF[1:min(end,SP.showLines),:],[Symbol("Size");Symbol("Session ID");Symbol("Timestamp");Symbol("URL")]))
     catch y
         println("bigPages4SRFLP Exception ",y)
     end
@@ -564,7 +564,7 @@ function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         """);
 
         displayTitle(chart_title = "Big Pages With Timestamp (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
-        beautifyDF(names!(joinTablesDF[1:min(end,SP.showLines),:],[symbol("Page Views");symbol("Size");symbol("Session ID");symbol("TimeStamp")]))
+        beautifyDF(names!(joinTablesDF[1:min(end,SP.showLines),:],[Symbol("Page Views");Symbol("Size");Symbol("Session ID");Symbol("TimeStamp")]))
 
     catch y
         println("bigPages5SRFLP Exception ",y)
@@ -846,7 +846,7 @@ function cacheHitRatioSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
     end
 
     displayTitle(chart_title = "$(typeStr): Cache Hit Ratio By URL Groups Across All Sessions", chart_info = [TV.timeString], showTimeStamp=false)
-    beautifyDF(names!(ratio[1:min(30, end),[1:4;]],[symbol("Url Group"), symbol("Not Cached Cnt"), symbol("Cached Cnt"), symbol("Cached Ratio")]))
+    beautifyDF(names!(ratio[1:min(30, end),[1:4;]],[Symbol("Url Group"), Symbol("Not Cached Cnt"), Symbol("Cached Cnt"), Symbol("Cached Ratio")]))
 end
 
 function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
@@ -1129,7 +1129,7 @@ function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit:
             #println(nrow(topurl))
 
             newDF = topurl[Bool[x > beaconsLimit for x in topurl[:count]],:]
-            printDF = names!(newDF[:,:],[symbol("Views"),symbol("Url - $(UP.pageGroup)")])
+            printDF = names!(newDF[:,:],[Symbol("Views"),Symbol("Url - $(UP.pageGroup)")])
 
             #beautifyDF(printDF)
 

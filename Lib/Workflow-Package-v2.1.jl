@@ -347,8 +347,9 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   wfClearViews = true
 
   defaultBeaconCreateView(TV,UP,SP)
-
   defaultResourceView(TV,UP)
+
+  setTable(UP.btView)
 
   if (wfShowSessions)
     #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup)", chart_info = [TV.timeString])

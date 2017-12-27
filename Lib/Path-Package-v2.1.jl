@@ -336,9 +336,9 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       toppageurl = names!(toppageurl[:,:],
-      [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-          symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-          symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+      [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+          Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+          Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")]);
 
       if (!suitableTest(UP,SP,toppageurl))
           if (SP.debugLevel > 4)
@@ -407,9 +407,9 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       toppageurl = names!(toppageurl[:,:],
-      [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-          symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-          symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+      [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+          Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+          Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")]);
 
       if (!suitableTest(UP,SP,toppageurl))
           return false
@@ -491,9 +491,9 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
       # Start OF Gap & Critical Path Calculation
 
       toppageurl = names!(toppageurl[:,:],
-      [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-          symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-          symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+      [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+          Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+          Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")]);
 
       sort!(toppageurl,cols=[order(:Start),order(:Total,rev=true)]);
 
@@ -727,9 +727,9 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         toppageurl = names!(toppageurl[:,:],
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")]);
 
 
         # Debug
@@ -971,11 +971,11 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
         sort!(summaryTableUrlGroupDF,cols=[order(:summaryGroup);order(:urlgroup)])
         beautifyDF(names!(summaryTableUrlGroupDF,
             [
-            symbol("Summary Group");
-            symbol("URL Group");
-            symbol("Total Time");
-            symbol("Maximum Time");
-            symbol("Occurances")
+            Symbol("Summary Group");
+            Symbol("URL Group");
+            Symbol("Total Time");
+            Symbol("Maximum Time");
+            Symbol("Occurances")
             ]),
             defaultNumberFormat=(:precision => 0, :commas => true)
         )

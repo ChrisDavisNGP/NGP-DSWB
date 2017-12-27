@@ -51,7 +51,7 @@ function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime3
         end
 
         #dup? displayTitle(chart_title = "All Page Views",showTimeStamp=false)
-        beautifyDF(peakArrivals, transformer=(column, value, rowindex, colindex) -> column == symbol("Page Views") ? format(value, commas=true) : value)
+        beautifyDF(peakArrivals, transformer=(column, value, rowindex, colindex) -> column == Symbol("Page Views") ? format(value, commas=true) : value)
     catch y
         println("showPeakTable Exception ",y)
     end

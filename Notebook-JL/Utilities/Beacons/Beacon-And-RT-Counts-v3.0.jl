@@ -29,7 +29,7 @@ if (SP.reportLevel > 9)
     #bcType = getBeaconCountByType();
     beautifyDF(names!(bc[:,:],[Symbol("Beacon Count")]))
     beautifyDF(allBeacons)
-    #beautifyDF(names!(bcType[:,:],[symbol("Beacon Type"),symbol("Beacon Count")]))
+    #beautifyDF(names!(bcType[:,:],[Symbol("Beacon Type"),Symbol("Beacon Count")]))
 end
 
 t1DF = query("""\

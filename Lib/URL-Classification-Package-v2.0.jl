@@ -28,7 +28,7 @@ function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
 
             #remove bad characters
             url = replace(url,"!","")
-                
+
             try
                 uri = URI(url)
             catch
@@ -113,9 +113,9 @@ function gapAndCriticalPath(toppageurl::DataFrame)
         # Start OF Gap & Critical Path Calculation
 
         toppageurl = names!(toppageurl[:,:],
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")]);
 
         sort!(toppageurl,cols=[order(:Start),order(:Total,rev=true)]);
 

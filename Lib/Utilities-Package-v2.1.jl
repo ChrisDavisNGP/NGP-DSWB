@@ -37,8 +37,8 @@ function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession:
             "Use the time range and columns below to find your waterfall graph in mPulse.","Session ID is $(studySession)"],showTimeStamp=false)
 
         waterfall = names!(waterfall[:,:],
-        [symbol("Page Group"),symbol("Country"),symbol("Region"),symbol("OS Family"),symbol("OS Version"),symbol("Device Type"),
-            symbol("Browser Family"),symbol("Browser Version")]);
+        [Symbol("Page Group"),Symbol("Country"),Symbol("Region"),Symbol("OS Family"),Symbol("OS Version"),Symbol("Device Type"),
+            Symbol("Browser Family"),Symbol("Browser Version")]);
 
         display(waterfall)
         #println("studyTime ",studyTime," local ",whenString)

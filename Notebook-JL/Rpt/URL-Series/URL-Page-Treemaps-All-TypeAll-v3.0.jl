@@ -16,31 +16,13 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 include("../../../Lib/Include-Package-v2.1.jl")
 include("../../../Lib/URL-Classification-Package-v2.0.jl")
 
+TV = pickTime()
 #TV = timeVariables(2017,6,8,10,59,2017,6,8,12,59)
-#TV = weeklyTimeVariables(days=1)
-TV = yesterdayTimeVariables()
 
 UP = UrlParamsInit(scriptName)
-UP.agentOs = "%"
-UP.deviceType = "Mobile"
-UP.limitRows = 250
-UP.pageGroup = "Channel"   #productPageGroup
-UP.samplesMin = 10
-UP.sizeMin = 10000
-UP.timeLowerMs = 2000.0
-UP.timeUpperMs = 600000.0
-UP.urlRegEx = "http://channel.nationalgeographic.com/genius/"   #localUrl
-UP.urlFull = "http://channel.nationalgeographic.com/genius"
-UP.usePageLoad=false
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
-SP.criticalPathOnly=true
-SP.devView=false
-SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd number or zero
-#SP.showLines = 300
-SP.showLines = 25
-SP.reportLevel = 2
 ShowParamsValidate(SP)
 
 #studySession::ASCIIString
@@ -106,9 +88,9 @@ criticalPathTreemapV2(TV,UP,SP,UP.urlFull,toppageurl)
 # Gap Graph
 
 toppageurl = names!(toppageurl[:,:],
-[symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-    symbol("TCP"),symbol("Request"),symbol("Response"),symbol("beacons"),symbol("Critical"),symbol("urlgroup"),
-    symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+[Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+    Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("beacons"),Symbol("Critical"),Symbol("urlgroup"),
+    Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
 toppageurl[toppageurl[:,12] .== "Not Blocking",1] = "Critical Path (Not Gap)"
 toppageurl[toppageurl[:,12] .== "Not Blocking",9] = 0
@@ -138,9 +120,9 @@ if SP.reportLevel > 1
         list = deepcopy(toppageurl)
 
         list = names!(list,
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
         totalPercentTime = sum(list[:,:Gap]) * 0.010
         delete!(list,:label)
@@ -166,16 +148,16 @@ if SP.reportLevel > 1
         totalPercentTime = list[1:1,:Gap] * 0.1
         list = list[Bool[x > totalPercentTime[1] for x in list[:Gap]],:]
         beautifyDF(names!(list[1:min(15,end),:],
-            [symbol("URL Page Group"),symbol("Total Time"),symbol("Gap Time"),symbol("Url Without Params")]))
+            [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("Gap Time"),Symbol("Url Without Params")]))
     end
 end
 
 # End to End Time Display
 
 toppageurl = names!(toppageurl[:,:],
-[symbol("urlpagegroup"),symbol("Start"),symbol("beacons"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-    symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-    symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+[Symbol("urlpagegroup"),Symbol("Start"),Symbol("beacons"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+    Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+    Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
 treeDf = deepcopy(toppageurl)
 delete!(treeDf,:request_count)
@@ -198,9 +180,9 @@ drawTree(treeDf; titleCol = :label, fieldNames = fieldNames,resourceColors=true)
 if SP.reportLevel > 1
     list = deepcopy(toppageurl)
 
-    list = names!(list,[symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-        symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-        symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+    list = names!(list,[Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+        Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+        Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
     totalPercentTime = sum(list[:,:Total]) * 0.10
 
@@ -227,15 +209,15 @@ if SP.reportLevel > 1
     totalPercentTime = list[1:1,:Total] * 0.1
     list = list[Bool[x > totalPercentTime[1] for x in list[:Total]],:]
     beautifyDF(names!(list[1:min(15,end),:],
-        [symbol("URL Page Group"),symbol("Total Time"),symbol("Url Without Params")]))
+        [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("Url Without Params")]))
 end
 
 if (SP.reportLevel > 2)
 
     toppageurl = names!(toppageurl[:,:],
-    [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("beacons"),symbol("DNS"),
-        symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-        symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+    [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("beacons"),Symbol("DNS"),
+        Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+        Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
     totalTime = sum(toppageurl[:,:Total])
     currentTime = sum(toppageurl[:,:beacons])
@@ -255,9 +237,9 @@ if (SP.reportLevel > 2)
         list = deepcopy(toppageurl)
 
         list = names!(list,
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
         delete!(list,:label)
         delete!(list,:request_count)
@@ -281,7 +263,7 @@ if (SP.reportLevel > 2)
         totalPercentTime = list[1:1,:Blocking] * 0.1
         list = list[Bool[x > totalPercentTime[1] for x in list[:Blocking]],:]
         beautifyDF(names!(list[1:min(15,end),:],
-            [symbol("URL Page Group"),symbol("Total Time"),symbol("Blocking Time"),symbol("Url Without Params")]))
+            [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("Blocking Time"),Symbol("Url Without Params")]))
     else
         println("No Blocking time.  Output nothing in report")
     end
@@ -290,9 +272,9 @@ end
 if (SP.reportLevel > 2)
 
     toppageurl = names!(toppageurl[:,:],
-    [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-        symbol("TCP"),symbol("beacons"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-        symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+    [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+        Symbol("TCP"),Symbol("beacons"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+        Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
     totalTime = sum(toppageurl[:,:Total])
     currentTime = sum(toppageurl[:,:beacons])
@@ -312,9 +294,9 @@ if (SP.reportLevel > 2)
         list = deepcopy(toppageurl)
 
         list = names!(list,
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
         totalPercentTime = sum(list[:,:Request]) * 0.01
         delete!(list,:label)
@@ -339,7 +321,7 @@ if (SP.reportLevel > 2)
         totalPercentTime = list[1:1,:Request] * 0.1
         list = list[Bool[x > totalPercentTime[1] for x in list[:Request]],:]
         beautifyDF(names!(list[1:min(15,end),:],
-            [symbol("URL Page Group"),symbol("Total Time"),symbol("Request Time"),symbol("Url Without Params")]))
+            [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("Request Time"),Symbol("Url Without Params")]))
     else
         println("No Request time.  Output nothing in report")
     end
@@ -347,9 +329,9 @@ end
 
 if (SP.reportLevel > 2)
     toppageurl = names!(toppageurl[:,:],
-    [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-        symbol("TCP"),symbol("Request"),symbol("beacons"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-        symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+    [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+        Symbol("TCP"),Symbol("Request"),Symbol("beacons"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+        Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
     totalTime = sum(toppageurl[:,:Total])
     currentTime = sum(toppageurl[:,:beacons])
@@ -371,9 +353,9 @@ if (SP.reportLevel > 2)
         list = deepcopy(toppageurl)
 
         list = names!(list,
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
         totalPercentTime = sum(list[:,:Response]) * 0.01
         delete!(list,:label)
@@ -397,7 +379,7 @@ if (SP.reportLevel > 2)
         totalPercentTime = list[1:1,:Response] * 0.1
         list = list[Bool[x > totalPercentTime[1] for x in list[:Response]],:]
         beautifyDF(names!(list[1:min(15,end),:],
-            [symbol("URL Page Group"),symbol("Total Time"),symbol("Response Time"),symbol("Url Without Params")]))
+            [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("Response Time"),Symbol("Url Without Params")]))
     else
         println("No Response time.  Output nothing in report")
     end
@@ -406,9 +388,9 @@ end
 if (SP.reportLevel > 2)
 
     toppageurl = names!(toppageurl[:,:],
-    [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("beacons"),
-        symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-        symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+    [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("beacons"),
+        Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+        Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
     currentTime = sum(toppageurl[:,:beacons])
     if currentTime > 0
@@ -428,9 +410,9 @@ if (SP.reportLevel > 2)
         list = deepcopy(toppageurl)
 
         list = names!(list,
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
         totalPercentTime = sum(list[:,:Total]) * 0.01
         delete!(list,:label)
@@ -455,7 +437,7 @@ if (SP.reportLevel > 2)
         totalPercentTime = list[1:1,:DNS] * 0.1
         list = list[Bool[x > totalPercentTime[1] for x in list[:DNS]],:]
         beautifyDF(names!(list[1:min(15,end),:],
-            [symbol("URL Page Group"),symbol("Total Time"),symbol("DNS Time"),symbol("Url Without Params")]))
+            [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("DNS Time"),Symbol("Url Without Params")]))
     else
         println("No DNS time.  Output nothing in report")
     end
@@ -463,9 +445,9 @@ end
 
 if (SP.reportLevel > 2)
     toppageurl = names!(toppageurl[:,:],
-    [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-        symbol("beacons"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-        symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+    [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+        Symbol("beacons"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+        Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
     totalTime = sum(toppageurl[:,:Total])
     currentTime = sum(toppageurl[:,:beacons])
@@ -485,9 +467,9 @@ if (SP.reportLevel > 2)
         list = deepcopy(toppageurl)
 
         list = names!(list,
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
         totalPercentTime = sum(list[:,:TCP]) * 0.10
         delete!(list,:label)
@@ -512,7 +494,7 @@ if (SP.reportLevel > 2)
         totalPercentTime = list[1:1,:TCP] * 0.1
         list = list[Bool[x > totalPercentTime[1] for x in list[:TCP]],:]
         beautifyDF(names!(list[1:min(15,end),:],
-            [symbol("URL Page Group"),symbol("Total Time"),symbol("TCP Time"),symbol("Url Without Params")]))
+            [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("TCP Time"),Symbol("Url Without Params")]))
     else
         println("No TCP time.  Output nothing in report")
     end
@@ -521,9 +503,9 @@ end
 if (SP.reportLevel > 2)
 
     toppageurl = names!(toppageurl[:,:],
-    [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("beacons"),symbol("Blocking"),symbol("DNS"),
-        symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-        symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+    [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("beacons"),Symbol("Blocking"),Symbol("DNS"),
+        Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+        Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
     totalTime = sum(toppageurl[:,:Total])
     currentTime = sum(toppageurl[:,:beacons])
@@ -540,9 +522,9 @@ if (SP.reportLevel > 2)
         list = deepcopy(toppageurl)
 
         list = names!(list,
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("gap"),symbol("critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")])
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("gap"),Symbol("critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
         delete!(list,:label)
         delete!(list,:request_count)
@@ -569,7 +551,7 @@ if (SP.reportLevel > 2)
         totalPercentTime = list[1:1,:Redirect] * 0.1
         list = list[Bool[x > totalPercentTime[1] for x in list[:Redirect]],:]
         beautifyDF(names!(list[1:min(15,end),:],
-            [symbol("URL Page Group"),symbol("Total Time"),symbol("Redirect Time"),symbol("Url Without Params")]))
+            [Symbol("URL Page Group"),Symbol("Total Time"),Symbol("Redirect Time"),Symbol("Url Without Params")]))
     else
         println("No redirect time.  Output nothing in report")
     end
@@ -608,8 +590,8 @@ if (SP.reportLevel > 11)
     end
 
     #displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-    #topurl = names!(topurl[:,:],[symbol("beacons"),symbol("urlgroup"),symbol("load_time"),symbol("start_time"),symbol("redirect"),symbol("blocking"),symbol("dns"),symbol("tcp"),symbol("request"),symbol("response")])
-    topurl = names!(topurl[:,:],[symbol("urlgroup"),symbol("load_time_int"),symbol("beacons"),symbol("request_count")]);
+    #topurl = names!(topurl[:,:],[Symbol("beacons"),Symbol("urlgroup"),Symbol("load_time"),Symbol("start_time"),Symbol("redirect"),Symbol("blocking"),Symbol("dns"),Symbol("tcp"),Symbol("request"),Symbol("response")])
+    topurl = names!(topurl[:,:],[Symbol("urlgroup"),Symbol("load_time_int"),Symbol("beacons"),Symbol("request_count")]);
 
     # Note: this cell turns the :urlgroup from a URL to a string.  Run cell above each time before this cell
 
@@ -668,8 +650,8 @@ if (reportLevel > 11)
         """);
     end
 
-    #topdetailurl = names!(topurl[:,:],[symbol("beacons"),symbol("urlgroup"),symbol("load_time"),symbol("start_time"),symbol("redirect"),symbol("blocking"),symbol("dns"),symbol("tcp"),symbol("request"),symbol("response")])
-    topdetailurl = names!(topdetailurl[:,:],[symbol("urlgroup"),symbol("load_time_int"),symbol("beacons"),symbol("request_count")]);
+    #topdetailurl = names!(topurl[:,:],[Symbol("beacons"),Symbol("urlgroup"),Symbol("load_time"),Symbol("start_time"),Symbol("redirect"),Symbol("blocking"),Symbol("dns"),Symbol("tcp"),Symbol("request"),Symbol("response")])
+    topdetailurl = names!(topdetailurl[:,:],[Symbol("urlgroup"),Symbol("load_time_int"),Symbol("beacons"),Symbol("request_count")]);
 
     # Note: this cell turns the :urlgroup from a URL to a string.  Run cell above each time before this cell
 

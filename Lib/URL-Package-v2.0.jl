@@ -227,7 +227,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
-            beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Url - With Grouping After Parameters Dropped")]))
+            beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
         end
 
         if (showCountDetails)
@@ -245,7 +245,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
-            beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Avg MB"),symbol("Avg MS"),symbol("Url - Individual")]))
+            beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Avg MB"),Symbol("Avg MS"),Symbol("Url - Individual")]))
         end
 
     catch y
@@ -285,7 +285,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """);
 
         scrubUrlToPrint(SP,topurl,:urlgroup)
-        beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Url - With Grouping After Parameters Dropped")]))
+        beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
 
         topurl = query("""\
 
@@ -309,7 +309,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """);
 
         scrubUrlToPrint(SP,topurl,:urlgroup)
-        beautifyDF(names!(topurl[:,:],[symbol("Views"),symbol("Avg MB"),symbol("Avg MS"),symbol("Url - Individual")]))
+        beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Avg MB"),Symbol("Avg MS"),Symbol("Url - Individual")]))
     catch y
         println("topUrlTableByTime Exception ",y)
     end
@@ -353,9 +353,9 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
         end;
 
         toppageurl = names!(toppageurl[:,:],
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")]);
         return toppageurl
     catch y
         println("findTopPageUrlUPT Exception ",y)
@@ -375,7 +375,7 @@ function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                     printDf[:Url] = toppageurl[i:i,:urlgroup]
                     chartString = "All URLs Used Fall Within ten percent of Mean"
                     displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-                    beautifyDF(names!(printDf[:,:],[symbol("Views"),symbol("Time (ms)"),symbol("Url Used")]))
+                    beautifyDF(names!(printDf[:,:],[Symbol("Views"),Symbol("Time (ms)"),Symbol("Url Used")]))
                 end
             end
         end

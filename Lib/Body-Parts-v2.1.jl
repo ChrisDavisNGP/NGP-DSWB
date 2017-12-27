@@ -217,7 +217,7 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
 
 
   ft = names!(finalTable[:,:],
-  [symbol("Recent Urls $(additional)");symbol("Time");symbol("Request Made");symbol("Page Size");symbol("Samples")])
+  [Symbol("Recent Urls $(additional)");Symbol("Time");Symbol("Request Made");Symbol("Page Size");Symbol("Samples")])
   beautifyDF(ft[1:min(100,end),:])
 
   catch y
@@ -533,9 +533,9 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
         end;
 
         toppageurl = names!(toppageurl[:,:],
-        [symbol("urlpagegroup"),symbol("Start"),symbol("Total"),symbol("Redirect"),symbol("Blocking"),symbol("DNS"),
-            symbol("TCP"),symbol("Request"),symbol("Response"),symbol("Gap"),symbol("Critical"),symbol("urlgroup"),
-            symbol("request_count"),symbol("label"),symbol("load_time"),symbol("beacon_time")]);
+        [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
+            Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
+            Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")]);
         return toppageurl
     catch y
         println("cell generate toppageurl Exception ",y)
@@ -555,7 +555,7 @@ function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                     printDf[:Url] = toppageurl[i:i,:urlgroup]
                     chartString = "All URLs Used Fall Within ten percent of Mean"
                     displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-                    beautifyDF(names!(printDf[:,:],[symbol("Views"),symbol("Time (ms)"),symbol("Url Used")]))
+                    beautifyDF(names!(printDf[:,:],[Symbol("Views"),Symbol("Time (ms)"),Symbol("Url Used")]))
                 end
             end
         end
@@ -939,8 +939,8 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
         beautifyDF(timeTable[1:min(linesOut,end),:])
 
         timeTable = names!(timeTable[:,:],
-        [symbol("taken"),symbol("start"),symbol("fetch"),symbol("dns"),symbol("tcp"),symbol("req_start"),symbol("req_fb"),symbol("req_lb"),symbol("url")
-            ,symbol("redirect_start"),symbol("redirect_end"),symbol("secure_conn_start")])
+        [Symbol("taken"),Symbol("start"),Symbol("fetch"),Symbol("dns"),Symbol("tcp"),Symbol("req_start"),Symbol("req_fb"),Symbol("req_lb"),Symbol("url")
+            ,Symbol("redirect_start"),Symbol("redirect_end"),Symbol("secure_conn_start")])
 
         dv1 = timeTable[:taken]
         statsDF1 = limitedStatsFromDV(dv1)

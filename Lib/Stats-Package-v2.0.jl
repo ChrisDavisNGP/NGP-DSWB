@@ -153,7 +153,7 @@ end
 function showLimitedStats(TV::TimeVars,statsDF::DataFrame,chartTitle::ASCIIString)
     try
         printStatsDF = names!(statsDF[:,:],
-        [symbol("Page Views"),symbol("Mean(ms)"),symbol("Median(ms)"),symbol("Min(ms)"),symbol("Max(ms)"),symbol("25 Percentile"),symbol("75 Percentile")])
+        [Symbol("Page Views"),Symbol("Mean(ms)"),Symbol("Median(ms)"),Symbol("Min(ms)"),Symbol("Max(ms)"),Symbol("25 Percentile"),Symbol("75 Percentile")])
 
         displayTitle(chart_title = chartTitle, chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(printStatsDF[:,:])

@@ -323,7 +323,7 @@ title = "Relative Conversion Impact Score"
 startIndex = 1
 endIndex = 20
 
-convImpactTop20 = groupsWithHighConversionImpact[1:20, [symbol(pageGroup), symbol(pageLoadTime), symbol(title)]]
+convImpactTop20 = groupsWithHighConversionImpact[1:20, [Symbol(pageGroup), Symbol(pageLoadTime), Symbol(title)]]
 drawImpact(convImpactTop20)
 
 ### 2.5.2 Ranking Page Groups by Negative Impact to User Activity
@@ -353,7 +353,7 @@ title = "Relative Activity Impact Score"
 startIndex = 1
 endIndex = 20
 
-activityImpactTop20 = groupsWithHighActivityImpact[startIndex:endIndex, [symbol(pageGroup), symbol(pageLoadTime), symbol(title)]]
+activityImpactTop20 = groupsWithHighActivityImpact[startIndex:endIndex, [Symbol(pageGroup), Symbol(pageLoadTime), Symbol(title)]]
 drawImpact(activityImpactTop20)
 
 ***
