@@ -16,11 +16,12 @@ function bestDatePart(startTime::DateTime, endTime::DateTime)
         else
             datePart = :day
         end
+
+        return datePart
+
     catch y
         println("bestDatepart Exception ",y)
     end
-
-    return datePart
 end
 
 #Common numbers that go negitive
