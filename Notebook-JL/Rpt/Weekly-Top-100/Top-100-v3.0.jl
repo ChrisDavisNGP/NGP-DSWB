@@ -18,7 +18,7 @@ include("../../../Lib/Include-Package-v2.1.jl")
 
 TV = pickTime()
 #TV = timeVariables(2017,10,27,23,59,2017,11,3,23,59)
-TV = prevWorkWeekTimeVariables()
+#TV = prevWorkWeekTimeVariables()
 
 UP = UrlParamsInit(scriptName)
 UrlParamsValidate(UP)
