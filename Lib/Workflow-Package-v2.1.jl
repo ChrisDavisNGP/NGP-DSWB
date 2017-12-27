@@ -1,20 +1,70 @@
 function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-#  if isdefined(:gWfShowPeakTable)
-#        wfShowPeakTable = gWfShowPeakTable
-#  else
-      wfShowPeakTable = true
-#  end
-  wfShowSessionBeacons = true
-  wfShowChartLoad = true
-  wfShowTopUrls = true
-  wfShowBrowserTreemap = true
-  wfShowCountryTreemap = true
-  wfShowDeviceTypeTreemap = true
-  wfShowPageGroupTreemp = true
-  wfShowGroupQuartiles = true
-  wfShowActvitityImpact = true
-  wfShowAggSession = true
+    if isdefined(:gRunArray) && !gRunArray[1]
+        wfShowPeakTable = false
+    else
+        wfShowPeakTable = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[2]
+        wfShowSessionBeacons = false
+    else
+        wfShowSessionBeacons = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[3]
+      wfShowChartLoad = false
+    else
+      wfShowChartLoad = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[4]
+      wfShowTopUrls = false
+    else
+      wfShowTopUrls = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[5]
+      wfShowBrowserTreemap = false
+    else
+      wfShowBrowserTreemap = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[6]
+      wfShowCountryTreemap = false
+    else
+      wfShowCountryTreemap = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[7]
+      wfShowDeviceTypeTreemap = false
+    else
+      wfShowDeviceTypeTreemap = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[8]
+      wfShowPageGroupTreemp = false
+    else
+      wfShowPageGroupTreemp = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[9]
+      wfShowGroupQuartiles = false
+    else
+      wfShowGroupQuartiles = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[10]
+      wfShowActvitityImpact = false
+    else
+      wfShowActvitityImpact = true
+    end
+
+    if isdefined(:gRunArray)  && !gRunArray[11]
+      wfShowAggSession = false
+    else
+      wfShowAggSession = true
+    end
 
   wfClearViews = true
 
