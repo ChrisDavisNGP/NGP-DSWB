@@ -13,22 +13,15 @@ setTable(table)
 
 # Packages
 include("../../../Lib/Include-Package-v2.1.jl")
-#include("SQL-Data-Mining-For-Group-Body-v1.0.jl")
 
+TV = pickTime()
 #TV = timeVariables(2017,6,8,10,59,2017,6,8,12,59)
-#TV = weeklyTimeVariables(days=7)
-TV = yesterdayTimeVariables()
 
 UP = UrlParamsInit(scriptName)
-UP.pageGroup = "%"   #productPageGroup
-UP.urlRegEx = "%"   #localUrl
-UP.deviceType = "Mobile"
+UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
-SP.debugLevel = 10;
-SP.debug = true;
-SP.showLines = 25
+ShowParamsValidate(SP)
 
-UP.pageGroup = "Animals AEM"
 displayGroup(TV,UP,SP)
 ;

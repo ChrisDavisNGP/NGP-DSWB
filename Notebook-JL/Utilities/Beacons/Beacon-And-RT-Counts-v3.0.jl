@@ -25,10 +25,10 @@ ShowParamsValidate(SP)
 
 if (SP.reportLevel > 9)
     bc = getBeaconCount();
-    all = getBeaconsFirstAndLast();
+    allBeacons = getBeaconsFirstAndLast();
     #bcType = getBeaconCountByType();
-    beautifyDF(names!(bc[:,:],[symbol("Beacon Count")]))
-    beautifyDF(all)
+    beautifyDF(names!(bc[:,:],[Symbol("Beacon Count")]))
+    beautifyDF(allBeacons)
     #beautifyDF(names!(bcType[:,:],[symbol("Beacon Type"),symbol("Beacon Count")]))
 end
 
@@ -57,7 +57,7 @@ printDf[:maxStr] = maxStr;
 ;
 
 standardChartTitle(TV,UP,SP,"Resource Information")
-beautifyDF(names!(rtcnt[:,:],[symbol("Resource Timing Count")]))
-beautifyDF(names!(printDf[:,:],[symbol("First RT"),symbol("Last RT")]))
+beautifyDF(names!(rtcnt[:,:],[Symbol("Resource Timing Count")]))
+beautifyDF(names!(printDf[:,:],[Symbol("First RT"),Symbol("Last RT")]))
 
 ;
