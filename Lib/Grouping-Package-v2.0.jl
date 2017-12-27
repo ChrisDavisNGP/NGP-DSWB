@@ -32,8 +32,8 @@ end
 #        ])
 #    )
 
-function getBestGrouping(results::DataFrame, summary::DataFrame; showProgress=true)
-    minspread = summary[summary[:spread] .== minimum(summary[:spread]), :]
+function getBestGrouping(results::DataFrame, summaryDF::DataFrame; showProgress=true)
+    minspread = summaryDF[summaryDF[:spread] .== minimum(summaryDF[:spread]), :]
 
     if showProgress
         newProgress(initial="Best group dimension(s): $(minspread[1, :name]) with $(minspread[1, :n]) groups")
@@ -53,21 +53,19 @@ end
 function getGroupSummary{T <: AbstractDataFrame}(df::T)
 #function getGroupSummary(df::DataFrame)
 
-    summary = summarystats(df[:timers_t_done])
+    summaryDF = summarystats(df[:timers_t_done])
     fw = 0.0
     p2 = 0.0
     p98 = 0.0
     wh1 = 0.0
     wh2 = 0.0
-    median = 0
+    sumMedian = 0
     spread = 0.0
     p = 0.0
     minf = 0
     low_wm = 0
-    p2 = 0
     p25 = 0
     p75 = 0
-    p98 = 0
     high_wm = 0
     maxf = 0
     bytes = 0
@@ -76,20 +74,20 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
     images = 0
 
     try
-        fw  = (summary.q75-summary.q25)*1.5
+        fw  = (summaryDF.q75-summaryDF.q25)*1.5
         p2  = percentile(df[:timers_t_done], 2)
         p98 = percentile(df[:timers_t_done], 98)
     catch y
         println("Exceptn 1 ",y);
     end
     try
-        wh1 = max(summary.min, summary.q25-fw)
+        wh1 = max(summaryDF.min, summaryDF.q25-fw)
     catch y
         println("Exceptn 2a ",y);
     end
 
     try
-        wh2 = min(summary.max, summary.q75+fw)
+        wh2 = min(summaryDF.max, summaryDF.q75+fw)
     catch y
         println("Exceptn 2b ",y);
     end
@@ -98,7 +96,7 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
     n = size(df, 1)
 
     try
-        median = round(Int64, summary.median)
+        sumMedian = round(Int64, summaryDF.sumMedian)
     catch y
         println("Exceptn 3a ",y);
     end
@@ -113,7 +111,7 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
         println("Exceptn 3c ",y);
     end
     try
-        minf = round(Int64, summary.min)
+        minf = round(Int64, summaryDF.min)
     catch y
         println("Exceptn 3d ",y);
     end
@@ -128,12 +126,12 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
         println("Exceptn 3f ",y);
     end
     try
-        p25 = round(Int64, summary.q25)
+        p25 = round(Int64, summaryDF.q25)
     catch y
         println("Exceptn 3g ",y);
     end
     try
-        p75 = round(Int64, summary.q75)
+        p75 = round(Int64, summaryDF.q75)
     catch y
         println("Exceptn 3h ",y);
     end
@@ -148,7 +146,7 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
         println("Exceptn 3j ",y);
     end
     try
-        maxf = round(Int64, summary.max)
+        maxf = round(Int64, summaryDF.max)
     catch y
         println("Exceptn 3k ",y);
     end
@@ -181,7 +179,7 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
 
     f = DataFrame(
         n = n,
-        median = median,
+        sumMedian = sumMedian,
         spread = spread,
         p = p,
         minf = minf,

@@ -9,6 +9,10 @@ end
 
 function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuartiles::Int64=10)
     try
+        if SP.debugLevel > 8
+            println("Starting pageGroupQuartiles")
+        end
+
         table = UP.beaconTable
         pageGroupPercentages = getGroupPercentages(TV.startTimeUTC, TV.endTimeUTC)
         pageGroups = pageGroupPercentages[:page_group][1:min(10,end)]

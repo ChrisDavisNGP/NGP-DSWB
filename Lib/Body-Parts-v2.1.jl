@@ -283,6 +283,10 @@ end
 
 function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
     try
+        if SP.debugLevel > 8
+            println("Starting concurrentSessionsPGD")
+        end        
+
         if (UP.deviceType == "%")
             chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
         end
@@ -312,6 +316,9 @@ end
 
 function loadTimesPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
     try
+        if SP.debugLevel > 8
+            println("Starting localTimesPGD")
+        end
 
         #todo turn off title in chartLoadTimes
         #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
@@ -363,6 +370,10 @@ end
 
 function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSummary::DataFrame,row::Int64)
     try
+        if SP.debugLevel > 8
+            println("Starting statsDetailsPrint")
+        end
+
         topUrl = string(joinTableSummary[row:row,:urlgroup][1],"%")
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 

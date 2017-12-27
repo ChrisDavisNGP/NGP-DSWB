@@ -304,7 +304,7 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
           if SP.debugLevel > 8
               println("Calling sessionUrlTableCreateDF")
           end
-          toppageurl = sessionUrlTableCreateDF(TV,UP,SP,studySession,studyTime)
+          toppageurl = sessionUrlTableCreateDF(UP,SP,studySession,studyTime)
           elseif (studySession != "None")
               if SP.debugLevel > 8
                   println("Calling allSessionUrlTableCreateDF")
@@ -714,7 +714,7 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         toppageurl = DataFrame()
         if studyTime > 0
-            toppageurl = sessionUrlTableCreateDF(TV,UP,SP,studySession,studyTime)
+            toppageurl = sessionUrlTableCreateDF(UP,SP,studySession,studyTime)
             elseif (studySession != "None")
               toppageurl = allSessionUrlTableCreateDF(TV,UP,SP,studySession)
             else

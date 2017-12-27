@@ -24,7 +24,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
     if (wfShowPeakTable)
-        showPeakTable(TV,UP,SP;showStartTime30=true,showStartTime90=false,tableRange="Daily ")
+        showPeakTable(TV,UP,SP;showStartTime30=true,tableRange="Daily ")
     end
   catch y
     println("showPeakTable Exception")
@@ -188,7 +188,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     medianThreshold = statsDF[1:1,:median][1]
 
-    showPeakTable(TV,UP,SP;showStartTime30=false,showStartTime90=false,tableRange="Sample Set ")
+    showPeakTable(TV,UP,SP;showStartTime30=false,tableRange="Sample Set ")
 
     concurrentSessionsPGD(TV,UP,SP,mobileView,desktopView)
 
@@ -296,7 +296,7 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     defaultBeaconCreateView(TV,UP,SP);
 
     joinTables = DataFrame()
-    joinTables = gatherSizeData(TV,UP,SP)
+    joinTables = gatherSizeData(UP,SP)
     ;
 
     joinTableSummary = DataFrame()

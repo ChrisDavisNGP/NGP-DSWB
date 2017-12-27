@@ -67,6 +67,10 @@ end
 
 function openingTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
+    if SP.debugLevel > 8
+        println("Starting openingTitle")
+    end
+
     chartTitle = "Report Paramaters:"
     chartTitle *= " Page Group=$(UP.pageGroup), DeviceType=$(UP.deviceType), Browser OS=$(UP.agentOs)"
     chartInfo  = "Other Settings: limitRows=$(UP.limitRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"

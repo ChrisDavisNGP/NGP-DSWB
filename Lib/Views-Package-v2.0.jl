@@ -1,4 +1,9 @@
 function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
+
+    if SP.debugLevel > 8
+        println("Starting pageGroupDetailsCreateView")
+    end
+
       try
 
         query("""drop view if exists $(UP.btView)""")

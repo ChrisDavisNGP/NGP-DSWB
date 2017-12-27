@@ -1,5 +1,5 @@
 # Packages in Lib Directory; structures first
-function bestDatePart(startTime::DateTime, endTime::DateTime, datePart::Symbol)
+function bestDatePart(startTime::DateTime, endTime::DateTime)
 
     try
         datePart = :minute
@@ -69,7 +69,7 @@ function timeVariables(
         tempTime.endTimeMsUTC = datetimeToMs(tempTime.endTimeUTC)
 
         tempTime.datePart = :hour
-        tempTime.datePart = bestDatePart(tempTime.startTimeUTC,tempTime.endTimeUTC,tempTime.datePart)
+        tempTime.datePart = bestDatePart(tempTime.startTimeUTC,tempTime.endTimeUTC)
 
         tempTime.timeString = "$(padDateTime(tempTime.startTime)) to $(padDateTime(tempTime.endTime)) Local Time"
         tempTime.timeStringUTC = "$(padDateTime(tempTime.startTimeUTC)) to $(padDateTime(tempTime.endTimeUTC)) UTC Time"
@@ -103,7 +103,7 @@ function anyTimeVar(
         localTimeVar.endTimeMsUTC = datetimeToMs(localTimeVar.endTimeUTC)
 
         localTimeVar.datePart = :hour
-        localTimeVar.datePart = bestDatePart(localTimeVar.startTimeUTC,localTimeVar.endTimeUTC,localTimeVar.datePart)
+        localTimeVar.datePart = bestDatePart(localTimeVar.startTimeUTC,localTimeVar.endTimeUTC)
 
         localTimeVar.timeString = "$(padDateTime(localTimeVar.startTime)) to $(padDateTime(localTimeVar.endTime)) Local Time"
         localTimeVar.timeStringUTC = "$(padDateTime(localTimeVar.startTimeUTC)) to $(padDateTime(localTimeVar.endTimeUTC)) UTC Time"

@@ -80,6 +80,10 @@ end
 function standardReferrals(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
+        if SP.debugLevel > 8
+            println("Starting standardReferrals")
+        end
+                
         toprDF = getTopReferrers(TV.startTimeUTC, TV.endTimeUTC, n=UP.limitRows)
         limit = (min(UP.limitRows,size(toprDF)[1]))
         chartTopN(TV.startTimeUTC, TV.endTimeUTC, n=limit; variable=:referrers;)

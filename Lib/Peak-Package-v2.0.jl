@@ -1,5 +1,9 @@
-function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime30::Bool=false, showStartTime90::Bool=false,tableRange::ASCIIString="7 Day ")
+function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime30::Bool=false, tableRange::ASCIIString="7 Day ")
     try
+        if SP.debugLevel > 8
+            println("Starting showPeakTable")
+        end
+
         startTime30 = DateTime(TV.endTimeUTC - Day(30))
         startTime90 = DateTime(TV.endTimeUTC - Day(90))
 

@@ -36,7 +36,7 @@ println("$tableRt count is ",size(localTableRtDF))
 
 setRangeUPT(TV,UP,SP,localTableDF)
 
-showAvailableSessions(TV,UP,SP,localTableDF,localTableRtDF)
+showAvailableSessions(UP,SP,localTableDF,localTableRtDF)
 
 # Individual pages uses the numbers above make the best tree maps
 

@@ -1,9 +1,9 @@
-function showAvailableSessions(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
+function showAvailableSessions(UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,localTableRtDF::DataFrame)
     try
-        full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
+        fullJoin = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
         i = 0
         io = 0
-        for subdf in groupby(full,[:session_id,:timestamp])
+        for subdf in groupby(fullJoin,[:session_id,:timestamp])
             i += 1
             s = size(subdf)
 

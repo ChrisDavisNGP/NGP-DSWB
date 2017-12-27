@@ -194,8 +194,11 @@ function limitedStatsFromDV(dv::DataVector)
     end
 end
 
-function dataframeFieldStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localStatsDF::DataFrame,statsField::Symbol,statsFieldTitle::ASCIIString)
+function dataframeFieldStats(TV::TimeVars,SP::ShowParams,localStatsDF::DataFrame,statsField::Symbol,statsFieldTitle::ASCIIString)
     try
+        if SP.debugLevel > 8
+            println("Starting dataframeFieldStats")
+        end
 
         statsDF = basicFieldStats(localStatsDF,statsField)
         #medianThreshold = statsDF[1:1,:median][1]
@@ -253,6 +256,10 @@ end
 
 function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;showAdditional::Bool=true)
 
+    if SP.debugLevel > 8
+        println("Starting beaconStats")
+    end
+
     if (UP.usePageLoad)
         dv = localTableDF[:timers_t_done]
     else
@@ -305,7 +312,6 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams)
     month2 = Dates.month(TV.endTimeUTC)
     day2 = Dates.day(TV.endTimeUTC)
     hour2 = Dates.hour(TV.endTimeUTC)
-    #minute2 = Dates.minute(TV.endTimeUTC)
     minute2 = 59
 
     AllStatsDF = DataFrame()

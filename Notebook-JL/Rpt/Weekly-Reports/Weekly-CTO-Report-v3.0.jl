@@ -38,7 +38,7 @@ catch y
     println("chartLoadTimes Exception ",y)
 end
 
-showPeakTable(TV,UP,SP;showStartTime30=true,showStartTime90=false)
+showPeakTable(TV,UP,SP;showStartTime30=true)
 
 topUrlTableByTime(TV,UP,SP)
 

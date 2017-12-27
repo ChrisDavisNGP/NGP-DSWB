@@ -46,7 +46,7 @@ UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
 println("Matching Resource Table count is ",size(localTableRtDF)[1])
 
-showAvailableSessions(TV,UP,SP,localTableDF,localTableRtDF)
+showAvailableSessions(UP,SP,localTableDF,localTableRtDF)
 
 try
 

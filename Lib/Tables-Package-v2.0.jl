@@ -79,6 +79,10 @@ end
 
 function allSessionUrlTableCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString)
 
+    if SP.debugLevel > 8
+        println("Starting allSessionUrlTableCreateDF")
+    end
+
     rt = UP.resourceTable
 
     try
@@ -113,7 +117,11 @@ function allSessionUrlTableCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,st
     end
 end
 
-function sessionUrlTableCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+function sessionUrlTableCreateDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+
+    if SP.debugLevel > 8
+        println("Starting allSessionUrlTableCreateDF")
+    end
 
     rt = UP.resourceTable
     try
@@ -195,6 +203,10 @@ function statsTableCreateDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::
 end
 
 function treemapsLocalTableRtCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    if SP.debugLevel > 8
+        println("Starting treemapsLocalTableRtCreateDF")
+    end
 
     bt = UP.beaconTable
     rt = UP.resourceTable
@@ -303,7 +315,7 @@ function test3GNGSSDM(UP::UrlParams,SP::ShowParams)
     end
 end
 
-function gatherSizeData(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function gatherSizeData(UP::UrlParams,SP::ShowParams)
     try
         bt = UP.btView
         rt = UP.resourceTable
@@ -438,6 +450,10 @@ end
 
 function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
+    if SP.debugLevel > 8
+        println("Starting bigPages1SRFLP")
+    end
+
     try
         btv = UP.btView
 
@@ -449,7 +465,7 @@ function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         statsDF[:unit] = "KBytes"
         minSizeBytes = statsDF[1:1,:UpperBy3Stddev][1]
 
-        displayTitle(chart_title = "Domain Size in KB", showTimeStamp=false)
+        displayTitle(chart_title = "Domain Size in KB", chart_info = [TV.timeString], showTimeStamp=false)
         beautifyDF(statsDF)
 
         return minSizeBytes
@@ -849,7 +865,7 @@ function cacheHitRatioSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
     beautifyDF(names!(ratio[1:min(30, end),[1:4;]],[Symbol("Url Group"), Symbol("Not Cached Cnt"), Symbol("Cached Cnt"), Symbol("Cached Ratio")]))
 end
 
-function resourceImages(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
+function resourceImagesOnNatGeo(UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
 
     try
         btv = UP.btView
@@ -939,7 +955,7 @@ function displayMatchingResourcesByParentUrl(TV::TimeVars,UP::UrlParams,SP::Show
             displayTitle(chart_title = "Any Parent Url (params_u) for pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
             scrubUrlToPrint(SP,joinTablesDF,:parenturl)
             beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
-            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
+            dataframeFieldStats(TV,SP,joinTablesDF,:count,"on column count")
         else
             displayTitle(chart_title = "Any Parent Url (params_u) for pattern $(UP.resRegEx) is empty", showTimeStamp=false)
         end
@@ -969,7 +985,7 @@ function displayMatchingResourcesByUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams
             displayTitle(chart_title = "Any resource Url for pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
             scrubUrlToPrint(SP,joinTablesDF,:url)
             beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
-            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
+            dataframeFieldStats(TV,SP,joinTablesDF,:count,"on column count")
         else
             displayTitle(chart_title = "Any resource Url for pattern $(UP.resRegEx) is empty", showTimeStamp=false)
         end
@@ -1000,7 +1016,7 @@ function displayMatchingResourcesByUrls(TV::TimeVars,UP::UrlParams,SP::ShowParam
             scrubUrlToPrint(SP,joinTablesDF,:url)
             scrubUrlToPrint(SP,joinTablesDF,:parenturl)
             beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
-            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
+            dataframeFieldStats(TV,SP,joinTablesDF,:count,"on column count")
         else
             displayTitle(chart_title = "Beacon table and resources joined with resource Url pattern $(UP.resRegEx) is empty", showTimeStamp=false)
         end
@@ -1069,9 +1085,9 @@ function displayMatchingResourcesStats(TV::TimeVars,UP::UrlParams,SP::ShowParams
             scrubUrlToPrint(SP,joinTablesDF,:url)
             scrubUrlToPrint(SP,joinTablesDF,:parenturl)
             beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
-            dataframeFieldStats(TV,UP,SP,joinTablesDF,:count,"on column count")
-            dataframeFieldStats(TV,UP,SP,joinTablesDF,:responselastbyte,"on Average Response Last Byte")
-            dataframeFieldStats(TV,UP,SP,joinTablesDF,:maxresponselastbyte,"on Maximum Response Last Byte")
+            dataframeFieldStats(TV,SP,joinTablesDF,:count,"on column count")
+            dataframeFieldStats(TV,SP,joinTablesDF,:responselastbyte,"on Average Response Last Byte")
+            dataframeFieldStats(TV,SP,joinTablesDF,:maxresponselastbyte,"on Maximum Response Last Byte")
         else
             displayTitle(chart_title = "Average Times for Url pattern $(UP.resRegEx) is empty", showTimeStamp=false)
         end
