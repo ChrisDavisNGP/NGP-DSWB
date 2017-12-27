@@ -18,6 +18,7 @@ type UrlParams
     usePageLoad::Bool
     deviceType::ASCIIString
     agentOs::ASCIIString
+    useJson::Bool
 end
 
 function UrlParamsInit(nb::ASCIIString)
@@ -26,7 +27,7 @@ function UrlParamsInit(nb::ASCIIString)
 
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
-    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,600000,250,10,10000,"time",true,"%","%")
+    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,600000,250,10,10000,"time",true,"%","%",false)
 
     if isdefined(:UpPageGroup)
         UP.pageGroup = UpPageGroup
@@ -52,6 +53,17 @@ function UrlParamsInit(nb::ASCIIString)
         UP.urlFull = UpUrlFull
     end
 
+    if isdefined(:UpOrderBy)
+        UP.orderBy = UpOrderBy
+    end
+
+    if isdefined(:UpUsePageLoad)
+        UP.usePageLoad = UpUsePageLoad
+    end
+
+    if isdefined(:UpUseJson)
+        UP.useJson = UpUseJson
+    end
     return UP
 end
 

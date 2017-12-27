@@ -15,41 +15,18 @@ tableRt = "beacons_4744_rt"
 setRedshiftEndpoint(dsn)
 setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
-;
 
-include("../../Lib/Include-Package-v2.1.jl")
-;
+include("../../../Lib/Include-Package-v2.1.jl")
 
+TV = pickTime()
 #TV = timeVariables(2017,5,9,16,0,2017,5,9,16,59)
 TV = prevWorkWeekTimeVariables()
-#TV = yesterdayTimeVariables()
-;
 
-
-UP = UrlParamsInit("Part_Json_Weekly")
-UP.agentOs = "%"
-UP.deviceType = "Mobile"
-UP.orderBy = "time"
-UP.pageGroup = "%"   #productPageGroup
-UP.samplesMin = 10
-UP.sizeMin = 10000
-UP.timeLowerMs = 2000.0
-UP.timeUpperMs = 60000.0
-UP.urlRegEx = "%"   #localUrl
-UP.urlFull = "%"
-UP.usePageLoad=false
+UP = UrlParamsInit(scriptName)
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
-SP.devView=false
-SP.criticalPathOnly=true
-SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd number or zero
 ShowParamsValidate(SP)
-
-useJson::Bool
-useJson = true
-
-
 
 theList = "
 {
@@ -103,10 +80,7 @@ theList = "
 }
 ";
 
-UP.limitRows = 125      # Consider the top 125 in the given category
-UP.samplesMin = 100     # Use only pages above 100 samples
-SP.showLines = 100      # The bigger this number the longer the script runs
-if (useJson)
+if (UP.useJson)
     urlListDF = newPagesList()
     if (SP.debugLevel > 4)
         beautifyDF(urlListDF[1:min(3,end),:])
@@ -121,7 +95,6 @@ end
 ;
 
 # Time
-if (useJson)
-    UP.orderBy = "time"
+if (UP.useJson)
     finalUrlTableOutput(TV,UP,SP,topUrls)
 end
