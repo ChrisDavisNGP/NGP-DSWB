@@ -607,7 +607,7 @@ if (SP.reportLevel > 11)
         """);
     end
 
-    #displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
+    #displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
     #topurl = names!(topurl[:,:],[symbol("beacons"),symbol("urlgroup"),symbol("load_time"),symbol("start_time"),symbol("redirect"),symbol("blocking"),symbol("dns"),symbol("tcp"),symbol("request"),symbol("response")])
     topurl = names!(topurl[:,:],[symbol("urlgroup"),symbol("load_time_int"),symbol("beacons"),symbol("request_count")]);
 

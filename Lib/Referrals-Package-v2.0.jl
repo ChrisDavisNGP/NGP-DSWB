@@ -66,25 +66,25 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
         dftest2[3:3,:RefGroup] = red[1:1,:refgrp]
 
         sort!(dftest2, cols=:Cnt, rev=true)
-        beautifyDF(names!(dftest2[1:end,[1:2;]],[symbol("Referral Group"),symbol("Page Views")]))
+        beautifyDF(names!(dftest2[1:end,[1:2;]],[Symbol("Referral Group"),Symbol("Page Views")]))
 
-        beautifyDF(names!(gas[1:min(10,end),[1:2;]],[symbol("Google Analytics Field: Source"),symbol("Page Views")]))
-        beautifyDF(names!(gam[1:min(10,end),[1:2;]],[symbol("Google Analytics Field: Medium"),symbol("Page Views")]))
-        beautifyDF(names!(gac[1:min(10,end),[1:2;]],[symbol("Google Analytics Field: Campaign"),symbol("Page Views")]))
+        beautifyDF(names!(gas[1:min(10,end),[1:2;]],[Symbol("Google Analytics Field: Source"),Symbol("Page Views")]))
+        beautifyDF(names!(gam[1:min(10,end),[1:2;]],[Symbol("Google Analytics Field: Medium"),Symbol("Page Views")]))
+        beautifyDF(names!(gac[1:min(10,end),[1:2;]],[Symbol("Google Analytics Field: Campaign"),Symbol("Page Views")]))
 
     catch y
         println("customReferralsTable Exception ",y)
     end
 end
 
-function standardReferrals(localTable::ASCIIString, productPageGroup::ASCIIString, startTime::DateTime, endTime::DateTime, timeString::ASCIIString; limit::Int64=10)
+function standardReferrals(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        topr = getTopReferrers(startTime, endTime, n=limit)
-        limit = (min(limit,size(topr)[1]))
-        chartTopN(startTime, endTime, n=limit; variable=:referrers;)
-        displayTitle(chart_title = "Top Referrers for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
-        beautifyDF(topr)
+        toprDF = getTopReferrers(TV.startTimeUTC, TV.endTimeUTC, n=UP.limitRows)
+        limit = (min(UP.limitRows,size(toprDF)[1]))
+        chartTopN(TV.startTimeUTC, TV.endTimeUTC, n=limit; variable=:referrers;)
+        displayTitle(chart_title = "Top Referrers for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        beautifyDF(toprDF)
     catch y
         println("standardReferrals Exception ",y)
     end

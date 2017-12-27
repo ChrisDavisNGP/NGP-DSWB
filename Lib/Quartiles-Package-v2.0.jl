@@ -7,14 +7,14 @@ function datePartQuartiles(startTime::DateTime, endTime::DateTime, datePart::Sym
     end
 end
 
-function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuartiles::Int64=10)
     try
         table = UP.beaconTable
-        pageGroupPercentages = getGroupPercentages(TV.startTime, TV.endTime)
+        pageGroupPercentages = getGroupPercentages(TV.startTimeUTC, TV.endTimeUTC)
         pageGroups = pageGroupPercentages[:page_group][1:min(10,end)]
         pageGroups = "'"*join(pageGroups,"','")*"'"
-        maxResources = UP.limitRows
-        pageGroupQuartiles = select("""
+        maxResources = showQuartiles
+        pageGroupQuartilesDF = select("""
         SELECT DISTINCT page_group,
             MIN(timers_t_done) OVER (PARTITION BY page_group) AS minimum,
             PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY timers_t_done) OVER (PARTITION BY page_group) AS lower_quartile,
@@ -34,21 +34,21 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             user_agent_os ilike '$(UP.agentOs)' and
             timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
         ORDER BY count DESC
-        limit $(UP.limitRows)
+        limit $(showQuartiles)
         """);
 
-        if (SP.devView)
+        #if (SP.devView)
             # pgAndCt = DataArray([]);
-            # for x in eachrow(pageGroupQuartiles)
+            # for x in eachrow(pageGroupQuartilesDF)
             #     newRow = [x[:page_group]*" \n \("*string(format(x[:count], commas=true))*"\)"]
             #     pgAndCt = vcat(pgAndCt, newRow)
             # end
-            # pageGroupQuartiles[:page_group] = pgAndCt;
-            # display(pageGroupQuartiles)
-        end
+            # pageGroupQuartilesDF[:page_group] = pgAndCt;
+            # display(pageGroupQuartilesDF)
+        #end
 
-        displayTitle(chart_title = "Top $(UP.limitRows) Page Group Time Quartiles", chart_info = ["Between $(TV.startTime) and $(TV.endTime)"],showTimeStamp=false)
-        plotsDF = drawBoxPlots(pageGroupQuartiles, yAxisLabel = "Milliseconds");
+        displayTitle(chart_title = "Top Page Group Times", chart_info = [TV.timeString],showTimeStamp=false)
+        plotsDF = drawBoxPlots(pageGroupQuartilesDF, yAxisLabel = "Milliseconds");
     catch y
         println("pageGroupQuartiles Exception ",y)
     end

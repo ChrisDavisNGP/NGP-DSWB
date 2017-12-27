@@ -12,7 +12,15 @@ setRedshiftEndpoint(dsn)
 setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 
-customer = "Nat Geo"
+TV = pickTime()
+#TV = timeVariables(2017,11,15,23,59,2017,11,16,23,59)
+
+UP = UrlParamsInit(scriptName)
+UrlParamsValidate(UP)
+
+SP = ShowParamsInit()
+ShowParamsValidate(SP)
+
 productPageGroup = "Nat Geo Homepage" # primary page group
 localTable = "$(table)_$(scriptName)_DOC_view"
 
@@ -46,7 +54,7 @@ println("$localTable count is ",cnt[1,1])
 
 try
 
-    displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
     domSize = query("""\
     select count(*),AVG(params_dom_sz) beacons,
     AVG(timers_t_page)/1000 load_time,
@@ -72,7 +80,7 @@ catch y
 end
 
 try
-    displayTitle(chart_title = "Total Bytes Used (Size x Views) Treemap Report (Min 2 MB Pages)", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Total Bytes Used (Size x Views) Treemap Report (Min 2 MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
     domSize = query("""\
     --select count(*),AVG(params_dom_sz) beacons,
     select count(*),SUM(params_dom_sz) beacons,
@@ -101,7 +109,7 @@ catch y
 end
 
 try
-    displayTitle(chart_title = "Unique Domains Used", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Unique Domains Used", chart_info = [TV.timeString], showTimeStamp=false)
 
     domSize = query("""\
     select count(*),AVG(params_dom_doms) avgsize,
@@ -123,7 +131,7 @@ catch y
     println("uniqueDomainsUsed Exception ",y)
 end
 
-#displayTitle(chart_title = "Friequent Unique Domains Used (50 dom min)", chart_info = [timeString], showTimeStamp=false)
+#displayTitle(chart_title = "Friequent Unique Domains Used (50 dom min)", chart_info = [TV.timeString], showTimeStamp=false)
 
 #domSize = query("""\
 #select count(*) cnt,SUM(params_dom_doms) avgsize,
@@ -141,7 +149,7 @@ end
 #beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Total Domains"),Symbol("URL Group")]))
 
 try
-    displayTitle(chart_title = "Domains Nodes On Page (20k min)", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Domains Nodes On Page (20k min)", chart_info = [TV.timeString], showTimeStamp=false)
 
     domSize = query("""\
     select count(*),AVG(params_dom_ln) avgsize,
@@ -164,7 +172,7 @@ catch y
     println("domainNodesOnPage Exception ",y)
 end
 
-#displayTitle(chart_title = "Domains Resource in RT", chart_info = [timeString], showTimeStamp=false)
+#displayTitle(chart_title = "Domains Resource in RT", chart_info = [TV.timeString], showTimeStamp=false)
 
 #domSize = query("""\
 #select count(*) cnt,AVG(params_dom_res) avgsize,page_group,params_u
@@ -177,7 +185,7 @@ end
 #""");
 #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
 
-#displayTitle(chart_title = "Frequent High Resource in RT", chart_info = [timeString], showTimeStamp=false)
+#displayTitle(chart_title = "Frequent High Resource in RT", chart_info = [TV.timeString], showTimeStamp=false)
 
 #domSize = query("""\
 #select count(*) cnt,AVG(params_dom_res) avgsize,page_group,params_u
@@ -191,7 +199,7 @@ end
 #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
 
 try
-    displayTitle(chart_title = "Domains Images", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Domains Images", chart_info = [TV.timeString], showTimeStamp=false)
 
     domSize = query("""\
     select count(*) cnt,AVG(params_dom_img) avgsize,AVG(params_dom_img_ext) avgsizeext,
@@ -214,7 +222,7 @@ catch y
 end
 
 try
-    displayTitle(chart_title = "Frequently Used Images", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Frequently Used Images", chart_info = [TV.timeString], showTimeStamp=false)
 
     domSize = query("""\
     select count(*) cnt,SUM(params_dom_img) avgsize,SUM(params_dom_img_ext) avgsizeext,
@@ -237,7 +245,7 @@ catch y
 end
 
 try
-    displayTitle(chart_title = "Domains Scripts", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Domains Scripts", chart_info = [TV.timeString], showTimeStamp=false)
 
     #params_dom_img,params_dom_img_ext,
     #params_dom_script,params_dom_script_ext,
@@ -263,7 +271,7 @@ catch y
 end
 
 try
-    displayTitle(chart_title = "Frequently Used Scripts", chart_info = [timeString], showTimeStamp=false)
+    displayTitle(chart_title = "Frequently Used Scripts", chart_info = [TV.timeString], showTimeStamp=false)
 
     #params_dom_img,params_dom_img_ext,
     #params_dom_script,params_dom_script_ext,
@@ -291,7 +299,7 @@ end
 sizeTrend = DataFrame()
 
 try
-    #displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [timeString], showTimeStamp=false)
+    #displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
 
     sizeTrend = query("""\
     select

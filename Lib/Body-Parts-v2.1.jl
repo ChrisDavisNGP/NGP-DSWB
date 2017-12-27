@@ -289,7 +289,7 @@ function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileV
 
         if (UP.deviceType == "Mobile")
             timeString2 = timeString * " - Mobile Only"
-            #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - MOBILE ONLY", chart_info = [timeString2],showTimeStamp=false)
+            #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - MOBILE ONLY", chart_info = [TV.timeString2],showTimeStamp=false)
             setTable(mobileView)
             chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
             setTable(UP.btView)
@@ -297,7 +297,7 @@ function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileV
 
         if (UP.deviceType == "Desktop")
             timeString2 = timeString * " - Desktop Only"
-            #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - DESKTOP ONLY", chart_info = [timeString],showTimeStamp=false)
+            #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup) - DESKTOP ONLY", chart_info = [TV.timeString],showTimeStamp=false)
             setTable(desktopView)
             chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
             setTable(UP.btView)
@@ -314,7 +314,7 @@ function loadTimesPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCI
     try
 
         #todo turn off title in chartLoadTimes
-        #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [timeString],showTimeStamp=false)
+        #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         if (UP.deviceType == "%")
 
             chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)

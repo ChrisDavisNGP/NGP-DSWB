@@ -15,29 +15,16 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 include("../../../Lib/Include-Package-v2.1.jl")
 
+TV = pickTime()
 #TV = timeVariables(2017,11,15,23,59,2017,11,16,23,59)
-TV = weeklyTimeVariables(days=7)
-#TV = yesterdayTimeVariables()
-;
+
 UP = UrlParamsInit(scriptName)
-UP.agentOs = "%"
-UP.deviceType = "%"
-UP.limitRows = 250
-UP.pageGroup = "News Article"   #productPageGroup
-UP.samplesMin = 10
-UP.sizeMin = 10000
-UP.timeLowerMs = 2000.0
-UP.timeUpperMs = 60000.0
-UP.urlRegEx = "%"   #localUrl
-UP.urlFull = "%"
-UP.usePageLoad=false
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
-SP.criticalPathOnly=true
-SP.devView=false
-SP.debugLevel = 0   # Tests use even numbers with > tests, make this an odd number or zero
 ShowParamsValidate(SP)
+
+openingTitle(TV,UP,SP)
 
 try
     chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
@@ -46,7 +33,7 @@ catch y
 end
 
 try
-    chartLoadTimes(TV.startTime, TV.endTime, TV.datePart)
+    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
 catch y
     println("chartLoadTimes Exception ",y)
 end
@@ -57,7 +44,7 @@ topUrlTableByTime(TV,UP,SP)
 
 pageGroupQuartiles(TV,UP,SP);
 
-chartActivityImpactByPageGroup(TV.startTime, TV.endTime;n=10);
+chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=10);
 
 try
     pageGroupTreemap(TV,UP,SP)
@@ -72,13 +59,13 @@ catch y
 end
 
 try
-    browserFamilyTreemap(TV,UP)
+    browserFamilyTreemap(TV,UP,SP)
 catch y
     println("browserFamilyTreemap Exception ",y)
 end
 
 try
-    countryTreemap(TV,UP)
+    countryTreemap(TV,UP,SP)
 catch y
     println("chartConcurSessions Exception ",y)
 end
