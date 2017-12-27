@@ -14,7 +14,7 @@ function scrubUrlToPrint(SP::ShowParams,urlDF::DataFrame,urlColumn::Symbol)
             newUrl = "None"
             try
                 newUrl = scrubUrlString(SP,url)
-            catch y
+            catch
                 #if (SP.debugLevel > 8) very noisy
                 #    println("str ",url,typeof(url))
                 #end
@@ -316,7 +316,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
-function setRangeUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function setRangeUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
 
     try
         statsDF = DataFrame()
@@ -362,7 +362,7 @@ function findTopPageUrlUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessio
     end
 end
 
-function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function findTopPageViewUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame)
     try
         if SP.reportLevel > 0
             i = 0

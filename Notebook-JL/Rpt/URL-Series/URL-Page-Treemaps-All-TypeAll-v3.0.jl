@@ -34,7 +34,7 @@ println("$table count is ",size(localTableDF))
 localTableRtDF = treemapsLocalTableRtCreateDF(TV,UP,SP)
 println("$tableRt count is ",size(localTableRtDF))
 
-setRangeUPT(TV,UP,SP)
+setRangeUPT(TV,UP,SP,localTableDF)
 
 showAvailableSessions(TV,UP,SP,localTableDF,localTableRtDF)
 
@@ -65,7 +65,7 @@ if size(toppageurl,1) == 0
     return
 end
 
-findTopPageViewUPT(TV,UP,SP)
+findTopPageViewUPT(TV,UP,SP,toppageurl)
 
 removeNegitiveTime(toppageurl,:Total)
 removeNegitiveTime(toppageurl,:Redirect)
@@ -623,7 +623,7 @@ if (SP.reportLevel > 11)
     drawTree(topurl; titleCol = :x1, fieldNames = fieldNames,resourceColors=true)
 end
 
-if (reportLevel > 11)
+if (SP.reportLevel > 11)
     if (studyTime > 0)
         topdetailurl = query("""\
         select
