@@ -24,29 +24,5 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-openingTitle(TV,UP,SP)
-
-bt = UP.beaconTable
-btv = UP.btView
-
-# Create view to query only product page_group
-defaultBeaconCreateView(TV,UP,SP)
-
-setTable(btv)
-
-# Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
-# where beacon_type = 'page view'
-# t1DF = query("""SELECT count(*) FROM $btv""")
-
-retailer_results = getLatestResults(hours=1, minutes=30, table_name="$(btv)")
-size(retailer_results)
-
-# drop some of the fields to make the output easier to read
-
-#delete!(retailer_results,[:geo_rg,:geo_city,:geo_org,:user_agent_major,:user_agent_osversion,:user_agent_os,:user_agent_model,:referrer])
-delete!(retailer_results,[:geo_rg,:geo_city,:geo_org,:user_agent_major,:user_agent_osversion,:user_agent_os,:user_agent_model])
-
-doit(retailer_results, showDimensionViz=true, showProgress=true);
-
-q = query(""" drop view if exists $btv;""")
+pageGroupAnimationWorkflow(TV,UP,SP)
 ;

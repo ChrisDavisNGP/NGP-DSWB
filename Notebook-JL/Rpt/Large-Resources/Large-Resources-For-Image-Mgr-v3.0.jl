@@ -26,49 +26,5 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-defaultBeaconCreateView(TV,UP,SP)
-
-fileType = "%jpg"
-imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
-if (size(imagesDf)[1] > 0)
-    idImageMgrPolicy(SP,imagesDf)
-end
-
-fileType = "%png"
-imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
-if (size(imagesDf)[1] > 0)
-    idImageMgrPolicy(SP,imagesDf)
-end
-
-fileType = "%jpeg"
-imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
-if (size(imagesDf)[1] > 0)
-    idImageMgrPolicy(SP,imagesDf)
-end
-
-fileType = "%gif"
-imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
-if (size(imagesDf)[1] > 0)
-    idImageMgrPolicy(SP,imagesDf)
-end
-
-fileType = "%imviewer"
-imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
-if (size(imagesDf)[1] > 0)
-    idImageMgrPolicy(SP,imagesDf)
-end
-
-fileType = "%svg"
-imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
-if (size(imagesDf)[1] > 0)
-    idImageMgrPolicy(SP,imagesDf)
-end
-
-fileType = "%jpeg"
-imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
-if (size(imagesDf)[1] > 0)
-    idImageMgrPolicy(SP,imagesDf)
-end
-
-q = query(""" drop view if exists $(UP.btView);""")
+largeResourcesForImageMgrWorkflow(TV,UP,SP)
 ;

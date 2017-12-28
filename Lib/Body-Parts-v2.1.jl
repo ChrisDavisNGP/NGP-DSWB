@@ -1137,3 +1137,12 @@ function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         println("setupLocalTable Exception ",y)
     end
 end
+
+function largeResourceFileTypePrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
+
+    imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
+    if (size(imagesDf)[1] > 0)
+        idImageMgrPolicy(SP,imagesDf)
+    end
+
+end
