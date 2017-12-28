@@ -1,5 +1,3 @@
-## Tables and Data Source setup
-
 using ODBC
 using DataFrames
 using DSWB

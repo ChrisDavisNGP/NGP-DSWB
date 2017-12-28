@@ -285,7 +285,7 @@ function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileV
     try
         if SP.debugLevel > 8
             println("Starting concurrentSessionsPGD")
-        end        
+        end
 
         if (UP.deviceType == "%")
             chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
@@ -955,5 +955,318 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
         println("resourceTime3 Exception ",y)
+    end
+end
+
+function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    defaultBeaconCreateView(TV,UP,SP)
+    btv = UP.btView
+
+    # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
+    # where beacon_type = 'page view'
+    cnt = query("""SELECT count(*) FROM $btv""")
+    #Hide output from final report
+    println("$btv count is ",cnt[1,1])
+
+    try
+
+        displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
+        domSize = query("""\
+            select
+                count(*),
+                AVG(params_dom_sz) beacons,
+                AVG(timers_t_page)/1000 load_time,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_sz IS NOT NULL
+                and params_dom_sz > 3000000
+            group by urlgroup
+            order by beacons desc
+            limit $(UP.limitRows)
+        """);
+
+        beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views");Symbol("Avg Size");Symbol("Avg Load Time (sec)");Symbol("URL Group")]))
+
+        fieldNames = [:urlgroup]
+        domSize[:x1] = "URLs Total Size"
+        drawTree(domSize;fieldNames=fieldNames)
+    catch y
+        println("urlTotalSizeTreemap Exception ",y)
+    end
+
+    try
+        displayTitle(chart_title = "Total Bytes Used (Size x Views) Treemap Report (Min 2 MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
+        domSize = query("""\
+            select
+                count(*),
+                SUM(params_dom_sz) beacons,
+                AVG(timers_t_page)/1000 load_time,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_sz IS NOT NULL
+                and params_dom_sz > 2000000
+            group by urlgroup
+            order by beacons desc
+            limit $(UP.limitRows)
+        """);
+
+        #display(names!(domSize[1:end,[1:4]],[Symbol("Page Views"),Symbol("Total Size"),Symbol("Avg Load Time(sec)"),Symbol("URL Group")]))
+        beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views");Symbol("Total Size");Symbol("Avg Load Time (sec)");Symbol("URL Group")]))
+        #display(domSize[1:end,:])
+
+        fieldNames = [:urlgroup]
+        domSize[:x1] = "URLs Total Size"
+        drawTree(domSize;fieldNames=fieldNames)
+    catch y
+        println("urlTotalSizeTreemap Exception ",y)
+    end
+
+    try
+        displayTitle(chart_title = "Unique Domains Used", chart_info = [TV.timeString], showTimeStamp=false)
+
+        domSize = query("""\
+            select
+                count(*),
+                AVG(params_dom_doms) avgsize,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_doms > 50
+                and params_dom_doms IS NOT NULL
+            group by urlgroup
+            order by avgsize desc
+            limit $(UP.limitRows)
+        """);
+        beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Avg Domains"),Symbol("URL Group")]))
+    catch y
+        println("uniqueDomainsUsed Exception ",y)
+    end
+
+    #displayTitle(chart_title = "Friequent Unique Domains Used (50 dom min)", chart_info = [TV.timeString], showTimeStamp=false)
+
+    #domSize = query("""\
+    #select count(*) cnt,SUM(params_dom_doms) avgsize,
+    #CASE
+    #when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+    #else trim('/' from params_u)
+    #end urlgroup
+    #from $btv
+    #where params_dom_doms > 50
+    #and params_dom_doms IS NOT NULL
+    #group by urlgroup
+    #order by cnt desc
+    #limit 15
+    #""");
+    #beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Total Domains"),Symbol("URL Group")]))
+
+    try
+        displayTitle(chart_title = "Domains Nodes On Page (20k min)", chart_info = [TV.timeString], showTimeStamp=false)
+
+        domSize = query("""\
+            select
+                count(*),
+                AVG(params_dom_ln) avgsize,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_ln > 20000
+                and params_dom_ln IS NOT NULL
+            group by urlgroup
+            order by avgsize desc
+            limit $(UP.limitRows)
+        """);
+
+        beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Avg Nodes"),Symbol("URL Group")]))
+    catch y
+        println("domainNodesOnPage Exception ",y)
+    end
+
+    #displayTitle(chart_title = "Domains Resource in RT", chart_info = [TV.timeString], showTimeStamp=false)
+
+    #domSize = query("""\
+    #select count(*) cnt,AVG(params_dom_res) avgsize,page_group,params_u
+    #from $btv
+    #where params_dom_res > 100
+    #and params_dom_res IS NOT NULL
+    #group by page_group,params_u
+    #order by avgsize desc
+    #limit $(UP.limitRows)
+    #""");
+    #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
+
+    #displayTitle(chart_title = "Frequent High Resource in RT", chart_info = [TV.timeString], showTimeStamp=false)
+
+    #domSize = query("""\
+    #select count(*) cnt,AVG(params_dom_res) avgsize,page_group,params_u
+    #from $btv
+    #where params_dom_res > 400
+    #and params_dom_res IS NOT NULL
+    #group by page_group,params_u
+    #order by cnt desc
+    #limit $(UP.limitRows)
+    #""");
+    #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
+
+    try
+        displayTitle(chart_title = "Domains Images", chart_info = [TV.timeString], showTimeStamp=false)
+
+        domSize = query("""\
+            select
+                count(*) cnt,
+                AVG(params_dom_img) avgsize,
+                AVG(params_dom_img_ext) avgsizeext,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_img > 100
+                and params_dom_img IS NOT NULL
+                and params_dom_img_ext IS NOT NULL
+            group by urlgroup
+            order by avgsize desc
+            limit $(UP.limitRows)
+        """);
+        beautifyDF(names!(domSize[:,[1:4]],[Symbol("Views"),Symbol("Avg Images"),Symbol("Avg Images External"),Symbol("URL Group")]))
+    catch y
+        println("domainsImages Exception ",y)
+    end
+
+    try
+        displayTitle(chart_title = "Frequently Used Images", chart_info = [TV.timeString], showTimeStamp=false)
+
+        domSize = query("""\
+            select
+                count(*) cnt,
+                SUM(params_dom_img) avgsize,
+                SUM(params_dom_img_ext) avgsizeext,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_img > 500
+                and params_dom_img IS NOT NULL
+                and params_dom_img_ext IS NOT NULL
+            group by urlgroup
+            order by CNT desc
+            limit $(UP.limitRows)
+        """);
+        beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Sum Images"),Symbol("Sum Images External"),Symbol("URL Group")]))
+    catch y
+        println("frequentlyUsedImages Exception ",y)
+    end
+
+    try
+        displayTitle(chart_title = "Domains Scripts", chart_info = [TV.timeString], showTimeStamp=false)
+
+        #params_dom_img,params_dom_img_ext,
+        #params_dom_script,params_dom_script_ext,
+
+        domSize = query("""\
+            select
+                count(*) cnt,
+                AVG(params_dom_script) avgsize,
+                AVG(params_dom_script_ext) avgsizeext,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_script > 100
+                and params_dom_script IS NOT NULL
+                and params_dom_script_ext IS NOT NULL
+            group by urlgroup
+            order by avgsize desc
+            limit $(UP.limitRows)
+        """);
+        beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Scripts"),Symbol("Avg Scripts External"),Symbol("URL Group")]))
+    catch y
+        println("domainScripts Exception ",y)
+    end
+
+    try
+        displayTitle(chart_title = "Frequently Used Scripts", chart_info = [TV.timeString], showTimeStamp=false)
+
+        #params_dom_img,params_dom_img_ext,
+        #params_dom_script,params_dom_script_ext,
+
+        domSize = query("""\
+            select
+                count(*) cnt,
+                SUM(params_dom_script) avgsize,
+                SUM(params_dom_script_ext) avgsizeext,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_script > 200
+                and params_dom_script IS NOT NULL
+                and params_dom_script_ext IS NOT NULL
+            group by urlgroup
+            order by cnt desc
+            limit $(UP.limitRows)
+        """);
+        beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Total Scripts"),Symbol("Total Scripts External"),Symbol("URL Group")]))
+    catch y
+        println("frequentlyUsedScripts Exception ",y)
+    end
+
+    sizeTrend = DataFrame()
+
+    try
+        #displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
+
+        sizeTrend = query("""\
+            select
+                params_h_t,
+                params_dom_sz size,
+                CASE
+                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
+                    else trim('/' from params_u)
+                end urlgroup
+            from $btv
+            where
+                params_dom_sz IS NOT NULL
+            limit 250
+        """);
+
+        #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Size"),Symbol("Avg Load Time (sec)"),Symbol("URL Group")]))
+        sizeof(sizeTrend[1:end,:])
+    catch y
+        println("setupSizeTrend Exception ",y)
+    end
+
+    try
+        delete!(sizeTrend,[:urlgroup])
+    catch y
+        println("cleanupSizeTrend Exception ",y)
+    end
+
+    try
+        dataNames = ["Dom Byte Size"]
+        drawC3Viz(sizeTrend, dataNames=dataNames);
+    catch y
+        println("graphSizeTrend Exception ",y)
     end
 end

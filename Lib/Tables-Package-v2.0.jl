@@ -2,6 +2,114 @@
 # Functions which return a data frame
 #
 
+function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+
+    if (SP.debugLevel > 4)
+        println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
+        println("urlRegEx $(UP.urlRegEx)")
+        println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
+        println("time Range: $(UP.timeLowerMs),$(UP.timeUpperMs)")
+    end
+
+    try
+        localTableDF = query("""\
+            select * from $bt
+            where
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            session_id IS NOT NULL and
+            params_rt_quit IS NULL and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            page_group ilike '$(UP.pageGroup)' and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+        """)
+
+        if (SP.debugLevel > 8)
+            standardChartTitle(TV,UP,SP,"Debug8: defaultBeaconsToDF All Columns")
+            beautifyDF(localTableDF[1:min(3,end),:])
+        end
+
+        return localTableDF
+    catch y
+        println("defaultBeaconsToDF Exception ",y)
+    end
+end
+
+function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+
+    if (SP.debugLevel > 4)
+        println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
+        println("urlRegEx $(UP.urlRegEx)")
+        println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
+        println("time Range: $(UP.timeLowerMs),$(UP.timeUpperMs)")
+    end
+
+    try
+        localTableDF = query("""\
+            select * from $bt
+            where
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            session_id IS NOT NULL and
+            params_rt_quit IS NULL and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            page_group ilike '$(UP.pageGroup)' and
+            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+            limit $(UP.limitRows)
+        """)
+
+        if (SP.debugLevel > 8)
+            standardChartTitle(TV,UP,SP,"Debug8: defaultLimitedBeaconsToDF All Columns")
+            beautifyDF(localTableDF[1:min(3,end),:])
+        end
+
+        return localTableDF
+    catch y
+        println("defaultLimitedBeaconsToDF Exception ",y)
+    end
+end
+
+function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+
+    if (SP.debugLevel > 4)
+        println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
+        println("urlRegEx $(UP.urlRegEx)")
+        println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
+        println("time Range: $(UP.timeLowerMs),$(UP.timeUpperMs)")
+    end
+
+    try
+        localTableDF = query("""\
+            select * from $bt
+            where
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            page_group ilike '$(UP.pageGroup)' and
+            beacon_type = 'error'
+            limit $(UP.limitRows)
+        """)
+
+        if (SP.debugLevel > 8)
+            standardChartTitle(TV,UP,SP,"Debug8: errorBeaconsToDF All Columns")
+            beautifyDF(localTableDF[1:min(3,end),:])
+        end
+
+        return localTableDF
+    catch y
+        println("errorBeaconsToDF Exception ",y)
+    end
+end
+
 function allPageUrlTableCreateDF(TV::TimeVars,UP::UrlParams)
     try
         bt = UP.beaconTable
@@ -898,42 +1006,6 @@ function resourceImagesOnNatGeo(UP::UrlParams,SP::ShowParams,fileType::ASCIIStri
 end
 
 # Select * from beaconTable into data frame
-
-function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-    bt = UP.beaconTable
-
-    if (SP.debugLevel > 4)
-        println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
-        println("urlRegEx $(UP.urlRegEx)")
-        println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
-        println("time Range: $(UP.timeLowerMs),$(UP.timeUpperMs)")
-    end
-
-    try
-        localTableDF = query("""\
-            select * from $bt
-            where
-            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-            session_id IS NOT NULL and
-            params_rt_quit IS NULL and
-            params_u ilike '$(UP.urlRegEx)' and
-            user_agent_device_type ilike '$(UP.deviceType)' and
-            user_agent_os ilike '$(UP.agentOs)' and
-            page_group ilike '$(UP.pageGroup)' and
-            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
-        """)
-
-        if (SP.debugLevel > 8)
-            standardChartTitle(TV,UP,SP,"Debug8: defaultBeaconsToDF All Columns")
-            beautifyDF(localTableDF[1:min(3,end),:])
-        end
-
-        return localTableDF
-    catch y
-        println("defaultBeaconsToDF Exception ",y)
-    end
-end
 
 function displayMatchingResourcesByParentUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 

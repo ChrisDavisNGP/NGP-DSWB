@@ -1,53 +1,3 @@
-function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
-
-    if SP.debugLevel > 8
-        println("Starting pageGroupDetailsCreateView")
-    end
-
-      try
-
-        query("""drop view if exists $(UP.btView)""")
-
-        query("""\
-            create or replace view $(UP.btView) as
-            (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
-            params_u ilike '$(UP.urlRegEx)' and
-            user_agent_os ilike '$(UP.agentOs)' and
-            user_agent_device_type ilike '$(UP.deviceType)' and
-            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-            )
-        """)
-
-        # todo if select count into var for size zero check and dbg output
-
-        query("""\
-            create or replace view $localMobileTable as
-            (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-            params_u ilike '$(UP.urlRegEx)' and
-            user_agent_os ilike '$(UP.agentOs)' and
-            user_agent_device_type = 'Mobile'
-            )
-        """)
-
-        query("""\
-            create or replace view $localDesktopTable as
-            (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
-            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-            params_u ilike '$(UP.urlRegEx)' and
-            user_agent_os ilike '$(UP.agentOs)' and
-            user_agent_device_type = 'Desktop'
-            )
-        """);
-
-    catch y
-        println("pageGroupDetailsCreateView Exception ",y)
-    end
-end
-
 function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
@@ -104,5 +54,55 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
         println("$rtv count is ",size(localTableRtDF))
     catch y
         println("setupLocalTable Exception ",y)
+    end
+end
+
+function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
+
+    if SP.debugLevel > 8
+        println("Starting pageGroupDetailsCreateView")
+    end
+
+      try
+
+        query("""drop view if exists $(UP.btView)""")
+
+        query("""\
+            create or replace view $(UP.btView) as
+            (select * FROM $(UP.beaconTable)
+            where page_group ilike '$(UP.pageGroup)' and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            user_agent_device_type ilike '$(UP.deviceType)' and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            )
+        """)
+
+        # todo if select count into var for size zero check and dbg output
+
+        query("""\
+            create or replace view $localMobileTable as
+            (select * FROM $(UP.beaconTable)
+            where page_group ilike '$(UP.pageGroup)' and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            user_agent_device_type = 'Mobile'
+            )
+        """)
+
+        query("""\
+            create or replace view $localDesktopTable as
+            (select * FROM $(UP.beaconTable)
+            where page_group ilike '$(UP.pageGroup)' and
+            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            params_u ilike '$(UP.urlRegEx)' and
+            user_agent_os ilike '$(UP.agentOs)' and
+            user_agent_device_type = 'Desktop'
+            )
+        """);
+
+    catch y
+        println("pageGroupDetailsCreateView Exception ",y)
     end
 end

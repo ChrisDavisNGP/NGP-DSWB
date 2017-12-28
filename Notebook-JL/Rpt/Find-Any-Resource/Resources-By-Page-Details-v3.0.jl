@@ -17,28 +17,14 @@ include("../../../Lib/Include-Package-v2.1.jl")
 TV = pickTime()
 
 UP = UrlParamsInit(scriptName)
+UP.timeLowerMs = 100     #extra small time
+UP.timeUpperMs = 6000000 #extra long time
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-# Resource and it parent is also interesting below this point
-
-try
-    query("""\
-        create or replace view $(UP.btView) as (
-            select * from $(UP.beaconTable)
-                where
-                    "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                    page_group ilike '$(UP.pageGroup)' and
-                    params_u ilike '$(UP.urlRegEx)'
-        )
-    """)
-    cnt = query("""SELECT count(*) FROM $(UP.btView)""")
-    println("$(UP.btView) count is ",cnt[1,1])
-catch y
-    println("setupLocalTable Exception ",y)
-end
+defaultBeaconCreateView(TV,UP,SP)
 
 linesOutput = 3
 resourceMatched(TV,UP,SP;linesOut=linesOutput)

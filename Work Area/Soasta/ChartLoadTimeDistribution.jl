@@ -57,7 +57,6 @@ setTable(localTable)
 query("""SELECT count(*) FROM $localTable""")
 
 
-***
 ## Not Working - to debug
 
 #To do figure out RTChart and RTAnaysis
