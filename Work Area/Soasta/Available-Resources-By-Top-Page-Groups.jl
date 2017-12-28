@@ -20,6 +20,8 @@ TV = pickTime()
 #TV = timeVariables(2017,10,27,23,59,2017,11,3,23,59)
 
 UP = UrlParamsInit(scriptName)
+UP.urlRegEx = "%www.nationalgeographic.com%";
+UP.pageGroup = "Nat Geo Homepage";
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
@@ -30,10 +32,7 @@ ShowParamsValidate(SP)
 #startTimeMs = datetimeToMs(startTime);
 #endTimeMs = datetimeToMs(endTime);
 
-url = "%www.nationalgeographic.com%";
 conversionMetric = :custom_metrics_0;
-pageGroup = "Nat Geo Homepage";
-os = "iOS";
 defaultCutOff = 98;
 
 #dropTables("officedepot_beacons_rt_first_party_summary", "officedepot_beacons_rt_summary",
@@ -45,21 +44,20 @@ defaultCutOff = 98;
 #"temp_full_sum_third" )
 
 #todo find showpercentage
-showPercentage(url, TV.startTime, TV.endTime; pageGroup = pageGroup)
+#showPercentage(UP.urlRegEx, TV.startTime, TV.endTime; pageGroup = UP.pageGroup)
+#showPercentage(UP.urlRegEx, startTime, endTime; pageGroup = UP.pageGroup, browser = "Mobile Safari")
 
-showPercentage(url, startTime, endTime; pageGroup = pageGroup, browser = "Mobile Safari")
+valuesDict = Dict{String, Array}();
+valuesDict[string(PG)] = [UP.pageGroup];
 
-values = Dict{String, Array}();
-values[string(PG)] = [pageGroup];
+@time chartResourceServersStatSummary(startTime, endTime; minResourceHits = 10_000, minLoadTime = 0, maxLoadTime = DEFAULT_1_MIN, byList = valuesDict)
 
-@time chartResourceServersStatSummary(startTime, endTime; minResourceHits = 10_000, minLoadTime = 0, maxLoadTime = DEFAULT_1_MIN, byList = values)
+valuesDict2 = Dict{String, Array}();
+valuesDict2[string(PG)] = [UP.pageGroup];
 
-values = Dict{String, Array}();
-values[string(PG)] = [pageGroup];
+@time chartResourceServerStatSummary(startTime, endTime; minResourceHits = 10_000, minLoadTime = 0, maxLoadTime = DEFAULT_1_MIN, byList = valuesDict2)
 
-@time chartResourceServerStatSummary(startTime, endTime; minResourceHits = 10_000, minLoadTime = 0, maxLoadTime = DEFAULT_1_MIN, byList = values)
-
-@time chartSiteSummaryByBeaconCriteria(startTime, endTime; pageGroup = pageGroup, pgPercentCutOff = defaultCutOff)
+@time chartSiteSummaryByBeaconCriteria(startTime, endTime; pageGroup = UP.pageGroup, pgPercentCutOff = defaultCutOff)
 
 topResourcesPerPage[topResourcesPerPage[:, :row] .<= 10, 1:10]
 
