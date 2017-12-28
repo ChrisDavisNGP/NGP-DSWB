@@ -29,43 +29,43 @@ ShowParamsValidate(SP)
 defaultBeaconCreateView(TV,UP,SP)
 
 fileType = "%jpg"
-imagesDf = resourceImagesOnNatgeo(UP,SP,fileType)
+imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
 if (size(imagesDf)[1] > 0)
     idImageMgrPolicy(SP,imagesDf)
 end
 
 fileType = "%png"
-imagesDf = resourceImagesOnNatgeo(UP,SP,fileType)
+imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
 if (size(imagesDf)[1] > 0)
     idImageMgrPolicy(SP,imagesDf)
 end
 
 fileType = "%jpeg"
-imagesDf = resourceImagesOnNatgeo(UP,SP,fileType)
+imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
 if (size(imagesDf)[1] > 0)
     idImageMgrPolicy(SP,imagesDf)
 end
 
 fileType = "%gif"
-imagesDf = resourceImagesOnNatgeo(UP,SP,fileType)
+imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
 if (size(imagesDf)[1] > 0)
     idImageMgrPolicy(SP,imagesDf)
 end
 
 fileType = "%imviewer"
-imagesDf = resourceImagesOnNatgeo(UP,SP,fileType)
+imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
 if (size(imagesDf)[1] > 0)
     idImageMgrPolicy(SP,imagesDf)
 end
 
 fileType = "%svg"
-imagesDf = resourceImagesOnNatgeo(UP,SP,fileType)
+imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
 if (size(imagesDf)[1] > 0)
     idImageMgrPolicy(SP,imagesDf)
 end
 
 fileType = "%jpeg"
-imagesDf = resourceImagesOnNatgeo(UP,SP,fileType)
+imagesDf = resourceImagesOnNatGeoToDF(UP,SP,fileType)
 if (size(imagesDf)[1] > 0)
     idImageMgrPolicy(SP,imagesDf)
 end

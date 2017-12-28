@@ -169,9 +169,9 @@ function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     defaultBeaconCreateView(TV,UP,SP)
 
-    test1GNGSSDM(UP,SP)
+    urlCountPrintTable(UP,SP)
 
-    testUserAgentGNGSSDM(UP,SP)
+    agentCountPrintTable(UP,SP)
 
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")
@@ -211,11 +211,11 @@ function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     defaultBeaconCreateView(TV,UP,SP)
 
-    test1GNGSSDM(UP,SP)
+    urlCountPrintTable(UP,SP)
 
-    test2GNGSSDM(UP,SP)
+    urlParamsUCountPrintTable(UP,SP)
 
-    test3GNGSSDM(UP,SP)
+    paramsUCountPrintTable(UP,SP)
 
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")
@@ -390,7 +390,7 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     defaultBeaconCreateView(TV,UP,SP);
 
     joinTables = DataFrame()
-    joinTables = gatherSizeData(UP,SP)
+    joinTables = gatherSizeDataToDF(UP,SP)
     ;
 
     joinTableSummary = DataFrame()
@@ -400,7 +400,7 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     i = 0
     for row in eachrow(joinTableSummary)
         i += 1
-        joinTablesDetailsPrint(TV,UP,SP,joinTableSummary,i)
+        joinTablesDetailsPrintTable(TV,UP,SP,joinTableSummary,i)
         statsDetailsPrint(TV,UP,SP,joinTableSummary,i)
         if (i >= SP.showLines)
             break;
@@ -455,11 +455,11 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowTopPages)
-    topPageViewsUDB(TV,UP,SP)
+    countUrlgroupPrintTable(TV,UP,SP)
   end
 
   if (wfShowTopUrlPages)
-    topUrlPageViewsUDB(TV,UP,SP)
+    countParamUBtViewPrintTable(TV,UP,SP)
   end
 
   # Currently broken - need ticket to Soasta
@@ -662,34 +662,34 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
     defaultBeaconCreateView(TV,UP,SP)
 
     if (wfShowBigPagesByFileType)
-        bigPageSizeDetails(TV,UP,SP,"%jpg";minEncoded=minimumEncoded)
-        bigPageSizeDetails(TV,UP,SP,"%png";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%svg";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%mp3";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%mp4";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%gif";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%wav";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%jog";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%js";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%js?%";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%css";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%ttf";minEncoded=minimumEncoded);
-        bigPageSizeDetails(TV,UP,SP,"%woff";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%jpg";minEncoded=minimumEncoded)
+        bigPagesSizePrintTable(TV,UP,SP,"%png";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%svg";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%mp3";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%mp4";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%gif";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%wav";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%jog";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%js";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%js?%";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%css";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%ttf";minEncoded=minimumEncoded);
+        bigPagesSizePrintTable(TV,UP,SP,"%woff";minEncoded=minimumEncoded);
     end
 
     if (wfShowLeftOvers)
         try
-            lookForLeftOversALR(UP,linesOutput)
+            lookForLeftOversPrintTable(UP,linesOutput)
         catch y
-            println("lookForLeftOversALR Exception ",y)
+            println("lookForLeftOversPrintTable Exception ",y)
         end
     end
 
     if (wfShowLeftOversDetails)
         try
-            lookForLeftOversDetailsALR(UP,linesOutput)
+            lookForLeftOversDetailsPrintTable(UP,linesOutput)
         catch y
-            println("lookForLeftOversALR Exception ",y)
+            println("lookForLeftOversPrintTable Exception ",y)
         end
     end
 
@@ -714,25 +714,25 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   openingTitle(TV,UP,SP)
 
   if (wfShowResourcesByParamsU)
-      displayMatchingResourcesByParentUrl(TV,UP,SP)
+      displayMatchingResourcesByParentUrlPrintTable(TV,UP,SP)
   end
 
   if (wfShowResourcesByUrl)
-      displayMatchingResourcesByUrl(TV,UP,SP)
+      displayMatchingResourcesByUrlRtPrintTable(TV,UP,SP)
   end
 
   defaultBeaconCreateView(TV,UP,SP)
 
   if (wfShowResourcesByUrls)
-      displayMatchingResourcesByUrls(TV,UP,SP)
+      displayMatchingResourcesByUrlBtvRtPrintTables(TV,UP,SP)
   end
 
   if (wfShowResourcesStats)
-      displayMatchingResourcesStats(TV,UP,SP)
+      displayMatchingResourcesStatsPrintTable(TV,UP,SP)
   end
 
   if (wfShowResourcesAllFields)
-      displayMatchingResourcesAllFields(TV,UP,SP)
+      displayMatchingResourcesAllFieldsPrintTable(TV,UP,SP)
   end
 
   if (wfClearViews)
@@ -758,28 +758,93 @@ function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
   minSizeBytes = bigPages1SRFLP(TV,UP,SP)
 
   if (wfShowBigPage2)
-      bigPages2SRFLP(TV,UP,SP,minSizeBytes)
+      bigPages2PrintTable(TV,UP,SP,minSizeBytes)
   end
 
   if (wfShowBigPage3)
-      bigPages3SRFLP(TV,UP,SP,minSizeBytes)
+      bigPages3PrintTable(TV,UP,SP,minSizeBytes)
   end
 
   if (wfShowBigPage4)
-      bigPages4SRFLP(TV,UP,SP,minSizeBytes)
+      bigPages4PrintTable(TV,UP,SP,minSizeBytes)
   end
 
   if (wfShowBigPage5)
-      bigPages5SRFLP(TV,UP,SP,minSizeBytes)
+      bigPages5PrintTable(TV,UP,SP,minSizeBytes)
   end
 
   if (wfShowBigPage6)
-      bigPages6SRFLP(TV,UP,SP,minSizeBytes)
+      bigPages6PrintTable(TV,UP,SP,minSizeBytes)
   end
 
   if (wfClearViews)
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")
   end
+
+end
+
+function determineBeaconsGroupingWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    short_results = getLatestResults(hours=0, minutes=5, table_name=UP.beaconTable)
+    size(short_results)
+
+    groups, group_summary = groupResults(short_results, dims=2, showProgress=true)
+    beautifyDF(group_summary)
+
+    gbg = getBestGrouping(short_results, group_summary)
+    beautifyDF(gbg)
+
+    soasta_results = getLatestResults(table_name=UP.beaconTable, hours=4);
+    size(soasta_results)
+
+    groups, group_summary = groupResults(soasta_results, dims=2, showProgress=true);
+    beautifyDF(group_summary)
+
+    gbg = getBestGrouping(soasta_results, group_summary)
+    beautifyDF(gbg)
+end
+
+function beaconAndRtCountsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+    rt = UP.resourceTable
+
+    if (SP.reportLevel > 9)
+        bc = getBeaconCount();
+        allBeacons = getBeaconsFirstAndLast();
+        #bcType = getBeaconCountByType();
+        beautifyDF(names!(bc[:,:],[Symbol("Beacon Count")]))
+        beautifyDF(allBeacons)
+        #beautifyDF(names!(bcType[:,:],[Symbol("Beacon Type"),Symbol("Beacon Count")]))
+    end
+
+    UP.pageGroup = "News Article"
+    UP.limitRows = 10
+    t1DF = defaultLimitedBeaconsToDF(TV,UP,SP)
+    standardChartTitle(TV,UP,SP,"$(UP.pageGroup) Page View Dump")
+    beautifyDF(t1DF)
+
+    t2DF = errorBeaconsToDF(TV,UP,SP)
+    if (size(t2DF,1) > 0)
+        standardChartTitle(TV,UP,SP,"Error Beacon Dump")
+        beautifyDF(t2DF)
+    end
+
+    rtcnt = query("""select count(*) from $rt""");
+    maxRt = query("""select max("timestamp") from $rt""");
+    minRt = query("""select min("timestamp") from $rt""");
+
+    minStr = msToDateTime(minRt[1,:min]);
+    maxStr = msToDateTime(maxRt[1,:max]);
+
+    printDf = DataFrame();
+    printDf[:minStr] = minStr;
+    printDf[:maxStr] = maxStr;
+
+    standardChartTitle(TV,UP,SP,"Resource Information")
+    beautifyDF(names!(rtcnt[:,:],[Symbol("Resource Timing Count")]))
+    beautifyDF(names!(printDf[:,:],[Symbol("First RT"),Symbol("Last RT")]))
+    ;
 
 end

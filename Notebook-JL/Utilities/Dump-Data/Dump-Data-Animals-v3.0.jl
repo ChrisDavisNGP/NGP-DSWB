@@ -23,5 +23,5 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-displayGroup(TV,UP,SP)
+displayGroupBody(TV,UP,SP)
 ;

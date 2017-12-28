@@ -39,14 +39,14 @@ beautifyDF(t1DF)
 t2DF = query("""SELECT count(*) FROM $(urlSpike.rtView)""")
 beautifyDF(t2DF)
 
-requestCountByGroupSDMRS(timeNormal,urlNormal,"Normal")
-requestCountByGroupSDMRS(timeSpike,urlSpike,"Spike")
+requestCountByGroupPrintTable(timeNormal,urlNormal,"Normal")
+requestCountByGroupPrintTable(timeSpike,urlSpike,"Spike")
 
-nonCacheRequestCountByGroupSDMRS(timeNormal,urlNormal,"Normal")
-nonCacheRequestCountByGroupSDMRS(timeSpike,urlSpike,"Spike")
+nonCacheRequestCountByGroupPrintTable(timeNormal,urlNormal,"Normal")
+nonCacheRequestCountByGroupPrintTable(timeSpike,urlSpike,"Spike")
 
-cacheHitRatioSDMRS(timeNormal,urlNormal,"Normal")
-cacheHitRatioSDMRS(timeSpike,urlSpike,"Spike")
+cacheHitRatioPrintTable(timeNormal,urlNormal,"Normal")
+cacheHitRatioPrintTable(timeSpike,urlSpike,"Spike")
 
 q = query(""" drop view if exists $(urlNormal.rtView);""")
 q = query(""" drop view if exists $(urlSpike.rtView);""")

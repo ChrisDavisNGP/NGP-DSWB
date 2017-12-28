@@ -15,21 +15,14 @@ setTable(table)
 
 include("../../../Lib/Include-Package-v2.1.jl")
 
-short_results = getLatestResults(hours=0, minutes=5, table_name=table)
-size(short_results)
+TV = pickTime()
+#TV = timeVariables(2017,6,8,10,59,2017,6,8,12,59)
 
-groups, group_summary = groupResults(short_results, dims=2, showProgress=true)
-beautifyDF(group_summary)
+UP = UrlParamsInit(scriptName)
+UrlParamsValidate(UP)
 
-gbg = getBestGrouping(short_results, group_summary)
-beautifyDF(gbg)
+SP = ShowParamsInit()
+ShowParamsValidate(SP)
 
-soasta_results = getLatestResults(table_name=table, hours=4);
-size(soasta_results)
-
-groups, group_summary = groupResults(soasta_results, dims=2, showProgress=true);
-beautifyDF(group_summary)
-
-gbg = getBestGrouping(soasta_results, group_summary)
-beautifyDF(gbg)
+determineBeaconsGroupingWorkflow(TV,UP,SP)
 ;

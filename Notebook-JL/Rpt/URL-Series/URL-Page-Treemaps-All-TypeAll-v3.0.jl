@@ -31,7 +31,7 @@ ShowParamsValidate(SP)
 localTableDF = defaultBeaconsToDF(TV,UP,SP)
 println("$table count is ",size(localTableDF))
 
-localTableRtDF = treemapsLocalTableRtCreateDF(TV,UP,SP)
+localTableRtDF = treemapsLocalTableRtToDF(TV,UP,SP)
 println("$tableRt count is ",size(localTableRtDF))
 
 setRangeUPT(TV,UP,SP,localTableDF)

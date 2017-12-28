@@ -221,7 +221,7 @@ end
 function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
-        localStatsDF = statsTableCreateDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
+        localStatsDF = statsBtTableToDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
 
         if size(localStatsDF,1) == 0
             println("No data returned")
@@ -286,7 +286,7 @@ function rawStatsSROS(TV::TimeVars,UP::UrlParams)
     statsDF = DataFrame()
     medianThreshold = Int64
     try
-        localStatsDF = statsTableCreateDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
+        localStatsDF = statsBtTableToDF(UP.btView,UP.pageGroup,TV.startTimeMsUTC,TV.endTimeMsUTC);
         #statsDF = basicStats(localStatsDF, UP.pageGroup, TV.startTimeMsUTC, TV.endTimeMsUTC)
         statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
@@ -517,7 +517,7 @@ function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
     end
 end
 
-function statsTableDF2(table::ASCIIString,productPageGroup::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function statsBtViewTableToDF(table::ASCIIString,productPageGroup::ASCIIString,localUrl::ASCIIString,deviceType::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         #println(localUrl)
 
@@ -531,7 +531,7 @@ function statsTableDF2(table::ASCIIString,productPageGroup::ASCIIString,localUrl
         """);
         return localStats
     catch y
-        println("statsTableCreateDF Exception ",y)
+        println("statsBtTableToDF Exception ",y)
     end
 end
 
@@ -542,7 +542,7 @@ function statsDetailsPrint2(localTable::ASCIIString,joinTableSummary::DataFrame,
 
         dispDMT = DataFrame(RefGroup=["","",""],Unit=["","",""],Count=[0,0,0],Mean=[0.0,0.0,0.0],Median=[0.0,0.0,0.0],Min=[0.0,0.0,0.0],Max=[0.0,0.0,0.0])
 
-        statsFullDF2 = statsTableDF2(localTable,productPageGroup,topUrl,"Desktop",TV.startTimeMsUTC,TV.endTimeMsUTC)
+        statsFullDF2 = statsBtViewTableToDF(localTable,productPageGroup,topUrl,"Desktop",TV.startTimeMsUTC,TV.endTimeMsUTC)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -553,7 +553,7 @@ function statsDetailsPrint2(localTable::ASCIIString,joinTableSummary::DataFrame,
             dispDMT[1:1,:Min] = statsDF2[2:2,:min]
             dispDMT[1:1,:Max] = statsDF2[2:2,:max]
         end
-        statsFullDF2 = statsTableDF2(localTable,productPageGroup,topUrl,"Mobile",TV.startTimeMsUTC,TV.endTimeMsUTC)
+        statsFullDF2 = statsBtViewTableToDF(localTable,productPageGroup,topUrl,"Mobile",TV.startTimeMsUTC,TV.endTimeMsUTC)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -564,7 +564,7 @@ function statsDetailsPrint2(localTable::ASCIIString,joinTableSummary::DataFrame,
             dispDMT[2:2,:Min] = statsDF2[2:2,:min]
             dispDMT[2:2,:Max] = statsDF2[2:2,:max]
         end
-        statsFullDF2 = statsTableDF2(localTable,productPageGroup,topUrl,"Tablet",TV.startTimeMsUTC,TV.endTimeMsUTC)
+        statsFullDF2 = statsBtViewTableToDF(localTable,productPageGroup,topUrl,"Tablet",TV.startTimeMsUTC,TV.endTimeMsUTC)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -579,6 +579,6 @@ function statsDetailsPrint2(localTable::ASCIIString,joinTableSummary::DataFrame,
         displayTitle(chart_title = "Large Request Stats for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)
         beautifyDF(dispDMT)
     catch y
-        println("statsTableDF2 Exception ",y)
+        println("statsBtViewTableToDF Exception ",y)
     end
 end

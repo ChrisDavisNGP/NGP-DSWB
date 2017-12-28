@@ -35,7 +35,7 @@ resourceSummary(TV,UP,SP;linesOut=linesOutput)
 minimumEncoded = 0
 resourceSize(TV,UP,SP;linesOut=linesOutput,minEncoded=minimumEncoded)
 
-resourceScreen(TV,UP,SP;linesOut=linesOutput)
+resourceScreenPrintTable(TV,UP,SP;linesOut=linesOutput)
 
 resourceSummaryDomainUrl(TV,UP,SP;linesOut=linesOutput)
 

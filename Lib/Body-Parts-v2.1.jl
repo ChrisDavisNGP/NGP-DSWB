@@ -1,108 +1,5 @@
 # From Individual-Streamline-Body
 
-function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-  try
-      table = UP.beaconTable
-      rt = UP.resourceTable
-
-      if (UP.usePageLoad)
-          localTableDF = query("""\
-          select
-            CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
-            count(*) as request_count,
-            avg($table.timers_t_done) as beacon_time,
-            sum($rt.encoded_size) as encoded_size
-          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
-              where
-              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
-              and $table.session_id IS NOT NULL
-              and $table.page_group ilike '$(UP.pageGroup)'
-              and $table.params_u ilike '$(UP.urlRegEx)'
-              and $table.user_agent_device_type ilike '$(UP.deviceType)'
-              and $table.user_agent_os ilike '$(UP.agentOs)'
-              and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
-              and $table.params_rt_quit IS NULL
-              and $table.errors IS NULL
-          group by urlgroup,$table.session_id,$table."timestamp",errors
-          """);
-      else
-
-          if (SP.debugLevel > 8)
-              debugTableDF = query("""\
-              select *
-              FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
-                  where
-                  $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
-                  and $table.session_id IS NOT NULL
-                  and $table.page_group ilike '$(UP.pageGroup)'
-                  and $table.params_u ilike '$(UP.urlRegEx)'
-                  and $table.user_agent_device_type ilike '$(UP.deviceType)'
-                  and $table.user_agent_os ilike '$(UP.agentOs)'
-                  and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
-                  and $table.params_rt_quit IS NULL
-                  limit 3
-                  """);
-
-              beautifyDF(debugTableDF[1:min(30,end),:])
-              println("pg=",UP.pageGroup," url=",UP.urlRegEx," dev=",UP.deviceType," dr lower=",UP.timeLowerMs," dr upper=",UP.timeUpperMs);
-
-          end
-
-          localTableDF = query("""\
-          select
-              CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
-              count(*) as request_count,
-              avg($table.timers_domready) as beacon_time,
-              sum($rt.encoded_size) as encoded_size
-          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
-              where
-              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
-              and $table.session_id IS NOT NULL
-              and $table.page_group ilike '$(UP.pageGroup)'
-              and $table.params_u ilike '$(UP.urlRegEx)'
-              and $table.user_agent_device_type ilike '$(UP.deviceType)'
-              and $table.user_agent_os ilike '$(UP.agentOs)'
-              and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
-              and $table.params_rt_quit IS NULL
-              and $table.errors IS NULL
-          group by urlgroup,$table.session_id,$table."timestamp",errors
-              """);
-
-
-          if (nrow(localTableDF) == 0)
-              return localTableDF
-          end
-
-          # Clean Up Bad Samples
-          # Currently request < 10
-
-          iRow = 0
-          reqVector = localTableDF[:request_count]
-
-          for reqCount in reqVector
-              iRow = iRow + 1
-              if (reqCount < 10)
-                  if (SP.debugLevel > 8)
-                      beautifyDF(localTableDF[iRow:iRow,:])
-                  end
-                 deleterows!(localTableDF,iRow)
-              end
-          end
-
-          if (SP.debugLevel > 6)
-              beautifyDF(localTableDF[1:min(30,end),:])
-          end
-      end
-
-      return localTableDF
-  catch y
-      println("urlDetailTables Exception ",y)
-  end
-end
-
-# From Individual-Streamline-Body
-
 function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::DataArray)
   try
 
@@ -369,7 +266,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         dispDMT = DataFrame(RefGroup=["","",""],Unit=["","",""],Count=[0,0,0],Mean=[0.0,0.0,0.0],Median=[0.0,0.0,0.0],Min=[0.0,0.0,0.0],Max=[0.0,0.0,0.0])
 
         UP.deviceType = "Desktop"
-        statsFullDF2 = statsTableDF2(TV,UP)
+        statsFullDF2 = statsBtViewTableToDF(TV,UP)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -381,7 +278,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
             dispDMT[1:1,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Mobile"
-        statsFullDF2 = statsTableDF2(TV,UP)
+        statsFullDF2 = statsBtViewTableToDF(TV,UP)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -393,7 +290,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
             dispDMT[2:2,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Tablet"
-        statsFullDF2 = statsTableDF2(TV,UP)
+        statsFullDF2 = statsBtViewTableToDF(TV,UP)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -431,7 +328,7 @@ end
 
 # from SQL Data Mining Group
 
-function displayGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function displayGroupBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         currentPageGroupDF = defaultBeaconsToDF(TV,UP,SP)
         #println("$pageGroup Beacons: ",size(currentPageGroupDF)[1])
@@ -450,7 +347,7 @@ function displayGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         scrubUrlToPrint(SP,finalPrintDF,:params_u)
         beautifyDF(finalPrintDF[1:min(SP.showLines,end),:])
     catch y
-        println("displayGroup Exception ",y)
+        println("displayGroupBody Exception ",y)
     end
 end
 
@@ -458,7 +355,7 @@ function displayTopUrlsByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPa
     UP.pageGroup = quickPageGroup
     defaultBeaconCreateView(TV,UP,SP)
     setTable(UP.btView)
-    topUrlTableByCount(TV,UP,SP;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
+    topUrlTableByCountPrintTable(TV,UP,SP;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
     q = query(""" drop view if exists $(UP.btView);""")
 end
 
@@ -477,23 +374,6 @@ function paginatePrintDf(printDF::DataFrame)
         println("paginatePrintDf Exception ",y)
     end
 
-end
-
-function cleanupTableFTWP(TV::TimeVars,UP::UrlParams)
-
-    CleanupTable = query("""\
-        select page_group, count(*) as "Page Views"
-        FROM $(UP.beaconTable)
-        where
-            beacon_type = 'page view'
-            and "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-            and page_group in ('Adventure WPF','Animals WPF','Environment WPF','Games WPF','Images WPF',
-                                'Movies WPF','Ocean WPF','Photography WPF','Science WPF','Travel WPF')
-        GROUP BY page_group
-        Order by count(*) desc
-    """)
-
-    beautifyDF(CleanupTable[1:min(10,end),:])
 end
 
 function idImageMgrPolicy(SP::ShowParams,imageDf::DataFrame)
@@ -567,7 +447,6 @@ function idImageMgrPolicy(SP::ShowParams,imageDf::DataFrame)
         println("idImageMgrPolicy Exception ",y)
     end
 end
-
 
 function knownPatterns()
     try
@@ -660,6 +539,7 @@ end
 function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
 
     try
+        #No Rtn Select cnt rt where ts,resRegEx
         joinTables = query("""\
         select count(*)
         from $(UP.resourceTable)
@@ -673,35 +553,6 @@ function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int
         beautifyDF(joinTables[1:min(linesOut,end),:])
     catch y
         println("resourceMatched Exception ",y)
-    end
-end
-
-function resourceScreen(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
-
-    try
-        joinTables = query("""\
-        select
-        count(*),
-        initiator_type,
-        height,
-        width,
-        x,
-        y,
-        url
-        from $(UP.resourceTable)
-        where
-          url ilike '$(UP.resRegEx)' and
-          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-        group by initiator_type,height,width,x,y,url
-        order by count(*) desc
-        limit $(linesOut)
-        """);
-
-        displayTitle(chart_title = "Screen Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
-    catch y
-        println("resourceScreen Exception ",y)
     end
 end
 
@@ -1257,5 +1108,32 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         drawC3Viz(sizeTrend, dataNames=dataNames);
     catch y
         println("graphSizeTrend Exception ",y)
+    end
+end
+
+function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    if SP.debugLevel > 8
+        println("Starting bigPages1SRFLP")
+    end
+
+    try
+        btv = UP.btView
+
+        statsDF = DataFrame()
+
+        localDF = query("""SELECT params_dom_sz FROM $btv""")
+        dv = localDF[:params_dom_sz]
+        statsDF = basicStatsFromDV(dv)
+        statsDF[:unit] = "KBytes"
+        minSizeBytes = statsDF[1:1,:UpperBy3Stddev][1]
+
+        displayTitle(chart_title = "Domain Size in KB", chart_info = [TV.timeString], showTimeStamp=false)
+        beautifyDF(statsDF)
+
+        return minSizeBytes
+
+    catch y
+        println("setupLocalTable Exception ",y)
     end
 end

@@ -110,7 +110,7 @@ function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function allPageUrlTableCreateDF(TV::TimeVars,UP::UrlParams)
+function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
     try
         bt = UP.beaconTable
         rt = UP.resourceTable
@@ -181,14 +181,14 @@ function allPageUrlTableCreateDF(TV::TimeVars,UP::UrlParams)
 
         return toppageurl
     catch y
-        println("allPageUrlTableCreateDF Exception ",y)
+        println("allPageUrlTableToDF Exception ",y)
     end
 end
 
-function allSessionUrlTableCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString)
+function allSessionUrlTableToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString)
 
     if SP.debugLevel > 8
-        println("Starting allSessionUrlTableCreateDF")
+        println("Starting allSessionUrlTableToDF")
     end
 
     rt = UP.resourceTable
@@ -221,14 +221,14 @@ function allSessionUrlTableCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,st
 
         return toppageurl
     catch y
-        println("allSessionUrlTableCreateDF Exception ",y)
+        println("allSessionUrlTableToDF Exception ",y)
     end
 end
 
-function sessionUrlTableCreateDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
 
     if SP.debugLevel > 8
-        println("Starting allSessionUrlTableCreateDF")
+        println("Starting allSessionUrlTableToDF")
     end
 
     rt = UP.resourceTable
@@ -260,11 +260,11 @@ function sessionUrlTableCreateDF(UP::UrlParams,SP::ShowParams,studySession::ASCI
 
         return toppageurl
     catch y
-        println("sessionUrlTableCreateDF Exception ",y)
+        println("sessionUrlTableToDF Exception ",y)
     end
 end
 
-function getResourcesForBeaconCreateDF(TV::TimeVars,UP::UrlParams)
+function getResourcesForBeaconToDF(TV::TimeVars,UP::UrlParams)
 
     bt = UP.beaconTable
     rt = UP.resourceTable
@@ -295,7 +295,7 @@ function getResourcesForBeaconCreateDF(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function statsTableCreateDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function statsBtTableToDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         localStats = query("""\
         select timers_t_done
@@ -306,14 +306,14 @@ function statsTableCreateDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::
         """);
         return localStats
     catch y
-        println("statsTableCreateDF Exception ",y)
+        println("statsBtTableToDF Exception ",y)
     end
 end
 
-function treemapsLocalTableRtCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     if SP.debugLevel > 8
-        println("Starting treemapsLocalTableRtCreateDF")
+        println("Starting treemapsLocalTableRtToDF")
     end
 
     bt = UP.beaconTable
@@ -337,93 +337,11 @@ function treemapsLocalTableRtCreateDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """)
         return localTableRtDF
     catch y
-        println("treemapsLocalTableRtCreateDF Exception ",y)
-    end
-end
-#
-#  Functions which create views
-#
-
-function test1GNGSSDM(UP::UrlParams,SP::ShowParams)
-
-    try
-
-        test1Table = query("""\
-            select URL, count(*)
-                FROM $(UP.btView)
-                GROUP BY url
-                Order by count(*) desc
-        """)
-
-        beautifyDF(test1Table[1:min(SP.showLines,end),:])
-    catch y
-        println("test1GNGSSDM Exception ",y)
+        println("treemapsLocalTableRtToDF Exception ",y)
     end
 end
 
-function testUserAgentGNGSSDM(UP::UrlParams,SP::ShowParams)
-
-    try
-        CleanupTable = query("""\
-            select count(*),user_agent_raw
-            FROM $(UP.btView)
-            where
-                beacon_type = 'page view'
-            group by user_agent_raw
-            order by count(*) desc
-        limit $(SP.showLines)
-    """)
-
-        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
-
-    catch y
-        println("testUserAgentGNGSSDM Exception ",y)
-    end
-end
-
-function test2GNGSSDM(UP::UrlParams,SP::ShowParams)
-
-    try
-        CleanupTable = query("""\
-            select count(*), URL, params_u
-            FROM $(UP.btView)
-            where
-                beacon_type = 'page view'
-            GROUP BY url,params_u
-            Order by count(*) desc
-    """)
-
-        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
-
-    catch y
-        println("test2GNGSSDM Exception ",y)
-    end
-end
-
-function test3GNGSSDM(UP::UrlParams,SP::ShowParams)
-
-    try
-        CleanupTable = query("""\
-            select
-                count(*) as "Page Views",
-                params_u as "URL Landing In Nat Geo Site Default Group"
-            FROM $(UP.btView)
-            where
-                beacon_type = 'page view' and
-                params_u <> 'http://www.nationalgeographic.com/' and
-                params_u like 'http://www.nationalgeographic.com/?%'
-            GROUP BY params_u
-            Order by count(*) desc
-        """)
-
-        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
-
-    catch y
-        println("test3GNGSSDM Exception ",y)
-    end
-end
-
-function gatherSizeData(UP::UrlParams,SP::ShowParams)
+function gatherSizeDataToDF(UP::UrlParams,SP::ShowParams)
     try
         bt = UP.btView
         rt = UP.resourceTable
@@ -448,11 +366,281 @@ function gatherSizeData(UP::UrlParams,SP::ShowParams)
 
         return joinTablesDF
     catch y
-        println("gatherSizeData Exception ",y)
+        println("gatherSizeDataToDF Exception ",y)
     end
 end
 
-function joinTablesDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSummary::DataFrame,row::Int64)
+function statsBtViewTableToDF(TV::TimeVars,UP::UrlParams)
+    try
+        btv = UP.btView
+
+        localStats = query("""\
+            select timers_t_done
+            from $btv
+            where
+                page_group ilike '$(UP.pageGroup)' and
+                params_u ilike '$(UP.urlRegEx)' and
+                user_agent_device_type ilike '$(UP.deviceType)' and
+                user_agent_os ilike '$(UP.agentOs)' and
+                "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                params_rt_quit IS NULL
+        """);
+        return localStats
+    catch y
+        println("statsBtViewTableToDF Exception ",y)
+    end
+end
+
+function resourceImagesOnNatGeoToDF(UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
+
+    try
+        btv = UP.btView
+        rt = UP.resourceTable
+
+        joinTablesDF = query("""\
+        select
+            avg($rt.encoded_size) as encoded,
+            avg($rt.transferred_size) as transferred,
+            avg($rt.decoded_size) as decoded,
+            count(*),
+            $rt.url
+        from $btv join $rt
+            on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
+        where $rt.encoded_size > $(UP.sizeMin) and
+            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
+            $rt.url ilike 'http://www.nationalgeographic.com%'
+        group by $rt.url
+        order by encoded desc, transferred desc, decoded desc
+        """);
+
+        if (SP.debugLevel > 4)
+            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+        end
+
+        return joinTablesDF
+    catch y
+        println("resourceImage Exception ",y)
+    end
+end
+
+function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  try
+      table = UP.beaconTable
+      rt = UP.resourceTable
+
+      if (UP.usePageLoad)
+          localTableDF = query("""\
+          select
+            CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
+            count(*) as request_count,
+            avg($table.timers_t_done) as beacon_time,
+            sum($rt.encoded_size) as encoded_size
+          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
+              where
+              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+              and $table.session_id IS NOT NULL
+              and $table.page_group ilike '$(UP.pageGroup)'
+              and $table.params_u ilike '$(UP.urlRegEx)'
+              and $table.user_agent_device_type ilike '$(UP.deviceType)'
+              and $table.user_agent_os ilike '$(UP.agentOs)'
+              and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
+              and $table.params_rt_quit IS NULL
+              and $table.errors IS NULL
+          group by urlgroup,$table.session_id,$table."timestamp",errors
+          """);
+      else
+
+          if (SP.debugLevel > 8)
+              debugTableDF = query("""\
+              select *
+              FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
+                  where
+                  $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+                  and $table.session_id IS NOT NULL
+                  and $table.page_group ilike '$(UP.pageGroup)'
+                  and $table.params_u ilike '$(UP.urlRegEx)'
+                  and $table.user_agent_device_type ilike '$(UP.deviceType)'
+                  and $table.user_agent_os ilike '$(UP.agentOs)'
+                  and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
+                  and $table.params_rt_quit IS NULL
+                  limit 3
+                  """);
+
+              beautifyDF(debugTableDF[1:min(30,end),:])
+              println("pg=",UP.pageGroup," url=",UP.urlRegEx," dev=",UP.deviceType," dr lower=",UP.timeLowerMs," dr upper=",UP.timeUpperMs);
+
+          end
+
+          localTableDF = query("""\
+          select
+              CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
+              count(*) as request_count,
+              avg($table.timers_domready) as beacon_time,
+              sum($rt.encoded_size) as encoded_size
+          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
+              where
+              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+              and $table.session_id IS NOT NULL
+              and $table.page_group ilike '$(UP.pageGroup)'
+              and $table.params_u ilike '$(UP.urlRegEx)'
+              and $table.user_agent_device_type ilike '$(UP.deviceType)'
+              and $table.user_agent_os ilike '$(UP.agentOs)'
+              and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
+              and $table.params_rt_quit IS NULL
+              and $table.errors IS NULL
+          group by urlgroup,$table.session_id,$table."timestamp",errors
+              """);
+
+
+          if (nrow(localTableDF) == 0)
+              return localTableDF
+          end
+
+          # Clean Up Bad Samples
+          # Currently request < 10
+
+          iRow = 0
+          reqVector = localTableDF[:request_count]
+
+          for reqCount in reqVector
+              iRow = iRow + 1
+              if (reqCount < 10)
+                  if (SP.debugLevel > 8)
+                      beautifyDF(localTableDF[iRow:iRow,:])
+                  end
+                 deleterows!(localTableDF,iRow)
+              end
+          end
+
+          if (SP.debugLevel > 6)
+              beautifyDF(localTableDF[1:min(30,end),:])
+          end
+      end
+
+      return localTableDF
+  catch y
+      println("urlDetailTables Exception ",y)
+  end
+end
+
+function testUrlClassifyToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    if SP.debugLevel > 8
+        println("Starting testUrlClassifyToDF")
+    end
+
+    try
+        rt = UP.resourceTable
+
+        localTableRtDF = query("""\
+            select
+                'None' as urlpagegroup,
+                CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup
+            FROM $rt
+            where
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            group by urlgroup,urlpagegroup
+            limit $(UP.limitRows)
+         """)
+
+        if (SP.debugLevel > 6)
+            beautifyDF(localTableRtDF[1:min(10,end),:])
+        end
+
+        return localTableRtDF
+    end
+
+catch y
+  println("urlDetailTables Exception ",y)
+end
+end
+
+
+#
+#  Functions which print tables only
+#
+
+function urlCountPrintTable(UP::UrlParams,SP::ShowParams)
+
+    try
+
+        test1Table = query("""\
+            select URL, count(*)
+                FROM $(UP.btView)
+                GROUP BY url
+                Order by count(*) desc
+        """)
+
+        beautifyDF(test1Table[1:min(SP.showLines,end),:])
+    catch y
+        println("urlCountPrintTable Exception ",y)
+    end
+end
+
+function agentCountPrintTable(UP::UrlParams,SP::ShowParams)
+
+    try
+        CleanupTable = query("""\
+            select count(*),user_agent_raw
+            FROM $(UP.btView)
+            where
+                beacon_type = 'page view'
+            group by user_agent_raw
+            order by count(*) desc
+        limit $(SP.showLines)
+    """)
+
+        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
+
+    catch y
+        println("agentCountPrintTable Exception ",y)
+    end
+end
+
+function urlParamsUCountPrintTable(UP::UrlParams,SP::ShowParams)
+
+    try
+        CleanupTable = query("""\
+            select count(*), URL, params_u
+            FROM $(UP.btView)
+            where
+                beacon_type = 'page view'
+            GROUP BY url,params_u
+            Order by count(*) desc
+    """)
+
+        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
+
+    catch y
+        println("urlParamsUCountPrintTable Exception ",y)
+    end
+end
+
+function paramsUCountPrintTable(UP::UrlParams,SP::ShowParams)
+
+    try
+        CleanupTable = query("""\
+            select
+                count(*) as "Page Views",
+                params_u as "URL Landing In Nat Geo Site Default Group"
+            FROM $(UP.btView)
+            where
+                beacon_type = 'page view' and
+                params_u <> 'http://www.nationalgeographic.com/' and
+                params_u like 'http://www.nationalgeographic.com/?%'
+            GROUP BY params_u
+            Order by count(*) desc
+        """)
+
+        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
+
+    catch y
+        println("paramsUCountPrintTable Exception ",y)
+    end
+end
+
+function joinTablesDetailsPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSummary::DataFrame,row::Int64)
     try
         btv = UP.btView
         rt = UP.resourceTable
@@ -485,32 +673,11 @@ function joinTablesDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTa
             beautifyDF(joinTablesDetails[1:end,:])
         end
     catch y
-        println("joinTablesDetailsPrint Exception ",y)
+        println("joinTablesDetailsPrintTable Exception ",y)
     end
 end
 
-function statsTableDF2(TV::TimeVars,UP::UrlParams)
-    try
-        btv = UP.btView
-
-        localStats = query("""\
-            select timers_t_done
-            from $btv
-            where
-                page_group ilike '$(UP.pageGroup)' and
-                params_u ilike '$(UP.urlRegEx)' and
-                user_agent_device_type ilike '$(UP.deviceType)' and
-                user_agent_os ilike '$(UP.agentOs)' and
-                "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
-                params_rt_quit IS NULL
-        """);
-        return localStats
-    catch y
-        println("statsTableDF2 Exception ",y)
-    end
-end
-
-function topPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         btv = UP.btView
@@ -534,7 +701,7 @@ function topPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function countParamUBtViewPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         btv = UP.btView
@@ -556,34 +723,7 @@ function topUrlPageViewsUDB(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-    if SP.debugLevel > 8
-        println("Starting bigPages1SRFLP")
-    end
-
-    try
-        btv = UP.btView
-
-        statsDF = DataFrame()
-
-        localDF = query("""SELECT params_dom_sz FROM $btv""")
-        dv = localDF[:params_dom_sz]
-        statsDF = basicStatsFromDV(dv)
-        statsDF[:unit] = "KBytes"
-        minSizeBytes = statsDF[1:1,:UpperBy3Stddev][1]
-
-        displayTitle(chart_title = "Domain Size in KB", chart_info = [TV.timeString], showTimeStamp=false)
-        beautifyDF(statsDF)
-
-        return minSizeBytes
-
-    catch y
-        println("setupLocalTable Exception ",y)
-    end
-end
-
-function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
+function bigPages2PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         btv = UP.btView
@@ -604,11 +744,11 @@ function bigPages2SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         scrubUrlToPrint(SP,bigPagesDF,:urlgroup)
         beautifyDF(names!(bigPagesDF[1:min(SP.showLines,end),:],[Symbol("Size");Symbol("Load Time (ms)");Symbol("URL")]))
     catch y
-        println("bigPages2SRFLP Exception ",y)
+        println("bigPages2PrintTable Exception ",y)
     end
 end
 
-function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
+function bigPages3PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         btv = UP.btView
@@ -632,11 +772,11 @@ function bigPages3SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         scrubUrlToPrint(SP,bigAveragePagesDF,:urlgroup)
         beautifyDF(names!(bigAveragePagesDF[1:min(SP.showLines,end),:],[Symbol("Count");Symbol("Size");Symbol("Load Time (ms)");Symbol("URL")]))
     catch y
-        println("bigPages3SRFLP Exception ",y)
+        println("bigPages3PrintTable Exception ",y)
     end
 end
 
-function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
+function bigPages4PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         btv = UP.btView
@@ -660,11 +800,11 @@ function bigPages4SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         scrubUrlToPrint(SP,bigPagesSessionsDF,:urlgroup)
         beautifyDF(names!(bigPagesSessionsDF[1:min(end,SP.showLines),:],[Symbol("Size");Symbol("Session ID");Symbol("Timestamp");Symbol("URL")]))
     catch y
-        println("bigPages4SRFLP Exception ",y)
+        println("bigPages4PrintTable Exception ",y)
     end
 end
 
-function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
+function bigPages5PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         btv = UP.btView
@@ -691,11 +831,11 @@ function bigPages5SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         beautifyDF(names!(joinTablesDF[1:min(end,SP.showLines),:],[Symbol("Page Views");Symbol("Size");Symbol("Session ID");Symbol("TimeStamp")]))
 
     catch y
-        println("bigPages5SRFLP Exception ",y)
+        println("bigPages5PrintTable Exception ",y)
     end
 end
 
-function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
+function bigPages6PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
         btv = UP.btView
@@ -725,11 +865,11 @@ function bigPages6SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::
         scrubUrlToPrint(SP,joinTablesDF,:urlgroup)
         beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
     catch y
-        println("bigPages6SRFLP Exception ",y)
+        println("bigPages6PrintTable Exception ",y)
     end
 end
 
-function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=1000)
+function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=1000)
 
     # Create the summary table
 
@@ -761,7 +901,7 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
         displayTitle(chart_title = "$(UP.deviceType) Big Pages Details (Min $(minEncoded) Bytes), File Type $(fileType)", chart_info = [TV.timeString], showTimeStamp=false)
         beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
     catch y
-        println("bigPageSizeDetails 1 Exception ",y)
+        println("bigPagesSizePrintTable 1 Exception ",y)
     end
 
     # Create the details table
@@ -790,12 +930,12 @@ function bigPageSizeDetails(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64=100
 
         beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
     catch y
-        println("bigPageSizeDetails 2 Exception ",y)
+        println("bigPagesSizePrintTable 2 Exception ",y)
     end
 
 end
 
-function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
+function lookForLeftOversPrintTable(UP::UrlParams,linesOutput::Int64)
 
     joinTablesDF = DataFrame()
 
@@ -840,12 +980,12 @@ function lookForLeftOversALR(UP::UrlParams,linesOutput::Int64)
 
         beautifyDF(joinTablesDF[1:min(linesOutput,end),:])
     catch y
-        println("lookForLeftOversALR Exception ",y)
+        println("lookForLeftOversPrintTable Exception ",y)
     end
     #display(joinTablesDF)
 end
 
-function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)
+function lookForLeftOversDetailsPrintTable(UP::UrlParams,linesOutput::Int64)
 
     joinTablesDF = DataFrame()
 
@@ -877,11 +1017,11 @@ function lookForLeftOversDetailsALR(UP::UrlParams,linesOutput::Int64)
 
         beautifyDF(joinTablesDF[1:min(linesOutput,end),:])
     catch y
-        println("lookForLeftOversDetailsALR Exception ",y)
+        println("lookForLeftOversDetailsPrintTable Exception ",y)
     end
 end
 
-function requestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
+function requestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
 
     rc = query("""\
 
@@ -899,26 +1039,7 @@ function requestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIStrin
 
 end
 
-function blockingRequestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
-
-    br = query("""\
-
-        select
-            count(*) reqcnt, sum(request_start-start_time) totalblk, (sum(request_start-start_time)/count(*)) avgblk,substring(url for position('/' in substring(url from 9)) +7) urlgroup
-        FROM $(UP.rtView)
-        where
-            (request_start-start_time) > 0
-        group by urlgroup
-        order by totalblk desc
-         LIMIT 30
-    """)
-
-    displayTitle(chart_title = "$(typeStr): Blocking Requests By URL Groups Across All Sessions", chart_info = [TV.timeString], showTimeStamp=false)
-    linesOut = 30
-    beautifyDF(br[1:min(linesOut,end),:])
-end
-
-function nonCacheRequestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
+function nonCacheRequestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
 
     nc = query("""\
         select
@@ -936,7 +1057,7 @@ function nonCacheRequestCountByGroupSDMRS(TV::TimeVars,UP::UrlParams,typeStr::AS
     beautifyDF(nc[1:min(linesOut,end),:])
 end
 
-function cacheHitRatioSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
+function cacheHitRatioPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
 
     cached = query("""\
         select
@@ -973,41 +1094,9 @@ function cacheHitRatioSDMRS(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
     beautifyDF(names!(ratio[1:min(30, end),[1:4;]],[Symbol("Url Group"), Symbol("Not Cached Cnt"), Symbol("Cached Cnt"), Symbol("Cached Ratio")]))
 end
 
-function resourceImagesOnNatGeo(UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
-
-    try
-        btv = UP.btView
-        rt = UP.resourceTable
-
-        joinTablesDF = query("""\
-        select
-            avg($rt.encoded_size) as encoded,
-            avg($rt.transferred_size) as transferred,
-            avg($rt.decoded_size) as decoded,
-            count(*),
-            $rt.url
-        from $btv join $rt
-            on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
-        where $rt.encoded_size > $(UP.sizeMin) and
-            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $rt.url ilike 'http://www.nationalgeographic.com%'
-        group by $rt.url
-        order by encoded desc, transferred desc, decoded desc
-        """);
-
-        if (SP.debugLevel > 4)
-            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
-        end
-
-        return joinTablesDF
-    catch y
-        println("resourceImage Exception ",y)
-    end
-end
-
 # Select * from beaconTable into data frame
 
-function displayMatchingResourcesByParentUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function displayMatchingResourcesByParentUrlPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         rt = UP.resourceTable
@@ -1033,11 +1122,11 @@ function displayMatchingResourcesByParentUrl(TV::TimeVars,UP::UrlParams,SP::Show
         end
 
     catch y
-        println("displayMatchingResourcesByParentUrl Exception ",y)
+        println("displayMatchingResourcesByParentUrlPrintTable Exception ",y)
     end
 end
 
-function displayMatchingResourcesByUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function displayMatchingResourcesByUrlRtPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         rt = UP.resourceTable
@@ -1063,11 +1152,11 @@ function displayMatchingResourcesByUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams
         end
 
     catch y
-        println("displayMatchingResourcesByUrl Exception ",y)
+        println("displayMatchingResourcesByUrlRtPrintTable Exception ",y)
     end
 end
 
-function displayMatchingResourcesByUrls(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function displayMatchingResourcesByUrlBtvRtPrintTables(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         btw = UP.btView
@@ -1094,11 +1183,11 @@ function displayMatchingResourcesByUrls(TV::TimeVars,UP::UrlParams,SP::ShowParam
         end
 
     catch y
-        println("displayMatchingResourcesByUrls Exception ",y)
+        println("displayMatchingResourcesByUrlBtvRtPrintTables Exception ",y)
     end
 end
 
-function displayMatchingResourcesAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function displayMatchingResourcesAllFieldsPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         rt = UP.resourceTable
@@ -1121,11 +1210,11 @@ function displayMatchingResourcesAllFields(TV::TimeVars,UP::UrlParams,SP::ShowPa
         end
 
     catch y
-        println("displayMatchingResourcesAllFields Exception ",y)
+        println("displayMatchingResourcesAllFieldsPrintTable Exception ",y)
     end
 end
 
-function displayMatchingResourcesStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function displayMatchingResourcesStatsPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         rt = UP.resourceTable
@@ -1165,11 +1254,11 @@ function displayMatchingResourcesStats(TV::TimeVars,UP::UrlParams,SP::ShowParams
         end
 
     catch y
-        println("displayMatchingResourcesStats Exception ",y)
+        println("displayMatchingResourcesStatsPrintTable Exception ",y)
     end
 end
 
-function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
+function topUrlTableByCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
         try
 
             ltName = UP.btView
@@ -1233,7 +1322,7 @@ function topUrlTableByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams; rowLimit:
 
 end
 
-function detailsPrint(localTable::ASCIIString,tableRt::ASCIIString,joinTableSummary::DataFrame,row::Int64)
+function largePageDetailsPrintTable(localTable::ASCIIString,tableRt::ASCIIString,joinTableSummary::DataFrame,row::Int64)
     try
         topSessionId = joinTableSummary[row:row,:session_id][1]
         topTimeStamp = joinTableSummary[row:row,:timestamp][1]
@@ -1260,5 +1349,35 @@ function detailsPrint(localTable::ASCIIString,tableRt::ASCIIString,joinTableSumm
         beautifyDF(joinTablesDetails[1:end,:])
     catch y
         println("bigTable5 Exception ",y)
+    end
+end
+
+function resourceScreenPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+
+    try
+        #No Rtn Select cnt,initiator,height,width,x,y,url RT Where url,ts limited
+        joinTables = query("""\
+            select
+                count(*),
+                initiator_type,
+                height,
+                width,
+                x,
+                y,
+                url
+            from $(UP.resourceTable)
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            group by initiator_type,height,width,x,y,url
+            order by count(*) desc
+            limit $(linesOut)
+        """);
+
+        displayTitle(chart_title = "Screen Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+        #scrubUrlToPrint(joinTables,limit=150)
+        beautifyDF(joinTables[1:min(linesOut,end),:])
+    catch y
+        println("resourceScreenPrintTable Exception ",y)
     end
 end

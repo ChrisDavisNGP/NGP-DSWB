@@ -188,7 +188,7 @@ beautifyDF(joinTableSummary[1:min(linesOutput,end),[:useragentfamily,:encoded,:t
 i = 0
 for row in eachrow(joinTableSummary)
     i += 1
-    detailsPrint(UP.btView,tableRt,joinTableSummary,i)
+    largePageDetailsPrintTable(UP.btView,tableRt,joinTableSummary,i)
     statsDetailsPrint2(UP.btView,joinTableSummary,i)
     if (i >= linesOutput)
         break;

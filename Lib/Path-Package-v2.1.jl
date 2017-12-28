@@ -62,7 +62,7 @@ function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
       end
 
-#      localTableRtDF = getResourcesForBeaconCreateDF(TV,UP)
+#      localTableRtDF = getResourcesForBeaconToDF(TV,UP)
 #      recordsFound = nrow(localTableRtDF)
 #
 #      if (SP.debugLevel > 4)
@@ -97,7 +97,7 @@ function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;r
       localTableRtDF = DataFrame()
       statsDF = DataFrame()
 
-      localTableDF = estimateFullBeaconsV2(TV,UP,SP)
+      localTableDF = estimateFullBeaconsToDF(TV,UP,SP)
       recordsFound = nrow(localTableDF)
 
       if (SP.debugLevel > 0)
@@ -302,19 +302,19 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
 
       if studyTime > 0
           if SP.debugLevel > 8
-              println("Calling sessionUrlTableCreateDF")
+              println("Calling sessionUrlTableToDF")
           end
-          toppageurl = sessionUrlTableCreateDF(UP,SP,studySession,studyTime)
+          toppageurl = sessionUrlTableToDF(UP,SP,studySession,studyTime)
           elseif (studySession != "None")
               if SP.debugLevel > 8
-                  println("Calling allSessionUrlTableCreateDF")
+                  println("Calling allSessionUrlTableToDF")
               end
-              toppageurl = allSessionUrlTableCreateDF(TV,UP,SP,studySession)
+              toppageurl = allSessionUrlTableToDF(TV,UP,SP,studySession)
           else
               if SP.debugLevel > 8
-                  println("Calling allPageUrlTableCreateDF")
+                  println("Calling allPageUrlTableToDF")
               end
-              toppageurl = allPageUrlTableCreateDF(TV,UP)
+              toppageurl = allPageUrlTableToDF(TV,UP)
       end
 
       return toppageurl
@@ -721,11 +721,11 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         toppageurl = DataFrame()
         if studyTime > 0
-            toppageurl = sessionUrlTableCreateDF(UP,SP,studySession,studyTime)
+            toppageurl = sessionUrlTableToDF(UP,SP,studySession,studyTime)
             elseif (studySession != "None")
-              toppageurl = allSessionUrlTableCreateDF(TV,UP,SP,studySession)
+              toppageurl = allSessionUrlTableToDF(TV,UP,SP,studySession)
             else
-                toppageurl = allPageUrlTableCreateDF(TV,UP)
+                toppageurl = allPageUrlTableToDF(TV,UP)
         end
 
         if (SP.debugLevel > 0)

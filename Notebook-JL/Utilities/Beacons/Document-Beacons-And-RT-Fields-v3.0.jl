@@ -93,6 +93,7 @@ cnt = query("""SELECT count(*) FROM $rtv""")
 #Hide output from final report
 println("$rtv count is ",cnt[1,1])
 
+#DF Select cnt btv where session_id, timestamp
 sBeacon = query("""\
 select count(*)
 from $btv
@@ -100,6 +101,7 @@ where session_id = '$(sessionId)' and "timestamp" in $(ts)
 """)
 display(sBeacon)
 
+#DF Select cnt rtv where session_id, timestamp
 sRt = query("""\
 select count(*)
 from $rtv
