@@ -5,7 +5,9 @@ function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime3
         end
 
         startTime30 = DateTime(TV.endTimeUTC - Day(30))
-        startTime90 = DateTime(TV.endTimeUTC - Day(90))
+        if SP.debugLevel > 4
+            println("30 Day Range ",startTime30," and ", TV.endTimeUTC)
+        end
 
         usePageGroup = false
         chartTitle = "Peak Arrivals"
@@ -33,9 +35,9 @@ function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime3
             ]
 
         if (usePageGroup)
-            peakArrivals = getPeak(TV.startTimeUTC, TV.endTimeUTC, [ :day, :hour, :minute]; pageGroup=UP.pageGroup, filters=myFilter)
+            peakArrivals = getPeak(TV.startTimeUTC, TV.endTimeUTC, [ :day, :hour, :minute]; pageGroup=UP.pageGroup, filters=myFilter, table=UP.beaconTable)
         else
-            peakArrivals = getPeak(TV.startTimeUTC, TV.endTimeUTC, [ :day, :hour, :minute]; filters=myFilter)
+            peakArrivals = getPeak(TV.startTimeUTC, TV.endTimeUTC, [ :day, :hour, :minute]; filters=myFilter, table=UP.beaconTable)
         end
 
         peakArrivals[1:1,1] = tableRange * "Peak Day"
@@ -44,9 +46,9 @@ function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime3
 
         if (showStartTime30)
             if (usePageGroup)
-                peakArrivals30 = getPeak(startTime30, TV.endTimeUTC, [ :day, :hour, :minute]; pageGroup=UP.pageGroup, filters=myFilter)
+                peakArrivals30 = getPeak(startTime30, TV.endTimeUTC, [ :day, :hour, :minute]; pageGroup=UP.pageGroup, filters=myFilter, table=UP.beaconTable)
             else
-                peakArrivals30 = getPeak(startTime30, TV.endTimeUTC, [ :day, :hour, :minute]; filters=myFilter)
+                peakArrivals30 = getPeak(startTime30, TV.endTimeUTC, [ :day, :hour, :minute]; filters=myFilter, table=UP.beaconTable)
             end
 
             push!(peakArrivals,["30 Day Peak Day";peakArrivals30[1:1,2];peakArrivals30[1:1,3]])
