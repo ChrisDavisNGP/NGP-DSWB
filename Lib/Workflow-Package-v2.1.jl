@@ -932,7 +932,7 @@ end
 function largeResourcesForImageMgrWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     defaultBeaconCreateView(TV,UP,SP)
-    
+
     largeResourceFileTypePrint(TV,UP,SP,"%jpg")
     largeResourceFileTypePrint(TV,UP,SP,"%png")
     largeResourceFileTypePrint(TV,UP,SP,"%jpeg")
@@ -942,6 +942,104 @@ function largeResourcesForImageMgrWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
     largeResourceFileTypePrint(TV,UP,SP,"%jpeg")
 
     q = query(""" drop view if exists $(UP.btView);""")
+    ;
+
+end
+
+function resourcesDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    linesOutput = 3
+    resourceMatched(TV,UP,SP;linesOut=3)
+
+    resourceSummaryAllFields(TV,UP,SP;linesOut=3)
+
+    linesOutput = SP.showLines
+    resourceSummary(TV,UP,SP;linesOut=linesOutput)
+
+    minimumEncoded = 0
+    resourceSize(TV,UP,SP;linesOut=linesOutput,minEncoded=minimumEncoded)
+
+    resourceScreenPrintTable(TV,UP,SP;linesOut=linesOutput)
+
+    resourceSummaryDomainUrl(TV,UP,SP;linesOut=linesOutput)
+
+    resourceTime1(TV,UP,SP;linesOut=linesOutput)
+
+    resourceTime2(TV,UP,SP;linesOut=linesOutput)
+
+    resourceTime3(TV,UP,SP;linesOut=linesOutput)
+
+end
+
+function findAnyAggResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    UP.resRegEx = "%www.nationalgeographic.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%news.nationalgeographic.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%adservice.google%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%googlesyndication.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%yahoo.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%innovid.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%moatads.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%fls.doubleclick%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%unrulymedia.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%googleapis.com%"   # Google Doubleclick related
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%2mdn.net%"   # Google Doubleclick related
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%doubleclick.net%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%monetate_off%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%monetate.net%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%MonetateTests%"
+    findAnyResourceWorkflow(TV,UP,SP)
+    ;
+
+end
+
+function findAdsResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    UP.resRegEx = "%v1.9.3%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%v1.9.5%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%cdn1.spotible.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%fng-ads.fox.com/fw_ads%" # Oct 19 freewheel ads
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%player.foxdcg.com/ngp-freewheel%" # Oct 19 freewheel ads
+    findAnyResourceWorkflow(TV,UP,SP)
+
+    UP.resRegEx = "%pr-bh.ybp.yahoo.com%"
+    findAnyResourceWorkflow(TV,UP,SP)
     ;
 
 end

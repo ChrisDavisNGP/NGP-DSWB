@@ -23,23 +23,5 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-linesOutput = 3
-resourceMatched(TV,UP,SP;linesOut=3)
-
-resourceSummaryAllFields(TV,UP,SP;linesOut=3)
-
-linesOutput = SP.showLines
-resourceSummary(TV,UP,SP;linesOut=linesOutput)
-
-minimumEncoded = 0
-resourceSize(TV,UP,SP;linesOut=linesOutput,minEncoded=minimumEncoded)
-
-resourceScreenPrintTable(TV,UP,SP;linesOut=linesOutput)
-
-resourceSummaryDomainUrl(TV,UP,SP;linesOut=linesOutput)
-
-resourceTime1(TV,UP,SP;linesOut=linesOutput)
-
-resourceTime2(TV,UP,SP;linesOut=linesOutput)
-
-resourceTime3(TV,UP,SP;linesOut=linesOutput)
+resourcesDetailsWorkflow(TV,UP,SP)
+;
