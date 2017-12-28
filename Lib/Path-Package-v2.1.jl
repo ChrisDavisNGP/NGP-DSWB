@@ -658,14 +658,14 @@ end
 
 # From Individual-Streamline-Body
 
-function newPagesList()
+function newPagesList(UP::UrlParams)
   try
 
       if !isdefined(:theList)
-          #theList = loadDistributionJsonFile()
+          jList = JSON.parsefile(UP.jsonFilename)
+      else
+          jList = JSON.parse(theList)
       end
-
-      jList = JSON.parse(theList)
 
       dataArray = get(jList,"data","none")
       urlListDF = DataFrame()
