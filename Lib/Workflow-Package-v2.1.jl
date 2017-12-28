@@ -679,7 +679,7 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
 
     if (wfShowLeftOvers)
         try
-            lookForLeftOversPrintTable(UP,linesOutput)
+            lookForLeftOversPrintTable(UP,SP)
         catch y
             println("lookForLeftOversPrintTable Exception ",y)
         end
@@ -687,7 +687,7 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
 
     if (wfShowLeftOversDetails)
         try
-            lookForLeftOversDetailsPrintTable(UP,linesOutput)
+            lookForLeftOversDetailsPrintTable(UP,SP)
         catch y
             println("lookForLeftOversPrintTable Exception ",y)
         end
@@ -948,26 +948,26 @@ end
 
 function resourcesDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    linesOutput = 3
-    resourceMatched(TV,UP,SP;linesOut=3)
+    saveSpShowLines = SP.showLines
+    SP.showLines = 3
+    resourceMatched(TV,UP,SP)
+    resourceSummaryAllFields(TV,UP,SP)
 
-    resourceSummaryAllFields(TV,UP,SP;linesOut=3)
-
-    linesOutput = SP.showLines
-    resourceSummary(TV,UP,SP;linesOut=linesOutput)
+    SP.showLines = saveSpShowLines
+    resourceSummary(TV,UP,SP)
 
     minimumEncoded = 0
-    resourceSize(TV,UP,SP;linesOut=linesOutput,minEncoded=minimumEncoded)
+    resourceSize(TV,UP,SP;minEncoded=minimumEncoded)
 
-    resourceScreenPrintTable(TV,UP,SP;linesOut=linesOutput)
+    resourceScreenPrintTable(TV,UP,SP)
 
-    resourceSummaryDomainUrl(TV,UP,SP;linesOut=linesOutput)
+    resourceSummaryDomainUrl(TV,UP,SP)
 
-    resourceTime1(TV,UP,SP;linesOut=linesOutput)
+    resourceTime1(TV,UP,SP)
 
-    resourceTime2(TV,UP,SP;linesOut=linesOutput)
+    resourceTime2(TV,UP,SP)
 
-    resourceTime3(TV,UP,SP;linesOut=linesOutput)
+    resourceTime3(TV,UP,SP)
 
 end
 

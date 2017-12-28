@@ -343,7 +343,7 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
 
 end
 
-function lookForLeftOversPrintTable(UP::UrlParams,linesOutput::Int64)
+function lookForLeftOversPrintTable(UP::UrlParams,SP::ShowParams)
 
     joinTablesDF = DataFrame()
 
@@ -383,14 +383,14 @@ function lookForLeftOversPrintTable(UP::UrlParams,linesOutput::Int64)
         order by encoded desc, transferred desc, decoded desc
         """);
 
-        beautifyDF(joinTablesDF[1:min(linesOutput,end),:])
+        beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
     catch y
         println("lookForLeftOversPrintTable Exception ",y)
     end
     #display(joinTablesDF)
 end
 
-function lookForLeftOversDetailsPrintTable(UP::UrlParams,linesOutput::Int64)
+function lookForLeftOversDetailsPrintTable(UP::UrlParams,SP::ShowParams)
 
     joinTablesDF = DataFrame()
 
@@ -417,13 +417,13 @@ function lookForLeftOversDetailsPrintTable(UP::UrlParams,linesOutput::Int64)
             order by encoded desc
         """);
 
-        beautifyDF(joinTablesDF[1:min(linesOutput,end),:])
+        beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
     catch y
         println("lookForLeftOversDetailsPrintTable Exception ",y)
     end
 end
 
-function requestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
+function requestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,typeStr::ASCIIString)
 
     rc = query("""\
 
@@ -431,16 +431,15 @@ function requestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCII
         FROM $(UP.rtView)
         group by urlgroup
         order by reqcnt desc
-        LIMIT 15
+        LIMIT $(UP.limitRows)
     """)
 
-    linesOut = 15
     displayTitle(chart_title = "$(typeStr): Request Counts By URL Group", chart_info = [TV.timeString], showTimeStamp=false)
-    beautifyDF(rc[1:min(linesOut,end),:])
+    beautifyDF(rc[1:min(SP.showLines,end),:])
 
 end
 
-function nonCacheRequestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
+function nonCacheRequestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,typeStr::ASCIIString)
 
     nc = query("""\
         select count(*), substring(url for position('/' in substring(url from 9)) +7) urlgroup
@@ -449,12 +448,11 @@ function nonCacheRequestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,typeSt
             (response_last_byte-response_first_byte) > 0
         group by urlgroup
         order by count(*) desc
-        LIMIT 15
+        LIMIT $(UP.limitRows)
     """)
 
     displayTitle(chart_title = "$(typeStr): Non Cache Requests Total By URL Groups Across All Sessions", chart_info = [TV.timeString], showTimeStamp=false)
-    linesOut = 15
-    beautifyDF(nc[1:min(linesOut,end),:])
+    beautifyDF(nc[1:min(SP.showLines,end),:])
 end
 
 function cacheHitRatioPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
@@ -746,7 +744,7 @@ function largePageDetailsPrintTable(localTable::ASCIIString,tableRt::ASCIIString
     end
 end
 
-function resourceScreenPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceScreenPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     tvUpSpDumpDebug(TV,UP,SP,"resourceScreenPrintTable")
 
@@ -759,12 +757,12 @@ function resourceScreenPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;line
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by initiator_type,height,width,x,y,url
             order by count(*) desc
-            limit $(linesOut)
+            limit $(UP.limitRows)
         """);
 
         displayTitle(chart_title = "Screen Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceScreenPrintTable Exception ",y)
     end

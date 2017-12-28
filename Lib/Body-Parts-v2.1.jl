@@ -362,12 +362,12 @@ end
 function paginatePrintDf(printDF::DataFrame)
     try
         currentLine = 1
-        linesOut = 25
+        linesPerPage = 25
         linesToPrint = size(printDF,1)
 
         while currentLine < linesToPrint
-            beautifyDF(printDF[currentLine:min(currentLine+linesOut-1,end),:])
-            currentLine += linesOut
+            beautifyDF(printDF[currentLine:min(currentLine+linesPerPage-1,end),:])
+            currentLine += linesPerPage
         end
 
     catch y
@@ -536,7 +536,7 @@ function knownPatterns()
     end
 end
 
-function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = query("""\
@@ -549,13 +549,13 @@ function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int
 
         displayTitle(chart_title = "Matches For Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceMatched Exception ",y)
     end
 end
 
-function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25,minEncoded::Int64=1000)
+function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;minEncoded::Int64=1000)
 
     try
         joinTables = query("""\
@@ -571,7 +571,7 @@ function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=
 
         displayTitle(chart_title = "Size Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
 
         dv1 = joinTables[:encoded_size]
         statsDF1 = limitedStatsFromDV(dv1)
@@ -585,7 +585,7 @@ function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=
     end
 end
 
-function resourceSummary(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceSummary(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = query("""\
@@ -601,13 +601,13 @@ function resourceSummary(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int
 
         displayTitle(chart_title = "Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceSummary Exception ",y)
     end
 end
 
-function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = query("""\
@@ -616,18 +616,18 @@ function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams;line
         where
           url ilike '$(UP.resRegEx)' and
           "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-        limit $(linesOut)
+        limit $(UP.limitRows)
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceSummaryAllFields Exception ",y)
     end
 end
 
-function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = query("""\
@@ -638,18 +638,18 @@ function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams;line
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by url, params_u
             order by count(*) desc
-            limit $(linesOut)
+            limit $(UP.limitRows)
         """);
 
         displayTitle(chart_title = "Domain Url For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
         #scrubUrlToPrint(joinTables,limit=150)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceSummaryDomainUrl Exception ",y)
     end
 end
 
-function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = query("""\
@@ -674,13 +674,13 @@ function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceTime1 Exception ",y)
     end
 end
 
-function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         timeTable = query("""\
@@ -707,7 +707,7 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
         #todo remove negitives
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        beautifyDF(timeTable[1:min(linesOut,end),:])
+        beautifyDF(timeTable[1:min(SP.showLines,end),:])
 
         timeTable = names!(timeTable[:,:],
         [Symbol("taken"),Symbol("start"),Symbol("fetch"),Symbol("dns"),Symbol("tcp"),Symbol("req_start"),Symbol("req_fb"),Symbol("req_lb"),Symbol("url")
@@ -753,7 +753,7 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
     end
 end
 
-function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
+function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = query("""\
@@ -776,11 +776,11 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 start_time > 10000
             order by start_time desc
-            limit $(linesOut)
+            limit $(UP.limitRows)
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
-        beautifyDF(joinTables[1:min(linesOut,end),:])
+        beautifyDF(joinTables[1:min(SP.showLines,end),:])
     catch y
         println("resourceTime3 Exception ",y)
     end

@@ -14,6 +14,9 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 include("../../../Lib/Include-Package-v2.1.jl")
 
+SP = ShowParamsInit()
+ShowParamsValidate(SP)
+
 # Create temp tables for Normal timeframe and Spike timeframe
 
 urlNormal = UrlParamsInit()
@@ -39,11 +42,11 @@ beautifyDF(t1DF)
 t2DF = query("""SELECT count(*) FROM $(urlSpike.rtView)""")
 beautifyDF(t2DF)
 
-requestCountByGroupPrintTable(timeNormal,urlNormal,"Normal")
-requestCountByGroupPrintTable(timeSpike,urlSpike,"Spike")
+requestCountByGroupPrintTable(timeNormal,urlNormal,SP,"Normal")
+requestCountByGroupPrintTable(timeSpike,urlSpike,SP,"Spike")
 
-nonCacheRequestCountByGroupPrintTable(timeNormal,urlNormal,"Normal")
-nonCacheRequestCountByGroupPrintTable(timeSpike,urlSpike,"Spike")
+nonCacheRequestCountByGroupPrintTable(timeNormal,urlNormal,SP,"Normal")
+nonCacheRequestCountByGroupPrintTable(timeSpike,urlSpike,SP,"Spike")
 
 cacheHitRatioPrintTable(timeNormal,urlNormal,"Normal")
 cacheHitRatioPrintTable(timeSpike,urlSpike,"Spike")
