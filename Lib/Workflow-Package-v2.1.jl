@@ -351,7 +351,7 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   openingTitle(TV,UP,SP)
 
   if UP.useJson
-      urlListDF = newPagesList(UP)
+      urlListDF = newPagesList(UP,SP)
       finalListToUseDV = urlListDF[:urlgroup]
   else
       urlListDF = returnMatchingUrlTableV2(TV,UP)

@@ -658,11 +658,12 @@ end
 
 # From Individual-Streamline-Body
 
-function newPagesList(UP::UrlParams)
+function newPagesList(UP::UrlParams,SP::ShowParams)
   try
 
       if !isdefined(:theList)
           jList = JSON.parsefile(UP.jsonFilename)
+          println("jList=",jList)
       else
           jList = JSON.parse(theList)
       end
