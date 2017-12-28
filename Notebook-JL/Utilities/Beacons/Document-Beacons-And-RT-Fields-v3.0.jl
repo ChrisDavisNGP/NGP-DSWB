@@ -18,12 +18,12 @@ TV = pickTime()
 #TV = timeVariables(2017,11,15,23,59,2017,11,16,23,59)
 
 UP = UrlParamsInit(scriptName)
+UP.pageGroup = "Nat Geo Homepage"
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-productPageGroup = "Nat Geo Homepage" # primary page group
 localTable = "$(table)_$(scriptName)_DOC_view"
 localTableRt = "$(tableRt)_DOC_view"
 localTableRt = "$(tableRt)_URL_view_cd"
@@ -51,7 +51,7 @@ try
             select * from $table where
                 "timestamp" between $startTimeMs and
                 $endTimeMs and
-                page_group = '$(productPageGroup)' and
+                page_group = '$(UP.pageGroup)' and
                 params_u = '$(localUrlFull)'
                 limit 20000
             )
@@ -66,7 +66,7 @@ catch y
     println("Setup Tables Exception ",y)
 end
 
-displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
 
 t1DF = query("""\
 
@@ -81,7 +81,7 @@ limit 5
 """)
 beautifyDF(t1DF)
 
-displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
 
 t2DF = query("""\
 
@@ -97,7 +97,7 @@ beautifyDF(t2DF)
 
 sessionId = "ad2fd687-691f-4764-a9bb-2182db03634e-oho76h"
 
-displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
 
 t3DF = query("""\
 
