@@ -365,7 +365,7 @@ function statsBtTableToDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::In
     end
 end
 
-function statsBtViewTableToDF(TV::TimeVars,UP::UrlParams)
+function statsBtViewTableToDF(UP::UrlParams)
     try
         btv = UP.btView
 
@@ -531,13 +531,31 @@ function testUrlClassifyToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         return localTableRtDF
+    catch y
+      println("urlDetailTables Exception ",y)
     end
-
-catch y
-  println("urlDetailTables Exception ",y)
-end
 end
 
+function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
+    try
+        LowerBy3Stddev = statsDF[1:1,:LowerBy3Stddev][1]
+        UpperBy3Stddev = statsDF[1:1,:UpperBy3Stddev][1]
+        UpperBy25p = statsDF[1:1,:UpperBy25p][1]
+
+        localStats2 = query("""\
+            select "timestamp", timers_t_done, session_id
+            from $(UP.btView) where
+                page_group ilike '$(UP.pageGroup)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timers_t_done > $(UpperBy25p)
+        """)
+
+        return localStats2
+
+    catch y
+        println("localStatsFATS Exception ",y)
+    end
+end
 
 #
 #  Functions which print tables only

@@ -266,7 +266,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         dispDMT = DataFrame(RefGroup=["","",""],Unit=["","",""],Count=[0,0,0],Mean=[0.0,0.0,0.0],Median=[0.0,0.0,0.0],Min=[0.0,0.0,0.0],Max=[0.0,0.0,0.0])
 
         UP.deviceType = "Desktop"
-        statsFullDF2 = statsBtViewTableToDF(TV,UP)
+        statsFullDF2 = statsBtViewTableToDF(UP)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -278,7 +278,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
             dispDMT[1:1,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Mobile"
-        statsFullDF2 = statsBtViewTableToDF(TV,UP)
+        statsFullDF2 = statsBtViewTableToDF(UP)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)
@@ -290,7 +290,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
             dispDMT[2:2,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Tablet"
-        statsFullDF2 = statsBtViewTableToDF(TV,UP)
+        statsFullDF2 = statsBtViewTableToDF(UP)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(statsFullDF2)

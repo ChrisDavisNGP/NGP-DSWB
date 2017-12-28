@@ -221,7 +221,7 @@ end
 function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
-        localStatsDF = statsBtViewTableToDF(TV,UP);
+        localStatsDF = statsBtViewTableToDF(UP);
 
         if size(localStatsDF,1) == 0
             println("No data returned")
@@ -286,7 +286,7 @@ function rawStatsSROS(TV::TimeVars,UP::UrlParams)
     statsDF = DataFrame()
     medianThreshold = Int64
     try
-        localStatsDF = statsBtViewTableToDF(TV,UP);
+        localStatsDF = statsBtViewTableToDF(UP);
         statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
 
@@ -441,27 +441,6 @@ function drawC3VizConverter(UP::UrlParams,AllStatsDF::DataFrame;graphType::Int64
         catch y
             println("drawModes exception ",y)
         end
-    end
-end
-
-function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
-    try
-        LowerBy3Stddev = statsDF[1:1,:LowerBy3Stddev][1]
-        UpperBy3Stddev = statsDF[1:1,:UpperBy3Stddev][1]
-        UpperBy25p = statsDF[1:1,:UpperBy25p][1]
-
-        localStats2 = query("""\
-            select "timestamp", timers_t_done, session_id
-            from $(UP.btView) where
-                page_group ilike '$(UP.pageGroup)' and
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                timers_t_done > $(UpperBy25p)
-        """)
-
-        return localStats2
-
-    catch y
-        println("localStatsFATS Exception ",y)
     end
 end
 
