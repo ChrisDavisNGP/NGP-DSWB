@@ -37,15 +37,16 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
         rt = UP.resourceTable
         btv = UP.btView
 
-        query("""create or replace view $rtv as (
-            select $rt.*
-            from $btv join $rt
-                on $rt.session_id = $btv.session_id
-            where
-                $rt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                $btv.session_id IS NOT NULL
-            order by $rt.session_id, $rt."timestamp", $rt.start_time
-        )""")
+        query("""\
+            create or replace view $rtv as (
+                select $rt.*
+                from $btv join $rt on $rt.session_id = $btv.session_id
+                where
+                    $rt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                    $btv.session_id IS NOT NULL
+                order by $rt.session_id, $rt."timestamp", $rt.start_time
+            )
+            """)
 
         # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
         # where beacon_type = 'page view'

@@ -1159,16 +1159,16 @@ end
 function displayMatchingResourcesByUrlBtvRtPrintTables(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        btw = UP.btView
+        btv = UP.btView
         rt = UP.resourceTable
 
         joinTablesDF = query("""\
             select count(*), $rt.params_u as parenturl, $rt.url
-            from $btw join $rt
-                on $btw.session_id = $rt.session_id and $btw."timestamp" = $rt."timestamp"
+            from $btv join $rt
+                on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
             where
             $rt.url ilike '$(UP.resRegEx)'
-            group by $rt.params_u, $rt.url, $btw.url
+            group by $rt.params_u, $rt.url, $btv.url
             order by count(*) desc
         """);
 
