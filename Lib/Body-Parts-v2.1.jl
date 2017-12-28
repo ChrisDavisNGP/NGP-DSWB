@@ -9,22 +9,10 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       if (UP.usePageLoad)
           localTableDF = query("""\
           select
-              'None' as urlpagegroup,
-              avg($rt.start_time),
-              avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.start_time) END) as total,
-              avg($rt.redirect_end-$rt.redirect_start) as redirect,
-              avg(CASE WHEN ($rt.dns_start = 0 and $rt.request_start = 0) THEN (0) WHEN ($rt.dns_start = 0) THEN ($rt.request_start-$rt.fetch_start) ELSE ($rt.dns_start-$rt.fetch_start) END) as blocking,
-              avg($rt.dns_end-$rt.dns_start) as dns,
-              avg($rt.tcp_connection_end-$rt.tcp_connection_start) as tcp,
-              avg($rt.response_first_byte-$rt.request_start) as request,
-              avg(CASE WHEN ($rt.response_first_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.response_first_byte) END) as response,
-              avg(0) as gap,
-              avg(0) as critical,
-              CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
-              count(*) as request_count,
-              'Label' as label,
-              avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
-              avg($table.timers_t_done) as beacon_time
+            CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
+            count(*) as request_count,
+            avg($table.timers_t_done) as beacon_time,
+            sum($rt.encoded_size) as encoded_size
           FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
               where
               $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
@@ -35,8 +23,9 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               and $table.user_agent_os ilike '$(UP.agentOs)'
               and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
               and $table.params_rt_quit IS NULL
-              group by urlgroup,urlpagegroup,label
-              """);
+              and $table.errors IS NULL
+          group by urlgroup,$table.session_id,$table."timestamp",errors
+          """);
       else
 
           if (SP.debugLevel > 8)
@@ -62,7 +51,7 @@ function estimateFullBeaconsV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
           localTableDF = query("""\
           select
-          CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
+              CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
               count(*) as request_count,
               avg($table.timers_domready) as beacon_time,
               sum($rt.encoded_size) as encoded_size
