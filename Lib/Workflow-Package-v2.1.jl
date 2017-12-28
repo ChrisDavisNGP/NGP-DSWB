@@ -848,3 +848,52 @@ function beaconAndRtCountsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     ;
 
 end
+
+function weeklyCTOReportWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    openingTitle(TV,UP,SP)
+
+    try
+        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    catch y
+        println("chartConcurrentSessionsAndBeaconsOverTime Exception ",y)
+    end
+
+    try
+        chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    catch y
+        println("chartLoadTimes Exception ",y)
+    end
+
+    showPeakTable(TV,UP,SP;showStartTime30=true)
+
+    topUrlTableByTime(TV,UP,SP)
+
+    pageGroupQuartiles(TV,UP,SP);
+
+    chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=10);
+
+    try
+        pageGroupTreemap(TV,UP,SP)
+    catch y
+        println("pageGroupTreemap Exception ",y)
+    end
+
+    try
+        deviceTypeTreemap(TV,UP,SP)
+    catch y
+        println("deviceTypeTreemap Exception ",y)
+    end
+
+    try
+        browserFamilyTreemap(TV,UP,SP)
+    catch y
+        println("browserFamilyTreemap Exception ",y)
+    end
+
+    try
+        countryTreemap(TV,UP,SP)
+    catch y
+        println("chartConcurSessions Exception ",y)
+    end
+end
