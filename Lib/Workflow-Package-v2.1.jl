@@ -352,7 +352,8 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if UP.useJson
       urlListDF = newPagesList(UP,SP)
-      finalListToUseDV = urlListDF[:urlgroup]
+      listToUseDV = urlListDF[:urlgroup] * "%"
+      finalListToUseDV = cleanupTopUrlTable(listToUseDV)
   else
       urlListDF = returnMatchingUrlTableV2(TV,UP)
   end
@@ -375,7 +376,9 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (SP.debugLevel > 4)
-      beautifyDF(finalListToUseDV[1:min(10,end),:])
+      for item in finalListToUseDV
+          println(item)
+      end
   end
 
   finalUrlTableOutput(TV,UP,SP,finalListToUseDV)

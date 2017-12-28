@@ -65,9 +65,15 @@ function UrlParamsInit(nb::ASCIIString)
     if isdefined(:UpUseJson)
         UP.useJson = UpUseJson
     end
+
     if isdefined(:UpJsonFilename)
         UP.jsonFilename = UpJsonFilename
     end
+
+    if isdefined(:UpLimitRows)
+        UP.limitRows = UpLimitRows
+    end
+
     return UP
 end
 
