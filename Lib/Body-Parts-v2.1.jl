@@ -539,7 +539,6 @@ end
 function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=25)
 
     try
-        #No Rtn Select cnt rt where ts,resRegEx
         joinTables = query("""\
         select count(*)
         from $(UP.resourceTable)
@@ -560,19 +559,14 @@ function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64=
 
     try
         joinTables = query("""\
-        select
-        count(*),
-        encoded_size,
-        transferred_size,
-        decoded_size,
-        url
-        from $(UP.resourceTable)
-        where
-          url ilike '$(UP.resRegEx)' and
-          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-        encoded_size > $(minEncoded)
-        group by encoded_size,transferred_size,decoded_size,url
-        order by count(*) desc
+            select count(*),encoded_size,transferred_size,decoded_size,url
+            from $(UP.resourceTable)
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                encoded_size > $(minEncoded)
+            group by encoded_size,transferred_size,decoded_size,url
+            order by count(*) desc
         """);
 
         displayTitle(chart_title = "Size Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -637,17 +631,14 @@ function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams;line
 
     try
         joinTables = query("""\
-        select
-        count(*),
-        url,params_u
-        from $(UP.resourceTable)
-        where
-          url ilike '$(UP.resRegEx)' and
-          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-        group by
-            url, params_u
-        order by count(*) desc
-        limit $(linesOut)
+            select count(*),url,params_u
+            from $(UP.resourceTable)
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            group by url, params_u
+            order by count(*) desc
+            limit $(linesOut)
         """);
 
         displayTitle(chart_title = "Domain Url For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -662,26 +653,24 @@ function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
 
     try
         joinTables = query("""\
-        select
-        count(*),
-        avg(start_time) as "Start Time",
-        avg(fetch_start) as "Fetch Start",
-        avg(dns_end-dns_start) as "DNS ms",
-        avg(tcp_connection_end-tcp_connection_start) as "TCP ms",
-        avg(request_start) as "Req Start",
-        avg(response_first_byte) as "Req FB",
-        avg(response_last_byte) as "Req LB",
-        max(response_last_byte) as "Max Req LB",
-        url,
-        avg(redirect_start) as "Redirect Start",
-        avg(redirect_end) as "Redirect End",
-        avg(secure_connection_start) as "Secure Conn Start"
-        from $(UP.resourceTable)
-        where
-          url ilike '$(UP.resRegEx)' and
-          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-        group by url
-        order by count(*) desc
+            select count(*), avg(start_time) as "Start Time",
+                avg(fetch_start) as "Fetch Start",
+                avg(dns_end-dns_start) as "DNS ms",
+                avg(tcp_connection_end-tcp_connection_start) as "TCP ms",
+                avg(request_start) as "Req Start",
+                avg(response_first_byte) as "Req FB",
+                avg(response_last_byte) as "Req LB",
+                max(response_last_byte) as "Max Req LB",
+                url,
+                avg(redirect_start) as "Redirect Start",
+                avg(redirect_end) as "Redirect End",
+                avg(secure_connection_start) as "Secure Conn Start"
+            from $(UP.resourceTable)
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            group by url
+            order by count(*) desc
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -695,25 +684,24 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
 
     try
         timeTable = query("""\
-        select
-        (response_last_byte-start_time) as "Time Taken",
-        (start_time) as "Start Time",
-        (fetch_start) as "Fetch Start",
-        (dns_end-dns_start) as "DNS ms",
-        (tcp_connection_end-tcp_connection_start) as "TCP ms",
-        (request_start) as "Req Start",
-        (response_first_byte) as "Req FB",
-        (response_last_byte) as "Req LB",
-        url,
-        (redirect_start) as "Redirect Start",
-        (redirect_end) as "Redirect End",
-        (secure_connection_start) as "Secure Conn Start"
-        from $(UP.resourceTable)
-        where
-          url ilike '$(UP.resRegEx)' and
-        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-        (response_last_byte-start_time) > 75 and (response_last_byte-start_time) < 10000
-        order by "Time Taken" desc
+            select (response_last_byte-start_time) as "Time Taken",
+                (start_time) as "Start Time",
+                (fetch_start) as "Fetch Start",
+                (dns_end-dns_start) as "DNS ms",
+                (tcp_connection_end-tcp_connection_start) as "TCP ms",
+                (request_start) as "Req Start",
+                (response_first_byte) as "Req FB",
+                (response_last_byte) as "Req LB",
+                url,
+                (redirect_start) as "Redirect Start",
+                (redirect_end) as "Redirect End",
+                (secure_connection_start) as "Secure Conn Start"
+            from $(UP.resourceTable)
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                (response_last_byte-start_time) > 75 and (response_last_byte-start_time) < 10000
+            order by "Time Taken" desc
         """);
 
         #todo remove negitives
@@ -769,26 +757,26 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams;linesOut::Int64
 
     try
         joinTables = query("""\
-        select
-        (response_last_byte-start_time) as "Time Taken",
-        (start_time) as "Start Time",
-        (fetch_start) as "Fetch S",
-        (dns_end-dns_start) as "DNS ms",
-        (tcp_connection_end-tcp_connection_start) as "TCP ms",
-        (request_start) as "Req S",
-        (response_first_byte) as "Req FB",
-        (response_last_byte) as "Req LB",
-        url, params_u,
-        (redirect_start) as "Redirect S",
-        (redirect_end) as "Redirect E",
-        (secure_connection_start) as "Secure Conn S"
-        from $(UP.resourceTable)
-        where
-          url ilike '$(UP.resRegEx)' and
-        "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-        start_time > 10000
-        order by start_time desc
-        limit 25
+            select (response_last_byte-start_time) as "Time Taken",
+                (start_time) as "Start Time",
+                (fetch_start) as "Fetch S",
+                (dns_end-dns_start) as "DNS ms",
+                (tcp_connection_end-tcp_connection_start) as "TCP ms",
+                (request_start) as "Req S",
+                (response_first_byte) as "Req FB",
+                (response_last_byte) as "Req LB",
+                url,
+                params_u,
+                (redirect_start) as "Redirect S",
+                (redirect_end) as "Redirect E",
+                (secure_connection_start) as "Secure Conn S"
+            from $(UP.resourceTable)
+            where
+                url ilike '$(UP.resRegEx)' and
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                start_time > 10000
+            order by start_time desc
+            limit $(linesOut)
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -813,9 +801,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
 
         displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
         domSize = query("""\
-            select
-                count(*),
-                AVG(params_dom_sz) beacons,
+            select count(*),AVG(params_dom_sz) beacons,
                 AVG(timers_t_page)/1000 load_time,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -842,9 +828,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     try
         displayTitle(chart_title = "Total Bytes Used (Size x Views) Treemap Report (Min 2 MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
         domSize = query("""\
-            select
-                count(*),
-                SUM(params_dom_sz) beacons,
+            select count(*),SUM(params_dom_sz) beacons,
                 AVG(timers_t_page)/1000 load_time,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -874,9 +858,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         displayTitle(chart_title = "Unique Domains Used", chart_info = [TV.timeString], showTimeStamp=false)
 
         domSize = query("""\
-            select
-                count(*),
-                AVG(params_dom_doms) avgsize,
+            select count(*),AVG(params_dom_doms) avgsize,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
                     else trim('/' from params_u)
@@ -915,9 +897,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         displayTitle(chart_title = "Domains Nodes On Page (20k min)", chart_info = [TV.timeString], showTimeStamp=false)
 
         domSize = query("""\
-            select
-                count(*),
-                AVG(params_dom_ln) avgsize,
+            select count(*),AVG(params_dom_ln) avgsize,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
                     else trim('/' from params_u)
@@ -966,9 +946,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         displayTitle(chart_title = "Domains Images", chart_info = [TV.timeString], showTimeStamp=false)
 
         domSize = query("""\
-            select
-                count(*) cnt,
-                AVG(params_dom_img) avgsize,
+            select count(*) cnt,AVG(params_dom_img) avgsize,
                 AVG(params_dom_img_ext) avgsizeext,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -992,9 +970,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         displayTitle(chart_title = "Frequently Used Images", chart_info = [TV.timeString], showTimeStamp=false)
 
         domSize = query("""\
-            select
-                count(*) cnt,
-                SUM(params_dom_img) avgsize,
+            select count(*) cnt,SUM(params_dom_img) avgsize,
                 SUM(params_dom_img_ext) avgsizeext,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -1021,9 +997,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         #params_dom_script,params_dom_script_ext,
 
         domSize = query("""\
-            select
-                count(*) cnt,
-                AVG(params_dom_script) avgsize,
+            select count(*) cnt,AVG(params_dom_script) avgsize,
                 AVG(params_dom_script_ext) avgsizeext,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -1050,9 +1024,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         #params_dom_script,params_dom_script_ext,
 
         domSize = query("""\
-            select
-                count(*) cnt,
-                SUM(params_dom_script) avgsize,
+            select count(*) cnt,SUM(params_dom_script) avgsize,
                 SUM(params_dom_script_ext) avgsizeext,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -1078,9 +1050,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         #displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
 
         sizeTrend = query("""\
-            select
-                params_h_t,
-                params_dom_sz size,
+            select params_h_t,params_dom_sz size,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
                     else trim('/' from params_u)

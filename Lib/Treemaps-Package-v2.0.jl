@@ -578,7 +578,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     # Test 2
     #studySession = "060212ca-9fdb-4b55-9aa9-b2ff9f6c5032-odv5lh"
     #studyTime = 0;
-    
+
     # Test 3
 
     #studySession = "None"
@@ -1156,8 +1156,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     if (SP.reportLevel > 11)
         if (studyTime > 0)
             topdetailurl = query("""\
-            select
-            CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
+            select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as load_time,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as beacons,
             1 as request_count
@@ -1165,8 +1164,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             """);
         elseif (studySession != "None")
             topdetailurl = query("""\
-            select
-            CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
+            select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
             count(*) as request_count
@@ -1175,8 +1173,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             """);
         else
             topdetailurl = query("""\
-            select
-            CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
+            select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
             count(*) as request_count

@@ -143,8 +143,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
 
         topUrlDF = query("""\
 
-        select
-            count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
+        select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
             CASE WHEN (position('?' in params_u) > 0) then (trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) || '/%') else params_u || '%' end as urlgroup
         FROM $(UP.beaconTable)
         where
@@ -173,8 +172,7 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
     try
         topUrl = query("""\
 
-        select
-            count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
+        select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
         FROM $(ltName)
         where
             beacon_type = 'page view' and
@@ -212,8 +210,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         if (showCount)
             topurl = query("""\
-
-            select count(*),
+                select count(*),
             CASE
             when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
             else trim('/' from params_u)

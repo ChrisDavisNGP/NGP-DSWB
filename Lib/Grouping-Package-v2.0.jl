@@ -222,13 +222,12 @@ function getLatestResults(;table_name::ASCIIString="beacons_4744", hours::Int64=
     timelimit = timestamp_range[1, 2] - (hours*60 + minutes) * 60 * 1000;
 
     query("
-        SELECT
-            page_group, params_u,
+        SELECT page_group, params_u,
             geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
             user_agent_family, user_agent_major, user_agent_os, user_agent_osversion, user_agent_model,
             params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
             timers_t_done
-          FROM $(table_name)
+         FROM $(table_name)
          WHERE page_group IS NOT NULL
            AND (params_rt_quit IS NULL)
            AND timers_t_done IS NOT NULL

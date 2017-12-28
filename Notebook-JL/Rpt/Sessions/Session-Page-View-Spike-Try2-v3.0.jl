@@ -27,8 +27,7 @@ localTable = "$(table)_$(scriptName)_spike_pview_prod"
 localTableRt = "$(tableRt)_spike_pview_prod"
 
 toppagecount = query("""\
-            select
-            count(*),session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
+            select count(*),session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
             FROM $table
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -43,8 +42,7 @@ firstSession = (toppagecount[1:1,:session_id][1])
 println(firstSession)
 
 debugRecords = query("""\
-            select
-            *
+            select *
             FROM $table
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -55,8 +53,7 @@ debugRecords = query("""\
 beautifyDF(debugRecords[1:min(10,end),:])
 
 debugRecords = query("""\
-            select
-"timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
+            select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
             FROM $table
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -67,8 +64,7 @@ order by "timestamp"
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = query("""\
-            select
-"timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
+            select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
             FROM $table
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -79,8 +75,7 @@ debugRecords = query("""\
 beautifyDF(debugRecords[1:min(300,end),:])
 
 debugRecords = query("""\
-            select
-"timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
+            select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
             FROM $table
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -112,8 +107,7 @@ beautifyDF(debugRecords[1:min(300,end),:])
 #println(st," , ",et)
 
 toppagecount = query("""\
-            select
-            count(*),session_id
+            select count(*),session_id
             FROM $table
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -125,8 +119,7 @@ toppagecount = query("""\
 beautifyDF(toppagecount[1:min(10,end),:])
 
 #toppagecount = query("""\
-#            select
-#            count(*),$tableRt.session_id
+#            select count(*),$tableRt.session_id
 #            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
 #            where
 #                $tableRt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -137,8 +130,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 
 
 #toppagecount = query("""\
-#            select
-#            count(*) as request_count,
+#            select count(*) as request_count,
 #                $tableRT.session_id
 #            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
 #                where

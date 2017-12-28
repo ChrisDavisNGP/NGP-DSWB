@@ -31,8 +31,7 @@ bt = UP.beaconTable
 rt = UP.resourceTable
 
 toppagecount = query("""\
-            select
-            count(*),session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
+            select count(*),session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
             FROM $bt
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -46,8 +45,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 firstSession = (toppagecount[1:1,:session_id][1])
 
 debugRecords = query("""\
-            select
-            *
+            select *
             FROM $bt
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -58,8 +56,7 @@ debugRecords = query("""\
 beautifyDF(debugRecords[1:min(10,end),:])
 
 debugRecords = query("""\
-            select
-count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
+            select count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
             FROM $bt
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -71,8 +68,7 @@ group by geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_re
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = query("""\
-            select
-count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
+            select count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
             FROM $bt
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -84,8 +80,7 @@ group by geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = query("""\
-            select
-"timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
+            select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
             FROM $bt
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -117,8 +112,7 @@ beautifyDF(debugRecords[1:min(100,end),:])
 #println(st," , ",et)
 
 toppagecount = query("""\
-            select
-            count(*),session_id
+            select count(*),session_id
             FROM $bt
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -130,8 +124,7 @@ toppagecount = query("""\
 beautifyDF(toppagecount[1:min(10,end),:])
 
 #toppagecount = query("""\
-#            select
-#            count(*),$rt.session_id
+#            select count(*),$rt.session_id
 #            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
 #            where
 #                $rt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -142,8 +135,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 
 
 #toppagecount = query("""\
-#            select
-#            count(*) as request_count,
+#            select count(*) as request_count,
 #                $btRT.session_id
 #            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
 #                where
