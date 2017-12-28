@@ -224,7 +224,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
-            beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
+            beautifyDF(names!(topurl[1:min(SP.showLines,end),:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
         end
 
         if (showCountDetails)
@@ -242,7 +242,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
-            beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Avg MB"),Symbol("Avg MS"),Symbol("Url - Individual")]))
+            beautifyDF(names!(topurl[1:min(SP.showLines,end),:],[Symbol("Views"),Symbol("Avg MB"),Symbol("Avg MS"),Symbol("Url - Individual")]))
         end
 
     catch y

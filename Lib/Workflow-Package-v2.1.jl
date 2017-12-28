@@ -786,6 +786,8 @@ end
 
 function determineBeaconsGroupingWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
+    openingTitle(TV,UP,SP)
+    
     short_results = getLatestResults(hours=0, minutes=5, table_name=UP.beaconTable)
     size(short_results)
 

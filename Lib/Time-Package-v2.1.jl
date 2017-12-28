@@ -5,7 +5,7 @@ function bestDatePart(startTime::DateTime, endTime::DateTime)
         datePart = :minute
         dt = endTime-startTime
         deltaTime = convert(Int64,dt)
-        minuteLimit = (6*60*60*1000)+1
+        minuteLimit = (10*60*60*1000)+1
         hourLimit = (7*24*60*60*1000)+1
         #println("starttime=",startTime," endtime=",endTime," deltaTime =",deltaTime," minuteLimit=",minuteLimit," hourLimit=",hourLimit)
 
