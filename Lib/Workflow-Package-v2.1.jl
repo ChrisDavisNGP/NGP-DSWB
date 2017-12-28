@@ -357,7 +357,7 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       urlListDF = returnMatchingUrlTableV2(TV,UP)
   end
 
-  if (SP.debugLevel > 4)
+  if (SP.debugLevel > 8)
       beautifyDF(urlListDF[1:min(10,end),:])
   end
 
@@ -369,12 +369,13 @@ function individualStreamlineWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
       if (SP.debugLevel > 4)
           println("Started with ",size(urlListDF,1), " Trimmed down to ",size(newListDF,1), " due to $(UP.samplesMin) limit")
-          println("Final DV size is ",size(topUrlsDV,1))
-          if (SP.debugLevel > 8)
-              println(finalListToUseDV)
-          end
+          println("Final DV size is ",size(finalListToUseDV,1))
       end
 
+  end
+
+  if (SP.debugLevel > 4)
+      beautifyDF(finalListToUseDV[1:min(10,end),:])
   end
 
   finalUrlTableOutput(TV,UP,SP,finalListToUseDV)

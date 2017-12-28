@@ -663,7 +663,9 @@ function newPagesList(UP::UrlParams,SP::ShowParams)
 
       if !isdefined(:theList)
           jList = JSON.parsefile(UP.jsonFilename)
-          println("jList=",jList)
+          if SP.debugLevel > 8
+              println("jList=",jList)
+          end
       else
           jList = JSON.parse(theList)
       end
