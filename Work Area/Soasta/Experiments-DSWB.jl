@@ -37,7 +37,7 @@ table_rt = "beacons_4744_rt"
 setRedshiftEndpoint(dsn)
 setTable(table)
 
-#setTable(table_rt, tableType = "RESOURCE_TABLE")
+#setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 
 customer = "Nat Geo"
