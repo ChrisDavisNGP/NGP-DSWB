@@ -318,7 +318,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     treemapsPGD(TV,UP,SP)
 
-    datePartQuartiles(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    datePartQuartiles(TV,UP)
 
     try
         result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=60, f=getAbandonPaths);
@@ -627,7 +627,7 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowDurationByDate)
-    chartSessionDurationQuantilesByDatepart(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+      datePartQuartiles(TV,UP)
   end
 
   if (wfShowTopUrls)
@@ -642,7 +642,6 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowLongTimes)
     graphLongTimesFATS(localStats2)
   end
-
   if (wfClearViews)
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")
@@ -658,6 +657,7 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
     wfShowBigPagesByFileType = true
     wfShowLeftOvers = true
     wfShowLeftOversDetails = true
+    wfClearViews = true
 
     defaultBeaconCreateView(TV,UP,SP)
 
@@ -787,7 +787,7 @@ end
 function determineBeaconsGroupingWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
-    
+
     short_results = getLatestResults(hours=0, minutes=5, table_name=UP.beaconTable)
     size(short_results)
 
@@ -916,7 +916,7 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     # where beacon_type = 'page view'
     # t1DF = query("""SELECT count(*) FROM $btv""")
 
-    retailer_results = getLatestResults(hours=1, minutes=30, table_name="$(btv)")
+    retailer_results = getLatestResults(hours=10, minutes=0, table_name="$(btv)")
     size(retailer_results)
 
     # drop some of the fields to make the output easier to read

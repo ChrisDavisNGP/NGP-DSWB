@@ -34,24 +34,36 @@ function UrlParamsInit(nb::ASCIIString)
         UP.pageGroup = UpPageGroup
     end
 
-    if isdefined(:UpDeviceType)
-        UP.deviceType = UpDeviceType
-    end
-
-    if isdefined(:UpAgentOs)
-        UP.agentOs = UpAgentOs
-    end
-
     if isdefined(:UpUrlRegEx)
         UP.urlRegEx = UpUrlRegEx
+    end
+
+    if isdefined(:UpUrlFull)
+        UP.urlFull = UpUrlFull
     end
 
     if isdefined(:UpResRegEx)
         UP.resRegEx = UpResRegEx
     end
 
-    if isdefined(:UpUrlFull)
-        UP.urlFull = UpUrlFull
+    if isdefined(:UpTimeLowerMs)
+        UP.timeLowerMs = UpTimeLowerMs
+    end
+
+    if isdefined(:UpTimeUpperMs)
+        UP.timeUpperMs = UpTimeUpperMs
+    end
+
+    if isdefined(:UpLimitRows)
+        UP.limitRows = UpLimitRows
+    end
+
+    if isdefined(:UpSamplesMin)
+        UP.samplesMin = UpSamplesMin
+    end
+
+    if isdefined(:UpSizeMin)
+        UP.sizeMin = UpSizeMin
     end
 
     if isdefined(:UpOrderBy)
@@ -62,16 +74,20 @@ function UrlParamsInit(nb::ASCIIString)
         UP.usePageLoad = UpUsePageLoad
     end
 
+    if isdefined(:UpDeviceType)
+        UP.deviceType = UpDeviceType
+    end
+
+    if isdefined(:UpAgentOs)
+        UP.agentOs = UpAgentOs
+    end
+
     if isdefined(:UpUseJson)
         UP.useJson = UpUseJson
     end
 
     if isdefined(:UpJsonFilename)
         UP.jsonFilename = UpJsonFilename
-    end
-
-    if isdefined(:UpLimitRows)
-        UP.limitRows = UpLimitRows
     end
 
     return UP
@@ -141,20 +157,36 @@ end
 function ShowParamsInit()
     SP = ShowParams(false,true,false,0,2,25,20,150,75)
 
+    if isdefined(:SpDevView)
+        SP.devView = SpDevView
+    end
+
+    if isdefined(:SpCriticalPathOnly)
+        SP.criticalPathOnly = SpCriticalPathOnly
+    end
+
     if isdefined(:SpDebugLevel)
         SP.debugLevel = SpDebugLevel
+    end
+
+    if isdefined(:SpReportLevel)
+        SP.reportLevel = SpReportLevel
     end
 
     if isdefined(:SpShowLines)
         SP.showLines = SpShowLines
     end
 
-    if isdefined(:SpDevView)
-        SP.devView = SpDevView
+    if isdefined(:SpTreemapTableLines)
+        SP.treemapTableLines = SpTreemapTableLines
     end
 
-    if isdefined(:SpReportLevel)
-        SP.reportLevel = SpReportLevel
+    if isdefined(:SpScrubUrlChars)
+        SP.scrubUrlChars = SpScrubUrlChars
+    end
+
+    if isdefined(:SpScrubUrlSections)
+        SP.scrubUrlSections = SpScrubUrlSections
     end
 
     return SP

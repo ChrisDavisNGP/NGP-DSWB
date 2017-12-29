@@ -1,7 +1,16 @@
-function datePartQuartiles(startTime::DateTime, endTime::DateTime, datePart::Symbol)
+function datePartQuartiles(TV::TimeVars,UP::UrlParams)
 
     try
-        chartSessionDurationQuantilesByDatepart(startTime, endTime, datePart)
+        #Quartiles require more room so bigger datePart
+        datePart = :minute
+        if TV.datePart == :minute
+            datePart = :hour
+        elseif TV.datePart == :hour
+            datePart = :day
+        end
+
+        chartSessionDurationQuantilesByDatepart(TV.startTimeUTC, TV.endTimeUTC, datePart)
+
     catch y
         println("datepartQuartiles Exception ",y)
     end
