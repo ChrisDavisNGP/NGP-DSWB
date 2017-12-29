@@ -7,12 +7,12 @@ include(CLUSTERING_PATH)
 
 dsn = "dswb-natgeo" # Redshift endpoint
 table = "beacons_4744" # beacon table name
-rt_table = "beacons_4744_rt" # resource table name
+tableRt = "beacons_4744_rt" # resource table name
 
 # Connect to Beacon Data
 setRedshiftEndpoint(dsn)
 setTable(table)
-# setTable(rt_table, tableType = "RESOURCE_TABLE")
+# setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 include("../../../Lib/Include-Package-v2.1.jl")
 
