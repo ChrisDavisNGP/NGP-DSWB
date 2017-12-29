@@ -1,7 +1,3 @@
-*&copy; 2015 SOASTA, Inc.
-All rights reserved.
-Proprietary and confidential.*
-
 ##Notebook Information:
 Notebook Type: `mPulse` <br>
 Graph Type: `Treemap`<br>

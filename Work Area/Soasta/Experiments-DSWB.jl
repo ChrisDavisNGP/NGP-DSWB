@@ -22,8 +22,6 @@ println(startTime, ", ", endTime)
 
 # Welcome to DSWB
 
----
-
 using ODBC
 using DataFrames
 using DSWB

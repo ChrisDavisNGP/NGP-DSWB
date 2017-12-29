@@ -1,8 +1,6 @@
 #Slowest URLs by Page Group
-
----
-
-The following graphs show information concerning the slowest URLs.
+#
+#The following graphs show information concerning the slowest URLs.
 
 using DSWB
 setRedshiftEndpoint("dswb-natgeo")

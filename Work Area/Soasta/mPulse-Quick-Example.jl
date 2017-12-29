@@ -16,9 +16,6 @@ tenantValue="Nat Geo"
 using mPulseAPI
 token = getRepositoryToken(tenant=tenantValue, apiToken=apiTokenValue)
 
-
-
-
 # Get a domain by app name
 domain = getRepositoryDomain(token, appName=appNameValue)
 
