@@ -6233,7 +6233,7 @@ function wellKnownUrlGroup()
     ("Yourshot Renditions","Digital Engineering"),
     ("609d93yvzj2e","3rd Party Internet Operations"),
     ("Amazon Associates Ads","3rd Party Ad Operations"),
-    ("Twitter.com","3rd Party Internet Operations"),
+    ("Twitter","3rd Party Internet Operations"),
     ("Yastatic.net","3rd Party Internet Operations"),
     ("Simpli.fi","3rd Party Ad Operations"),
     ("Tapad Ads","3rd Party Ad Operations"),

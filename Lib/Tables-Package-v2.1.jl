@@ -4,7 +4,7 @@
 
 function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    tvUpSpDump(TV,UP,SP,"defaultBeaconsToDF")
+    tvUpSpDumpDebug(TV,UP,SP,"defaultBeaconsToDF")
 
     bt = UP.beaconTable
 
