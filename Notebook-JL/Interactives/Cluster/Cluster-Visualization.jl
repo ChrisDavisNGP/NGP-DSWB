@@ -66,7 +66,7 @@ setTable(btv)
 #@which getLatestResults(hours=2, minutes=0, table_name="$(page_group_table)")
 
 
-results = getLatestResults(hours=2, minutes=0, table_name=btv)
+results = getLatestResults(hours=10, minutes=0, table_name=btv)
 
 #size(results)
 display(results[1:10,:])
