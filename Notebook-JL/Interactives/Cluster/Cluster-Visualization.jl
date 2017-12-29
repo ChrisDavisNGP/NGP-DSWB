@@ -65,7 +65,7 @@ setTable(btv)
 
 #@which getLatestResults(hours=2, minutes=0, table_name="$(page_group_table)")
 
-if Sp.debugLevel > 4
+if SP.debugLevel > 4
     results = getLatestResults(hours=10, minutes=0, table_name=btv)
 
     #size(results)
@@ -94,7 +94,7 @@ results2 = query("""\
 #
 #Zoom and Pan with the Mouse, and filter to a particular load time range by dragging along the legend.
 
-if Sp.debugLevel > 4
+if SP.debugLevel > 4
     clusterViz(results, drawLinks=false)
 end
 
