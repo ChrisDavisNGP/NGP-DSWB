@@ -65,12 +65,12 @@ setTable(btv)
 
 #@which getLatestResults(hours=2, minutes=0, table_name="$(page_group_table)")
 
+if Sp.debugLevel > 4
+    results = getLatestResults(hours=10, minutes=0, table_name=btv)
 
-results = getLatestResults(hours=10, minutes=0, table_name=btv)
-
-#size(results)
-display(results[1:10,:])
-
+    #size(results)
+    display(results[1:10,:])
+end
 #display(results)
 
 #dropped geo_cc
@@ -94,8 +94,11 @@ results2 = query("""\
 #
 #Zoom and Pan with the Mouse, and filter to a particular load time range by dragging along the legend.
 
-clusterViz(results, drawLinks=false)
-#clusterViz(results2, drawLinks=false)
+if Sp.debugLevel > 4
+    clusterViz(results, drawLinks=false)
+end
+
+clusterViz(results2, drawLinks=false)
 
 # Documentation
 
