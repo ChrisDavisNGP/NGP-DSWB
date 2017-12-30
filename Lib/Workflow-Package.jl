@@ -184,21 +184,25 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     defaultBeaconCreateView(TV,UP,SP)
     setTable(UP.btView)
 
-    rawStatsSROS(TV,UP)
+    distributionStats(TV,UP)
 
-    AllStatsDF = createAllStatsDF(TV,UP)
+    if (SP.DebugLevel > 11)
+        fetchStandardStats(TV,UP)
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=1)
+        AllStatsDF = createAllStatsDF(TV,UP)
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=2)
+        drawC3VizConverter(UP,AllStatsDF;graphType=1)
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=3)
+        drawC3VizConverter(UP,AllStatsDF;graphType=2)
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=4)
+        drawC3VizConverter(UP,AllStatsDF;graphType=3)
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=5)
+        drawC3VizConverter(UP,AllStatsDF;graphType=4)
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=6)
+        drawC3VizConverter(UP,AllStatsDF;graphType=5)
+
+        drawC3VizConverter(UP,AllStatsDF;graphType=6)
+    end
 
     q = query(""" drop view if exists $(UP.btView);""")
     q = query(""" drop view if exists $(UP.rtView);""")

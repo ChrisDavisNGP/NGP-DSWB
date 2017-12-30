@@ -1,3 +1,5 @@
+using Distributions
+
 function basicFieldStats(localStatsDF::DataFrame,fieldStat::Symbol)
     try
 
@@ -280,7 +282,7 @@ function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::Dat
     return statsDF
 end
 
-function rawStatsSROS(TV::TimeVars,UP::UrlParams)
+function fetchStandardStats(TV::TimeVars,UP::UrlParams)
 
     localStatsDF = DataFrame()
     statsDF = DataFrame()
@@ -290,10 +292,24 @@ function rawStatsSROS(TV::TimeVars,UP::UrlParams)
         statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
 
-        displayTitle(chart_title = "Raw Data Stats Including Those above 600 seconds for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(statsDF[:,:])
     catch y
-        println("rawStatsSROS Exception ",y)
+        println("fetchStandardStats Exception ",y)
+    end
+end
+
+function distributionStats(TV::TimeVars,UP::UrlParams)
+    try
+        localStatsDF = statsBtViewTableToDF(UP);
+        statsDV = localStatsDF[:,:timers_t_done]
+        paramsD = params(statDV)
+        println("paramsD ",paramsD)
+
+        #displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        #beautifyDF(statsDF[:,:])
+    catch y
+        println("distributionStats Exception ",y)
     end
 end
 

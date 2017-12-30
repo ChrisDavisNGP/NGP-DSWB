@@ -2,7 +2,6 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   try
 
       localTableDF = DataFrame()
-#      localTableRtDF = DataFrame()
       statsDF = DataFrame()
 
       localTableDF = defaultBeaconsToDF(TV,UP,SP)
