@@ -1,4 +1,4 @@
-include("URL-Classification-Data-v2.0.jl")
+include("URL-Classification-Data.jl")
 
 function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
     try

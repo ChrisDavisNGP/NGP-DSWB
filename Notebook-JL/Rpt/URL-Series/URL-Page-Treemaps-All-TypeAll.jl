@@ -13,8 +13,8 @@ setRedshiftEndpoint(dsn)
 setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 
-include("../../../Lib/Include-Package-v2.1.jl")
-include("../../../Lib/URL-Classification-Package-v2.0.jl")
+include("../../../Lib/Include-Package.jl")
+include("../../../Lib/URL-Classification-Package.jl")
 
 TV = pickTime()
 #TV = timeVariables(2017,6,8,10,59,2017,6,8,12,59)

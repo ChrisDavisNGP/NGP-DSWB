@@ -1,5 +1,3 @@
-## Tables and Data Source setup
-
 using ODBC
 using DataFrames
 using DSWB
@@ -15,11 +13,11 @@ setRedshiftEndpoint(dsn)
 setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 
-include("../../../Lib/Include-Package-v2.1.jl")
-include("../../../Lib/URL-Classification-Package-v2.0.jl")
+include("../../../Lib/Include-Package.jl")
+include("../../../Lib/URL-Classification-Package.jl")
 
 TV = pickTime()
-#TV = timeVariables(2017,12,6,13,0,2017,12,6,13,59)
+#TV = timeVariables(2017,12,6,13,0,2017,12,6,13,10)
 
 UP = UrlParamsInit(scriptName)
 UrlParamsValidate(UP)
@@ -29,7 +27,6 @@ ShowParamsValidate(SP)
 
 WellKnownHostDirectory = wellKnownHostEncyclopedia();
 WellKnownPath = wellKnownPathDictionary();
-WellKnownUrlGroup = wellKnownUrlGroup();
 
-criticalPathAggregationMain(TV,UP,SP)
+statsAndTreemaps(TV,UP,SP)
 ;
