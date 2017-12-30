@@ -1,4 +1,4 @@
-using Distributions
+#using Distributions
 
 function basicFieldStats(localStatsDF::DataFrame,fieldStat::Symbol)
     try
@@ -301,10 +301,19 @@ end
 
 function distributionStats(TV::TimeVars,UP::UrlParams)
     try
+        # Does not work
+
+        #statsDV = Float64()
+        #statsDV = [18585.0,9499.0,19617.0,9624.0,28572.0,4255.0,9198.0,21984.0,27154.0,34180.0,14190.0,5248.0,6802.0,55169.0,55917.0,15414.0,33405.0]
         localStatsDF = statsBtViewTableToDF(UP);
-        statsDV = localStatsDF[:,:timers_t_done]
-        paramsD = params(statDV)
-        println("paramsD ",paramsD)
+        statsDV = localStatsDF[:timers_t_done]
+        n = fit(Normal, statsDV)
+        println("normal ",n)
+        println(dof(n))
+        #println(statsDV)
+        #println(fit(Normal, statsDV))
+        #paramsD = params(statDV)
+        #println("paramsD ",paramsD)
 
         #displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         #beautifyDF(statsDF[:,:])
