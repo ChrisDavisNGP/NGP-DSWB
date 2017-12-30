@@ -322,7 +322,7 @@ function distributionStats(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function createAllStatsDF(TV::TimeVars,UP::UrlParams)
+function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     year1 = Dates.year(TV.startTimeUTC)
     month1 = Dates.month(TV.startTimeUTC)
@@ -344,7 +344,9 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams)
 
     i = 0
     for (day = day1:day2)
-        #println("Day ",day)
+        if SP.debugLevel > 4
+            println("Day ",day)
+        end
         startHour = hour1
         endHour = hour2
         if (day == day1 && day != day2)
@@ -361,7 +363,9 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams)
         end
 
         for (hour = startHour:endHour)
-            #println("Year ",year1," Month ",month1," Day ",day," Hour ",hour," M1 ",minute1," M2 ",minute2)
+            if SP.debugLevel > 4
+                println("Year ",year1," Month ",month1," Day ",day," Hour ",hour," M1 ",minute1," M2 ",minute2)
+            end
             i += 1
             startTime = DateTime(year1,month1,day,hour,minute1)
             endTime   = DateTime(year2,month2,day,hour,minute2)
@@ -370,8 +374,11 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams)
             endTimeMs = datetimeToMs(endTime)
 
             localStatsDF = statsBtTableToDF(UP.beaconTable,UP.pageGroup,startTimeMs,endTimeMs)
-
             statsDF = runningStats(year1,month1,day,hour,localStatsDF)
+
+            if SP.debugLevel > 8
+                beautifyDF(statsDF)
+            end
             if (i == 1)
                 AllStatsDF = deepcopy(statsDF)
             else
