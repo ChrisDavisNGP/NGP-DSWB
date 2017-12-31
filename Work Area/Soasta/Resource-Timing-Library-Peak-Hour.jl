@@ -63,8 +63,6 @@ getPeak(TV.startTimeUTC, TV.endTimeUTC, :hour)
 # The value passed by domain indicates what is considered a first party.  All non-matching resources will be considered 3rd party.
 chartResourceStats(domain, TV.startTimeUTC, TV.endTimeUTC);
 
-#---
-
 # 3. Where are my problem areas?
 #** By looking at the load times through different dimension comparisons, a larger picture concerning the biggest problem-areas for the site may come to light. **
 
@@ -148,8 +146,6 @@ chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TYPE, url 
 # The url indicates the first-party resource domain to identify the resources against.
 # Setting the isFirstParty to false indicates you want to look at all resources that do not come from the domain provided in the url argument.
 chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false);
-
-#---
 
 # 4. Break Down a Page Group For Me
 
