@@ -28,7 +28,7 @@ function UrlParamsInit(nb::ASCIIString)
 
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
-    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,600000,250,10,10000,"time",true,"%","%",false,"")
+    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,60000,250,10,10000,"time",true,"%","%",false,"")
 
     if isdefined(:UpPageGroup)
         UP.pageGroup = UpPageGroup
