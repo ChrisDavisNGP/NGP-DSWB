@@ -376,7 +376,13 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             startTimeMs = datetimeToMs(startTime)
             endTimeMs = datetimeToMs(endTime)
 
-            localStatsDF = statsBtViewTableToDF(UP.btView,startTimeMs,endTimeMs)
+            startTimeUTC = datetimeToUTC(startTime, TimeZone("America/New_York"))
+            endTimeUTC = datetimeToUTC(endTime, TimeZone("America/New_York"))
+            startTimeMsUTC = datetimeToMs(startTimeUTC)
+            endTimeMsUTC = datetimeToMs(endTimeUTC)
+
+
+            localStatsDF = statsBtViewTableToDF(UP.btView,startTimeMsUTC,endTimeMsUTC)
             if size(localStatsDF,1) > 0
                 statsDF = runningStats(year1,month1,day,hour,localStatsDF)
 
