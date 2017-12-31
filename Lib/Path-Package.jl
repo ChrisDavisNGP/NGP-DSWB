@@ -4,7 +4,12 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       localTableDF = DataFrame()
       statsDF = DataFrame()
 
-      localTableDF = defaultBeaconsToDF(TV,UP,SP)
+      saveUpLimitRows = UP.limitRows
+      # if you want 10 rows then 100 samples should be enough, if you want 500, then 5000 should be enough
+      UP.limitRows = SP.showLines * 10
+      localTableDF = defaultLimitedBeaconsToDF(TV,UP,SP)
+      UP.limitRows = saveUpLimitRows
+
       recordsFound = nrow(localTableDF)
 
       if recordsFound == 0
