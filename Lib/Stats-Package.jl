@@ -294,6 +294,9 @@ function fetchStandardStats(TV::TimeVars,UP::UrlParams)
 
         displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(statsDF[:,:])
+
+        return localStatsDF
+        
     catch y
         println("fetchStandardStats Exception ",y)
     end
@@ -374,15 +377,19 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             endTimeMs = datetimeToMs(endTime)
 
             localStatsDF = statsBtTableToDF(UP.beaconTable,UP.pageGroup,startTimeMs,endTimeMs)
-            statsDF = runningStats(year1,month1,day,hour,localStatsDF)
+            if size(localStatsDF,1) > 0
+                statsDF = runningStats(year1,month1,day,hour,localStatsDF)
 
-            if SP.debugLevel > 8
-                beautifyDF(statsDF)
-            end
-            if (i == 1)
-                AllStatsDF = deepcopy(statsDF)
-            else
-                append!(AllStatsDF,statsDF)
+                if size(statsDF,1) > 0
+                    if SP.debugLevel > 8
+                        beautifyDF(statsDF)
+                    end
+                    if (i == 1)
+                        AllStatsDF = deepcopy(statsDF)
+                    else
+                        append!(AllStatsDF,statsDF)
+                    end
+                end
             end
         end
     end
