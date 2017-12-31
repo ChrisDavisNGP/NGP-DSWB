@@ -17,8 +17,10 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       saveTimeUpperMs = UP.timeUpperMs
 
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.75)
-      UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.25)
+      #UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.75)
+      #UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.25)
+      UP.timeLowerMs = round(statsDF[1:1,:q25][1])
+      UP.timeUpperMs = round(statsDF[1:1,:q75][1])
 
       criticalPathStreamline(TV,UP,SP,localTableDF)
 

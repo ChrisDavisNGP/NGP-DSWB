@@ -497,9 +497,10 @@ function drawC3VizConverter(UP::UrlParams,AllStatsDF::DataFrame;graphType::Int64
             drawDF[:col1] = AllStatsDF[:timestamp]
             drawDF[:data1] = AllStatsDF[:timers_t_done]
             drawDF[:data2] = AllStatsDF[:timers_domready]
+            colors = ["Red", "Green"]
 
             c3 = drawC3Viz(drawDF; axisLabels=["Page Load","Dom Ready"],dataNames=["Page Load",
-                "Dom Ready"], mPulseWidget=false, chart_title="$(UP.pageGroup) Page Group", vizTypes=["line","line"])
+                "Dom Ready"], mPulseWidget=false, chart_title="$(UP.pageGroup) Page Group", vizTypes=["scatter","scatter"],colors=colors)
         catch y
             println("draw Timers exception ",y)
         end
