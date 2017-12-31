@@ -29,9 +29,6 @@ ShowParamsValidate(SP)
 # 3rd Party Resource Analysis
 #This notebook analyzes 3rd party resources using the `RT` library. It is divided into four sections:
 
-#1. **Setup/Configuration**
-#    > Which database is used and what is the name of the table the beacons exist in?
-
 #1. **What is the scope of my third party usage?**
 #    > How many resources were served from my site and each of my page groups, and how many of those resources were from third party domains?
 
@@ -167,7 +164,7 @@ chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstPa
 
 # For official documentation, try using: ?chartLoadTimeDistribution
 # The domain to look at is taken from the domain servers listed above. (#23)
-slowDomain = "http://recs.coremetrics.com"
+slowDomain = "http://securepubads.g.doubleclick.net"
 chartLoadTimeDistribution(slowDomain, TV.startTimeUTC, TV.endTimeUTC)
 
 ##Which are the worst resources in this page group, and which are the most important to address?
