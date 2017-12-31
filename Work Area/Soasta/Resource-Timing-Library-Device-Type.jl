@@ -26,7 +26,7 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-resourceLT = "$(resources)_lt"
+#resourceLT = "$(resources)_lt"
 
 deviceType = "Desktop";
 
