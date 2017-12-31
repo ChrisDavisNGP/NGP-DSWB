@@ -176,7 +176,7 @@ chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstPa
 
 # For official documentation, try using: ?chartLoadTimeDistribution
 # The domain to look at is taken from the domain servers listed above. (#25)
-slowDomain = "http://recs.coremetrics.com"
+slowDomain = "https://natgeo.blueconic.net"
 chartLoadTimeDistribution(slowDomain, TV.startTimeUTC, TV.endTimeUTC)
 
 ##Which are the worst resources in this page group, and which are the most important to address?
