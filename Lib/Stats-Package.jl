@@ -141,7 +141,7 @@ function runningStats(year::Int64,month::Int64,day::Int64,hour::Int64,localStats
 
         # Range 1 Std Dev
         rangeLowerByStd = stats[1,:median] - (3 * stats[1,:stddev])
-        if (rangeLowerByStd < 0.0) rangeLowerByStd = 1 end
+        if (rangeLowerByStd < 0.0) rangeLowerByStd = 1.0 end
         rangeUpperByStd = stats[1,:median] + (3 * stats[1,:stddev])
 
         stats[:LowerBy3Stddev] = (rangeLowerByStd)
@@ -327,18 +327,18 @@ end
 
 function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    year1 = Dates.year(TV.startTimeUTC)
-    month1 = Dates.month(TV.startTimeUTC)
-    day1 = Dates.day(TV.startTimeUTC)
-    hour1 = Dates.hour(TV.startTimeUTC)
-    #minute1 = Dates.minute(TV.startTimeUTC)
+    year1 = Dates.year(TV.startTime)
+    month1 = Dates.month(TV.startTime)
+    day1 = Dates.day(TV.startTime)
+    hour1 = Dates.hour(TV.startTime)
+    #minute1 = Dates.minute(TV.startTime)
     #study whole hours only
     minute1 = 0
 
-    year2 = Dates.year(TV.endTimeUTC)
-    month2 = Dates.month(TV.endTimeUTC)
-    day2 = Dates.day(TV.endTimeUTC)
-    hour2 = Dates.hour(TV.endTimeUTC)
+    year2 = Dates.year(TV.endTime)
+    month2 = Dates.month(TV.endTime)
+    day2 = Dates.day(TV.endTime)
+    hour2 = Dates.hour(TV.endTime)
     minute2 = 59
 
     AllStatsDF = DataFrame()
@@ -393,7 +393,7 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                         beautifyDF(statsDF)
                     end
                     if (initDataFrame)
-                        AllStatsDF = deepcopy(statsDF)
+                        AllStatsDF = statsDF
                         initDataFrame = false
                     else
                         append!(AllStatsDF,statsDF)
@@ -534,7 +534,7 @@ function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
 
         # Range 1 Std Dev
         rangeLowerByStd = stats[1,:median] - (stats[1,:stddev] * 3)
-        if (rangeLowerByStd < 0.0) rangeLowerByStd = 1 end
+        if (rangeLowerByStd < 0.0) rangeLowerByStd = 1.0 end
         rangeUpperByStd = stats[1,:median] + (stats[1,:stddev] * 3)
 
         stats[:rangeLowerBy25p] = statsArr(rangeLowerBy25p)
