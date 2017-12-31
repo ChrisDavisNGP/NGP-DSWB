@@ -57,7 +57,7 @@ domain = getDomains(TV.startTimeUTC, TV.endTimeUTC)[1]
 
 # The following code will create the load time table based on the full time range of the resource table.
 # This is recommended if you are doing different time range analysis for the client.
-createLoadTimeTable(getBeaconsFirstAndLast(; table = resources)[Symbol("First Beacon")][1], getBeaconsFirstAndLast(; table = resources)[Symbol("Last Beacon")][1]);
+createLoadTimeTable(getBeaconsFirstAndLast(; table = tableRt)[Symbol("First Beacon")][1], getBeaconsFirstAndLast(; table = tableRt)[Symbol("Last Beacon")][1]);
 
 # 2. What is the Scope of my Third Party Usage?
 #** Eliminating 3rd party performance issues begins with understanding the importance of 3rd party resources to your overall site performance **
