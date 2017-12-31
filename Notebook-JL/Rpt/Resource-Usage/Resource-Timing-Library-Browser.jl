@@ -12,7 +12,7 @@ sessions = "beacons_4744_sessions";
 # Connect to Beacon Data
 setRedshiftEndpoint(dsn)
 setTable(table)
-setTable(tableRt, tableType = "RESOURCE_TABLE")
+setTable(tableRt, tableType = RESOURCE_TABLE)
 setTable(sessions; tableType = SESSIONS_TABLE);
 
 include("../../../Lib/Include-Package.jl")
