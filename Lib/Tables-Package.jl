@@ -341,15 +341,13 @@ function gatherSizeDataToDF(UP::UrlParams,SP::ShowParams)
     end
 end
 
-function statsBtTableToDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function statsBtViewTableToDF(btv::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
     try
         localStats = query("""\
             select timers_t_done
-            FROM $bt
+            FROM $btv
             where
-                page_group ilike '$(pageGroup)' and
-                "timestamp" between $startTimeMs and $endTimeMs and
-                params_rt_quit IS NULL
+                "timestamp" between $startTimeMs and $endTimeMs
         """);
         return localStats
     catch y
