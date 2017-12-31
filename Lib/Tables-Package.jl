@@ -341,13 +341,13 @@ function gatherSizeDataToDF(UP::UrlParams,SP::ShowParams)
     end
 end
 
-function statsBtViewTableToDF(btv::ASCIIString,startTimeMs::Int64, endTimeMs::Int64)
+function statsBtViewByHourToDF(btv::ASCIIString,startTimeMsUTC::Int64, endTimeMsUTC::Int64)
     try
         localStats = query("""\
             select timers_t_done
             FROM $btv
             where
-                "timestamp" between $startTimeMs and $endTimeMs
+                "timestamp" between $startTimeMsUTC and $endTimeMsUTC
         """);
         return localStats
     catch y
