@@ -15,7 +15,7 @@ setTable(table)
 setTable(tableRt, tableType = RESOURCE_TABLE)
 setTable(sessions; tableType = SESSIONS_TABLE);
 
-include("../../Lib/Include-Package.jl")
+include("../../../Lib/Include-Package.jl")
 
 TV = pickTime()
 #TV = timeVariables(2017,11,15,23,59,2017,11,16,23,59)
@@ -26,21 +26,17 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-#resourceLT = "$(resources)_lt"
-
-deviceType = "Desktop";
-
 domain = getDomains(TV.startTimeUTC, TV.endTimeUTC)[1]
 
 # Resource Analysis
 #---
 #Analysis using the `RT` library for the resources used on `www.site.com`.
 
+chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC);
+
 # For official documentation, try using: ?chartResourceStats
 # The value passed by domain indicates what is considered a first party.  All non-matching resources will be considered 3rd party.
-# The dimension argument indicate how you want the resources to be grouped.  Possible arguments: RESOURCE_TYPE (default; img, css, etc.), PG (page group), OS (Windows, Mac OS X, etc.),
-#  Browser (Chrome, IE, Firefox, etc.), DEVICE_TYPE (Desktop, Mobile, etc.), COUNTRY_CODE (United States, Germany, UK, etc.), and beacon columns are also usable.
-chartResourceStats(domain, TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TYPE);
+chartResourceStats(domain, TV.startTimeUTC, TV.endTimeUTC);
 
 # Resource Load Times by Resource Type
 #---
@@ -51,7 +47,7 @@ chartResourceStats(domain, TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TY
 #  Browser (Chrome, IE, Firefox, etc.), DEVICE_TYPE (Desktop, Mobile, etc.), COUNTRY_CODE (United States, Germany, UK, etc.), and beacon columns are also usable.
 # The url indicates the first-party resource domain to identify the resources against.
 # Setting the isFirstParty to false indicates you want to look at all resources that do not come from the domain provided in the url argument.
-chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TYPE, url = domain, isFirstParty = false);
+chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = PG, url = domain, isFirstParty = false);
 
 # Resource Load Times for Resource Servers
 #---
@@ -63,6 +59,14 @@ chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TYPE, url 
 #  argument will allow you to use the inputFile as the result to graph.  If you want to do a live demo this can be a quick way to show results without
 #  having to run the query.  The outputFile argument is set to the file to allow you to create a new or overwrite an old data file.  Using the inputFile argument
 #  will short-circuit the function call with a prepared result so remove it if you want to run the DB query to get new results.
-file = "rssDesktop";
-#chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, deviceType = deviceType, inputFile = file);
-chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, deviceType = deviceType, outputFile = file);
+file = "rssProduct";
+#chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, pageGroup = UP.pageGroup, inputFile = file);
+chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, pageGroup = UP.pageGroup, outputFile = file);
+
+# For official documentation, try using: ?chartTopNLoadTimeDistributions
+# The url indicates the first-party resource domain to identify the resources against.
+# Setting the isFirstParty to false indicates you want to look at all resources that do not come from the domain provided in the url argument.
+# The outliersOnly argument allows you to just show the top outliers amongst the servers listed above.
+# The serverFile lets you skip having to query again for the domains list already provided above and only run the query to get the load time distribution for each
+#   of the server domains in the list.
+chartTopNLoadTimeDistributions(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, pageGroup = UP.pageGroup, outliersOnly = true, inputFileServers = "rssProduct");

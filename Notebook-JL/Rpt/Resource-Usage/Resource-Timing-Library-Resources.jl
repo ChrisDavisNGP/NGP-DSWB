@@ -15,7 +15,7 @@ setTable(table)
 setTable(tableRt, tableType = RESOURCE_TABLE)
 setTable(sessions; tableType = SESSIONS_TABLE);
 
-include("../../Lib/Include-Package.jl")
+include("../../../Lib/Include-Package.jl")
 
 TV = pickTime()
 #TV = timeVariables(2017,11,15,23,59,2017,11,16,23,59)
@@ -32,9 +32,7 @@ resourceType2 = "script";
 domain = getDomains(TV.startTimeUTC, TV.endTimeUTC)[1]
 
 # Resource Analysis
-#Analysis using the `RT` library for the resources used on `www.site.com`.
 
-# For official documentation, try using: ?chartResourceStats
 # The value passed by domain indicates what is considered a first party.  All non-matching resources will be considered 3rd party.
 # The dimension argument indicate how you want the resources to be grouped.  Possible arguments: RESOURCE_TYPE (default; img, css, etc.), PG (page group), OS (Windows, Mac OS X, etc.),
 #  Browser (Chrome, IE, Firefox, etc.), DEVICE_TYPE (Desktop, Mobile, etc.), COUNTRY_CODE (United States, Germany, UK, etc.), and beacon columns are also usable.

@@ -15,7 +15,7 @@ setTable(table)
 setTable(tableRt, tableType = RESOURCE_TABLE)
 setTable(sessions; tableType = SESSIONS_TABLE);
 
-include("../../Lib/Include-Package.jl")
+include("../../../Lib/Include-Package.jl")
 
 TV = pickTime()
 #TV = timeVariables(2017,11,15,23,59,2017,11,16,23,59)
@@ -25,13 +25,10 @@ UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
-#
-#---
 
-# SOASTA 3rd Party Resource Analysis
+# 3rd Party Resource Analysis
+#This notebook analyzes 3rd party resources using the `RT` library. It is divided into four sections:
 
-#This notebook analyzes 3rd party resource performance using the `RT` library. It is divided into four sections:
-#
 #1. **Setup/Configuration**
 #    > Which database is used and what is the name of the table the beacons exist in?
 
@@ -44,20 +41,17 @@ ShowParamsValidate(SP)
 #3. **Break down a page for me.**
 #    > Take the page group with the highest resource count, and break down the top 25 worst 3rd party performers for that group.
 
+# 1. Setup/Configuration
+
 # A value called slowDomain is set at the end of this notebook.  It is located in the code block below:
 #   How are the resource load times distributed for a given resource provider?
 # For different customers, that value should be changed.  See code comments in the code block for help.
 
-TV.startTimeUTC = getBeaconsFirstAndLast()[Symbol("First Beacon")][1];
-TV.endTimeUTC = getBeaconsFirstAndLast()[Symbol("Last Beacon")][1];
-
 domain = getDomains(TV.startTimeUTC, TV.endTimeUTC)[1]
 
-### Create the Load Time Table Based off of the Resource Table
+### The Peak Hour Within The Given Date Range
 
-# The following code will create the load time table based on the full time range of the resource table.
-# This is recommended if you are doing different time range analysis for the client.
-createLoadTimeTable(getBeaconsFirstAndLast(; table = tableRt)[Symbol("First Beacon")][1], getBeaconsFirstAndLast(; table = tableRt)[Symbol("Last Beacon")][1]);
+getPeak(TV.startTimeUTC, TV.endTimeUTC, :hour)
 
 # 2. What is the Scope of my Third Party Usage?
 #** Eliminating 3rd party performance issues begins with understanding the importance of 3rd party resources to your overall site performance **
@@ -78,6 +72,8 @@ chartResourceStats(domain, TV.startTimeUTC, TV.endTimeUTC);
 
 #Tree maps are a powerful way to quickly discover specific problem areas on which to focus your attention, and to understand the relative importance of each element within a given beacon set.
 
+### Peak Hour Used
+
 # For official documentation, try using: ?chartTreemapResources
 # Treemap dimensions list have the following (short-cut/tab-complete) options:
 #   COUNTRY_CODE (United States, UK, etc.), DEVICE_TYPE (Desktop, Mobile, Tablet, etc.), RESOURCE_TYPE (img, css, link, etc.), OS (Windows, Mac OS X, etc.), BROWSER (Chrome,
@@ -94,7 +90,7 @@ chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; dimensions = [DEVICE_TYPE]
 # You can use specific dimensions from for the above short-cuts or DB column names directly.  Example: :user_agent_os (equivalent to OS), :compression_types,
 #   :http_method, :geo_rg, etc.
 # Only one dimension can be used at this time to ensure accuracy of data.
-deviceType = "Desktop"
+deviceType = "Desktop";
 chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, dimensions = [RESOURCE_URL], chartTitle = deviceType);
 
 # For official documentation, try using: ?chartTreemapResources
@@ -104,7 +100,7 @@ chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, d
 # You can use specific dimensions from for the above short-cuts or DB column names directly.  Example: :user_agent_os (equivalent to OS), :compression_types,
 #   :http_method, :geo_rg, etc.
 # Only one dimension can be used at this time to ensure accuracy of data.
-deviceType = "Mobile"
+deviceType = "Mobile";
 chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, dimensions = [RESOURCE_URL], chartTitle = deviceType);
 
 # For official documentation, try using: ?chartTreemapResources
@@ -114,11 +110,8 @@ chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, d
 # You can use specific dimensions from for the above short-cuts or DB column names directly.  Example: :user_agent_os (equivalent to OS), :compression_types,
 #   :http_method, :geo_rg, etc.
 # Only one dimension can be used at this time to ensure accuracy of data.
-deviceType = "Tablet"
+deviceType = "Tablet";
 chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, dimensions = [RESOURCE_URL], chartTitle = deviceType);
-
-#- For more details concerning resource analysis using `resource types` (images, CSS, etc.), try <a href="../Resource%20Timing%20Library%20-%20Resources.ipynb">here</a>.
-#- For more details concerning resource analysis using `page groups`, try <a href="Resource%20Timing%20Library%20-%20Page%20Group.ipynb">here</a>.
 
 ## How Do Load Times Break Down by Resource Type?
 #The following graphs use box-plots to compare the different groups of data.  If you're not familiar with box-plots, watch this <a href="https://www.youtube.com/watch?v=b2C9I8HuCe4&feature=youtu.be&t=16">short video</a> to understand how they work.
@@ -128,7 +121,7 @@ chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, d
 # Setting the isFirstParty to false indicates you want to look at all resources that do not come from the domain provided in the url argument.
 chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false);
 
-#** For more details concerning resource analysis using `resource types` (images, CSS, etc.), try <a href="../Resource%20Timing%20Library%20-%20Resources.ipynb#Resource-Analysis">here</a>.
+#** For more details concerning resource analysis using `resource types` (images, CSS, etc.), try <a href="../Resource%20Timing%20Library%20-%20Resources.ipynb#">here</a>.
 
 ## How Do Load Times Break Down by Device Type?
 
@@ -141,11 +134,11 @@ chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = 
 #  argument will allow you to use the inputFile as the result to graph.  If you want to do a live demo this can be a quick way to show results without
 #  having to run the query.  The outputFile argument is set to the file to allow you to create a new or overwrite an old data file.  Using the inputFile argument
 #  will short-circuit the function call with a prepared result so remove it if you want to run the DB query to get new results.
-file = "fullDayDevType3rdParty";
+file = "peakHourDevType3rdParty";
 # chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TYPE, url = domain, isFirstParty = false, inputFile = file);
 chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TYPE, url = domain, isFirstParty = false, outputFile = file);
 
-#** For more details concerning resource analysis using `device types`, try <a href="../Resource%20Timing%20Library%20-%20Device%20Type.ipynb#Resource-Analysis">here</a> and if it's `browser` specific breakdowns needed, try <a href="../Resource%20Timing%20Library%20-%20Browser.ipynb#Resource-Analysis">here</a>.
+#** For more details concerning resource analysis using `device types`, try <a href="../Resource%20Timing%20Library%20-%20Device%20Type.ipynb">here</a> and if it's `browser` specific breakdowns needed, try <a href="../Resource%20Timing%20Library%20-%20Browser.ipynb">here</a>.
 
 ## How Do Load Times Break Down by Resource Providers?
 
@@ -154,8 +147,6 @@ chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = DEVICE_TYPE, url 
 # Setting the isFirstParty to false indicates you want to look at all resources that do not come from the domain provided in the url argument.
 chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false);
 
-#---
-
 # 4. Break Down a Page Group For Me
 
 ## What is the Breakdown of Resource Domain Performance For A Single Page Group?
@@ -163,19 +154,19 @@ chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstPa
 # For official documentation, try using: ?chartResourceServerStats
 # The url indicates the first-party resource domain to identify the resources against.
 # Setting the isFirstParty to false indicates you want to look at all resources that do not come from the domain provided in the url argument.
-# The file arguments allows you to save to the results to a .csv file with the provided file name (ex. rssProduct.csv).  Removing the outputFile
+# The file arguments allows you to save to the results to a .csv file with the provided file name (ex. rssProductPeak.csv).  Removing the outputFile
 #  argument will allow you to use the inputFile as the result to graph.  If you want to do a live demo this can be a quick way to show results without
 #  having to run the query.  The outputFile argument is set to the file to allow you to create a new or overwrite an old data file.  Using the inputFile argument
 #  will short-circuit the function call with a prepared result so remove it if you want to run the DB query to get new results.
-file = "rssProduct";
-#chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, pageGroup = UP.pageGroup, inputFile = file);
+file = "rssProductPeak";
+# chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, pageGroup = UP.pageGroup, inputFile = file);
 chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstParty = false, pageGroup = UP.pageGroup, outputFile = file);
 
 ##How are the resource load times distributed for a given resource provider?
 #A load time histogram is a powerful way of visualizing how resources from a given provider are affecting user experience, and answering questions like how caching, network latency, and other factors are impacting that load time.
 
 # For official documentation, try using: ?chartLoadTimeDistribution
-# The domain to look at is taken from the domain servers listed above. (#25)
+# The domain to look at is taken from the domain servers listed above. (#23)
 slowDomain = "http://recs.coremetrics.com"
 chartLoadTimeDistribution(slowDomain, TV.startTimeUTC, TV.endTimeUTC)
 
@@ -183,11 +174,11 @@ chartLoadTimeDistribution(slowDomain, TV.startTimeUTC, TV.endTimeUTC)
 #This bar chart displays the median load times for the worst individual resources in this page group. The blue bar is the median load time, and the green dot is the volume of resource requests for this resource type. The idea is to begin troubleshooting the worst resources with the biggest impact on user experience in order to have the biggest impact on conversion or page views.
 
 # For official documentation, try using: ?chartResources
-# The url indicates the resource domain to identify the resources against.
+# The url indicates the resource domain to identify the resources by.
 # The minimum resource count set will allow you to weed out the resources with just 1 or 2 requests that always populate the slowest resources.  The value
 #  should be based on how popular the resource server chosen is.  If the server has over 1M hits, then 1_000 - 10_000 can be used.  If it's 100K - 1M then
 #  100 - 1_000 can be used.  If it's less than 10K - 100K, then as low as 10 - 1_000 can be used, depending on how diverse the resource URLs are.
-minResourceCount = 100;
+minResourceCount = 30;
 chartResources(TV.startTimeUTC, TV.endTimeUTC; url = slowDomain, minResourceCount = minResourceCount);
 
 ##More Page Group Data
