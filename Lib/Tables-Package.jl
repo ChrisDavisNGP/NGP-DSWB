@@ -357,6 +357,19 @@ function statsBtTableToDF(bt::ASCIIString,pageGroup::ASCIIString,startTimeMs::In
     end
 end
 
+function statsBtViewTableToExtraDF(UP::UrlParams)
+    try
+        btv = UP.btView
+
+        localStats = query("""select "timestamp",timers_t_done,timers_domready from $btv""");
+
+        return localStats
+    catch y
+        println("statsBtViewTableToDF Exception ",y)
+    end
+end
+
+
 function statsBtViewTableToDF(UP::UrlParams)
     try
         btv = UP.btView

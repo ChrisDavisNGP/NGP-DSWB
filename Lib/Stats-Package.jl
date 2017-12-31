@@ -288,7 +288,7 @@ function fetchStandardStats(TV::TimeVars,UP::UrlParams)
     statsDF = DataFrame()
     medianThreshold = Int64
     try
-        localStatsDF = statsBtViewTableToDF(UP);
+        localStatsDF = statsBtViewTableToExtraDF(UP);
         statsDF = basicStats(localStatsDF)
         medianThreshold = statsDF[1:1,:median][1]
 
@@ -296,7 +296,7 @@ function fetchStandardStats(TV::TimeVars,UP::UrlParams)
         beautifyDF(statsDF[:,:])
 
         return localStatsDF
-        
+
     catch y
         println("fetchStandardStats Exception ",y)
     end
