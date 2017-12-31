@@ -15,7 +15,7 @@ setTable(table)
 setTable(tableRt, tableType = "RESOURCE_TABLE")
 setTable(sessions; tableType = SESSIONS_TABLE);
 
-include("../../../Lib/Include-Package.jl")
+include("../../Lib/Include-Package.jl")
 
 TV = pickTime()
 #TV = timeVariables(2017,11,15,23,59,2017,11,16,23,59)
@@ -82,7 +82,7 @@ file = "resourceTrending";
 #chartResourceTrend(worstResource, startTime, endTime, datepart; browser = browser, inputFile = file);
 chartResourceTrend(worstResource, TV.startTimeUTC, TV.endTimeUTC, TV.datepart; browser = browser, outputFile = file);
 
-The graph below is the same graph (as the one above) but showing the median, 75th and 95th percentiles.
+#The graph below is the same graph (as the one above) but showing the median, 75th and 95th percentiles.
 
 # For official documentation, try using: ?chartResourceTrend
 # Only the resources coming from the specified browser will be considered.
