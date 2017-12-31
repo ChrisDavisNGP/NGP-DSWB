@@ -187,7 +187,8 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     #distributionStats(TV,UP)
 
     rawTimeDF = fetchStandardStats(TV,UP)
-    beautifyDF(rawTimeDF[1:3,:])
+    #beautifyDF(rawTimeDF[1:3,:])
+    drawC3VizConverter(UP,rawTimeDF;graphType=7)
 
     AllStatsDF = createAllStatsDF(TV,UP,SP)
 

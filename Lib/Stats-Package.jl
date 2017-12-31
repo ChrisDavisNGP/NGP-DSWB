@@ -481,6 +481,23 @@ function drawC3VizConverter(UP::UrlParams,AllStatsDF::DataFrame;graphType::Int64
             println("drawModes exception ",y)
         end
     end
+
+    if (graphType == 7)
+        try
+            drawDF = DataFrame()
+            drawDF[:col1] = AllStatsDF[:timestamp]
+            drawDF[:data1] = AllStatsDF[:timers_t_done]
+            drawDF[:data2] = AllStatsDF[:timers_domready]
+
+            c3 = drawC3Viz(drawDF; axisLabels=["Page Load","Dom Ready"],dataNames=["Page Load",
+                "Dom Ready"], mPulseWidget=false, chart_title="$(UP.pageGroup) Page Group", vizTypes=["line","line"])
+        catch y
+            println("draw Timers exception ",y)
+        end
+        return
+    end
+
+
 end
 
 function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
