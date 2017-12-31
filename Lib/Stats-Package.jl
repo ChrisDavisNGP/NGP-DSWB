@@ -346,6 +346,8 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     # todo Month and Year
 
     i = 0
+    initDataFrame = true
+
     for (day = day1:day2)
         if SP.debugLevel > 4
             println("Day ",day)
@@ -390,8 +392,9 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                     if SP.debugLevel > 8
                         beautifyDF(statsDF)
                     end
-                    if (i == 1)
+                    if (initDataFrame)
                         AllStatsDF = deepcopy(statsDF)
+                        initDataFrame = false
                     else
                         append!(AllStatsDF,statsDF)
                     end
