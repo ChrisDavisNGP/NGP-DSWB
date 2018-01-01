@@ -362,46 +362,37 @@ function statsBtViewTableToExtraDF(UP::UrlParams)
         localStats = query("""\
         select
         case
-          when timers_t_done between 0 and 1000
-            then '    0-1000'
-          when timers_t_done between 1001 and 2000
-            then ' 1001-2000'
-          when timers_t_done between 2001 and 3000
-            then ' 2001-3000'
-          when timers_t_done between 3001 and 4000
-            then ' 3001-4000'
-          when timers_t_done between 4001 and 5000
-            then ' 4001-5000'
-          when timers_t_done between 5001 and 6000
-            then ' 5001-6000'
-          when timers_t_done between 6001 and 7000
-            then ' 6001-7000'
-          when timers_t_done between 7001 and 8000
-            then ' 7001-8000'
-          when timers_t_done between 8001 and 9000
-            then ' 8001-9000'
-          when timers_t_done between 9001 and 10000
-            then ' 9001-10000'
-          when timers_t_done between 100001 and 11000
-            then '10001-11000'
-          when timers_t_done between 11001 and 12000
-            then '11001-12000'
-          when timers_t_done between 12001 and 13000
-            then '12001-13000'
-          when timers_t_done between 13001 and 14000
-            then '13001-14000'
-          when timers_t_done between 14001 and 15000
-            then '14001-15000'
-          when timers_t_done between 15001 and 16000
-            then '15001-16000'
-          when timers_t_done between 16001 and 17000
-            then '16001-17000'
-          when timers_t_done between 17001 and 18000
-            then '17001-18000'
-          when timers_t_done between 18001 and 19000
-            then '18001-19000'
-          when timers_t_done between 19001 and 20000
-            then '19001-20000'
+          when timers_t_done between     0 and  1000 then '    0-1000'
+          when timers_t_done between  1001 and  2000 then ' 1001-2000'
+
+          when timers_t_done between  2001 and  2100 then ' 2001-2100'
+          when timers_t_done between  2101 and  2200 then ' 2101-2200'
+          when timers_t_done between  2201 and  2300 then ' 2201-2300'
+          when timers_t_done between  2301 and  2400 then ' 2301-2400'
+          when timers_t_done between  2401 and  2500 then ' 2401-2500'
+          when timers_t_done between  2501 and  2600 then ' 2501-2600'
+          when timers_t_done between  2601 and  2700 then ' 2601-2700'
+          when timers_t_done between  2701 and  2800 then ' 2701-2800'
+          when timers_t_done between  2801 and  2900 then ' 2801-2900'
+          when timers_t_done between  2901 and  3000 then ' 2901-3000'
+
+          when timers_t_done between  3001 and  4000 then ' 3001-4000'
+          when timers_t_done between  4001 and  5000 then ' 4001-5000'
+          when timers_t_done between  5001 and  6000 then ' 5001-6000'
+          when timers_t_done between  6001 and  7000 then ' 6001-7000'
+          when timers_t_done between  7001 and  8000 then ' 7001-8000'
+          when timers_t_done between  8001 and  9000 then ' 8001-9000'
+          when timers_t_done between  9001 and 10000 then ' 9001-10000'
+          when timers_t_done between 10001 and 11000 then '10001-11000'
+          when timers_t_done between 11001 and 12000 then '11001-12000'
+          when timers_t_done between 12001 and 13000 then '12001-13000'
+          when timers_t_done between 13001 and 14000 then '13001-14000'
+          when timers_t_done between 14001 and 15000 then '14001-15000'
+          when timers_t_done between 15001 and 16000 then '15001-16000'
+          when timers_t_done between 16001 and 17000 then '16001-17000'
+          when timers_t_done between 17001 and 18000 then '17001-18000'
+          when timers_t_done between 18001 and 19000 then '18001-19000'
+          when timers_t_done between 19001 and 20000 then '19001-20000'
         else
             '20001+'
         end as timersdone,
