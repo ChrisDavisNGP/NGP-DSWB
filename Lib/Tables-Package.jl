@@ -359,7 +359,11 @@ function statsBtViewTableToExtraDF(UP::UrlParams)
     try
         btv = UP.btView
 
-        localStats = query("""select "timestamp",timers_t_done,timers_domready from $btv""");
+        localStats = query("""\
+            select count(*),avg(timers_t_done)
+            from $btv
+            group by timers_t_done
+            """);
 
         return localStats
     catch y

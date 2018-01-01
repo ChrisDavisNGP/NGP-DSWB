@@ -282,23 +282,22 @@ function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::Dat
     return statsDF
 end
 
-function fetchStandardStats(TV::TimeVars,UP::UrlParams)
+function fetchGraph7Stats(UP::UrlParams)
 
     localStatsDF = DataFrame()
     statsDF = DataFrame()
-    medianThreshold = Int64
     try
         localStatsDF = statsBtViewTableToExtraDF(UP);
-        statsDF = basicStats(localStatsDF)
-        medianThreshold = statsDF[1:1,:median][1]
+        #statsDF = basicStats(localStatsDF)
+        #medianThreshold = statsDF[1:1,:median][1]
 
-        displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(statsDF[:,:])
+        #displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        #beautifyDF(statsDF[:,:])
 
         return localStatsDF
 
     catch y
-        println("fetchStandardStats Exception ",y)
+        println("fetchGraph7Stats Exception ",y)
     end
 end
 

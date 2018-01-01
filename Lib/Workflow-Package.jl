@@ -181,31 +181,104 @@ end
 
 function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
+    if isdefined(:gRunArray) && !gRunArray[1]
+        wfPageGroupGraph = false
+    else
+        wfPageGroupGraph = true
+    end
+
+    if isdefined(:gRunArray) && !gRunArray[2]
+        wfStatsGraphMedian = false
+    else
+        wfStatsGraphMedian = true
+    end
+
+    if isdefined(:gRunArray) && !gRunArray[3]
+        wfStatsGraphQ = false
+    else
+        wfStatsGraphQ = true
+    end
+
+    if isdefined(:gRunArray) && !gRunArray[4]
+        wfStatsGraphKurt = false
+    else
+        wfStatsGraphKurt = true
+    end
+
+    if isdefined(:gRunArray) && !gRunArray[5]
+        wfStatsGraphSkew = false
+    else
+        wfStatsGraphSkew = true
+    end
+
+    if isdefined(:gRunArray) && !gRunArray[6]
+        wfStatsGraphEntropy = false
+    else
+        wfStatsGraphEntropy = true
+    end
+
+    if isdefined(:gRunArray) && !gRunArray[7]
+        wfStatsGraphModes = false
+    else
+        wfStatsGraphModes = true
+    end
+
+    wfClearViews = true
+
+    if isdefined(:explain) && explain
+        explainStudyRangeOfStats()
+    end
+
+    openingTitle(TV,UP,SP)
+
     defaultBeaconCreateView(TV,UP,SP)
     setTable(UP.btView)
 
-    #distributionStats(TV,UP)
+    if wfPageGroupGraph
+        rawTimeDF = fetchGraph7Stats(UP)
+        #beautifyDF(rawTimeDF[1:3,:])
+        drawC3VizConverter(UP,rawTimeDF;graphType=7)
+    end
 
-    rawTimeDF = fetchStandardStats(TV,UP)
-    #beautifyDF(rawTimeDF[1:3,:])
-    drawC3VizConverter(UP,rawTimeDF;graphType=7)
+    if (wfStatsGraphQ ||
+        wfStatsGraphKurt ||
+        wfStatsGraphSkew ||
+        wfStatsGraphModes ||
+        wfStatsGraphMedian ||
+        wfStatsGraphEntropy
+       )
+        AllStatsDF = createAllStatsDF(TV,UP,SP)
+    end
 
-    AllStatsDF = createAllStatsDF(TV,UP,SP)
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=1)
+    if wfStatsGraphMedian
+        drawC3VizConverter(UP,AllStatsDF;graphType=1)
+    end
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=2)
+    if wfStatsGraphQ
+        drawC3VizConverter(UP,AllStatsDF;graphType=2)
+    end
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=3)
+    if wfStatsGraphKurt
+        drawC3VizConverter(UP,AllStatsDF;graphType=3)
+    end
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=4)
+    if wfStatsGraphSkew
+        drawC3VizConverter(UP,AllStatsDF;graphType=4)
+    end
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=5)
+    if wfStatsGraphEntropy
+        drawC3VizConverter(UP,AllStatsDF;graphType=5)
+    end
 
-    drawC3VizConverter(UP,AllStatsDF;graphType=6)
+    if wfStatsGraphModes
+        drawC3VizConverter(UP,AllStatsDF;graphType=6)
+    end
 
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    if wfClearViews
+        q = query(""" drop view if exists $(UP.btView);""")
+        q = query(""" drop view if exists $(UP.rtView);""")
+    end
 
 end
 
