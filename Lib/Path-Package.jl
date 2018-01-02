@@ -974,6 +974,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
                 [
                 summaryDF[i:i,:urlgroup];
                 beforeDF[i:i,:urlgroup];
+                beforeDF[i:i,:average] * beforeDF[i:i,:counter];
                 beforeDF[i:i,:average];
                 beforeDF[i:i,:maximum];
                 beforeDF[i:i,:counter]
@@ -986,12 +987,20 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
             [
             Symbol("Summary Group");
             Symbol("URL Group");
-            Symbol("Total Time");
+            Symbol("Total Time")
+            Symbol("Average Time");
             Symbol("Maximum Time");
             Symbol("Occurances")
             ]),
             defaultNumberFormat=(:precision => 0, :commas => true)
         )
+
+# pie charts
+# for printDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
+# beautifyDF(names!(printDF[:],
+
+# for each subgroup graph the pie
+
 
         return summaryTableUrlGroupDF
 
