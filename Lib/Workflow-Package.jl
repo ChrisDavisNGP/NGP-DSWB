@@ -227,6 +227,7 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     if isdefined(:explain) && explain
         explainStudyRangeOfStats()
+        return
     end
 
     openingTitle(TV,UP,SP)
