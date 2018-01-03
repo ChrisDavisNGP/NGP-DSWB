@@ -960,7 +960,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
     end
 
     try
-        summaryTableUrlGroupDF = DataFrame(summaryGroup=ASCIIString[],urlgroup=ASCIIString[],average=Float64[],
+        summaryTableUrlGroupDF = DataFrame(summaryGroup=ASCIIString[],urlgroup=ASCIIString[],total=Float64[],average=Float64[],
             maximum=Int64[],counter=Int64[])
 
         beforeDF = deepcopy(summaryDF)
@@ -974,7 +974,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
                 [
                 summaryDF[i:i,:urlgroup];
                 beforeDF[i:i,:urlgroup];
-                beforeDF[i:i,:average] * beforeDF[i:i,:counter];
+                beforeDF[i:i,:average][1] * beforeDF[i:i,:counter][1];
                 beforeDF[i:i,:average];
                 beforeDF[i:i,:maximum];
                 beforeDF[i:i,:counter]
@@ -995,12 +995,64 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
             defaultNumberFormat=(:precision => 0, :commas => true)
         )
 
+<<<<<<< HEAD
+        # pie charts
+
+        names!(summaryTableUrlGroupDF,
+            [
+            Symbol("summaryGroup");
+            Symbol("urlGroup");
+            Symbol("totalTime")
+            Symbol("averageTime");
+            Symbol("maximumTime");
+            Symbol("occurances")
+            ])
+
+        delete!(summaryTableUrlGroupDF,:averageTime)
+        delete!(summaryTableUrlGroupDF,:maximumTime)
+        delete!(summaryTableUrlGroupDF,:occurances)
+
+        for plotDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
+            #beautifyDF(plotDF[:])
+            currentGroup = plotDF[1:1,:summaryGroup]
+            tDF = stack(plotDF,:totalTime)
+            #beautifyDF(tDF)
+            timeDF = unstack(tDF,:urlGroup,:value)
+            #beautifyDF(timeDF)
+            timeDF[1:1,:variable] = "Sections"
+            rename!(timeDF,:variable,:x)
+            delete!(timeDF,:summaryGroup)
+            #beautifyDF(timeDF)
+
+            dataNames = names(timeDF)[2:end]
+
+            css="""
+            .c3-chart-arc path {
+                stroke: none;
+            }
+            """
+
+            chart_title=currentGroup
+
+            vizTypes = repmat(["pie"],size(timeDF,2))
+
+            drawC3Viz(timeDF,vizTypes=vizTypes, dataNames=dataNames, zoom_enabled=false, css=css, chart_title=chart_title)
+
+        end
+=======
 # pie charts
 # for printDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
 # beautifyDF(names!(printDF[:],
-
 # for each subgroup graph the pie
+>>>>>>> 20309539ac28a0b8df0ec05c00370e4e34ee7e8f
 
+        for plotDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
+            drawDF = DataFrame()
+            drawDF[:col1] = plotDF[:"Summary Group"]
+            drawDF[:data1] = plotDF[:"Total Time"]
+
+            c3 = drawC3Viz(drawDF; vizTypes=["pie"])
+        end
 
         return summaryTableUrlGroupDF
 
