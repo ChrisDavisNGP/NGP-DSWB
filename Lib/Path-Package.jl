@@ -1013,7 +1013,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
 
         for plotDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
             #beautifyDF(plotDF[:])
-            currentGroup = plotDF[1:1,:summaryGroup]
+            currentGroup = plotDF[1:1,:summaryGroup][1]
             tDF = stack(plotDF,:totalTime)
             #beautifyDF(tDF)
             timeDF = unstack(tDF,:urlGroup,:value)
@@ -1031,11 +1031,11 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
             }
             """
 
-            chart_title=currentGroup
+            standardChartTitle(TV,UP,SP,"Breakdown for $currentGroup")
 
             vizTypes = repmat(["pie"],size(timeDF,2))
 
-            drawC3Viz(timeDF,vizTypes=vizTypes, dataNames=dataNames, zoom_enabled=false, css=css, chart_title=chart_title)
+            drawC3Viz(timeDF,vizTypes=vizTypes, dataNames=dataNames, zoom_enabled=false, css=css)
 
         end
 
