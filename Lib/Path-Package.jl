@@ -960,7 +960,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
     end
 
     try
-        summaryTableUrlGroupDF = DataFrame(summaryGroup=ASCIIString[],urlgroup=ASCIIString[],average=Float64[],
+        summaryTableUrlGroupDF = DataFrame(summaryGroup=ASCIIString[],urlgroup=ASCIIString[],total=Float64[],average=Float64[],
             maximum=Int64[],counter=Int64[])
 
         beforeDF = deepcopy(summaryDF)
@@ -974,7 +974,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
                 [
                 summaryDF[i:i,:urlgroup];
                 beforeDF[i:i,:urlgroup];
-                beforeDF[i:i,:average] * beforeDF[i:i,:counter];
+                beforeDF[i:i,:average][1] * beforeDF[i:i,:counter][1];
                 beforeDF[i:i,:average];
                 beforeDF[i:i,:maximum];
                 beforeDF[i:i,:counter]
@@ -998,9 +998,15 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
 # pie charts
 # for printDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
 # beautifyDF(names!(printDF[:],
-
 # for each subgroup graph the pie
 
+        for plotDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
+            drawDF = DataFrame()
+            drawDF[:col1] = plotDF[:"Summary Group"]
+            drawDF[:data1] = plotDF[:"Total Time"]
+
+            c3 = drawC3Viz(drawDF; vizTypes=["pie"])
+        end
 
         return summaryTableUrlGroupDF
 
