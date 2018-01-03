@@ -995,7 +995,6 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
             defaultNumberFormat=(:precision => 0, :commas => true)
         )
 
-<<<<<<< HEAD
         # pie charts
 
         names!(summaryTableUrlGroupDF,
@@ -1038,28 +1037,6 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
 
             drawC3Viz(timeDF,vizTypes=vizTypes, dataNames=dataNames, zoom_enabled=false, css=css, chart_title=chart_title)
 
-        end
-=======
-# pie charts
-# for printDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
-# beautifyDF(names!(printDF[:],
-# for each subgroup graph the pie
->>>>>>> 20309539ac28a0b8df0ec05c00370e4e34ee7e8f
-
-        for plotDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
-            drawDF = DataFrame()
-            drawDF[:col1] = plotDF[:"Summary Group"]
-            drawDF[:data1] = plotDF[:"Total Time"]
-
-<<<<<<< HEAD
-=======
-        for plotDF in groupby(summaryTableUrlGroupDF,:summaryGroup)
-            drawDF = DataFrame()
-            drawDF[:col1] = plotDF[:"Summary Group"]
-            drawDF[:data1] = plotDF[:"Total Time"]
-
->>>>>>> 20309539ac28a0b8df0ec05c00370e4e34ee7e8f
-            c3 = drawC3Viz(drawDF; vizTypes=["pie"])
         end
 
         return summaryTableUrlGroupDF
