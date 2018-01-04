@@ -227,3 +227,66 @@ function TimeVarsInit()
     TV = TimeVars(dt,dt,0,0,dt,dt,0,0,:hour,"a","b")
     return TV
 end
+
+type curlParams
+
+    #NR Synthetic series
+    synthetic::Bool
+    syntheticListAllMonitors::Bool
+    syntheticListOneMonitor::Bool
+    syntheticCurrentMonitorId::ASCIIString
+
+    #NR Keys
+    apiAdminKey::ASCIIString
+
+
+    #Json values
+    jsonFilename::ASCIIString
+end
+
+function curlParamsInit(nb::ASCIIString)
+
+    # Chris' Admin Key in NR
+
+    CU = curlParams(
+        false, false, false, "no id",
+        "b2abadd58593d10bb39329981e8b702d",
+        "$nb.json"
+    )
+
+    if isdefined(:CuJsonFileName)
+        CU.jsonFilename = CuJsonFileName
+    end
+
+    if isdefined(:CuSyntheticListAllMonitors)
+        CU.syntheticListAllMonitors = curlSyntheticListAllMonitors
+    end
+
+    # Typically we should just put in the Monitor ID
+    if isdefined(:CuSyntheticListOneMonitor) || isdefined(:CuSyntheticCurrentMonitorId)
+        CU.syntheticListOneMonitor = true
+    end
+
+    if isdefined(:CuSyntheticCurrentMonitorId)
+        CU.syntheticCurrentMonitorId = CuSyntheticCurrentMonitorId
+    end
+
+    if isdefined(:CuSynthetic)
+        CU.synthetic = true
+    end
+
+    # Hard coded keys for now but anyone can add the code for apiAdminKey et al
+
+    return CU
+
+end
+
+function CurlParamsValidate(CU::CurlParams)
+
+    #  This test is bogus and a place holder until we get more interest data fields to tests
+
+    if syntheticCurrentMonitorId == "no id"
+        println("Warning: current code needs a monitor ID to work")
+    end
+
+end

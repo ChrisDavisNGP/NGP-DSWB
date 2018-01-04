@@ -25,12 +25,19 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
+CU = CurlParamsInit(scriptName)
+CurlParamsValidate(CU)
 
-newRelicDF = curlJsonWorkflow(TV,UP,SP)
+# Get the data frame of data by using CURL and Json Parse
+
+newRelicDF = curlJsonWorkflow(TV,UP,SP,CU)
 
 if !isdefined(:newRelicDF)
     return
 end
+
+# Note we should be done with the CU structure at this point
+# If we need it, the field name probably belongs not in the CU structure but UP
 
 timeSizeRequestsWorkflow(TV,UP,SP,newRelicDF)
 ;
