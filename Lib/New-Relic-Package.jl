@@ -27,8 +27,7 @@ function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
     if CU.syntheticListAllMonitors
         curlStr = curlStr * "'https://synthetics.newrelic.com/synthetics/api/v3/monitors'"
     elseif CU.syntheticListOneMonitor
-        curlStr = curlStr * "'https://synthetics.newrelic.com/synthetics/api/v3/monitors/" *
-            "$(CU.syntheticCurrentMonitorId)'" * " "
+        curlStr = curlStr * "'https://synthetics.newrelic.com/synthetics/api/v3/monitors/" * CU.syntheticCurrentMonitorId * ""'" * " "
     else
         curlStr = curlStr * "unknown command'"
     end

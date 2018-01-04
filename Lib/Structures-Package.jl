@@ -285,7 +285,7 @@ function CurlParamsValidate(CU::CurlParams)
 
     #  This test is bogus and a place holder until we get more interest data fields to tests
 
-    if syntheticCurrentMonitorId == "no id"
+    if CU.syntheticCurrentMonitorId == "no id"
         println("Warning: current code needs a monitor ID to work")
     end
 
