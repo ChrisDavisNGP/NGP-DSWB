@@ -235,11 +235,16 @@ type CurlParams
     syntheticListAllMonitors::Bool
     syntheticListOneMonitor::Bool
     syntheticBodySize::Bool
+    syntheticBodySizeByRequest::Bool
     syntheticCurrentMonitorId::ASCIIString
 
     #NR Keys
     apiAdminKey::ASCIIString
+    apiQueryKey::ASCIIString
 
+    #NR accounts
+    #masteId 78783
+    #globalSitesId 775840
 
     #Json values
     jsonFilename::ASCIIString
@@ -250,8 +255,8 @@ function CurlParamsInit(nb::ASCIIString)
     # Chris' Admin Key in NR
 
     CU = CurlParams(
-        false, false, false, false, "no id",
-        "b2abadd58593d10bb39329981e8b702d",
+        false, false, false, false, false, "no id",
+        "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx"
         "$nb.json"
     )
 
@@ -274,6 +279,10 @@ function CurlParamsInit(nb::ASCIIString)
 
     if isdefined(:CuSyntheticBodySize)
         CU.syntheticBodySize = CuSyntheticBodySize
+    end
+
+    if isdefined(:CuSyntheticBodySizeByRequest)
+        CU.syntheticBodySizeByRequest = CuSyntheticBodySizeByRequest
     end
 
     if isdefined(:CuSynthetic)
