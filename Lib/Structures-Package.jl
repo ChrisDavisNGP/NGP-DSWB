@@ -248,7 +248,7 @@ function CurlParamsInit(nb::ASCIIString)
 
     # Chris' Admin Key in NR
 
-    CU = curlParams(
+    CU = CurlParams(
         false, false, false, "no id",
         "b2abadd58593d10bb39329981e8b702d",
         "$nb.json"
