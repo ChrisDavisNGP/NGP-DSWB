@@ -234,6 +234,7 @@ type CurlParams
     synthetic::Bool
     syntheticListAllMonitors::Bool
     syntheticListOneMonitor::Bool
+    syntheticBodySize::Bool
     syntheticCurrentMonitorId::ASCIIString
 
     #NR Keys
@@ -249,7 +250,7 @@ function CurlParamsInit(nb::ASCIIString)
     # Chris' Admin Key in NR
 
     CU = CurlParams(
-        false, false, false, "no id",
+        false, false, false, false, "no id",
         "b2abadd58593d10bb39329981e8b702d",
         "$nb.json"
     )
@@ -271,6 +272,10 @@ function CurlParamsInit(nb::ASCIIString)
         CU.syntheticCurrentMonitorId = CuSyntheticCurrentMonitorId
     end
 
+    if isdefined(:CuSyntheticBodySize)
+        CU.syntheticBodySize = CuSyntheticBodySize
+    end
+
     if isdefined(:CuSynthetic)
         CU.synthetic = true
     end
@@ -282,10 +287,9 @@ function CurlParamsInit(nb::ASCIIString)
 end
 
 function CurlParamsValidate(CU::CurlParams)
+    
 
-    #  This test is bogus and a place holder until we get more interest data fields to tests
-
-    if CU.syntheticCurrentMonitorId == "no id"
+    if CU.Synthetic && CU.syntheticCurrentMonitorId == "no id"
         println("Warning: current code needs a monitor ID to work")
     end
 

@@ -2,6 +2,8 @@ function curlJsonWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPara
 
     if CU.synthetic
         finalDict = syntheticCommands(TV,UP,SP,CU)
+    elseif CU.syntheticBodySize
+        finalDict = syntheticCommands(TV,UP,SP,CU)
     else
         println("NR Type not yet defined")
         return
@@ -14,23 +16,32 @@ end
 function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
 
     if CU.apiAdminKey != "no id"
-        Key = CU.apiAdminKey
     else
         Key = "unknown"
     end
 
     if CU.syntheticListAllMonitors
+        apiKey = "X-Api-Key:" * CU.apiAdminKey
         curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors"
+        curlStr = ["-H","$apiKey","$curlCommand"]
     elseif CU.syntheticListOneMonitor
+        apiKey = "X-Api-Key:" * CU.apiAdminKey
         curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors/" * CU.syntheticCurrentMonitorId
+        curlStr = ["-H","$apiKey","$curlCommand"]
+    elseif CU.syntheticBodySize
+        apiKey = "X-Query-Key:HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx"
+        curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20average(responseBodySize)%20FROM%20SyntheticRequest%20WHERE%20monitorId%20%3D%20%2769599173-5b61-41e0-b4e6-ba69e179bc70%27%20since%207%20days%20ago%20%20TIMESERIES"
+        curlStr = ["-H","$apiKey","$curlCommand"]
     else
         curlCommand = "unknown command"
     end
 
+    # curl -H "Accept: application/json" -H ""
+    #
+
     # Todo regular expression tests for "unknown" and report failure and return empty
 
-    curlStr1 = ["-v","-H","X-Api-Key:$Key","$curlCommand"]
-    curlCmd = `curl $curlStr1`
+    curlCmd = `curl $curlStr`
     jsonString = readstring(curlCmd)
 
     # Picked syn monitor "JTP-Gallery-Equinox-M"
@@ -47,7 +58,7 @@ function syntheticCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPar
     #   curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors'
     if CU.syntheticListAllMonitors
         jsonInput = curlCommands(TV,UP,SP,CU)
-        finalDict = curlSyntheticListAllMonitorJson(TV,UP,SP,CU,jsonInput)
+        finalDict = curlSyntheticJson(SP,jsonInput)
         return finalDict
     end
 
@@ -55,36 +66,36 @@ function syntheticCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPar
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70'
     if CU.syntheticListOneMonitor
         jsonInput = curlCommands(TV,UP,SP,CU)
-        finalDict = curlSyntheticListOneMonitorJson(TV,UP,SP,CU,jsonInput)
+        finalDict = curlSyntheticJson(SP,jsonInput)
         return finalDict
     end
 
+    # curl -H "Accept: application/json" -H "X-Query-Key: HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx"
+    # "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20average(responseBodySize)%20FROM%20SyntheticRequest%20WHERE%20monitorId%20%3D%20%2769599173-5b61-41e0-b4e6-ba69e179bc70%27%20since%207%20days%20ago%20%20TIMESERIES
+
+    if CU.syntheticBodySize
+        jsonInput = curlCommands(TV,UP,SP,CU)
+        finalDict = curlSyntheticJson(SP,jsonInput)
+    end
+
+
 end
 
-function curlSyntheticListOneMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,jList::ASCIIString)
+function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
 
-    if SP.debugLevel > 0
+    if SP.debugLevel > 8
         println("jList=",jList)
     end
 
     jParsed = JSON.parse(jList)
 
-    println(jParsed)
-    println(typeof(jParsed))
-    println(get(jParsed,"frequency","not found"))
+    if SP.debugLevel > 4
+        println(jParsed)
+        println(typeof(jParsed))
+    end
 
     return jParsed
 end
-
-
-function curlSyntheticListAllMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,jList::ASCIIString)
-
-    #urlListDF = newPagesList(UP,SP)
-    #listToUseDV = urlListDF[:urlgroup] * "%"
-    #finalListToUseDV = cleanupTopUrlTable(listToUseDV)
-
-end
-
 
 function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,newRelicDict::Dict)
     openingTitle(TV,UP,SP)
