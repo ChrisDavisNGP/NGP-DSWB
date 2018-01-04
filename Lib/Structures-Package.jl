@@ -244,7 +244,7 @@ type CurlParams
     jsonFilename::ASCIIString
 end
 
-function curlParamsInit(nb::ASCIIString)
+function CurlParamsInit(nb::ASCIIString)
 
     # Chris' Admin Key in NR
 

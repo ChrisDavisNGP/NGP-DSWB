@@ -37,6 +37,7 @@ function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
     if SP.debugLevel > 0
         println("To run: ", curlStr)
         println("Into  : ", CU.jsonFilename)
+    end
 
     run(curlStr |> "$(CU.jsonFilename)")
 
