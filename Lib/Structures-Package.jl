@@ -287,9 +287,9 @@ function CurlParamsInit(nb::ASCIIString)
 end
 
 function CurlParamsValidate(CU::CurlParams)
-    
 
-    if CU.Synthetic && CU.syntheticCurrentMonitorId == "no id"
+
+    if CU.synthetic && CU.syntheticCurrentMonitorId == "no id"
         println("Warning: current code needs a monitor ID to work")
     end
 
