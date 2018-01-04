@@ -29,6 +29,7 @@ CU = CurlParamsInit(scriptName)
 CurlParamsValidate(CU)
 
 # Get the data frame of data by using CURL and Json Parse
+newRelicDF = DataFrame()
 
 newRelicDF = curlJsonWorkflow(TV,UP,SP,CU)
 
