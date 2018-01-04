@@ -1,17 +1,13 @@
 function curlJsonWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
 
     if CU.synthetic
-        finalDF = syntheticCommands(TV,UP,SP,CU)
+        finalDict = syntheticCommands(TV,UP,SP,CU)
     else
         println("NR Type not yet defined")
         return
     end
 
-    if (SP.debugLevel > 8)
-        beautifyDF(finalDF[1:min(10,end),:])
-    end
-
-    return finalDF
+    return finalDict
 
 end
 
@@ -51,16 +47,16 @@ function syntheticCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPar
     #   curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors'
     if CU.syntheticListAllMonitors
         jsonInput = curlCommands(TV,UP,SP,CU)
-        finalDF = curlSyntheticListAllMonitorJson(TV,UP,SP,CU,jsonInput)
-        return finalDF
+        finalDict = curlSyntheticListAllMonitorJson(TV,UP,SP,CU,jsonInput)
+        return finalDict
     end
 
     # Picked syn monitor "JTP-Gallery-Equinox-M"
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70'
     if CU.syntheticListOneMonitor
         jsonInput = curlCommands(TV,UP,SP,CU)
-        finalDF = curlSyntheticListOneMonitorJson(TV,UP,SP,CU,jsonInput)
-        return finalDF
+        finalDict = curlSyntheticListOneMonitorJson(TV,UP,SP,CU,jsonInput)
+        return finalDict
     end
 
 end
@@ -74,6 +70,10 @@ function curlSyntheticListOneMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowPara
     jParsed = JSON.parse(jList)
 
     println(jParsed)
+    println(typeof(jParsed))
+    println(get(jParsed,"frequency","not found"))
+
+    return jParsed
 end
 
 
@@ -86,7 +86,7 @@ function curlSyntheticListAllMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowPara
 end
 
 
-function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,finalDF::DataFrame)
+function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,newRelicDict::Dict)
     openingTitle(TV,UP,SP)
 
 end
