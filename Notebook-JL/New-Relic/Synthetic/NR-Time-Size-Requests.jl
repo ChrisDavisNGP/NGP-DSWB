@@ -30,14 +30,11 @@ CurlParamsValidate(CU)
 
 # Get the data frame of data by using CURL and Json Parse
 
-newRelicDict = curlJsonWorkflow(TV,UP,SP,CU)
+synChkBodySizeDict = curlJsonWorkflow(TV,UP,SP,CU)
 
 if !isdefined(:newRelicDict)
     return
 end
 
-# Note we should be done with the CU structure at this point
-# If we need it, the field name probably belongs not in the CU structure but UP
-
-timeSizeRequestsWorkflow(TV,UP,SP,newRelicDict)
+timeSizeRequestsWorkflow(TV,UP,SP,CU,synChkBodySizeDict)
 ;

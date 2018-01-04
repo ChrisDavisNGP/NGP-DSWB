@@ -101,10 +101,17 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
-function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,newRelicDict::Dict)
+function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,synChkBodySizeDict::Dict)
+
     openingTitle(TV,UP,SP)
 
-    # size
-    #req#
-    #time
+    investigateSizeProblems(TV,UP,SP,CU,synChkBodySizeDict)
+
+end
+
+function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,synChkBodySizeDict::Dict)
+
+    newDF = DataFrame(synChkBodySizeDict)
+    beautifyDF(newDF)
+
 end
