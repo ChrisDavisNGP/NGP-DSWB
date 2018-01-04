@@ -243,8 +243,8 @@ type CurlParams
     apiQueryKey::ASCIIString
 
     #NR accounts
-    #masteId 78783
-    #globalSitesId 775840
+    #masterAccountId 78783
+    #globalSitesAccountId 775840
 
     #Json values
     jsonFilename::ASCIIString
@@ -256,7 +256,7 @@ function CurlParamsInit(nb::ASCIIString)
 
     CU = CurlParams(
         false, false, false, false, false, "no id",
-        "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx"
+        "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx",
         "$nb.json"
     )
 
