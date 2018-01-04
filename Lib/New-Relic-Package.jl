@@ -111,7 +111,10 @@ end
 
 function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,synChkBodySizeDict::Dict)
 
-    newDF = DataFrame(synChkBodySizeDict)
+    #newDF = DataFrame(synChkBodySizeDict)
+    #beautifyDF(newDF)
+    newDF = DataFrame(; [symbol(k)=>v for (k,v) in synChkBodySizeDict]...)
     beautifyDF(newDF)
+
 
 end
