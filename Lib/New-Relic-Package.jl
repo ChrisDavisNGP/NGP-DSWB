@@ -7,11 +7,11 @@ function curlJsonWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPara
         return
     end
 
-  if (SP.debugLevel > 8)
-      beautifyDF(finalDF[1:min(10,end),:])
-  end
+    if (SP.debugLevel > 8)
+        beautifyDF(finalDF[1:min(10,end),:])
+    end
 
-  return finalDF
+    return finalDF
 
 end
 

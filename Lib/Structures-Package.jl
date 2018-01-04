@@ -228,7 +228,7 @@ function TimeVarsInit()
     return TV
 end
 
-type curlParams
+type CurlParams
 
     #NR Synthetic series
     synthetic::Bool
