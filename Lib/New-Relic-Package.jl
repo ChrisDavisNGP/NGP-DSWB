@@ -75,11 +75,22 @@ function curlSyntheticListOneMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowPara
     #urlListDF = newPagesList(UP,SP)
     #listToUseDV = urlListDF[:urlgroup] * "%"
     #finalListToUseDV = cleanupTopUrlTable(listToUseDV)
-
+    jList = JSON.parsefile(CU.jsonFilename)
+    if SP.debugLevel > 0
+        println("jList=",jList)
+    end
 
 
 end
 
+
+function curlSyntheticListAllMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
+
+    #urlListDF = newPagesList(UP,SP)
+    #listToUseDV = urlListDF[:urlgroup] * "%"
+    #finalListToUseDV = cleanupTopUrlTable(listToUseDV)
+
+end
 
 
 function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
