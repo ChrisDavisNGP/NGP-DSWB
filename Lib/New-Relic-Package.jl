@@ -17,19 +17,18 @@ end
 
 function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
 
-    curlStr = "curl -v "
     if CU.apiAdminKey != "no id"
-        curlStr = curlStr * CU.apiAdminKey * " "
+        Key = CU.apiAdminKey
     else
-        curlStr = curlStr * "-H 'X-Api-Key:unknown'" * " "
+        Key = "unknown"
     end
 
     if CU.syntheticListAllMonitors
-        curlStr = curlStr * "'https://synthetics.newrelic.com/synthetics/api/v3/monitors'"
+        curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors"
     elseif CU.syntheticListOneMonitor
-        curlStr = curlStr * "'https://synthetics.newrelic.com/synthetics/api/v3/monitors/" * CU.syntheticCurrentMonitorId * ""'" * " "
+        curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors/" * CU.syntheticCurrentMonitorId
     else
-        curlStr = curlStr * "unknown command'"
+        curlCommand = "unknown command"
     end
 
     # Todo regular expression tests for "unknown" and report failure and return empty
@@ -38,11 +37,14 @@ function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
         println("Into  : ", CU.jsonFilename)
     end
 
-    run(curlStr |> "$(CU.jsonFilename)")
-
-    #  List all syn monitors
-    #   curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d'
-    #'https://synthetics.newrelic.com/synthetics/api/v3/monitors'
+    curlStr1 = ["-v","-H","X-Api-Key:$Key","$curlCommand"]
+    #curlStr2 = ["-v","-H","X-Api-Key:b2abadd58593d10bb39329981e8b702d","https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70"]
+    curlCmd = `curl $curlStr1`
+    #println(typeof(curlCmd))
+    #println(curlCmd)
+    jsonString = readstring(curlCmd)
+    #println("a is ",a)
+    #println(typeof(a))
 
     # Picked syn monitor "JTP-Gallery-Equinox-M"
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d'
