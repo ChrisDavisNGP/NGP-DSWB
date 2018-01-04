@@ -38,17 +38,14 @@ function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
     end
 
     curlStr1 = ["-v","-H","X-Api-Key:$Key","$curlCommand"]
-    #curlStr2 = ["-v","-H","X-Api-Key:b2abadd58593d10bb39329981e8b702d","https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70"]
     curlCmd = `curl $curlStr1`
-    #println(typeof(curlCmd))
-    #println(curlCmd)
     jsonString = readstring(curlCmd)
-    #println("a is ",a)
-    #println(typeof(a))
 
     # Picked syn monitor "JTP-Gallery-Equinox-M"
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d'
     #'https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70'
+
+    return jsonString
 
 end
 
@@ -57,27 +54,23 @@ function syntheticCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPar
     #  List all syn monitors
     #   curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors'
     if CU.syntheticListAllMonitors
-        curlCommands(TV,UP,SP,CU)
-        finalDF = curlSyntheticListAllMonitorJson(TV,UP,SP,CU)
+        jsonInput = curlCommands(TV,UP,SP,CU)
+        finalDF = curlSyntheticListAllMonitorJson(TV,UP,SP,CU,jsonInput)
         return finalDF
     end
 
     # Picked syn monitor "JTP-Gallery-Equinox-M"
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70'
     if CU.syntheticListOneMonitor
-        curlCommands(TV,UP,SP,CU)
-        finalDF = curlSyntheticListOneMonitorJson(TV,UP,SP,CU)
+        jsonInput = curlCommands(TV,UP,SP,CU)
+        finalDF = curlSyntheticListOneMonitorJson(TV,UP,SP,CU,jsonInput)
         return finalDF
     end
 
 end
 
-function curlSyntheticListOneMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
+function curlSyntheticListOneMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,jList::ASCIIString)
 
-    #urlListDF = newPagesList(UP,SP)
-    #listToUseDV = urlListDF[:urlgroup] * "%"
-    #finalListToUseDV = cleanupTopUrlTable(listToUseDV)
-    jList = JSON.parsefile(CU.jsonFilename)
     if SP.debugLevel > 0
         println("jList=",jList)
     end
@@ -86,7 +79,7 @@ function curlSyntheticListOneMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowPara
 end
 
 
-function curlSyntheticListAllMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
+function curlSyntheticListAllMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,jList::ASCIIString)
 
     #urlListDF = newPagesList(UP,SP)
     #listToUseDV = urlListDF[:urlgroup] * "%"
@@ -95,7 +88,7 @@ function curlSyntheticListAllMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowPara
 end
 
 
-function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,finalDF::DataFrame)
     openingTitle(TV,UP,SP)
 
 end
