@@ -32,10 +32,6 @@ function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
     end
 
     # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > 0
-        println("To run: ", curlStr)
-        println("Into  : ", CU.jsonFilename)
-    end
 
     curlStr1 = ["-v","-H","X-Api-Key:$Key","$curlCommand"]
     curlCmd = `curl $curlStr1`
@@ -75,7 +71,9 @@ function curlSyntheticListOneMonitorJson(TV::TimeVars,UP::UrlParams,SP::ShowPara
         println("jList=",jList)
     end
 
+    jParsed = JSON.parse(jList)
 
+    println(jParsed)
 end
 
 
