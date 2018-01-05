@@ -183,7 +183,7 @@ function fillNrMetadata(SP::ShowParams,NR::NrParams,metaDict::Dict)
         println("Meta Dict ",metaDict)
     end
 
-    NR.metadata.endTime = totalDict["endTime"]
-    NR.metadata.beginTime = totalDict["beginTime"]
+    NR.metadata.endTime = metaDict["endTime"]
+    NR.metadata.beginTime = metaDict["beginTime"]
 
 end
