@@ -139,7 +139,6 @@ function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
              " Wall Time=",NR.runPerf.wallClockTime)
 
     println()
-    println(typeof(synChkBodySizeDict["timeSeries"]))
 
     fillNrTimeSeries(SP,NR,synChkBodySizeDict["timeSeries"])
     #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
@@ -153,9 +152,11 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
     end
 
     # Assuming only one result for now
-    #for result in totalDict["results"]
-    #        NR.totals.resultAverage = result["average"]
-    #end
+    for rowDict in seriesArray
+        println()
+        println(typeof(rowDict))
+        println(rowDict)
+    end
 end
 
 # Simple three fields with one tricky field
