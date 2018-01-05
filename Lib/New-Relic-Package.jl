@@ -132,9 +132,9 @@ function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
             )
     println()
 
-#    println("Dict List ",keys(synChkBodySizeDict))
-#    println("Meta  Dict ",keys(synChkBodySizeDict["metadata"]))
-#    println("Perf  Dict ",keys(synChkBodySizeDict["performanceStats"]))
+    fillNrMetadata(SP,NR,synChkBodySizeDict["metadata"])
+    fillNrRunPerf(SP,NR,synChkBodySizeDict["performanceStats"])
+
     #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
 
 end
@@ -154,4 +154,36 @@ function fillNrTotal(SP::ShowParams,NR::NrParams,totalDict::Dict)
     for result in totalDict["results"]
         NR.totals.resultAverage = result["average"]
     end
+end
+
+function fillNrRunPerf(SP::ShowParams,NR::NrParams,perfDict::Dict)
+
+    if SP.debugLevel > -1
+        println("Perf Dict ",perfDict)
+    end
+
+    #NR.totals.inspectedCount = totalDict["inspectedCount"]
+    #NR.totals.endTimeSeconds = totalDict["endTimeSeconds"]
+    #NR.totals.beginTimeSeconds = totalDict["beginTimeSeconds"]
+
+    # Assuming only one result for now
+    #for result in totalDict["results"]
+#        NR.totals.resultAverage = result["average"]
+    #end
+end
+
+function fillNrMetadata(SP::ShowParams,NR::NrParams,metaDict::Dict)
+
+    if SP.debugLevel > -1
+        println("Meta Dict ",totalDict)
+    end
+
+    #NR.totals.inspectedCount = totalDict["inspectedCount"]
+    #NR.totals.endTimeSeconds = totalDict["endTimeSeconds"]
+    #NR.totals.beginTimeSeconds = totalDict["beginTimeSeconds"]
+
+    # Assuming only one result for now
+    #for result in totalDict["results"]
+#        NR.totals.resultAverage = result["average"]
+    #end
 end
