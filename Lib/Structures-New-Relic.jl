@@ -3,7 +3,7 @@ type NrMetadata
     #routerGuid"
     #"messages"
     #"rawSince"
-    #"endTime"
+    endTime::ASCIIString
     #"eventType"
     #"rawUntil"
     #"guid"
@@ -12,18 +12,18 @@ type NrMetadata
     #"timeSeries"
     #"bucketSizeMillis"
     #"beginTimeMillis"
-    #"beginTime"
+    beginTime::ASCIIString
     #"eventTypes"
     #"endTimeMillis
 end
 
 type NrRunPerf
     #"ioTime"
-    #"inspectedCount"
+    inspectedCount::Int64
     #"cacheMisses"
     #"slowLaneFileProcessingTime"
     #"subqueryWeightUpdates"
-    #"wallClockTime"
+    wallClockTime::Int64
     #"partialCacheHits"
     #"cacheSkipped"
     #"ioBytes"
@@ -64,13 +64,18 @@ end
 
 type NrParams
     totals::NrTotal
+    metadata::NrMetadata
+    runPerf::NrRunPerf
     totalsAvail::Bool
 end
 
 function NrParamsInit()
 
     totals = NrTotal(0,0,0,0.0)
-    NR = NrParams(totals,false)
+    metadata = NrMetadata("","")
+    runPerf = NrRunPerf(0,0)
+
+    NR = NrParams(totals,metadata,runPerf,false)
 
     return NR
 end
