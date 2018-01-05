@@ -141,8 +141,21 @@ function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
     println()
     println(typeof(synChkBodySizeDict["timeSeries"]))
 
+    fillNrTimeSeries(SP,NR,synChkBodySizeDict["timeSeries"])
     #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
 
+end
+
+function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
+
+    if SP.debugLevel > -1
+        println("Series ",seriesArray)
+    end
+
+    # Assuming only one result for now
+    #for result in totalDict["results"]
+    #        NR.totals.resultAverage = result["average"]
+    #end
 end
 
 # Simple three fields with one tricky field
