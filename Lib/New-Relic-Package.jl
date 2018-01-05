@@ -130,19 +130,16 @@ function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
             " End Sec=",NR.totals.endTimeSeconds,
             " Result Average=",NR.totals.resultAverage
             )
-    println()
 
     fillNrMetadata(SP,NR,synChkBodySizeDict["metadata"])
-    println()
     println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
-    println()
 
     fillNrRunPerf(SP,NR,synChkBodySizeDict["performanceStats"])
-    println()
     println("Run Perf: Inspected=",NR.runPerf.inspectedCount,
              " Wall Time=",NR.runPerf.wallClockTime)
-    println()
 
+    println()
+    println(typeof(synChkBodySizeDict["timeSeries"]))
 
     #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
 
@@ -167,7 +164,7 @@ end
 
 function fillNrRunPerf(SP::ShowParams,NR::NrParams,perfDict::Dict)
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 8
         println()
         println("Perf Dict ",perfDict)
     end
@@ -178,7 +175,7 @@ end
 
 function fillNrMetadata(SP::ShowParams,NR::NrParams,metaDict::Dict)
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 8
         println()
         println("Meta Dict ",metaDict)
     end
