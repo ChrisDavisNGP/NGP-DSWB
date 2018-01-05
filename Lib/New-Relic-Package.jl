@@ -125,7 +125,11 @@ function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
 
     fillNrTotal(SP,NR,synChkBodySizeDict["total"])
     println()
-    println("Total: Inspected=",NR.totals.inspectedCount," Begin Sec=",NR.totals.beginTimeSeconds," End Sec=",NR.totals.endTimeSeconds)
+    println("Total: Inspected=",NR.totals.inspectedCount,
+            " Begin Sec=",NR.totals.beginTimeSeconds,
+            " End Sec=",NR.totals.endTimeSeconds,
+            " Result Average=",NR.totals.resultAverage
+            )
     println()
 
 #    println("Dict List ",keys(synChkBodySizeDict))
@@ -141,7 +145,7 @@ function fillNrTotal(SP::ShowParams,NR::NrParams,totalDict::Dict)
     if SP.debugLevel > 8
         println("Total Dict ",totalDict)
     end
-    
+
     NR.totals.inspectedCount = totalDict["inspectedCount"]
     NR.totals.endTimeSeconds = totalDict["endTimeSeconds"]
     NR.totals.beginTimeSeconds = totalDict["beginTimeSeconds"]
