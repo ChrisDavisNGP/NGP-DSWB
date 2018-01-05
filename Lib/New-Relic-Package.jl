@@ -1,3 +1,5 @@
+
+
 function curlJsonWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
 
     if CU.synthetic
@@ -101,20 +103,38 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
-function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,synChkBodySizeDict::Dict)
+function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,Nr::NrParams,synChkBodySizeDict::Dict)
 
     openingTitle(TV,UP,SP)
 
-    investigateSizeProblems(TV,UP,SP,CU,synChkBodySizeDict)
+    investigateSizeProblems(TV,UP,SP,NR,synChkBodySizeDict)
 
 end
 
-function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,synChkBodySizeDict::Dict)
+function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
+
+
+end
+
+function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
 
     #newDF = DataFrame(synChkBodySizeDict)
     #beautifyDF(newDF)
-    newDF = DataFrame(; [symbol(k)=>v for (k,v) in synChkBodySizeDict]...)
-    beautifyDF(newDF)
+    #newDF = DataFrame(; [symbol(k)=>v for (k,v) in synChkBodySizeDict]...)
+    #beautifyDF(newDF)
 
+#    println("Dict List ",keys(synChkBodySizeDict))
+    println("Total Dict ",keys(synChkBodySizeDict["total"]))
+    fillNrTotal(SP,NR,synChkBodySizeDict["total"])
+#    println("Meta  Dict ",keys(synChkBodySizeDict["metadata"]))
+#    println("Perf  Dict ",keys(synChkBodySizeDict["performanceStats"]))
+    #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
 
+end
+
+# Simple three fields with one tricky field
+function fillNrTotal(SP::ShowParams,NR::NrParams,totalDict::Dict)
+    NR.totals.inspectedCount = 1    #totalDict[values("inspectedCount")]
+    NR.totals.endTimeSeconds = 2
+    NR.totals.beginTimeSeconds = 3
 end

@@ -1,6 +1,7 @@
 # Packages in Lib Directory; structures first
 
 include("Structures-Package.jl")
+include("Structures-New-Relic.jl")
 include("Time-Package.jl")
 
 include("Body-Parts.jl")

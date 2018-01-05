@@ -28,13 +28,17 @@ ShowParamsValidate(SP)
 CU = CurlParamsInit(scriptName)
 CurlParamsValidate(CU)
 
+NR = NewRelicParamsInit()
+
 # Get the data frame of data by using CURL and Json Parse
 
 synChkBodySizeDict = curlJsonWorkflow(TV,UP,SP,CU)
 
-if !isdefined(:newRelicDict)
+if !isdefined(:synChkBodySizeDict)
     return
 end
 
-timeSizeRequestsWorkflow(TV,UP,SP,CU,synChkBodySizeDict)
+newRelicConvert(SP,NR,synChkBodySizeDict)
+
+timeSizeRequestsWorkflow(TV,UP,SP,NR,synChkBodySizeDict)
 ;
