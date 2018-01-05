@@ -123,9 +123,12 @@ function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
     #newDF = DataFrame(; [symbol(k)=>v for (k,v) in synChkBodySizeDict]...)
     #beautifyDF(newDF)
 
-#    println("Dict List ",keys(synChkBodySizeDict))
-    println("Total Dict ",keys(synChkBodySizeDict["total"]))
     fillNrTotal(SP,NR,synChkBodySizeDict["total"])
+    println()
+    println("Total: Inspected=",NR.totals.inspectedCount," Begin Sec=",NR.totals.beginTimeSeconds," End Sec=",NR.totals.endTimeSeconds)
+    println()
+
+#    println("Dict List ",keys(synChkBodySizeDict))
 #    println("Meta  Dict ",keys(synChkBodySizeDict["metadata"]))
 #    println("Perf  Dict ",keys(synChkBodySizeDict["performanceStats"]))
     #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
@@ -134,7 +137,17 @@ end
 
 # Simple three fields with one tricky field
 function fillNrTotal(SP::ShowParams,NR::NrParams,totalDict::Dict)
-    NR.totals.inspectedCount = 1    #totalDict[values("inspectedCount")]
-    NR.totals.endTimeSeconds = 2
-    NR.totals.beginTimeSeconds = 3
+
+    if SP.debugLevel > 8
+        println("Total Dict ",totalDict)
+    end
+    
+    NR.totals.inspectedCount = totalDict["inspectedCount"]
+    NR.totals.endTimeSeconds = totalDict["endTimeSeconds"]
+    NR.totals.beginTimeSeconds = totalDict["beginTimeSeconds"]
+
+    # Assuming only one result for now
+    for result in totalDict["results"]
+        NR.totals.resultAverage = result["average"]
+    end
 end

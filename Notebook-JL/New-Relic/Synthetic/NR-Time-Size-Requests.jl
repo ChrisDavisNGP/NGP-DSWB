@@ -28,7 +28,7 @@ ShowParamsValidate(SP)
 CU = CurlParamsInit(scriptName)
 CurlParamsValidate(CU)
 
-NR = NewRelicParamsInit()
+NR = NrParamsInit()
 
 # Get the data frame of data by using CURL and Json Parse
 
