@@ -151,7 +151,8 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
         println("Series ",seriesArray)
     end
 
-    #colnames = convert(Vector{UTF8String}, collect(keys(arrayofhashes[1])))
+    nrows = length(seriesArray)
+    #colnames = convert(Vector{UTF8String}, collect(keys(seriesArray[1])))
     colnames = ["inspectedCount","endTimeSeconds","beginTimeSeconds"]
     sort!(colnames)
     #println("colnames=",colnames)
@@ -162,7 +163,7 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
     df = DataFrame(Any,nrows,ncols)
     for i in 1:nrows
         for j in 1:ncols
-            df[i, j] = arrayofhashes[i][colnames[j]]
+            df[i, j] = seriesArray[i][colnames[j]]
         end
     end
     df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount")])
@@ -175,7 +176,7 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
     df3 = DataFrame(Any,nrows,ncols)
     for i in 1:nrows
         for j in 1:ncols
-            innerDict = arrayofhashes[i][colnames[j]][1]
+            innerDict = seriesArray[i][colnames[j]][1]
             df3[i,j] = innerDict["average"]
         end
     end
