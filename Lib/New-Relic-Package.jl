@@ -51,7 +51,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
     # Todo regular expression tests for "unknown" and report failure and return empty
     if SP.debugLevel > 4
-        println("curlStr=",$curlStr)
+        println("curlStr=",curlStr)
     end
 
     curlCmd = `curl $curlStr`
