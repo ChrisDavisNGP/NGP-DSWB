@@ -173,7 +173,10 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
         df[i,j] = innerDict["average"]
     end
     df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount"),Symbol("averageTotalReceivedSize")])
-    beautifyDF(df[1:3,:])
+
+    if SP.debugLevel > 4
+        beautifyDF(df[1:3,:])
+    end
 
     #todo store into structure
     NR.timeSeries.row = deepcopy(df)
