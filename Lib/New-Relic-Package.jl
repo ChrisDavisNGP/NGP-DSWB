@@ -124,7 +124,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
         println("Starting investigateSizeProblems")
     end
 
-    beautifyDF(NR.timesSeries.row[1:3,:])
+    beautifyDF(NR.timeSeries.row[1:3,:])
 
     try
         drawDF = DataFrame()
