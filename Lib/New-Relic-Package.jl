@@ -118,11 +118,6 @@ end
 
 function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
 
-    #newDF = DataFrame(synChkBodySizeDict)
-    #beautifyDF(newDF)
-    #newDF = DataFrame(; [symbol(k)=>v for (k,v) in synChkBodySizeDict]...)
-    #beautifyDF(newDF)
-
     fillNrTotal(SP,NR,synChkBodySizeDict["total"])
     println()
     println("Total: Inspected=",NR.totals.inspectedCount,
