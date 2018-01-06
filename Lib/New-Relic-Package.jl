@@ -147,16 +147,42 @@ end
 
 function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 8
         println("Series ",seriesArray)
     end
 
-    # Assuming only one result for now
-    for rowDict in seriesArray
-        println()
-        println(typeof(rowDict))
-        println(rowDict)
+    #colnames = convert(Vector{UTF8String}, collect(keys(arrayofhashes[1])))
+    colnames = ["inspectedCount","endTimeSeconds","beginTimeSeconds"]
+    sort!(colnames)
+    #println("colnames=",colnames)
+
+    # Check that keys are valid column names
+    ncols = length(colnames)
+
+    df = DataFrame(Any,nrows,ncols)
+    for i in 1:nrows
+        for j in 1:ncols
+            df[i, j] = arrayofhashes[i][colnames[j]]
+        end
     end
+    df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount")])
+    beautifyDF(df[1:3,:])
+
+    # Todo store df into struct
+
+    colnames = ["results"]
+    ncols = length(colnames)
+    df3 = DataFrame(Any,nrows,ncols)
+    for i in 1:nrows
+        for j in 1:ncols
+            innerDict = arrayofhashes[i][colnames[j]][1]
+            df3[i,j] = innerDict["average"]
+        end
+    end
+    df3 = names!(df3,[Symbol("average")])
+    #println(df3)
+    beautifyDF(df3[1:3,:])
+
 end
 
 # Simple three fields with one tricky field
