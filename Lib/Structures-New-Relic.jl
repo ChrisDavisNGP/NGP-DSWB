@@ -54,6 +54,10 @@ type NrRunPerf
     #"fullCacheHits"
 end
 
+type NrTimeSeries
+    row::DataFrame
+end
+
 type NrTotal
     inspectedCount::Int64
     endTimeSeconds::Int64
@@ -66,6 +70,7 @@ type NrParams
     totals::NrTotal
     metadata::NrMetadata
     runPerf::NrRunPerf
+    timeSeries::NrTimeSeries
     totalsAvail::Bool
 end
 
@@ -73,9 +78,11 @@ function NrParamsInit()
 
     totals = NrTotal(0,0,0,0.0)
     metadata = NrMetadata("","")
+    row = DataFrame()
+    tseries = NrTimeSeries(row)
     runPerf = NrRunPerf(0,0)
 
-    NR = NrParams(totals,metadata,runPerf,false)
+    NR = NrParams(totals,metadata,runPerf,tseries,false)
 
     return NR
 end

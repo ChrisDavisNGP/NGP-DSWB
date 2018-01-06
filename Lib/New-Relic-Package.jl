@@ -141,6 +141,7 @@ function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
     println()
 
     fillNrTimeSeries(SP,NR,synChkBodySizeDict["timeSeries"])
+    println("Times Series: size",size(NR.timeSeries.row,1))
     #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
 
 end
@@ -175,6 +176,7 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
     beautifyDF(df[1:3,:])
 
     #todo store into structure
+    NR.timeSeries.row = deepcopy(df)
 
 end
 
