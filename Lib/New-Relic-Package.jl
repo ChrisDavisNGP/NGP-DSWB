@@ -36,7 +36,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
         curlStr = ["-H","$apiKey","$curlCommand"]
     elseif CU.syntheticBodySize
         apiKey = "X-Query-Key:" * CU.apiQueryKey
-        curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=select%20average(totalResponseBodySize)%20FROM%20SyntheticCheck%20WHERE%20%20monitorName%20%3D%27JTP-Gallery-Equinox-M%27%20SINCE%207%20days%20ago%20TIMESERIES%20%20auto"
+        curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=select%20average(totalResponseBodySize)%20FROM%20SyntheticCheck%20WHERE%20%20monitorName%20%3D%27JTP-Gallery-Equinox-M%27%20SINCE%2030%20days%20ago%20TIMESERIES%20%20auto"
         curlStr = ["-H","$apiKey","$curlCommand"]
     elseif CU.syntheticBodySizeByRequest
         apiKey = "X-Query-Key:" * CU.apiQueryKey
@@ -124,18 +124,17 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
         println("Starting investigateSizeProblems")
     end
 
-    beautifyDF(NR.timesSeries.row)
+    beautifyDF(NR.timesSeries.row[1:3,:])
 
-#    try
-#        drawDF = DataFrame()
-#        drawDF[:col1] = AllStatsDF[:datetime]
-#        drawDF[:data1] = AllStatsDF[:kurtosis]
-#
-#        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Kurtosis"], mPulseWidget=false, chart_title="$(UP.pageGroup) Page Group", vizTypes=["line"])
-#    catch y
-#        println("drawKurt exception ",y)
-#    end
+    try
+        drawDF = DataFrame()
+        drawDF[:col1] = NR.timeSeries.row[:beginTimeSeconds]
+        drawDF[:data1] = NR.timeSeries.row[:averageTotalReceivedSize]
 
+        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Average Size"], mPulseWidget=false, chart_title="Size Chart", vizTypes=["line"])
+    catch y
+        println("draw Avg Recd Size exception ",y)
+    end
 
 end
 
