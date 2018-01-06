@@ -155,34 +155,26 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
     #colnames = convert(Vector{UTF8String}, collect(keys(seriesArray[1])))
     colnames = ["inspectedCount","endTimeSeconds","beginTimeSeconds"]
     sort!(colnames)
-    #println("colnames=",colnames)
 
-    # Check that keys are valid column names
     ncols = length(colnames)
 
-    df = DataFrame(Any,nrows,ncols)
+    df = DataFrame(Any,nrows,ncols+1)
     for i in 1:nrows
         for j in 1:ncols
             df[i, j] = seriesArray[i][colnames[j]]
         end
     end
-    df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount")])
-    beautifyDF(df[1:3,:])
-
-    # Todo store df into struct
 
     colnames = ["results"]
-    ncols = length(colnames)
-    df3 = DataFrame(Any,nrows,ncols)
     for i in 1:nrows
-        for j in 1:ncols
-            innerDict = seriesArray[i][colnames[j]][1]
-            df3[i,j] = innerDict["average"]
-        end
+        j = 4
+        innerDict = seriesArray[i][colnames[1]][1]
+        df[i,j] = innerDict["average"]
     end
-    df3 = names!(df3,[Symbol("average")])
-    #println(df3)
-    beautifyDF(df3[1:3,:])
+    df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount"),Symbol("averageTotalReceivedSize")])
+    beautifyDF(df[1:3,:])
+
+    #todo store into structure
 
 end
 
