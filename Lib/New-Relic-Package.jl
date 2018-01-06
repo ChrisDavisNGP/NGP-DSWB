@@ -1,11 +1,11 @@
 
 
-function curlJsonWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
+function curlJsonWorkflow(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
     if CU.synthetic
-        finalDict = syntheticCommands(TV,UP,SP,CU)
+        finalDict = syntheticCommands(TV,SP,CU)
     elseif CU.syntheticBodySize
-        finalDict = syntheticCommands(TV,UP,SP,CU)
+        finalDict = syntheticCommands(TV,SP,CU)
     else
         println("NR Type not yet defined")
         return
@@ -15,7 +15,11 @@ function curlJsonWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPara
 
 end
 
-function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
+function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
+
+    if SP.debugLevel > 8
+        println("Time Range ",TV.timeString)
+    end
 
     if CU.apiAdminKey != "no id"
     else
@@ -46,6 +50,9 @@ function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
     #
 
     # Todo regular expression tests for "unknown" and report failure and return empty
+    if SP.debugLevel > 4
+        println("curlStr=",$curlStr)
+    end
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(curlCmd)
@@ -58,12 +65,12 @@ function curlCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
 
 end
 
-function syntheticCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams)
+function syntheticCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
     #  List all syn monitors
     #   curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors'
     if CU.syntheticListAllMonitors
-        jsonInput = curlCommands(TV,UP,SP,CU)
+        jsonInput = curlCommands(TV,SP,CU)
         finalDict = curlSyntheticJson(SP,jsonInput)
         return finalDict
     end
@@ -71,7 +78,7 @@ function syntheticCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPar
     # Picked syn monitor "JTP-Gallery-Equinox-M"
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d' 'https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70'
     if CU.syntheticListOneMonitor
-        jsonInput = curlCommands(TV,UP,SP,CU)
+        jsonInput = curlCommands(TV,SP,CU)
         finalDict = curlSyntheticJson(SP,jsonInput)
         return finalDict
     end
@@ -80,7 +87,7 @@ function syntheticCommands(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPar
     # "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20average(responseBodySize)%20FROM%20SyntheticRequest%20WHERE%20monitorId%20%3D%20%2769599173-5b61-41e0-b4e6-ba69e179bc70%27%20since%207%20days%20ago%20%20TIMESERIES
 
     if CU.syntheticBodySize
-        jsonInput = curlCommands(TV,UP,SP,CU)
+        jsonInput = curlCommands(TV,SP,CU)
         finalDict = curlSyntheticJson(SP,jsonInput)
     end
 
@@ -103,15 +110,31 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
-function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,Nr::NrParams,synChkBodySizeDict::Dict)
+function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams)
 
     openingTitle(TV,UP,SP)
 
-    investigateSizeProblems(TV,UP,SP,NR,synChkBodySizeDict)
+    investigateSizeProblems(TV,UP,SP,NR)
 
 end
 
-function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
+function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams)
+
+    if SP.debugLevel > 8
+        println("Starting investigateSizeProblems")
+    end
+
+    beautifyDF(NR.timesSeries.row)
+
+#    try
+#        drawDF = DataFrame()
+#        drawDF[:col1] = AllStatsDF[:datetime]
+#        drawDF[:data1] = AllStatsDF[:kurtosis]
+#
+#        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Kurtosis"], mPulseWidget=false, chart_title="$(UP.pageGroup) Page Group", vizTypes=["line"])
+#    catch y
+#        println("drawKurt exception ",y)
+#    end
 
 
 end

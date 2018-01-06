@@ -32,7 +32,7 @@ NR = NrParamsInit()
 
 # Get the data frame of data by using CURL and Json Parse
 
-synChkBodySizeDict = curlJsonWorkflow(TV,UP,SP,CU)
+synChkBodySizeDict = curlJsonWorkflow(TV,SP,CU)
 
 if !isdefined(:synChkBodySizeDict)
     return
@@ -40,5 +40,5 @@ end
 
 newRelicConvert(SP,NR,synChkBodySizeDict)
 
-timeSizeRequestsWorkflow(TV,UP,SP,NR,synChkBodySizeDict)
+timeSizeRequestsWorkflow(TV,UP,SP,NR)
 ;
