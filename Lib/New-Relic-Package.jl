@@ -196,12 +196,12 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
     fillNrResults(SP,NR,timeDict["results"])
 
-    jsonString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
+    jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
 
 
-    jsonString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
+    jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
 
