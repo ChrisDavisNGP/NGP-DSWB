@@ -194,7 +194,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     println("Run Perf: Inspected=",NR.runPerf.inspectedCount,
              " Wall Time=",NR.runPerf.wallClockTime)
 
-    fileNrResults(SP,NR,timeDict["results"])
+    fillNrResults(SP,NR,timeDict["results"])
 
 
     #jsonString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
@@ -270,42 +270,43 @@ end
 
 function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 8
         println("Series ",resultsArray)
     end
 
-    nrows = length(resultsArray)
-    colnames = convert(Vector{UTF8String}, collect(keys(resultsArray[1])))
+    eventsDict = resultsArray[1]
+    eventArray = eventsDict["events"]
 
-    println("results=",colnames)
-    return
-
-    colnames = ["inspectedCount","endTimeSeconds","beginTimeSeconds"]
-    sort!(colnames)
-
+    nrows = length(eventArray)
+    colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
     ncols = length(colnames)
+    println()
+    println("events=",colnames," nrows=",nrows," ncols=",ncols)
+    println()
 
-    df = DataFrame(Any,nrows,ncols+1)
+    df = DataFrame(Any,nrows,ncols)
     for i in 1:nrows
+        #println(i)
         for j in 1:ncols
-            df[i, j] = resultsArray[i][colnames[j]]
+            #println(j)
+            df[i, j] = get(eventArray[i],colnames[j],NA)
         end
     end
 
-    colnames = ["results"]
-    for i in 1:nrows
-        j = 4
-        innerDict = resultsArray[i][colnames[1]][1]
-        df[i,j] = innerDict["average"]
-    end
-    df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount"),Symbol("averageTotalReceivedSize")])
+    df = names!(df,[Symbol("durationWait"),Symbol("verb"),Symbol("onPageContentLoad"),Symbol("isAjax"),Symbol("minionId"),
+        Symbol("durationSSL"),Symbol("path"),Symbol("durationSend"),Symbol("duration"),Symbol("responseHeaderSize"),
+        Symbol("durationConnect"),Symbol("jobId"),Symbol("location"),Symbol("monitorName"),Symbol("id"),Symbol("durationBlocked"),
+        Symbol("requestHeaderSize"),Symbol("monitorId"),Symbol("hierarchicalURL"),Symbol("checkId"),Symbol("port"),Symbol("minion"),
+        Symbol("locationLabel"),Symbol("responseBodySize"),Symbol("externalResource"),Symbol("onPageLoad"),Symbol("responseStatus"),
+        Symbol("host"),Symbol("durationReceive"),Symbol("URL"),Symbol("domain"),Symbol("pageref"),Symbol("responseCode"),Symbol("timestamp"),
+        Symbol("durationDNS"),Symbol("requestBodySize")])
 
-    if SP.debugLevel > 4
+    if SP.debugLevel > -1
         beautifyDF(df[1:3,:])
     end
 
     #todo store into structure
-    NR.timeSeries.row = deepcopy(df)
+    #NR.timeSeries.row = deepcopy(df)
 
 end
 
