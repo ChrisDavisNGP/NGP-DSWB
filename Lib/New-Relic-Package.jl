@@ -46,6 +46,49 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
         curlCommand = "unknown command"
     end
 
+    # Todo regular expression tests for "unknown" and report failure and return empty
+    if SP.debugLevel > 4
+        println("curlStr=",curlStr)
+    end
+
+    curlCmd = `curl $curlStr`
+    jsonString = readstring(curlCmd)
+
+    # Picked syn monitor "JTP-Gallery-Equinox-M"
+    #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d'
+    #'https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70'
+
+    return jsonString
+
+end
+
+
+function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTimeNR::ASCIIString,endTimeNR::ASCIIString,monitor::ASCIIString)
+
+    if SP.debugLevel > 8
+        println("Time Range ",TV.timeString)
+    end
+
+    if CU.apiAdminKey != "no id"
+    else
+        Key = "unknown"
+    end
+
+    apiKey = "X-Query-Key:" * CU.apiQueryKey
+    #curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=select%20average(totalResponseBodySize)%20FROM%20SyntheticCheck%20WHERE%20%20monitorName%20%3D%27JTP-Gallery-Equinox-M%27%20SINCE%2030%20days%20ago%20TIMESERIES%20%20auto"
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20" * startTimeNR *
+        "%20UNTIL%20" * endTimeNR * "%20WHERE%20monitorName%20%3D%20%27" * monitorName * "%27"
+    curlStr = ["-H","$apiKey","$curlCommand"]
+
+# Dec 20 Small   https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201513793700000%20UNTIL%201513795500000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27
+#SELECT * FROM SyntheticRequest SINCE 1513793700000 UNTIL 1513795500000 WHERE monitorName = 'JTP-Gallery-Equinox-M'
+
+# Dec 20 Large   https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201513835100000%20UNTIL%201513836900000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27"
+#SELECT * FROM SyntheticRequest SINCE 1513835100000 UNTIL 1513836900000 WHERE monitorName = 'JTP-Gallery-Equinox-M'
+
+# Jan 5 Normal  https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201515189420000%20UNTIL%201515193020000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27"
+#SELECT * FROM SyntheticRequest SINCE 1515189420000 UNTIL 1515193020000 WHERE monitorName = 'JTP-Gallery-Equinox-M'
+
     # curl -H "Accept: application/json" -H ""
     #
 
@@ -64,6 +107,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
     return jsonString
 
 end
+
 
 function syntheticCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
@@ -124,17 +168,31 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
         println("Starting investigateSizeProblems")
     end
 
-    beautifyDF(NR.timeSeries.row[1:3,:])
+    if SP.debugLevel > 6
+        beautifyDF(NR.timeSeries.row[1:3,:])
 
-    try
-        drawDF = DataFrame()
-        drawDF[:col1] = NR.timeSeries.row[:beginTimeSeconds]
-        drawDF[:data1] = NR.timeSeries.row[:averageTotalReceivedSize]
+        try
+            drawDF = DataFrame()
+            drawDF[:col1] = NR.timeSeries.row[:beginTimeSeconds]
+            drawDF[:data1] = NR.timeSeries.row[:averageTotalReceivedSize]
 
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Average Size"], mPulseWidget=false, chart_title="Size Chart", vizTypes=["line"])
-    catch y
-        println("draw Avg Recd Size exception ",y)
+            c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Average Size"], mPulseWidget=false, chart_title="Size Chart", vizTypes=["line"])
+        catch y
+            println("draw Avg Recd Size exception ",y)
+        end
     end
+
+    jsonString = curlSelectAllByTime(TV,SP,CU,"1513793700000","1513795500000","JTP-Gallery-Equinox-M")
+    colnames = convert(Vector{UTF8String}, collect(keys(jsonString[1])))
+    println("colnames=",colnames)
+
+
+    #jsonString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
+
+
+    #jsonString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
+
+
 
 end
 
