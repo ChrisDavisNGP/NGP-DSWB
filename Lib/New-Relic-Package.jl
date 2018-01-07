@@ -184,8 +184,8 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513793700000","1513795500000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
-    colnames = convert(Vector{UTF8String}, collect(keys(timeDict)))
-    println("colnames=",colnames)
+    #colnames = convert(Vector{UTF8String}, collect(keys(timeDict)))
+    #println("colnames=",colnames)
 
     fillNrMetadata(SP,NR,timeDict["metadata"])
     println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
@@ -196,11 +196,14 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
     fillNrResults(SP,NR,timeDict["results"])
 
+    jsonString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+    fillNrResults(SP,NR,timeDict["results"])
 
-    #jsonString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
 
-
-    #jsonString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
+    jsonString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+    fillNrResults(SP,NR,timeDict["results"])
 
 
 
@@ -302,7 +305,7 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
         Symbol("durationDNS"),Symbol("requestBodySize")])
 
     if SP.debugLevel > -1
-        beautifyDF(df[1:3,:])
+        beautifyDF(df)
     end
 
     NR.results.row = deepcopy(df)
