@@ -58,6 +58,10 @@ type NrTimeSeries
     row::DataFrame
 end
 
+type NrResults
+    row::DataFrame
+end
+
 type NrTotal
     inspectedCount::Int64
     endTimeSeconds::Int64
@@ -71,6 +75,7 @@ type NrParams
     metadata::NrMetadata
     runPerf::NrRunPerf
     timeSeries::NrTimeSeries
+    results::NrResults
     totalsAvail::Bool
 end
 
@@ -78,11 +83,13 @@ function NrParamsInit()
 
     totals = NrTotal(0,0,0,0.0)
     metadata = NrMetadata("","")
-    row = DataFrame()
-    tseries = NrTimeSeries(row)
+    tRow = DataFrame()
+    tSeries = NrTimeSeries(tRow)
+    rRow = DataFrame()
+    results = NrResults(rRow)
     runPerf = NrRunPerf(0,0)
 
-    NR = NrParams(totals,metadata,runPerf,tseries,false)
+    NR = NrParams(totals,metadata,runPerf,tSeries,results,false)
 
     return NR
 end

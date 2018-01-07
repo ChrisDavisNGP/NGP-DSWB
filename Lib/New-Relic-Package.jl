@@ -305,8 +305,7 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
         beautifyDF(df[1:3,:])
     end
 
-    #todo store into structure
-    #NR.timeSeries.row = deepcopy(df)
+    NR.results.row = deepcopy(df)
 
 end
 
