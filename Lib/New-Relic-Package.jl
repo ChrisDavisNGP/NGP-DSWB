@@ -182,9 +182,19 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
         end
     end
 
-    jsonString = curlSelectAllByTime(TV,SP,CU,"1513793700000","1513795500000","JTP-Gallery-Equinox-M")
-    colnames = convert(Vector{UTF8String}, collect(keys(jsonString[1])))
+    jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513793700000","1513795500000","JTP-Gallery-Equinox-M")
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+    colnames = convert(Vector{UTF8String}, collect(keys(timeDict)))
     println("colnames=",colnames)
+
+    fillNrMetadata(SP,NR,timeDict["metadata"])
+    println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
+
+    fillNrRunPerf(SP,NR,timeDict["performanceStats"])
+    println("Run Perf: Inspected=",NR.runPerf.inspectedCount,
+             " Wall Time=",NR.runPerf.wallClockTime)
+
+    fileNrResults(SP,NR,timeDict["results"])
 
 
     #jsonString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
@@ -245,6 +255,47 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
     for i in 1:nrows
         j = 4
         innerDict = seriesArray[i][colnames[1]][1]
+        df[i,j] = innerDict["average"]
+    end
+    df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount"),Symbol("averageTotalReceivedSize")])
+
+    if SP.debugLevel > 4
+        beautifyDF(df[1:3,:])
+    end
+
+    #todo store into structure
+    NR.timeSeries.row = deepcopy(df)
+
+end
+
+function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
+
+    if SP.debugLevel > -1
+        println("Series ",resultsArray)
+    end
+
+    nrows = length(resultsArray)
+    colnames = convert(Vector{UTF8String}, collect(keys(resultsArray[1])))
+
+    println("results=",colnames)
+    return
+
+    colnames = ["inspectedCount","endTimeSeconds","beginTimeSeconds"]
+    sort!(colnames)
+
+    ncols = length(colnames)
+
+    df = DataFrame(Any,nrows,ncols+1)
+    for i in 1:nrows
+        for j in 1:ncols
+            df[i, j] = resultsArray[i][colnames[j]]
+        end
+    end
+
+    colnames = ["results"]
+    for i in 1:nrows
+        j = 4
+        innerDict = resultsArray[i][colnames[1]][1]
         df[i,j] = innerDict["average"]
     end
     df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount"),Symbol("averageTotalReceivedSize")])
