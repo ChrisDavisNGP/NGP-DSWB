@@ -281,13 +281,11 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
     nrows = length(eventArray)
     #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
 
-    colnames = [
-        "timestamp","onPageContentLoad","onPageLoad",
+    colnames = ["timestamp","onPageContentLoad","onPageLoad",
         "duration","durationBlocked","durationConnect","durationDNS","durationReceive","durationSend","durationSSL","durationWait",
         "requestBodySize","requestHeaderSize","responseBodySize","responseHeaderSize","responseStatus","responseCode","pageref",
         "contentType","contentCategory","verb","externalResource","host","path",
-        "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"
-    ]
+        "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"]
 
     ncols = length(colnames)
     println()
