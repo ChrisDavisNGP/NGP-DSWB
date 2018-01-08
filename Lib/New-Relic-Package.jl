@@ -301,16 +301,13 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
         end
     end
 
-    df = names!(df,
-    [
-    Symbol("timestamp"),Symbol("onPageContentLoad",Symbol("onPageLoad",
-    Symbol("duration",Symbol("durationBlocked",Symbol("durationConnect",Symbol("durationDNS",
-    Symbol("durationReceive",Symbol("durationSend",Symbol("durationSSL",Symbol("durationWait",
-    Symbol("requestBodySize",Symbol("requestHeaderSize",Symbol("responseBodySize",Symbol("responseHeaderSize",
-    Symbol("responseStatus",Symbol("responseCode",Symbol("pageref",Symbol("contentType",
-    Symbol("contentCategory",Symbol("verb",Symbol("externalResource",Symbol("host",Symbol("path",
-    Symbol("hierarchicalURL",Symbol("URL",Symbol("domain",Symbol("serverIPAddress""jobId",Symbol("monitorName")
-    ])
+    df = names!(df,[Symbol("timestamp"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
+    Symbol("duration"),Symbol("durationBlocked"),Symbol("durationConnect"),Symbol("durationDNS"),
+    Symbol("durationReceive"),Symbol("durationSend"),Symbol("durationSSL"),Symbol("durationWait"),
+    Symbol("requestBodySize"),Symbol("requestHeaderSize"),Symbol("responseBodySize"),Symbol("responseHeaderSize"),
+    Symbol("responseStatus"),Symbol("responseCode"),Symbol("pageref"),Symbol("contentType"),
+    Symbol("contentCategory"),Symbol("verb"),Symbol("externalResource"),Symbol("host"),Symbol("path"),
+    Symbol("hierarchicalURL"),Symbol("URL"),Symbol("domain"),Symbol("serverIPAddress""jobId"),Symbol("monitorName")])
 
     if SP.debugLevel > -1
         beautifyDF(df)
