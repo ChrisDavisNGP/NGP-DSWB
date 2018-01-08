@@ -363,8 +363,8 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
 
     for subDF in groupby(NR.results.row,:host)
         println()
-        println("Host=",subDF[1:1,:host])
+        println("Host=",subDF[1:1,:host][1])
         println("Sum Body=",sum(subDF[:,:responseBodySize]))
-        println("Cnt =",length(subDF))
+        println("Cnt =",size(subDF,1))
     end
 end
