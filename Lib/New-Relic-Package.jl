@@ -310,7 +310,7 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
     Symbol("hierarchicalURL"),Symbol("URL"),Symbol("domain"),Symbol("serverIPAddress""jobId"),Symbol("monitorName")])
 
     if SP.debugLevel > -1
-        beautifyDF(df)
+        beautifyDF(df,maxRows=500)
     end
 
     NR.results.row = deepcopy(df)
