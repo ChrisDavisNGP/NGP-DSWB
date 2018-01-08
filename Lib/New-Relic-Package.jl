@@ -361,10 +361,26 @@ end
 
 function dumpHostGroups(SP::ShowParams,NR::NrParams)
 
+    hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=INT64[],resources=Int64[])
+
     for subDF in groupby(NR.results.row,:host)
-        println()
-        println("Host=",subDF[1:1,:host][1])
-        println("Sum Body=",sum(subDF[:,:responseBodySize]))
-        println("Cnt =",size(subDF,1))
+
+        hostName = subDF[1:1,:host][1]
+        if hostName == NA
+            continue
+        elseif ismatch(r"*segment.com",hostName)
+            hostName = "Segment"
+        end
+
+        #println()
+        #println("Host=",subDF[1:1,:host][1])
+        #println("Sum Body=",sum(subDF[:,:responseBodySize]))
+        #println("Cnt =",size(subDF,1))
+        hostGroupsDF[:,:host] = hostName
+        hostGroupsDF[:,:bodySize] = sum(subDF[:,:responseBodySize])
+        hostGroupsDF[:,:resources] = size(subDF,1)
     end
+
+    beautifyDF(hostGroupsDF)
+    
 end
