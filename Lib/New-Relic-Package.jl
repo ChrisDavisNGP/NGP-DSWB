@@ -184,8 +184,6 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513793700000","1513795500000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
-    #colnames = convert(Vector{UTF8String}, collect(keys(timeDict)))
-    #println("colnames=",colnames)
 
     fillNrMetadata(SP,NR,timeDict["metadata"])
     println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
@@ -281,7 +279,16 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
     eventArray = eventsDict["events"]
 
     nrows = length(eventArray)
-    colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
+    #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
+
+    colnames = [
+        "timestamp","onPageContentLoad","onPageLoad",
+        "duration","durationBlocked","durationConnect","durationDNS","durationReceive","durationSend","durationSSL","durationWait",
+        "requestBodySize","requestHeaderSize","responseBodySize","responseHeaderSize","responseStatus","responseCode","pageref",
+        "contentType","contentCategory","verb","externalResource","host","path",
+        "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"
+    ]
+
     ncols = length(colnames)
     println()
     println("events=",colnames," nrows=",nrows," ncols=",ncols)
@@ -296,13 +303,16 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
         end
     end
 
-    df = names!(df,[Symbol("durationWait"),Symbol("verb"),Symbol("onPageContentLoad"),Symbol("isAjax"),Symbol("minionId"),
-        Symbol("durationSSL"),Symbol("path"),Symbol("durationSend"),Symbol("duration"),Symbol("responseHeaderSize"),
-        Symbol("durationConnect"),Symbol("jobId"),Symbol("location"),Symbol("monitorName"),Symbol("id"),Symbol("durationBlocked"),
-        Symbol("requestHeaderSize"),Symbol("monitorId"),Symbol("hierarchicalURL"),Symbol("checkId"),Symbol("port"),Symbol("minion"),
-        Symbol("locationLabel"),Symbol("responseBodySize"),Symbol("externalResource"),Symbol("onPageLoad"),Symbol("responseStatus"),
-        Symbol("host"),Symbol("durationReceive"),Symbol("URL"),Symbol("domain"),Symbol("pageref"),Symbol("responseCode"),Symbol("timestamp"),
-        Symbol("durationDNS"),Symbol("requestBodySize")])
+    df = names!(df,
+    [
+    Symbol("timestamp"),Symbol("onPageContentLoad",Symbol("onPageLoad",
+    Symbol("duration",Symbol("durationBlocked",Symbol("durationConnect",Symbol("durationDNS",
+    Symbol("durationReceive",Symbol("durationSend",Symbol("durationSSL",Symbol("durationWait",
+    Symbol("requestBodySize",Symbol("requestHeaderSize",Symbol("responseBodySize",Symbol("responseHeaderSize",
+    Symbol("responseStatus",Symbol("responseCode",Symbol("pageref",Symbol("contentType",
+    Symbol("contentCategory",Symbol("verb",Symbol("externalResource",Symbol("host",Symbol("path",
+    Symbol("hierarchicalURL",Symbol("URL",Symbol("domain",Symbol("serverIPAddress""jobId",Symbol("monitorName")
+    ])
 
     if SP.debugLevel > -1
         beautifyDF(df)
