@@ -281,27 +281,24 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
     nrows = length(eventArray)
     #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
 
-    colnames = ["timestamp","onPageContentLoad","onPageLoad",
+    colnames = ["timestamp","jobId","onPageContentLoad","onPageLoad",
         "duration","durationBlocked","durationConnect","durationDNS","durationReceive","durationSend","durationSSL","durationWait",
         "requestBodySize","requestHeaderSize","responseBodySize","responseHeaderSize","responseStatus","responseCode","pageref",
         "contentType","contentCategory","verb","externalResource","host","path",
         "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"]
 
     ncols = length(colnames)
-    println()
-    println("events=",colnames," nrows=",nrows," ncols=",ncols)
-    println()
+
+    #println("events=",colnames," nrows=",nrows," ncols=",ncols)
 
     df = DataFrame(Any,nrows,ncols)
     for i in 1:nrows
-        #println(i)
         for j in 1:ncols
-            #println(j)
             df[i, j] = get(eventArray[i],colnames[j],NA)
         end
     end
 
-    df = names!(df,[Symbol("timestamp"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
+    df = names!(df,[Symbol("timestamp"),Symbold("jobId"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
     Symbol("duration"),Symbol("durationBlocked"),Symbol("durationConnect"),Symbol("durationDNS"),
     Symbol("durationReceive"),Symbol("durationSend"),Symbol("durationSSL"),Symbol("durationWait"),
     Symbol("requestBodySize"),Symbol("requestHeaderSize"),Symbol("responseBodySize"),Symbol("responseHeaderSize"),
