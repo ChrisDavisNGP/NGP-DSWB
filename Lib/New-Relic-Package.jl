@@ -194,6 +194,9 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
     fillNrResults(SP,NR,timeDict["results"])
 
+    dumpHostGroups(SP,NR)
+
+
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
@@ -354,4 +357,14 @@ function fillNrMetadata(SP::ShowParams,NR::NrParams,metaDict::Dict)
     NR.metadata.endTime = metaDict["endTime"]
     NR.metadata.beginTime = metaDict["beginTime"]
 
+end
+
+function dumpHostGroups(SP::ShowParams,NR::NrParams)
+
+    for subDF in groupby(NR.results.row,:host)
+        println()
+        println("Host=",subDF[1:1,:host])
+        println("Sum Body=",sum(subDF[:,:responseBodySize]))
+        println("Cnt =",length(subDF))
+    end
 end
