@@ -309,6 +309,8 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
     Symbol("contentCategory"),Symbol("verb"),Symbol("externalResource"),Symbol("host"),Symbol("path"),
     Symbol("hierarchicalURL"),Symbol("URL"),Symbol("domain"),Symbol("serverIPAddress""jobId"),Symbol("monitorName")])
 
+    sort!(df,cols=[order(:timestamp,rev=true)])
+
     if SP.debugLevel > -1
         beautifyDF(df,maxRows=500)
     end
