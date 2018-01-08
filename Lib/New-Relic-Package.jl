@@ -298,7 +298,7 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
         end
     end
 
-    df = names!(df,[Symbol("timestamp"),Symbold("jobId"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
+    df = names!(df,[Symbol("timestamp"),Symbol("jobId"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
     Symbol("duration"),Symbol("durationBlocked"),Symbol("durationConnect"),Symbol("durationDNS"),
     Symbol("durationReceive"),Symbol("durationSend"),Symbol("durationSSL"),Symbol("durationWait"),
     Symbol("requestBodySize"),Symbol("requestHeaderSize"),Symbol("responseBodySize"),Symbol("responseHeaderSize"),
