@@ -209,6 +209,8 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     fillNrResults(SP,NR,timeDict["results"])
     test3DF = dumpHostGroups(SP,NR)
 
+    diffHostGroups(SP,test1DF,test3DF)
+
 # to do - Get Pageload time to compare
 # to do - Get duration time to compare
 
@@ -440,15 +442,18 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
         t2 = 0
         for hostT2 in test2DF[:,:host]
             t2 += 1
-
             if hostT1 == hostT2
                 sizeT2 = test2DF[t2:t2,:bodySize][1]
                 #println(hostT1," h1=",sizeT1," h2=",sizeT2)
                 if sizeT2 == sizeT1
+                    deleterows!(test2DF,t2)
+                    printed = true
                     break;
                 end
 
                 if sizeT2 == 0
+                    deleterows!(test2DF,t2)
+                    printed = true
                     break;
                 end
 
@@ -483,6 +488,5 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
     end
 
     beautifyDF(diffDF)
-
 
 end
