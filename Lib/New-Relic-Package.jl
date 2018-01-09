@@ -487,6 +487,8 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
         end
     end
 
-    beautifyDF(diffDF)
+    diffDF = names!(diffDF,[Symbols("Web Host"),Symbols("%Change"),Symbols("Old Size"),Symbols("New Size")])
+
+    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
 
 end
