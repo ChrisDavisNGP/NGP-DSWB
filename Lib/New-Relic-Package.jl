@@ -194,12 +194,16 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
     fillNrResults(SP,NR,timeDict["results"])
     dumpHostGroups(SP,NR)
+    test1DF = deepcopy(NR.results.row)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
     dumpHostGroups(SP,NR)
+    test2DF = deepcopy(NR.results.row)
+
+    diffHostGroups(SP,test1DF,test2DF)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
@@ -413,5 +417,22 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
 
     sort!(hostGroupsDF,cols=:bodySize,rev=true)
     beautifyDF(hostGroupsDF)
+
+end
+
+function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
+
+# Assume test1DF is LHS
+
+t1 = 0
+t2 = 0
+for hostT1 in test1DF[:,:host]
+
+    t1 += 1
+    hostT2 = ismatch(hostT1,test2DF[:,x] for x in test2DF[:,:host])
+    println(hostT1," vs ", hostT2) 
+
+end
+
 
 end
