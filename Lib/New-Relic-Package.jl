@@ -193,15 +193,13 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
              " Wall Time=",NR.runPerf.wallClockTime)
 
     fillNrResults(SP,NR,timeDict["results"])
-    dumpHostGroups(SP,NR)
-    test1DF = deepcopy(NR.results.row)
+    test1DF = dumpHostGroups(SP,NR)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
-    dumpHostGroups(SP,NR)
-    test2DF = deepcopy(NR.results.row)
+    test2DF = dumpHostGroups(SP,NR)
 
     diffHostGroups(SP,test1DF,test2DF)
 
@@ -209,7 +207,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
-    dumpHostGroups(SP,NR)
+    test3DF = dumpHostGroups(SP,NR)
 
 
 
@@ -418,21 +416,43 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
     sort!(hostGroupsDF,cols=:bodySize,rev=true)
     beautifyDF(hostGroupsDF)
 
+    return hostGroupsDF
+
 end
 
 function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
 
-# Assume test1DF is LHS
+    # Assume test1DF is LHS
 
-t1 = 0
-t2 = 0
-for hostT1 in test1DF[:,:host]
+    beautifyDF(test1DF[1:3,:])
+    beautifyDF(test2DF[1:3,:])
 
-    t1 += 1
-    hostT2 = ismatch(hostT1,test2DF[:,x] for x in test2DF[:,:host])
-    println(hostT1," vs ", hostT2) 
+    t1 = 0
+    for hostT1 in test1DF[:,:host]
+        printed = false
+        t1 += 1
+        sizeT1 = test1DF[t1:t1,:responseBodySize]
+        t2 = 0
+        for hostT2 in test2DF[:,:host]
+            t2 += 1
 
-end
+            if hostT1 == hostT2
+                sizeT2 = test2DF[t2:t2,:responseBodySize]
+                println(hostT1," h1=",sizeT1," h2=",sizeT2)
+                printed = true
+                deleterows!(test2DF,t2)
+                continue
+            end
+        end
+        if !printed
+            println(hostT1," h1=", sizeT1)
+        end
+    end
 
+    t2 = 0
+    for hostT2 in test2DF[:,host]
+        t2 += 0
+        println(hostT2," h2=", test2DF[t2:t2,:responseBodySize])
+    end
 
 end
