@@ -431,13 +431,13 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
     for hostT1 in test1DF[:,:host]
         printed = false
         t1 += 1
-        sizeT1 = test1DF[t1:t1,:responseBodySize]
+        sizeT1 = test1DF[t1:t1,:bodySize]
         t2 = 0
         for hostT2 in test2DF[:,:host]
             t2 += 1
 
             if hostT1 == hostT2
-                sizeT2 = test2DF[t2:t2,:responseBodySize]
+                sizeT2 = test2DF[t2:t2,:bodySize]
                 println(hostT1," h1=",sizeT1," h2=",sizeT2)
                 printed = true
                 deleterows!(test2DF,t2)
@@ -452,7 +452,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
     t2 = 0
     for hostT2 in test2DF[:,host]
         t2 += 0
-        println(hostT2," h2=", test2DF[t2:t2,:responseBodySize])
+        println(hostT2," h2=", test2DF[t2:t2,:bodySize])
     end
 
 end
