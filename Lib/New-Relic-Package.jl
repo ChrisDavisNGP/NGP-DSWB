@@ -395,6 +395,10 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
             NR.results.row[i:i,:host] = "DoubleVerify"
         elseif (ismatch(r".*doubleclick.*",host))
             NR.results.row[i:i,:host] = "DoubleClick"
+        elseif (ismatch(r".*googlesyndication.*",host))
+            NR.results.row[i:i,:host] = "Google Syndication"
+        elseif (ismatch(r".*extremereach.*",host))
+            NR.results.row[i:i,:host] = "Extreme Reach"
         end
 
     end
