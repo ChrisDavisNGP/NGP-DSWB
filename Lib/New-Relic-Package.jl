@@ -193,18 +193,19 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
              " Wall Time=",NR.runPerf.wallClockTime)
 
     fillNrResults(SP,NR,timeDict["results"])
-
     dumpHostGroups(SP,NR)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
+    dumpHostGroups(SP,NR)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
+    dumpHostGroups(SP,NR)
 
 
 
@@ -361,26 +362,42 @@ end
 
 function dumpHostGroups(SP::ShowParams,NR::NrParams)
 
-    hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=INT64[],resources=Int64[])
+    if SP.debugLevel > 8
+        println("Starting dumpHostGroups")
+    end
+
+    hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[])
+
+    i = 0
+    for host in NR.results.row[:,:host]
+        i += 1
+        if isna(host)
+            continue
+        elseif (ismatch(r".*segment.*",host))
+            NR.results.row[i:i,:host] = "Segment"
+        elseif (ismatch(r".*blueconic.*",host))
+            NR.results.row[i:i,:host] = "Blue Conic"
+        elseif (ismatch(r".*krxd.*",host))
+            NR.results.row[i:i,:host] = "Krxd"
+        elseif (ismatch(r".*google-analytics.*",host))
+            NR.results.row[i:i,:host] = "Google Analytics"
+        elseif (ismatch(r".*unrulymedia.*",host))
+            NR.results.row[i:i,:host] = "Unruly Media"
+        elseif (ismatch(r".*demdex.*",host))
+            NR.results.row[i:i,:host] = "Demdex"
+        end
+
+    end
 
     for subDF in groupby(NR.results.row,:host)
 
-        hostName = subDF[1:1,:host][1]
-        if hostName == NA
+        if isna(subDF[1:1,:host][1])
             continue
-        elseif ismatch(r"*segment.com",hostName)
-            hostName = "Segment"
         end
-
-        #println()
-        #println("Host=",subDF[1:1,:host][1])
-        #println("Sum Body=",sum(subDF[:,:responseBodySize]))
-        #println("Cnt =",size(subDF,1))
-        hostGroupsDF[:,:host] = hostName
-        hostGroupsDF[:,:bodySize] = sum(subDF[:,:responseBodySize])
-        hostGroupsDF[:,:resources] = size(subDF,1)
+        push!(hostGroupsDF,[subDF[1:1,:host][1],sum(subDF[:,:responseBodySize]),size(subDF,1)])
     end
 
+    sort!(hostGroupsDF,cols=:host)
     beautifyDF(hostGroupsDF)
-    
+
 end
