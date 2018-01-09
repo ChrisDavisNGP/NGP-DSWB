@@ -389,6 +389,12 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
             NR.results.row[i:i,:host] = "Monetate"
         elseif (ismatch(r".*moatads.*",host))
             NR.results.row[i:i,:host] = "Moatads"
+        elseif (ismatch(r".*addthis.*",host))
+            NR.results.row[i:i,:host] = "Addthis"
+        elseif (ismatch(r".*doubleverify.*",host))
+            NR.results.row[i:i,:host] = "DoubleVerify"
+        elseif (ismatch(r".*doubleclick.*",host))
+            NR.results.row[i:i,:host] = "DoubleClick"
         end
 
     end
