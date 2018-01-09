@@ -371,7 +371,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
         println("Starting dumpHostGroups")
     end
 
-    hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[])
+    hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[],duration=Int64[])
 
     i = 0
     for host in NR.results.row[:,:host]
@@ -413,7 +413,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
         if isna(subDF[1:1,:host][1])
             continue
         end
-        push!(hostGroupsDF,[subDF[1:1,:host][1],sum(subDF[:,:responseBodySize]),size(subDF,1)])
+        push!(hostGroupsDF,[subDF[1:1,:host][1],sum(subDF[:,:responseBodySize]),size(subDF,1),sum(subDF[:,:duration])
     end
 
     sort!(hostGroupsDF,cols=:bodySize,rev=true)
@@ -432,18 +432,20 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
         beautifyDF(test2DF[1:3,:])
     end
 
-    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[])
+    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Int64[],newDuration=Int64[])
 
     t1 = 0
     for hostT1 in test1DF[:,:host]
         printed = false
         t1 += 1
         sizeT1 = test1DF[t1:t1,:bodySize][1]
+        durationT1 = test1DF[t1:t1,:duration][1]
         t2 = 0
         for hostT2 in test2DF[:,:host]
             t2 += 1
             if hostT1 == hostT2
                 sizeT2 = test2DF[t2:t2,:bodySize][1]
+                durationT2 = test2DF[t2:t2,:duration][1]
                 #println(hostT1," h1=",sizeT1," h2=",sizeT2)
                 if sizeT2 == sizeT1
                     deleterows!(test2DF,t2)
@@ -464,7 +466,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
                 deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
                 if !(deltaPercent > -5 && deltaPercent < 5)
                     #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                    push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2])
+                    push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
                 end
                 printed = true
                 deleterows!(test2DF,t2)
@@ -473,7 +475,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
         end
         if !printed && sizeT1 > 999
             #println(hostT1," h1=", sizeT1)
-            push!(diffDF,[hostT1,0.0,sizeT1,0])
+            push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
         end
     end
 
@@ -483,11 +485,11 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
         sizeT2 = test2DF[t2:t2,:bodySize][1]
         if sizeT2 > 999
             #println(hostT2," h2=", sizeT2)
-            push!(diffDF,[hostT2,0.0,0,sizeT2])
+            push!(diffDF,[hostT2,0.0,0,sizeT2,0,durationT2])
         end
     end
 
-    diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("%Change"),Symbol("Old Size"),Symbol("New Size")])
+    diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("%Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
 
     beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
 
