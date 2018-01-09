@@ -312,7 +312,7 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
     sort!(df,cols=[order(:timestamp,rev=false)])
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 4
         beautifyDF(df,maxRows=500)
     end
 
@@ -385,6 +385,10 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
             NR.results.row[i:i,:host] = "Unruly Media"
         elseif (ismatch(r".*demdex.*",host))
             NR.results.row[i:i,:host] = "Demdex"
+        elseif (ismatch(r".*monetate.*",host))
+            NR.results.row[i:i,:host] = "Monetate"
+        elseif (ismatch(r".*moatads.*",host))
+            NR.results.row[i:i,:host] = "Moatads"
         end
 
     end
@@ -397,7 +401,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
         push!(hostGroupsDF,[subDF[1:1,:host][1],sum(subDF[:,:responseBodySize]),size(subDF,1)])
     end
 
-    sort!(hostGroupsDF,cols=:host)
+    sort!(hostGroupsDF,cols=:bodySize,rev=true)
     beautifyDF(hostGroupsDF)
 
 end
