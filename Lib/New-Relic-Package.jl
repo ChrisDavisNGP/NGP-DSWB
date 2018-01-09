@@ -209,7 +209,8 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     fillNrResults(SP,NR,timeDict["results"])
     test3DF = dumpHostGroups(SP,NR)
 
-
+# to do - Get Pageload time to compare
+# to do - Get duration time to compare
 
 end
 
@@ -424,35 +425,64 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
 
     # Assume test1DF is LHS
 
-    beautifyDF(test1DF[1:3,:])
-    beautifyDF(test2DF[1:3,:])
+    if SP.debugLevel > 8
+        beautifyDF(test1DF[1:3,:])
+        beautifyDF(test2DF[1:3,:])
+    end
+
+    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[])
 
     t1 = 0
     for hostT1 in test1DF[:,:host]
         printed = false
         t1 += 1
-        sizeT1 = test1DF[t1:t1,:bodySize]
+        sizeT1 = test1DF[t1:t1,:bodySize][1]
         t2 = 0
         for hostT2 in test2DF[:,:host]
             t2 += 1
 
             if hostT1 == hostT2
-                sizeT2 = test2DF[t2:t2,:bodySize]
-                println(hostT1," h1=",sizeT1," h2=",sizeT2)
+                sizeT2 = test2DF[t2:t2,:bodySize][1]
+                #println(hostT1," h1=",sizeT1," h2=",sizeT2)
+                if sizeT2 == sizeT1
+                    break;
+                end
+
+                if sizeT2 == 0
+                    break;
+                end
+
+                if sizeT1 == 0
+                    break;
+                end
+
+                deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
+                if !(deltaPercent > -5 && deltaPercent < 5)
+                    #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
+                    push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2])
+                end
                 printed = true
                 deleterows!(test2DF,t2)
-                continue
+                break
             end
         end
-        if !printed
-            println(hostT1," h1=", sizeT1)
+        if !printed && sizeT1 > 999
+            #println(hostT1," h1=", sizeT1)
+            push!(diffDF,[hostT1,0.0,sizeT1,0])
         end
     end
 
     t2 = 0
-    for hostT2 in test2DF[:,host]
-        t2 += 0
-        println(hostT2," h2=", test2DF[t2:t2,:bodySize])
+    for hostT2 in test2DF[:,:host]
+        t2 += 1
+        sizeT2 = test2DF[t2:t2,:bodySize][1]
+        if sizeT2 > 999
+            #println(hostT2," h2=", sizeT2)
+            push!(diffDF,[hostT2,0.0,0,sizeT2])
+        end
     end
+
+    beautifyDF(diffDF)
+
 
 end
