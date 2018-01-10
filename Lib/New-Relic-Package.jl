@@ -207,15 +207,16 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
     diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
 
-    jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
-    timeDict = curlSyntheticJson(SP,jsonTimeString)
-    fillNrResults(SP,NR,timeDict["results"])
-    test3DF = dumpHostGroups(SP,NR;showGroups=false)
+    #jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
+    #timeDict = curlSyntheticJson(SP,jsonTimeString)
+    #fillNrResults(SP,NR,timeDict["results"])
+    #test3DF = dumpHostGroups(SP,NR;showGroups=false)
 
-    test1DFSize = deepcopy(test1DF)
-    test2DFSize = deepcopy(test2DF)
-    diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
-    diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
+    #Note you would have to save extra copies of test1DF before using it above to use down here
+    #test1DFSize = deepcopy(test1DF)
+    #test3DFSize = deepcopy(test3DF)
+    #diffHostGroups(SP,test1DF,test3DF;diffBySize=false)
+    #diffHostGroups(SP,test1DFSize,test3DFSize;diffBySize=true)
 
 end
 
