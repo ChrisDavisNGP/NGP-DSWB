@@ -286,7 +286,7 @@ function CurlParamsInit(nb::ASCIIString)
     end
 
     if isdefined(:CuSyntheticMonitor)
-        CU.SyntheticMonitor = CuSyntheticMonitor
+        CU.syntheticMonitor = CuSyntheticMonitor
     end
 
     if isdefined(:CuOldStart)
