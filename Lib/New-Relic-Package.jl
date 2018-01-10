@@ -201,7 +201,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     fillNrResults(SP,NR,timeDict["results"])
     test2DF = dumpHostGroups(SP,NR)
 
-    diffHostGroups(SP,test1DF,test2DF)
+    diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
@@ -371,7 +371,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
         println("Starting dumpHostGroups")
     end
 
-    hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[],duration=Int64[])
+    hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[],duration=Float64[])
 
     i = 0
     for host in NR.results.row[:,:host]
@@ -423,7 +423,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
 
 end
 
-function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
+function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;diffBySize::Bool=true)
 
     # Assume test1DF is LHS
 
@@ -432,7 +432,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
         beautifyDF(test2DF[1:3,:])
     end
 
-    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Int64[],newDuration=Int64[])
+    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
 
     t1 = 0
     for hostT1 in test1DF[:,:host]
@@ -447,27 +447,46 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
                 sizeT2 = test2DF[t2:t2,:bodySize][1]
                 durationT2 = test2DF[t2:t2,:duration][1]
                 #println(hostT1," h1=",sizeT1," h2=",sizeT2)
-                if sizeT2 == sizeT1
+                if diffBySize && sizeT2 == sizeT1
+                    deleterows!(test2DF,t2)
+                    printed = true
+                    break;
+                elseif !diffBySize && durationT2 == durationT1
                     deleterows!(test2DF,t2)
                     printed = true
                     break;
                 end
 
-                if sizeT2 == 0
+                if diffBySize && sizeT2 == 0
+                    deleterows!(test2DF,t2)
+                    printed = true
+                    break;
+                elseif !diffBySize && durationT2 == 0
                     deleterows!(test2DF,t2)
                     printed = true
                     break;
                 end
 
-                if sizeT1 == 0
+                if diffBySize && sizeT1 == 0
+                    break;
+                elseif !diffBySize && durationT1 == 0
                     break;
                 end
 
-                deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
-                if !(deltaPercent > -5 && deltaPercent < 5)
-                    #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                    push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                if diffBySize
+                    deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
+                    if !(deltaPercent > -5.0 && deltaPercent < 5.0)
+                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
+                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                    end
+                else
+                    deltaPercent = (durationT2-durationT1) / durationT1 * 100.0
+                    if !(deltaPercent > -5.0 && deltaPercent < 5.0)
+                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
+                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                    end
                 end
+
                 printed = true
                 deleterows!(test2DF,t2)
                 break
@@ -483,13 +502,18 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame)
     for hostT2 in test2DF[:,:host]
         t2 += 1
         sizeT2 = test2DF[t2:t2,:bodySize][1]
+        durationT2 = test2DF[t2:t2,:duration][1]
         if sizeT2 > 999
             #println(hostT2," h2=", sizeT2)
             push!(diffDF,[hostT2,0.0,0,sizeT2,0,durationT2])
         end
     end
 
-    diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("%Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+    if diffBySize
+        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+    else
+        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+    end
 
     beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
 
