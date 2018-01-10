@@ -413,7 +413,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
         if isna(subDF[1:1,:host][1])
             continue
         end
-        push!(hostGroupsDF,[subDF[1:1,:host][1],sum(subDF[:,:responseBodySize]),size(subDF,1),sum(subDF[:,:duration])
+        push!(hostGroupsDF,[subDF[1:1,:host][1],sum(subDF[:,:responseBodySize]),size(subDF,1),sum(subDF[:,:duration])])
     end
 
     sort!(hostGroupsDF,cols=:bodySize,rev=true)
