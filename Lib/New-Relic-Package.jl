@@ -185,12 +185,13 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513793700000","1513795500000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
 
-    fillNrMetadata(SP,NR,timeDict["metadata"])
-    println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
+    if SP.debugLevel > 8
+        fillNrMetadata(SP,NR,timeDict["metadata"])
+        println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
 
-    fillNrRunPerf(SP,NR,timeDict["performanceStats"])
-    println("Run Perf: Inspected=",NR.runPerf.inspectedCount,
-             " Wall Time=",NR.runPerf.wallClockTime)
+        fillNrRunPerf(SP,NR,timeDict["performanceStats"])
+        println("Run Perf: Inspected=",NR.runPerf.inspectedCount," Wall Time=",NR.runPerf.wallClockTime)
+    end
 
     fillNrResults(SP,NR,timeDict["results"])
     test1DF = dumpHostGroups(SP,NR;showGroups=false)
@@ -202,6 +203,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     test2DF = dumpHostGroups(SP,NR;showGroups=false)
 
     diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
+    diffHostGroups(SP,test1DF,test2DF;diffBySize=true)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
@@ -210,9 +212,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     test3DF = dumpHostGroups(SP,NR;showGroups=false)
 
     diffHostGroups(SP,test1DF,test3DF;diffBySize=false)
-
-# to do - Get Pageload time to compare
-# to do - Get duration time to compare
+    diffHostGroups(SP,test1DF,test3DF;diffBySize=true)
 
 end
 
