@@ -202,17 +202,20 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     fillNrResults(SP,NR,timeDict["results"])
     test2DF = dumpHostGroups(SP,NR;showGroups=false)
 
+    test1DFSize = deepcopy(test1DF)
+    test2DFSize = deepcopy(test2DF)
     diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
-    diffHostGroups(SP,test1DF,test2DF;diffBySize=true)
-
+    diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
     test3DF = dumpHostGroups(SP,NR;showGroups=false)
 
-    diffHostGroups(SP,test1DF,test3DF;diffBySize=false)
-    diffHostGroups(SP,test1DF,test3DF;diffBySize=true)
+    test1DFSize = deepcopy(test1DF)
+    test2DFSize = deepcopy(test2DF)
+    diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
+    diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
 
 end
 
