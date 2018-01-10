@@ -32,7 +32,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
         curlStr = ["-H","$apiKey","$curlCommand"]
     elseif CU.syntheticListOneMonitor
         apiKey = "X-Api-Key:" * CU.apiAdminKey
-        curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors/" * CU.syntheticCurrentMonitorId
+        curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors/" * CU.syntheticMonitorId
         curlStr = ["-H","$apiKey","$curlCommand"]
     elseif CU.syntheticBodySize
         apiKey = "X-Query-Key:" * CU.apiQueryKey
@@ -182,7 +182,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
         end
     end
 
-    jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513793700000","1513795500000","JTP-Gallery-Equinox-M")
+    jsonTimeString = curlSelectAllByTime(TV,SP,CU,CU.oldStart,CU.oldEnd,CU.syntheticMonitor)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
 
     if SP.debugLevel > 8
@@ -197,7 +197,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     test1DF = dumpHostGroups(SP,NR;showGroups=false)
 
 
-    jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
+    jsonTimeString = curlSelectAllByTime(TV,SP,CU,CU.newStart,CU.newEnd,CU.syntheticMonitor)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
     test2DF = dumpHostGroups(SP,NR;showGroups=false)
@@ -206,17 +206,6 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     test2DFSize = deepcopy(test2DF)
     diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
     diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
-
-    #jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
-    #timeDict = curlSyntheticJson(SP,jsonTimeString)
-    #fillNrResults(SP,NR,timeDict["results"])
-    #test3DF = dumpHostGroups(SP,NR;showGroups=false)
-
-    #Note you would have to save extra copies of test1DF before using it above to use down here
-    #test1DFSize = deepcopy(test1DF)
-    #test3DFSize = deepcopy(test3DF)
-    #diffHostGroups(SP,test1DF,test3DF;diffBySize=false)
-    #diffHostGroups(SP,test1DFSize,test3DFSize;diffBySize=true)
 
 end
 

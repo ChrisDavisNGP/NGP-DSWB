@@ -236,7 +236,14 @@ type CurlParams
     syntheticListOneMonitor::Bool
     syntheticBodySize::Bool
     syntheticBodySizeByRequest::Bool
-    syntheticCurrentMonitorId::ASCIIString
+    syntheticMonitorId::ASCIIString
+    syntheticMonitor::ASCIIString
+
+    #Compare Points
+    oldStart::Int64
+    oldEnd::Int64
+    newStart::Int64
+    newEnd::Int64
 
     #NR Keys
     apiAdminKey::ASCIIString
@@ -255,7 +262,8 @@ function CurlParamsInit(nb::ASCIIString)
     # Chris' Admin Key in NR
 
     CU = CurlParams(
-        false, false, false, false, false, "no id",
+        false, false, false, false, false, "no id", "no name",
+        0,0,0,0,
         "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx",
         "$nb.json"
     )
@@ -269,12 +277,32 @@ function CurlParamsInit(nb::ASCIIString)
     end
 
     # Typically we should just put in the Monitor ID
-    if isdefined(:CuSyntheticListOneMonitor) || isdefined(:CuSyntheticCurrentMonitorId)
+    if isdefined(:CuSyntheticListOneMonitor) || isdefined(:CuSyntheticMonitorId)
         CU.syntheticListOneMonitor = true
     end
 
-    if isdefined(:CuSyntheticCurrentMonitorId)
-        CU.syntheticCurrentMonitorId = CuSyntheticCurrentMonitorId
+    if isdefined(:CuSyntheticMonitorId)
+        CU.syntheticMonitorId = CuSyntheticMonitorId
+    end
+
+    if isdefined(:CuSyntheticMonitor)
+        CU.SyntheticMonitor = CuSyntheticMonitor
+    end
+
+    if isdefined(:CuOldStart)
+        CU.oldStart = CuOldStart
+    end
+
+    if isdefined(:CuOldEnd)
+        CU.oldEnd = CuOldEnd
+    end
+
+    if isdefined(:CuNewStart)
+        CU.newStart = CuNewStart
+    end
+
+    if isdefined(:CuNewEnd)
+        CU.newEnd = CuNewEnd
     end
 
     if isdefined(:CuSyntheticBodySize)
@@ -298,7 +326,7 @@ end
 function CurlParamsValidate(CU::CurlParams)
 
 
-    if CU.synthetic && CU.syntheticCurrentMonitorId == "no id"
+    if CU.synthetic && CU.syntheticMonitorId == "no id"
         println("Warning: current code needs a monitor ID to work")
     end
 
