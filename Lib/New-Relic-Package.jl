@@ -193,13 +193,13 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
              " Wall Time=",NR.runPerf.wallClockTime)
 
     fillNrResults(SP,NR,timeDict["results"])
-    test1DF = dumpHostGroups(SP,NR)
+    test1DF = dumpHostGroups(SP,NR;showGroups=false)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1513835100000","1513836900000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
-    test2DF = dumpHostGroups(SP,NR)
+    test2DF = dumpHostGroups(SP,NR;showGroups=false)
 
     diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
 
@@ -207,9 +207,9 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,"1515189420000","1515193020000","JTP-Gallery-Equinox-M")
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
-    test3DF = dumpHostGroups(SP,NR)
+    test3DF = dumpHostGroups(SP,NR;showGroups=false)
 
-    diffHostGroups(SP,test1DF,test3DF)
+    diffHostGroups(SP,test1DF,test3DF;diffBySize=false)
 
 # to do - Get Pageload time to compare
 # to do - Get duration time to compare
@@ -365,7 +365,7 @@ function fillNrMetadata(SP::ShowParams,NR::NrParams,metaDict::Dict)
 
 end
 
-function dumpHostGroups(SP::ShowParams,NR::NrParams)
+function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
 
     if SP.debugLevel > 8
         println("Starting dumpHostGroups")
@@ -417,7 +417,9 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams)
     end
 
     sort!(hostGroupsDF,cols=:bodySize,rev=true)
-    beautifyDF(hostGroupsDF)
+    if showGroups
+        beautifyDF(hostGroupsDF)
+    end
 
     return hostGroupsDF
 
@@ -461,7 +463,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
                     deleterows!(test2DF,t2)
                     printed = true
                     break;
-                elseif !diffBySize && durationT2 == 0
+                elseif !diffBySize && durationT2 < 100  # 100 ms shift can be ignored
                     deleterows!(test2DF,t2)
                     printed = true
                     break;
@@ -481,7 +483,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
                     end
                 else
                     deltaPercent = (durationT2-durationT1) / durationT1 * 100.0
-                    if !(deltaPercent > -5.0 && deltaPercent < 5.0)
+                    if !(deltaPercent > -25.0 && deltaPercent < 25.0)
                         #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
                         push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
                     end
