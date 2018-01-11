@@ -417,18 +417,17 @@ function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
         oldDurationStdDev = monitorDict["results"][3]["standardDeviation"]
         oldDurationAvg = monitorDict["results"][4]["average"]
 
-        println("Testing ", monitorName,"=",monitorsDF[Bool[x == monitorName for x in monitorsDF[:name]],:name])        
-
-        push!(monitorsDF,[monitorName,
-            oldSizeStdDev,oldSizeAvg,oldDurationStdDev,oldDurationAvg,
-            0.0,0.0,0.0,0.0
-            ])
+        monitorsDF[Bool[x == monitorName for x in monitorsDF[:name]],:oldSizeStdDev] = oldSizeStdDev
+        monitorsDF[Bool[x == monitorName for x in monitorsDF[:name]],:oldSizeAvg] = oldSizeAvg
+        monitorsDF[Bool[x == monitorName for x in monitorsDF[:name]],:oldDurationStdDev] = oldDurationStdDev
+        monitorsDF[Bool[x == monitorName for x in monitorsDF[:name]],:oldDurationAvg] = oldDurationAvg
+        #println("Testing ", monitorName,"=",monitorsDF[Bool[x == monitorName for x in monitorsDF[:name]],:name])
+        #push!(monitorsDF,[monitorName,            oldSizeStdDev,oldSizeAvg,oldDurationStdDev,oldDurationAvg,            0.0,0.0,0.0,0.0            ])
     end
 
     sort!(monitorsDF,cols=[order(:name,rev=false)])
-#todo groupby name
 
-    if SP.debugLevel > 4
+    if SP.debugLevel > 6
         beautifyDF(monitorsDF,maxRows=500)
     end
 
@@ -638,7 +637,14 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
         beautifyDF(monitorsDF[1:10,:])
     end
 
-    activeMonitorsDF = monitorsDF[Bool[x > 0 for x in test1DF[:sizeStdDev]],:]
+    if diffBySize
+        activeMonitorsDF = monitorsDF[Bool[x > 0 for x in monitorsDF[:oldSizeStdDev]],:]
+        activeMonitorsDF = activeMonitorsDf[Bool[x > 0 for x in activeMonitorsDF[:newSizeStdDev]],:]
+    else
+        activeMonitorsDF = monitorsDF[Bool[x > 0 for x in monitorsDF[:oldDurationStdDev]],:]
+        activeMonitorsDF = activeMonitorsDf[Bool[x > 0 for x in activeMonitorsDF[:newDurationStdDev]],:]
+    end
+
     beautifyDF(activeMonitorsDF[1:10,:])
 
     return
