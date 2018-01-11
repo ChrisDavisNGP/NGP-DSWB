@@ -62,11 +62,36 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
 end
 
-function curlSelectDurationAndSize()
+function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::ASCIIString,endTimeNR::ASCIIString)
 
-    #SELECT average(totalResponseBodySize),average(duration) FROM SyntheticCheck WHERE monitorName = 'JTP-Gallery-Equinox-M' since '2018-01-09 00:07:00' until '2018-01-09 17:00:00'
-    #SELECT average(totalResponseBodySize),average(duration) FROM SyntheticCheck WHERE monitorName = 'JTP-Gallery-Equinox-M' since '2018-01-10 00:07:00' until '2018-01-10 17:00:00'
-    #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck WHERE monitorName = 'JTP-Gallery-Equinox-M' since '2018-01-10 00:07:00' until '2018-01-10 17:00:00'
+    if SP.debugLevel > 8
+        println("Time Range ",TV.timeString)
+    end
+
+    if CU.apiAdminKey != "no id"
+    else
+        Key = "unknown"
+    end
+
+    apiKey = "X-Query-Key:" * CU.apiQueryKey
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+        "SELECT%20stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20" *
+        "FROM%20SyntheticCheck%20facet%20monitorName%20%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
+        "27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500"
+
+    #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck facet monitorName
+    # since '2018-01-10 00:07:00' until '2018-01-10 17:00:00' with TIMEZONE 'America/New_York'
+
+    if SP.debugLevel > 4
+        println("curlStr=",curlStr)
+    end
+
+    curlCmd = `curl $curlStr`
+    jsonString = readstring(curlCmd)
+
+    return jsonString
+
+
 end
 
 function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTimeNR::ASCIIString,endTimeNR::ASCIIString,monitor::ASCIIString)
@@ -160,15 +185,61 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
-function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams)
+function dailyChangeCheckWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     openingTitle(TV,UP,SP)
 
-    investigateSizeProblems(TV,UP,SP,NR)
+    dailyChangeCheck(UP,SP,NR,CU)
 
 end
 
-function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams)
+function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+
+    if SP.debugLevel > 8
+        println("Starting dailyChangeCheck")
+    end
+
+    jsonTimeString = curlSelectDurationAndSize(TV,SP,CU,CU.oldStart,CU.oldEnd)
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+
+    if SP.debugLevel > 8
+        fillNrMetadata(SP,NR,timeDict["metadata"])
+        println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
+
+        fillNrRunPerf(SP,NR,timeDict["performanceStats"])
+        println("Run Perf: Inspected=",NR.runPerf.inspectedCount," Wall Time=",NR.runPerf.wallClockTime)
+    end
+
+    println(timeDict)
+
+    return
+
+    fillNrResults(SP,NR,timeDict["results"])
+    test1DF = dumpHostGroups(SP,NR;showGroups=false)
+
+
+    jsonTimeString = curlSelectDurationAndSize(TV,SP,CU,CU.newStart,CU.newEnd)
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+    fillNrResults(SP,NR,timeDict["results"])
+    test2DF = dumpHostGroups(SP,NR;showGroups=false)
+
+    test1DFSize = deepcopy(test1DF)
+    test2DFSize = deepcopy(test2DF)
+    diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
+    diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
+
+
+end
+
+function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+
+    openingTitle(TV,UP,SP)
+
+    investigateSizeProblems(UP,SP,NR,CU)
+
+end
+
+function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     if SP.debugLevel > 8
         println("Starting investigateSizeProblems")

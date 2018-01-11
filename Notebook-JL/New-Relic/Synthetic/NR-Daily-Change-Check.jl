@@ -30,15 +30,5 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-# Get the data frame of data by using CURL and Json Parse
-
-synChkBodySizeDict = curlJsonWorkflow(TV,SP,CU)
-
-if !isdefined(:synChkBodySizeDict)
-    return
-end
-
-newRelicConvert(SP,NR,synChkBodySizeDict)
-
-timeSizeRequestsWorkflow(TV,UP,SP,NR,CU)
+dailyChangeCheckWorkflow(TV,UP,SP,NR,CU)
 ;
