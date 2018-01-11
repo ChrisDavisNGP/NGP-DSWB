@@ -626,8 +626,8 @@ function diffDailyChange(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;di
 
 
     if SP.debugLevel > -1
-        beautifyDF(test1DF[1:3,:])
-        beautifyDF(test2DF[1:3,:])
+        beautifyDF(test1DF[1:10,:])
+        beautifyDF(test2DF[1:10,:])
     end
 
     return
