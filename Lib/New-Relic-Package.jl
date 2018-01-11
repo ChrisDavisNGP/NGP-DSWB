@@ -210,9 +210,10 @@ function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlPara
     jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     monitorsDF = fillNrTotalResults(SP,NR,timeDict)
+    sizeMonitorsDF = deepcopy(monitorsDF)
 
     diffDailyChange(SP,monitorsDF;diffBySize=false)
-    diffDailyChange(SP,monitorsDF;diffBySize=true)
+    diffDailyChange(SP,sizeMonitorsDF;diffBySize=true)
 
 end
 
