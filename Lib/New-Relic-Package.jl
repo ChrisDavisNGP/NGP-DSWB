@@ -78,6 +78,7 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
         "SELECT%20stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20" *
         "FROM%20SyntheticCheck%20facet%20monitorName%20%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
         "27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500"
+    curlStr = ["-H","$apiKey","$curlCommand"]
 
     #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck facet monitorName
     # since '2018-01-10 00:07:00' until '2018-01-10 17:00:00' with TIMEZONE 'America/New_York'
