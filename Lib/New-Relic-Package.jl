@@ -414,16 +414,16 @@ function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
         sizeAvg = monitorDict["results"][2]["average"]
         durationStdDev = monitorDict["results"][3]["standardDeviation"]
         durationAvg = monitorDict["results"][4]["average"]
-        push!(monitorDF,[monitorName,sizeStdDev,sizeAvg,durationStdDev,durationAvg])
+        push!(monitorsDF,[monitorName,sizeStdDev,sizeAvg,durationStdDev,durationAvg])
     end
 
-    sort!(monitorDF,cols=[order(:monitorName,rev=false)])
+    sort!(monitorsDF,cols=[order(:monitorName,rev=false)])
 
     if SP.debugLevel > 4
-        beautifyDF(monitorDF,maxRows=500)
+        beautifyDF(monitorsDF,maxRows=500)
     end
 
-    return monitorDF
+    return monitorsDF
 end
 
 # Simple three fields with one tricky field
