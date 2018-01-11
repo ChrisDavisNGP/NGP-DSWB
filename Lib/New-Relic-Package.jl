@@ -208,19 +208,9 @@ function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlPara
     jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
 
-    if SP.debugLevel > 8
-        fillNrMetadata(SP,NR,timeDict["metadata"])
-        println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
-
-        fillNrRunPerf(SP,NR,timeDict["performanceStats"])
-        println("Run Perf: Inspected=",NR.runPerf.inspectedCount," Wall Time=",NR.runPerf.wallClockTime)
-    end
-
-    println(timeDict)
-
+    fillNrTotalResults(SP,NR,timeDict)
     return
 
-    fillNrResults(SP,NR,timeDict["results"])
     test1DF = dumpHostGroups(SP,NR;showGroups=false)
 
 
@@ -362,6 +352,55 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
     eventsDict = resultsArray[1]
     eventArray = eventsDict["events"]
+
+    nrows = length(eventArray)
+    #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
+
+    colnames = ["timestamp","jobId","onPageContentLoad","onPageLoad",
+        "duration","durationBlocked","durationConnect","durationDNS","durationReceive","durationSend","durationSSL","durationWait",
+        "requestBodySize","requestHeaderSize","responseBodySize","responseHeaderSize","responseStatus","responseCode","pageref",
+        "contentType","contentCategory","verb","externalResource","host","path",
+        "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"]
+
+    ncols = length(colnames)
+
+    #println("events=",colnames," nrows=",nrows," ncols=",ncols)
+
+    df = DataFrame(Any,nrows,ncols)
+    for i in 1:nrows
+        for j in 1:ncols
+            df[i, j] = get(eventArray[i],colnames[j],NA)
+        end
+    end
+
+    df = names!(df,[Symbol("timestamp"),Symbol("jobId"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
+    Symbol("duration"),Symbol("durationBlocked"),Symbol("durationConnect"),Symbol("durationDNS"),
+    Symbol("durationReceive"),Symbol("durationSend"),Symbol("durationSSL"),Symbol("durationWait"),
+    Symbol("requestBodySize"),Symbol("requestHeaderSize"),Symbol("responseBodySize"),Symbol("responseHeaderSize"),
+    Symbol("responseStatus"),Symbol("responseCode"),Symbol("pageref"),Symbol("contentType"),
+    Symbol("contentCategory"),Symbol("verb"),Symbol("externalResource"),Symbol("host"),Symbol("path"),
+    Symbol("hierarchicalURL"),Symbol("URL"),Symbol("domain"),Symbol("serverIPAddress""jobId"),Symbol("monitorName")])
+
+    sort!(df,cols=[order(:timestamp,rev=false)])
+
+    if SP.debugLevel > 4
+        beautifyDF(df,maxRows=500)
+    end
+
+    NR.results.row = deepcopy(df)
+
+end
+
+function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
+
+    if SP.debugLevel > 8
+        println("Total Results ",totalDict)
+    end
+
+    for results in totalResultsDict["totalResult"]
+        println(results)
+    end
+    return
 
     nrows = length(eventArray)
     #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
