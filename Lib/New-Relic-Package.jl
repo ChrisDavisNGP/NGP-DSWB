@@ -417,7 +417,7 @@ function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
         push!(monitorsDF,[monitorName,sizeStdDev,sizeAvg,durationStdDev,durationAvg])
     end
 
-    sort!(monitorsDF,cols=[order(:monitorName,rev=false)])
+    sort!(monitorsDF,cols=[order(:name,rev=false)])
 
     if SP.debugLevel > 4
         beautifyDF(monitorsDF,maxRows=500)
