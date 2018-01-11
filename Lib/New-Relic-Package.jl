@@ -199,7 +199,7 @@ function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlPara
         println("Starting dailyChangeCheck")
     end
 
-    jsonTimeString = curlSelectDurationAndSize(TV,SP,CU,CU.oldStart,CU.oldEnd)
+    jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
 
     if SP.debugLevel > 8
@@ -218,7 +218,7 @@ function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlPara
     test1DF = dumpHostGroups(SP,NR;showGroups=false)
 
 
-    jsonTimeString = curlSelectDurationAndSize(TV,SP,CU,CU.newStart,CU.newEnd)
+    jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.newStart,CU.newEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
     test2DF = dumpHostGroups(SP,NR;showGroups=false)
