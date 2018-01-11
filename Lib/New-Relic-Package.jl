@@ -403,29 +403,44 @@ function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
         newSizeStdDev=Float64[],newSizeAvg=Float64[],newDurationStdDev=Float64[],newDurationAvg=Float64[],
         )
 
-    for monitorDict in totalResultsDict["facets"]
+    periodResultsDict = totalResultsDict["current"]
+    for monitorDict in periodResultsDict["facet"]
         #println()
         #println(monitorDict)
         #println(monitorName," Size Std Dev=",sizeStdDev," Average=",sizeAvg," Duration Std Dev=",durationStdDev," Duration=",durationAvg)
-        monitorName = monitorDict["current"]["name"]
+        monitorName = monitorDict["name"]
 
-        oldSizeStdDev = monitorDict["previous"]["results"][1]["standardDeviation"]
-        oldSizeAvg = monitorDict["previous"]["results"][2]["average"]
-        oldDurationStdDev = monitorDict["previous"]["results"][3]["standardDeviation"]
-        oldDurationAvg = monitorDict["previous"]["results"][4]["average"]
-
-        newSizeStdDev = monitorDict["current"]["results"][1]["standardDeviation"]
-        newSizeAvg = monitorDict["current"]["results"][2]["average"]
-        newDurationStdDev = monitorDict["current"]["results"][3]["standardDeviation"]
-        newDurationAvg = monitorDict["current"]["results"][4]["average"]
+        newSizeStdDev = monitorDict["results"][1]["standardDeviation"]
+        newSizeAvg = monitorDict["results"][2]["average"]
+        newDurationStdDev = monitorDict["results"][3]["standardDeviation"]
+        newDurationAvg = monitorDict["results"][4]["average"]
 
         push!(monitorsDF,[monitorName,
-            oldSizeStdDev,oldSizeAvg,oldDurationStdDev,oldDurationAvg,
+            0.0,0.0,0.0,0.0,
             newSizeStdDev,newSizeAvg,newDurationStdDev,newDurationAvg
             ])
     end
 
+    periodResultsDict = totalResultsDict["previous"]
+    for monitorDict in periodResultsDict["facets"]
+        #println()
+        #println(monitorDict)
+        #println(monitorName," Size Std Dev=",sizeStdDev," Average=",sizeAvg," Duration Std Dev=",durationStdDev," Duration=",durationAvg)
+        monitorName = monitorDict["name"]
+
+        oldSizeStdDev = monitorDict["results"][1]["standardDeviation"]
+        oldSizeAvg = monitorDict["results"][2]["average"]
+        oldDurationStdDev = monitorDict["results"][3]["standardDeviation"]
+        oldDurationAvg = monitorDict["results"][4]["average"]
+
+        push!(monitorsDF,[monitorName,
+            oldSizeStdDev,oldSizeAvg,oldDurationStdDev,oldDurationAvg,
+            0.0,0.0,0.0,0.0
+            ])
+    end
+
     sort!(monitorsDF,cols=[order(:name,rev=false)])
+#todo groupby name
 
     if SP.debugLevel > 4
         beautifyDF(monitorsDF,maxRows=500)
