@@ -634,10 +634,12 @@ end
 function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=true)
 
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 8
         beautifyDF(monitorsDF[1:10,:])
     end
 
+    println("Starting diffDailyChange")
+    
     activeMonitorsDF = DataFrame()
 
     if diffBySize
