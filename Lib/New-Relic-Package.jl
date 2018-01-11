@@ -183,7 +183,7 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
 
     jParsed = JSON.parse(jList)
 
-    if SP.debugLevel > 4
+    if SP.debugLevel > 6
         println(jParsed)
         println(typeof(jParsed))
     end
@@ -207,22 +207,16 @@ function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlPara
 
     jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
-
-    fillNrTotalResults(SP,NR,timeDict)
-    return
-
-    test1DF = dumpHostGroups(SP,NR;showGroups=false)
-
+    monitorOldDF = fillNrTotalResults(SP,NR,timeDict)
 
     jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.newStart,CU.newEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
-    fillNrResults(SP,NR,timeDict["results"])
-    test2DF = dumpHostGroups(SP,NR;showGroups=false)
+    monitorNewDF = fillNrTotalResults(SP,NR,timeDict)
 
-    test1DFSize = deepcopy(test1DF)
-    test2DFSize = deepcopy(test2DF)
-    diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
-    diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
+    monitorOldDFSize = deepcopy(monitorOldDF)
+    monitorNewDFSize = deepcopy(monitorNewDF)
+    diffDailyChange(SP,monitorOldDF,monitorNewDF;diffBySize=false)
+    diffDailyChange(SP,monitorOldDFSize,monitorNewDFSize;diffBySize=true)
 
 
 end
@@ -394,50 +388,42 @@ end
 function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
 
     if SP.debugLevel > 8
-        println("Total Results ",totalDict)
+        println("Total Results ",totalResultsDict)
     end
 
-    for results in totalResultsDict["totalResult"]
-        println(results)
+    println()
+    println("Starting Fill NR Total Results")
+
+    #for results in totalResultsDict["totalResult"]
+    #    println()
+    #    println(results)
+    #end
+
+    #for results in totalResultsDict["unknownGroup"]
+    #    println()
+    #    println(results)
+    #end
+    monitorsDF = DataFrame(name=ASCIIString[],sizeStdDev=Float64[],sizeAvg=Float64[],durationStdDev=Float64[],durationAvg=Float64[])
+
+    for monitorDict in totalResultsDict["facets"]
+        #println()
+        #println(monitorDict)
+        #println(monitorName," Size Std Dev=",sizeStdDev," Average=",sizeAvg," Duration Std Dev=",durationStdDev," Duration=",durationAvg)
+        monitorName = monitorDict["name"]
+        sizeStdDev = monitorDict["results"][1]["standardDeviation"]
+        sizeAvg = monitorDict["results"][2]["average"]
+        durationStdDev = monitorDict["results"][3]["standardDeviation"]
+        durationAvg = monitorDict["results"][4]["average"]
+        push!(monitorDF,[monitorName,sizeStdDev,sizeAvg,durationStdDev,durationAvg])
     end
-    return
 
-    nrows = length(eventArray)
-    #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
-
-    colnames = ["timestamp","jobId","onPageContentLoad","onPageLoad",
-        "duration","durationBlocked","durationConnect","durationDNS","durationReceive","durationSend","durationSSL","durationWait",
-        "requestBodySize","requestHeaderSize","responseBodySize","responseHeaderSize","responseStatus","responseCode","pageref",
-        "contentType","contentCategory","verb","externalResource","host","path",
-        "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"]
-
-    ncols = length(colnames)
-
-    #println("events=",colnames," nrows=",nrows," ncols=",ncols)
-
-    df = DataFrame(Any,nrows,ncols)
-    for i in 1:nrows
-        for j in 1:ncols
-            df[i, j] = get(eventArray[i],colnames[j],NA)
-        end
-    end
-
-    df = names!(df,[Symbol("timestamp"),Symbol("jobId"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
-    Symbol("duration"),Symbol("durationBlocked"),Symbol("durationConnect"),Symbol("durationDNS"),
-    Symbol("durationReceive"),Symbol("durationSend"),Symbol("durationSSL"),Symbol("durationWait"),
-    Symbol("requestBodySize"),Symbol("requestHeaderSize"),Symbol("responseBodySize"),Symbol("responseHeaderSize"),
-    Symbol("responseStatus"),Symbol("responseCode"),Symbol("pageref"),Symbol("contentType"),
-    Symbol("contentCategory"),Symbol("verb"),Symbol("externalResource"),Symbol("host"),Symbol("path"),
-    Symbol("hierarchicalURL"),Symbol("URL"),Symbol("domain"),Symbol("serverIPAddress""jobId"),Symbol("monitorName")])
-
-    sort!(df,cols=[order(:timestamp,rev=false)])
+    sort!(monitorDF,cols=[order(:monitorName,rev=false)])
 
     if SP.debugLevel > 4
-        beautifyDF(df,maxRows=500)
+        beautifyDF(monitorDF,maxRows=500)
     end
 
-    NR.results.row = deepcopy(df)
-
+    return monitorDF
 end
 
 # Simple three fields with one tricky field
@@ -549,6 +535,102 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         beautifyDF(test2DF[1:3,:])
     end
 
+    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
+
+    t1 = 0
+    for hostT1 in test1DF[:,:host]
+        printed = false
+        t1 += 1
+        sizeT1 = test1DF[t1:t1,:bodySize][1]
+        durationT1 = test1DF[t1:t1,:duration][1]
+        t2 = 0
+        for hostT2 in test2DF[:,:host]
+            t2 += 1
+            if hostT1 == hostT2
+                sizeT2 = test2DF[t2:t2,:bodySize][1]
+                durationT2 = test2DF[t2:t2,:duration][1]
+                #println(hostT1," h1=",sizeT1," h2=",sizeT2)
+                if diffBySize && sizeT2 == sizeT1
+                    deleterows!(test2DF,t2)
+                    printed = true
+                    break;
+                elseif !diffBySize && durationT2 == durationT1
+                    deleterows!(test2DF,t2)
+                    printed = true
+                    break;
+                end
+
+                if diffBySize && sizeT2 == 0
+                    deleterows!(test2DF,t2)
+                    printed = true
+                    break;
+                elseif !diffBySize && durationT2 < 100  # 100 ms shift can be ignored
+                    deleterows!(test2DF,t2)
+                    printed = true
+                    break;
+                end
+
+                if diffBySize && sizeT1 == 0
+                    break;
+                elseif !diffBySize && durationT1 == 0
+                    break;
+                end
+
+                if diffBySize
+                    deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
+                    if !(deltaPercent > -5.0 && deltaPercent < 5.0)
+                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
+                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                    end
+                else
+                    deltaPercent = (durationT2-durationT1) / durationT1 * 100.0
+                    if !(deltaPercent > -25.0 && deltaPercent < 25.0)
+                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
+                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                    end
+                end
+
+                printed = true
+                deleterows!(test2DF,t2)
+                break
+            end
+        end
+        if !printed && sizeT1 > 999
+            #println(hostT1," h1=", sizeT1)
+            push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
+        end
+    end
+
+    t2 = 0
+    for hostT2 in test2DF[:,:host]
+        t2 += 1
+        sizeT2 = test2DF[t2:t2,:bodySize][1]
+        durationT2 = test2DF[t2:t2,:duration][1]
+        if sizeT2 > 999
+            #println(hostT2," h2=", sizeT2)
+            push!(diffDF,[hostT2,0.0,0,sizeT2,0,durationT2])
+        end
+    end
+
+    if diffBySize
+        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+    else
+        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+    end
+
+    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
+
+end
+
+function diffDailyChange(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;diffBySize::Bool=true)
+
+
+    if SP.debugLevel > -1
+        beautifyDF(test1DF[1:3,:])
+        beautifyDF(test2DF[1:3,:])
+    end
+
+    return
     diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
 
     t1 = 0
