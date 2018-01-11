@@ -74,10 +74,12 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
     end
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
+    compareWith = "2%20days%20ago"
+
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "SELECT%20stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20" *
         "FROM%20SyntheticCheck%20facet%20monitorName%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
-        "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500"
+        "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500%20COMPARE%WITH%20" * compareWith
     curlStr = ["-H","$apiKey","$curlCommand"]
 
     #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck facet monitorName since '2018-01-10 00:07:00' until '2018-01-10 17:00:00' with TIMEZONE 'America/New_York' limit 500
@@ -207,17 +209,10 @@ function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlPara
 
     jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
-    monitorOldDF = fillNrTotalResults(SP,NR,timeDict)
+    monitorsDF = fillNrTotalResults(SP,NR,timeDict)
 
-    jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.newStart,CU.newEnd)
-    timeDict = curlSyntheticJson(SP,jsonTimeString)
-    monitorNewDF = fillNrTotalResults(SP,NR,timeDict)
-
-    monitorOldDFSize = deepcopy(monitorOldDF)
-    monitorNewDFSize = deepcopy(monitorNewDF)
-    diffDailyChange(SP,monitorOldDF,monitorNewDF;diffBySize=false)
-    diffDailyChange(SP,monitorOldDFSize,monitorNewDFSize;diffBySize=true)
-
+    diffDailyChange(SP,monitorsDF;diffBySize=false)
+    diffDailyChange(SP,monitorsDF;diffBySize=true)
 
 end
 
@@ -403,18 +398,31 @@ function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
     #    println()
     #    println(results)
     #end
-    monitorsDF = DataFrame(name=ASCIIString[],sizeStdDev=Float64[],sizeAvg=Float64[],durationStdDev=Float64[],durationAvg=Float64[])
+    monitorsDF = DataFrame(name=ASCIIString[],
+        oldSizeStdDev=Float64[],oldSizeAvg=Float64[],oldDurationStdDev=Float64[],oldDurationAvg=Float64[],
+        newSizeStdDev=Float64[],newSizeAvg=Float64[],newDurationStdDev=Float64[],newDurationAvg=Float64[],
+        )
 
     for monitorDict in totalResultsDict["facets"]
         #println()
         #println(monitorDict)
         #println(monitorName," Size Std Dev=",sizeStdDev," Average=",sizeAvg," Duration Std Dev=",durationStdDev," Duration=",durationAvg)
-        monitorName = monitorDict["name"]
-        sizeStdDev = monitorDict["results"][1]["standardDeviation"]
-        sizeAvg = monitorDict["results"][2]["average"]
-        durationStdDev = monitorDict["results"][3]["standardDeviation"]
-        durationAvg = monitorDict["results"][4]["average"]
-        push!(monitorsDF,[monitorName,sizeStdDev,sizeAvg,durationStdDev,durationAvg])
+        monitorName = monitorDict["current"]["name"]
+
+        oldSizeStdDev = monitorDict["previous"]["results"][1]["standardDeviation"]
+        oldSizeAvg = monitorDict["previous"]["results"][2]["average"]
+        oldDurationStdDev = monitorDict["previous"]["results"][3]["standardDeviation"]
+        oldDurationAvg = monitorDict["previous"]["results"][4]["average"]
+
+        newSizeStdDev = monitorDict["current"]["results"][1]["standardDeviation"]
+        newSizeAvg = monitorDict["current"]["results"][2]["average"]
+        newDurationStdDev = monitorDict["current"]["results"][3]["standardDeviation"]
+        newDurationAvg = monitorDict["current"]["results"][4]["average"]
+
+        push!(monitorsDF,[monitorName,
+            oldSizeStdDev,oldSizeAvg,oldDurationStdDev,oldDurationAvg,
+            newSizeStdDev,newSizeAvg,newDurationStdDev,newDurationAvg
+            ])
     end
 
     sort!(monitorsDF,cols=[order(:name,rev=false)])
@@ -622,13 +630,15 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
 
 end
 
-function diffDailyChange(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;diffBySize::Bool=true)
+function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=true)
 
 
     if SP.debugLevel > -1
-        beautifyDF(test1DF[1:10,:])
-        beautifyDF(test2DF[1:10,:])
+        beautifyDF(monitorsDF[1:10,:])
     end
+
+    activeMonitorsDF = monitorsDF[Bool[x > 0 for x in test1DF[:sizeStdDev]],:]
+    beautifyDF(activeMonitorsDF[1:10,:])
 
     return
     diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
