@@ -383,31 +383,18 @@ end
 function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
 
     if SP.debugLevel > 8
-        println("Total Results ",totalResultsDict)
+        println()
+        println("Starting Fill NR Total Results")
+        #println("Total Results ",totalResultsDict)
     end
 
-    println()
-    println("Starting Fill NR Total Results")
-
-    #for results in totalResultsDict["totalResult"]
-    #    println()
-    #    println(results)
-    #end
-
-    #for results in totalResultsDict["unknownGroup"]
-    #    println()
-    #    println(results)
-    #end
     monitorsDF = DataFrame(name=ASCIIString[],
         oldSizeStdDev=Float64[],oldSizeAvg=Float64[],oldDurationStdDev=Float64[],oldDurationAvg=Float64[],
         newSizeStdDev=Float64[],newSizeAvg=Float64[],newDurationStdDev=Float64[],newDurationAvg=Float64[],
         )
 
     periodResultsDict = totalResultsDict["current"]
-    for monitorDict in periodResultsDict["facet"]
-        #println()
-        #println(monitorDict)
-        #println(monitorName," Size Std Dev=",sizeStdDev," Average=",sizeAvg," Duration Std Dev=",durationStdDev," Duration=",durationAvg)
+    for monitorDict in periodResultsDict["facets"]
         monitorName = monitorDict["name"]
 
         newSizeStdDev = monitorDict["results"][1]["standardDeviation"]
@@ -423,15 +410,14 @@ function fillNrTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
 
     periodResultsDict = totalResultsDict["previous"]
     for monitorDict in periodResultsDict["facets"]
-        #println()
-        #println(monitorDict)
-        #println(monitorName," Size Std Dev=",sizeStdDev," Average=",sizeAvg," Duration Std Dev=",durationStdDev," Duration=",durationAvg)
         monitorName = monitorDict["name"]
 
         oldSizeStdDev = monitorDict["results"][1]["standardDeviation"]
         oldSizeAvg = monitorDict["results"][2]["average"]
         oldDurationStdDev = monitorDict["results"][3]["standardDeviation"]
         oldDurationAvg = monitorDict["results"][4]["average"]
+
+        println("Testing ", monitorName,"=",monitorsDF[Bool[x == monitorName for x in monitorsDF[:name]],:name])        
 
         push!(monitorsDF,[monitorName,
             oldSizeStdDev,oldSizeAvg,oldDurationStdDev,oldDurationAvg,

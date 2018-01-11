@@ -523,7 +523,8 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
         treeDF[:,:urlgroup] = cpDF[:,:urlgroup]
         treeDF[:,:beacons] = cpDF[:,:average]
         treeDF[:,:label] = cpDF[:,:label]
-        treeDF[:,:load_time] = cpDF[:,:counter]/100.0
+        #treeDF[:,:load_time] = cpDF[:,:counter]/100.0
+        treeDF[:,:load_time] = (cpDF[:,:average]/totalAverage) * 2 # Color on percents assuming most will be under 50%
 
         fieldNames = [:urlgroup]
         treeDF[:label] = "Critical Path Summary"
