@@ -62,6 +62,12 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
 end
 
+function curlSelectDurationAndSize()
+
+    #SELECT average(totalResponseBodySize),average(duration) FROM SyntheticCheck WHERE monitorName = 'JTP-Gallery-Equinox-M' since '2018-01-09 00:07:00' until '2018-01-09 17:00:00'
+    #SELECT average(totalResponseBodySize),average(duration) FROM SyntheticCheck WHERE monitorName = 'JTP-Gallery-Equinox-M' since '2018-01-10 00:07:00' until '2018-01-10 17:00:00'
+    #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck WHERE monitorName = 'JTP-Gallery-Equinox-M' since '2018-01-10 00:07:00' until '2018-01-10 17:00:00'
+end
 
 function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTimeNR::ASCIIString,endTimeNR::ASCIIString,monitor::ASCIIString)
 
@@ -76,18 +82,18 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
     #curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=select%20average(totalResponseBodySize)%20FROM%20SyntheticCheck%20WHERE%20%20monitorName%20%3D%27JTP-Gallery-Equinox-M%27%20SINCE%2030%20days%20ago%20TIMESERIES%20%20auto"
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20" * startTimeNR *
-        "%20UNTIL%20" * endTimeNR * "%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20limit%20500"
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
+        "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20limit%20500"
     curlStr = ["-H","$apiKey","$curlCommand"]
 
 # Dec 20 Small   https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201513793700000%20UNTIL%201513795500000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27
 #SELECT * FROM SyntheticRequest SINCE 1513793700000 UNTIL 1513795500000 WHERE monitorName = 'JTP-Gallery-Equinox-M'
 
 # Dec 20 Large   https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201513835100000%20UNTIL%201513836900000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27"
-#SELECT * FROM SyntheticRequest SINCE 1513835100000 UNTIL 1513836900000 WHERE monitorName = 'JTP-Gallery-Equinox-M'
+#SELECT * FROM SyntheticRequest SINCE 1513835100000 UNTIL 1513836900000 WHERE monitorName = 'JTP-Gallery-Equinox-M' 21 dec 01:06:34
 
 # Jan 5 Normal  https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201515189420000%20UNTIL%201515193020000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27"
-#SELECT * FROM SyntheticRequest SINCE 1515189420000 UNTIL 1515193020000 WHERE monitorName = 'JTP-Gallery-Equinox-M'
+#SELECT * FROM SyntheticRequest SINCE 1515189420000 UNTIL 1515193020000 WHERE monitorName = 'JTP-Gallery-Equinox-M'  05 Jan 18 17:36
 
     # curl -H "Accept: application/json" -H ""
     #

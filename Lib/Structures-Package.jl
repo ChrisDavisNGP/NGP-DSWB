@@ -291,18 +291,26 @@ function CurlParamsInit(nb::ASCIIString)
 
     if isdefined(:CuOldStart)
         CU.oldStart = CuOldStart
+        replace(CU.oldStart," ","%20")
+        replace(CU.oldStart,":","%3A")
     end
 
     if isdefined(:CuOldEnd)
         CU.oldEnd = CuOldEnd
+        replace(CU.oldEnd," ","%20")
+        replace(CU.oldEnd,":","%3A")
     end
 
     if isdefined(:CuNewStart)
         CU.newStart = CuNewStart
+        replace(CU.newStart," ","%20")
+        replace(CU.newStart,":","%3A")
     end
 
     if isdefined(:CuNewEnd)
         CU.newEnd = CuNewEnd
+        replace(CU.newEnd," ","%20")
+        replace(CU.newEnd,":","%3A")
     end
 
     if isdefined(:CuSyntheticBodySize)
