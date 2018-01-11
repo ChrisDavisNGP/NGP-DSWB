@@ -76,12 +76,17 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
     apiKey = "X-Query-Key:" * CU.apiQueryKey
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "SELECT%20stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20" *
-        "FROM%20SyntheticCheck%20facet%20monitorName%20%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
-        "27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500"
+        "FROM%20SyntheticCheck%20facet%20monitorName%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
+        "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500"
     curlStr = ["-H","$apiKey","$curlCommand"]
 
-    #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck facet monitorName
-    # since '2018-01-10 00:07:00' until '2018-01-10 17:00:00' with TIMEZONE 'America/New_York'
+    #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck facet monitorName since '2018-01-10 00:07:00' until '2018-01-10 17:00:00' with TIMEZONE 'America/New_York' limit 500
+    # https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20
+    #stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20
+    #FROM%20SyntheticCheck%20facet%20monitorName%20%
+    #since%20%272018-01-10%2007%3A00%3A00%27%20
+    #until%20%272018-01-10%2017%3A00%3A0027%20
+    #with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500
 
     if SP.debugLevel > 4
         println("curlStr=",curlStr)
