@@ -74,7 +74,7 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
     end
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "SELECT%20stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20" *
         "FROM%20SyntheticCheck%20facet%20monitorName%20%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
         "27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500"
