@@ -639,7 +639,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
     end
 
     println("Starting diffDailyChange")
-    
+
     activeMonitorsDF = DataFrame()
 
     if diffBySize
@@ -650,90 +650,45 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
         activeMonitorsDF = activeMonitorsDF[Bool[x > 0 for x in activeMonitorsDF[:newDurationStdDev]],:]
     end
 
-    beautifyDF(activeMonitorsDF[1:10,:])
-
-    return
-    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
-
-    t1 = 0
-    for hostT1 in test1DF[:,:host]
-        printed = false
-        t1 += 1
-        sizeT1 = test1DF[t1:t1,:bodySize][1]
-        durationT1 = test1DF[t1:t1,:duration][1]
-        t2 = 0
-        for hostT2 in test2DF[:,:host]
-            t2 += 1
-            if hostT1 == hostT2
-                sizeT2 = test2DF[t2:t2,:bodySize][1]
-                durationT2 = test2DF[t2:t2,:duration][1]
-                #println(hostT1," h1=",sizeT1," h2=",sizeT2)
-                if diffBySize && sizeT2 == sizeT1
-                    deleterows!(test2DF,t2)
-                    printed = true
-                    break;
-                elseif !diffBySize && durationT2 == durationT1
-                    deleterows!(test2DF,t2)
-                    printed = true
-                    break;
-                end
-
-                if diffBySize && sizeT2 == 0
-                    deleterows!(test2DF,t2)
-                    printed = true
-                    break;
-                elseif !diffBySize && durationT2 < 100  # 100 ms shift can be ignored
-                    deleterows!(test2DF,t2)
-                    printed = true
-                    break;
-                end
-
-                if diffBySize && sizeT1 == 0
-                    break;
-                elseif !diffBySize && durationT1 == 0
-                    break;
-                end
-
-                if diffBySize
-                    deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
-                    if !(deltaPercent > -5.0 && deltaPercent < 5.0)
-                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
-                    end
-                else
-                    deltaPercent = (durationT2-durationT1) / durationT1 * 100.0
-                    if !(deltaPercent > -25.0 && deltaPercent < 25.0)
-                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
-                    end
-                end
-
-                printed = true
-                deleterows!(test2DF,t2)
-                break
-            end
-        end
-        if !printed && sizeT1 > 999
-            #println(hostT1," h1=", sizeT1)
-            push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
-        end
+    if SP.debugLevel > 6
+        beautifyDF(activeMonitorsDF[1:10,:])
     end
 
-    t2 = 0
-    for hostT2 in test2DF[:,:host]
-        t2 += 1
-        sizeT2 = test2DF[t2:t2,:bodySize][1]
-        durationT2 = test2DF[t2:t2,:duration][1]
-        if sizeT2 > 999
-            #println(hostT2," h2=", sizeT2)
-            push!(diffDF,[hostT2,0.0,0,sizeT2,0,durationT2])
+    diffDF = DataFrame(name=ASCIIString[],delta=Float64[],oldStdDev=Float64[],oldAvg=Float64[],newStdDev=Float64[],newAvg=Float64[])
+
+    t1 = 0
+    for name in activeMonitorsDF[:,:name]
+        t1 += 1
+        if diffBySize
+            oldStdDev = activeMonitorsDF[:,:oldSizeStdDev]
+            oldAvg    = activeMonitorsDF[:,:oldSizeAvg]
+            newStdDev = activeMonitorsDF[:,:newSizeStdDev]
+            newAvg    = activeMonitorsDF[:,:newSizeAvg]
+        else
+            oldStdDev = activeMonitorsDF[:,:oldDurationStdDev]
+            oldAvg    = activeMonitorsDF[:,:oldDurationAvg]
+            newStdDev = activeMonitorsDF[:,:newDurationStdDev]
+            newAvg    = activeMonitorsDF[:,:newDurationAvg]
+        end
+
+        oldAvgRangeLower = oldAvg - oldStdDev
+        if oldAvgRangeLower < 0
+            oldAvgRangeLower = 0
+        end
+        oldAvgRangeUpper = oldAvg + oldStdDev
+
+        if !(newAvg > oldAvgRangeLower && newAvg < oldAvgRangeUpper)
+            deleterows!(activeMonitorsDF,t2)
+        else
+            deltaPercent = (newAvg-oldAvg) / oldAvg * 100.0
+            push!(diffDF,[name,deltaPercent,oldStdDev,oldAvg,newStdDev,newAvg])
         end
     end
 
     if diffBySize
-        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+        diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Size Change"),Symbol("Old Size StdDev"),Symbol("Old Size"),Symbol("New Size StdDev"),Symbol("New Size")])
     else
-        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+        diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Duration Change"),Symbol("Old Duration StdDev"),Symbol("Old Duration"),Symbol("New Duration StdDev"),Symbol("New Duration")])
     end
 
     beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
