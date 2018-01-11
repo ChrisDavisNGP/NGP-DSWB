@@ -637,6 +637,8 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
         beautifyDF(monitorsDF[1:10,:])
     end
 
+    activeMonitorsDF = DataFrame()
+
     if diffBySize
         activeMonitorsDF = monitorsDF[Bool[x > 0 for x in monitorsDF[:oldSizeStdDev]],:]
         activeMonitorsDF = activeMonitorsDf[Bool[x > 0 for x in activeMonitorsDF[:newSizeStdDev]],:]
