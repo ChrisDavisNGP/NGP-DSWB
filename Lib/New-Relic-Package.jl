@@ -552,7 +552,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
     diffDF = DataFrame(host=ASCIIString[],delta=Float64[],old=Float64[],new=Float64[])
 
     t1 = 0
-    for hostT1 in test1DF[1:10,:host]
+    for hostT1 in test1DF[:,:host]
         printed = false
         t1 += 1
         sizeT1 = test1DF[t1:t1,:bodySize][1] * 1.0
