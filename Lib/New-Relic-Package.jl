@@ -548,7 +548,6 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         beautifyDF(test2DF[1:3,:])
     end
 
-#    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
     diffDF = DataFrame(host=ASCIIString[],delta=Float64[],old=Float64[],new=Float64[])
 
     t1 = 0
@@ -557,14 +556,18 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         t1 += 1
         sizeT1 = test1DF[t1:t1,:bodySize][1] * 1.0
         durationT1 = test1DF[t1:t1,:duration][1]
-        println("Outer=",hostT1," s1=",sizeT1," d1=",durationT1)
+        if SP.debugLevel > 6
+            println("Outer=",hostT1," s1=",sizeT1," d1=",durationT1)
+        end
         t2 = 0
         for hostT2 in test2DF[:,:host]
             t2 += 1
             if hostT1 == hostT2
                 sizeT2 = test2DF[t2:t2,:bodySize][1] * 1.0
                 durationT2 = test2DF[t2:t2,:duration][1]
-                println("       Inner=",hostT1," s2=",sizeT2," d2=",durationT2)
+                if SP.debugLevel > 6
+                    println("       Inner=",hostT1," s2=",sizeT2," d2=",durationT2)
+                end
                 if diffBySize && sizeT2 == sizeT1
                     deleterows!(test2DF,t2)
                     printed = true
@@ -594,15 +597,11 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
                 if diffBySize
                     deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
                     if !(deltaPercent > -5.0 && deltaPercent < 5.0)
-                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                        #push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
                         push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2])
                     end
                 else
                     deltaPercent = (durationT2-durationT1) / durationT1 * 100.0
                     if !(deltaPercent > -25.0 && deltaPercent < 25.0)
-                        #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                        #push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
                         push!(diffDF,[hostT1,deltaPercent,durationT1,durationT2])
                     end
                 end
@@ -614,9 +613,10 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         end
 
         if !printed
-            println("Extra1=",hostT1," siz1=", sizeT1," dur1=", durationT1)
+            if SP.debugLevel > 6
+                println("Extra1=",hostT1," siz1=", sizeT1," dur1=", durationT1)
+            end
             if diffBySize && sizeT1 > 10000
-                #push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
                 push!(diffDF,[hostT1,0.0,sizeT1,0.0])
             elseif !diffBySize && durationT1 > 250
                 push!(diffDF,[hostT1,0.0,durationT1,0.0])
@@ -624,16 +624,19 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         end
     end
 
-    println()
+    if SP.debugLevel > 6
+        println()
+    end
 
     t2 = 0
     for hostT2 in test2DF[:,:host]
         t2 += 1
         sizeT2 = test2DF[t2:t2,:bodySize][1] * 1.0
         durationT2 = test2DF[t2:t2,:duration][1]
-        println("Extra2=",hostT2," siz2=", sizeT2," dur2=", durationT2)
+        if SP.debugLevel > 6
+            println("Extra2=",hostT2," siz2=", sizeT2," dur2=", durationT2)
+        end
         if diffBySize && sizeT2 > 10000
-            #println(hostT2," h2=", sizeT2)
             push!(diffDF,[hostT2,0.0,0.0,sizeT2])
         elseif !diffBySize && durationT2 > 250
             push!(diffDF,[hostT2,0.0,0.0,durationT2])
