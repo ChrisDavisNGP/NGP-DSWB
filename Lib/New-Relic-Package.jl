@@ -708,6 +708,8 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
         end
     end
 
+    sort!(diffDF,cols=[order(:delta,rev=true),order(:oldAvg,rev=true),order(:newAvg,rev=true)])
+    
     if diffBySize
         diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Size Change"),Symbol("Old Size StdDev"),Symbol("Old Size"),Symbol("New Size StdDev"),Symbol("New Size")])
     else
