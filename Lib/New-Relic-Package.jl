@@ -657,7 +657,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
     diffDF = DataFrame(name=ASCIIString[],delta=Float64[],oldStdDev=Float64[],oldAvg=Float64[],newStdDev=Float64[],newAvg=Float64[])
 
     t1 = 0
-    for name in activeMonitorsDF[:,:name]
+    for name in activeMonitorsDF[1:3,:name]
         t1 += 1
         if diffBySize
             oldStdDev = activeMonitorsDF[t1:t1,:oldSizeStdDev][1]
