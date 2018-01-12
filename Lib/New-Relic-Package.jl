@@ -676,11 +676,9 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
             oldAvgRangeLower = 0
         end
         oldAvgRangeUpper = oldAvg + oldStdDev
-        println("newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
+        println("Name=",name," newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
 
-        if !(newAvg > oldAvgRangeLower && newAvg < oldAvgRangeUpper)
-            deleterows!(activeMonitorsDF,t2)
-        else
+        if newAvg < oldAvgRangeLower || newAvg > oldAvgRangeUpper
             deltaPercent = (newAvg-oldAvg) / oldAvg * 100.0
             push!(diffDF,[name,deltaPercent,oldStdDev,oldAvg,newStdDev,newAvg])
         end
@@ -692,6 +690,6 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
         diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Duration Change"),Symbol("Old Duration StdDev"),Symbol("Old Duration"),Symbol("New Duration StdDev"),Symbol("New Duration")])
     end
 
-    #beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
+    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
 
 end
