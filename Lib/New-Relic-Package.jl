@@ -676,7 +676,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
             oldAvgRangeLower = 0
         end
         oldAvgRangeUpper = oldAvg + oldStdDev
-        println("Name=",name," newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
+        #println("Name=",name," newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
 
         if newAvg < oldAvgRangeLower || newAvg > oldAvgRangeUpper
             deltaPercent = (newAvg-oldAvg) / oldAvg * 100.0
