@@ -518,7 +518,8 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
         cpDF = names!(criticalPathDF[:,:],
         [Symbol("urlgroup"),Symbol("average"),Symbol("maximum"),Symbol("counter"),Symbol("label")])
 
-        #totalTime = sum(toppageurl[:,:Total])
+        totalAverage = sum(cpDF[:,:average])
+        
         treeDF = DataFrame()
         treeDF[:,:urlgroup] = cpDF[:,:urlgroup]
         treeDF[:,:beacons] = cpDF[:,:average]
