@@ -221,7 +221,7 @@ function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::
 
     openingTitle(TV,UP,SP)
 
-    investigateSizeProblems(UP,SP,NR,CU)
+    investigateSizeProblems(TV,UP,SP,NR,CU)
 
 end
 
