@@ -660,15 +660,15 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
     for name in activeMonitorsDF[:,:name]
         t1 += 1
         if diffBySize
-            oldStdDev = activeMonitorsDF[:,:oldSizeStdDev]
-            oldAvg    = activeMonitorsDF[:,:oldSizeAvg]
-            newStdDev = activeMonitorsDF[:,:newSizeStdDev]
-            newAvg    = activeMonitorsDF[:,:newSizeAvg]
+            oldStdDev = activeMonitorsDF[:,:oldSizeStdDev][1]
+            oldAvg    = activeMonitorsDF[:,:oldSizeAvg][1]
+            newStdDev = activeMonitorsDF[:,:newSizeStdDev][1]
+            newAvg    = activeMonitorsDF[:,:newSizeAvg][1]
         else
-            oldStdDev = activeMonitorsDF[:,:oldDurationStdDev]
-            oldAvg    = activeMonitorsDF[:,:oldDurationAvg]
-            newStdDev = activeMonitorsDF[:,:newDurationStdDev]
-            newAvg    = activeMonitorsDF[:,:newDurationAvg]
+            oldStdDev = activeMonitorsDF[:,:oldDurationStdDev][1]
+            oldAvg    = activeMonitorsDF[:,:oldDurationAvg][1]
+            newStdDev = activeMonitorsDF[:,:newDurationStdDev][1]
+            newAvg    = activeMonitorsDF[:,:newDurationAvg][1]
         end
 
         oldAvgRangeLower = oldAvg - oldStdDev
@@ -676,6 +676,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
             oldAvgRangeLower = 0
         end
         oldAvgRangeUpper = oldAvg + oldStdDev
+        println("newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
 
         if !(newAvg > oldAvgRangeLower && newAvg < oldAvgRangeUpper)
             deleterows!(activeMonitorsDF,t2)
@@ -691,6 +692,6 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
         diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Duration Change"),Symbol("Old Duration StdDev"),Symbol("Old Duration"),Symbol("New Duration StdDev"),Symbol("New Duration")])
     end
 
-    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
+    #beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
 
 end
