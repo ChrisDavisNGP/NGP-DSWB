@@ -611,12 +611,15 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
                 break
             end
         end
-        if !printed && sizeT1 > 999 && diffBySize
-            #println(hostT1," h1=", sizeT1)
-            #push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
-            push!(diffDF,[hostT1,0.0,sizeT1])
-        elseif !printed && durationT1 > 250 && !diffBySize
-            push!(diffDF,[hostT1,0.0,0.0,durationT1])
+
+        if !printed
+            println(hostT1," siz1=", sizeT1," dur1=", durationT1)
+            if diffBySize && sizeT1 > 999
+                #push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
+                push!(diffDF,[hostT1,0.0,sizeT1,0.0])
+            elseif !diffBySize && durationT1 > 250
+                push!(diffDF,[hostT1,0.0,durationT1,0.0])
+            end
         end
     end
 
@@ -625,10 +628,11 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         t2 += 1
         sizeT2 = test2DF[t2:t2,:bodySize][1] * 1.0
         durationT2 = test2DF[t2:t2,:duration][1]
-        if sizeT2 > 999 && diffBySize
+        println(hostT2," siz1=", sizeT2," dur1=", durationT2)
+        if diffBySize && sizeT2 > 999
             #println(hostT2," h2=", sizeT2)
             push!(diffDF,[hostT2,0.0,0.0,sizeT2])
-        elseif durationT2 > 250 && !diffBySize
+        elseif !diffBySize && durationT2 > 250
             push!(diffDF,[hostT2,0.0,0.0,durationT2])
         end
     end
