@@ -577,7 +577,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
                     deleterows!(test2DF,t2)
                     printed = true
                     break;
-                elseif !diffBySize && durationT2 < 100  # 100 ms shift can be ignored
+                elseif !diffBySize && durationT2 < 250  # 100 ms shift can be ignored
                     deleterows!(test2DF,t2)
                     printed = true
                     break;
@@ -626,8 +626,10 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
     end
 
     if diffBySize
+        sort!(diffDF,cols=:delta,rev=true)
         diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
     else
+        sort!(diffDF,cols=:delta,rev=true)
         diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
     end
 
