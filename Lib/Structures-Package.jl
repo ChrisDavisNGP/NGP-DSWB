@@ -249,6 +249,9 @@ type CurlParams
     apiAdminKey::ASCIIString
     apiQueryKey::ASCIIString
 
+    #Misc
+    howManyStdDev::Int64
+
     #NR accounts
     #masterAccountId 78783
     #globalSitesAccountId 775840
@@ -265,6 +268,7 @@ function CurlParamsInit(nb::ASCIIString)
         false, false, false, false, false, "no id", "no name",
         "0","0","0","0",
         "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx",
+        1,
         "$nb.json"
     )
 
@@ -324,6 +328,10 @@ function CurlParamsInit(nb::ASCIIString)
 
     if isdefined(:CuSynthetic)
         CU.synthetic = true
+    end
+
+    if isdefined(:CuHowManyStdDev)
+        CU.howManyStdDev = CuHowManyStdDev
     end
 
     # Hard coded keys for now but anyone can add the code for apiAdminKey et al

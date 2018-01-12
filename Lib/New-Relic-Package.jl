@@ -659,10 +659,9 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
 
 
     if SP.debugLevel > 8
+        println("Starting diffDailyChange")
         beautifyDF(monitorsDF[1:10,:])
     end
-
-    println("Starting diffDailyChange")
 
     activeMonitorsDF = DataFrame()
 
@@ -695,11 +694,12 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
             newAvg    = activeMonitorsDF[t1:t1,:newDurationAvg][1]
         end
 
-        oldAvgRangeLower = oldAvg - oldStdDev
+        oldAvgRangeLower = oldAvg - (oldStdDev * CU.howManyStdDev)
         if oldAvgRangeLower < 0
             oldAvgRangeLower = 0
         end
-        oldAvgRangeUpper = oldAvg + oldStdDev
+        oldAvgRangeUpper = oldAvg + (oldStdDev * CU.howManyStdDev)
+        
         #println("Name=",name," newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
 
         if newAvg < oldAvgRangeLower || newAvg > oldAvgRangeUpper
@@ -709,7 +709,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
     end
 
     sort!(diffDF,cols=[order(:delta,rev=true),order(:oldAvg,rev=true),order(:newAvg,rev=true)])
-    
+
     if diffBySize
         diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Size Change"),Symbol("Old Size StdDev"),Symbol("Old Size"),Symbol("New Size StdDev"),Symbol("New Size")])
     else
