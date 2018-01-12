@@ -287,6 +287,7 @@ function CurlParamsInit(nb::ASCIIString)
 
     if isdefined(:CuSyntheticMonitor)
         CU.syntheticMonitor = CuSyntheticMonitor
+        CU.syntheticMonitor = replace(CU.syntheticMonitor," ","%20")
     end
 
     if isdefined(:CuOldStart)

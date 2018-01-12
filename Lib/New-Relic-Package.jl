@@ -195,7 +195,7 @@ end
 
 function dailyChangeCheckWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
-    openingTitle(TV,UP,SP)
+    #openingTitle(TV,UP,SP)
 
     dailyChangeCheck(UP,SP,NR,CU)
 
@@ -219,7 +219,7 @@ end
 
 function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
-    openingTitle(TV,UP,SP)
+    #openingTitle(TV,UP,SP)
 
     investigateSizeProblems(TV,UP,SP,NR,CU)
 
