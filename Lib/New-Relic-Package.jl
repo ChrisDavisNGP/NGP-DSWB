@@ -29,26 +29,26 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
     if CU.syntheticListAllMonitors
         apiKey = "X-Api-Key:" * CU.apiAdminKey
         curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors"
-        curlStr = ["-H","$apiKey","$curlCommand"]
     elseif CU.syntheticListOneMonitor
         apiKey = "X-Api-Key:" * CU.apiAdminKey
         curlCommand = "https://synthetics.newrelic.com/synthetics/api/v3/monitors/" * CU.syntheticMonitorId
-        curlStr = ["-H","$apiKey","$curlCommand"]
     elseif CU.syntheticBodySize
         apiKey = "X-Query-Key:" * CU.apiQueryKey
         curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "select%20average(totalResponseBodySize)%20FROM%20SyntheticCheck%20" *
-        "WHERE%20%20monitorName%20%3D%27" * CU.monitorName * "%27%20SINCE%2030%20days%20ago%20TIMESERIES%20%20auto"
-        curlStr = ["-H","$apiKey","$curlCommand"]
+        "WHERE%20%20monitorName%20%3D%27" * CU.syntheticMonitor * "%27%20SINCE%2030%20days%20ago%20TIMESERIES%20%20auto"
     elseif CU.syntheticBodySizeByRequest
         apiKey = "X-Query-Key:" * CU.apiQueryKey
         curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "SELECT%20average(responseBodySize)%20FROM%20SyntheticRequest%20" *
-        "WHERE%20monitorId%20%3D%20%2769599173-5b61-41e0-b4e6-ba69e179bc70%27%20since%207%20days%20ago%20%20TIMESERIES"
-        curlStr = ["-H","$apiKey","$curlCommand"]
+        "WHERE%20monitorId%20%3D%20%27" * CU.syntheticMonitorId *
+        "%27%20since%207%20days%20ago%20%20TIMESERIES"
+        #         69599173-5b61-41e0-b4e6-ba69e179bc70
     else
         curlCommand = "unknown command"
     end
+
+    curlStr = ["-H","$apiKey","$curlCommand"]
 
     # Todo regular expression tests for "unknown" and report failure and return empty
     if SP.debugLevel > 4
