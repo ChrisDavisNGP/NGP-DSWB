@@ -625,15 +625,23 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         end
     end
 
+    printDF = DataFrame()
+
     if diffBySize
         sort!(diffDF,cols=:delta,rev=true)
+        printDF = diffDF(:,[:host,:delta,:oldSize,:newSize])
+        printDF = names!(printDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size")])
         diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
     else
         sort!(diffDF,cols=:delta,rev=true)
         diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
     end
 
-    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
+    if diffBySize
+        beautifyDF(printDF,defaultNumberFormat=(:precision => 0, :commas => true))
+    else
+        beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
+    end
 
 end
 
