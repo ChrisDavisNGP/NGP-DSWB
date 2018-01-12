@@ -660,15 +660,15 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
     for name in activeMonitorsDF[:,:name]
         t1 += 1
         if diffBySize
-            oldStdDev = activeMonitorsDF[:,:oldSizeStdDev][1]
-            oldAvg    = activeMonitorsDF[:,:oldSizeAvg][1]
-            newStdDev = activeMonitorsDF[:,:newSizeStdDev][1]
-            newAvg    = activeMonitorsDF[:,:newSizeAvg][1]
+            oldStdDev = activeMonitorsDF[t1:t1,:oldSizeStdDev][1]
+            oldAvg    = activeMonitorsDF[t1:t1,:oldSizeAvg][1]
+            newStdDev = activeMonitorsDF[t1:t1,:newSizeStdDev][1]
+            newAvg    = activeMonitorsDF[t1:t1,:newSizeAvg][1]
         else
-            oldStdDev = activeMonitorsDF[:,:oldDurationStdDev][1]
-            oldAvg    = activeMonitorsDF[:,:oldDurationAvg][1]
-            newStdDev = activeMonitorsDF[:,:newDurationStdDev][1]
-            newAvg    = activeMonitorsDF[:,:newDurationAvg][1]
+            oldStdDev = activeMonitorsDF[t1:t1,:oldDurationStdDev][1]
+            oldAvg    = activeMonitorsDF[t1:t1,:oldDurationAvg][1]
+            newStdDev = activeMonitorsDF[t1:t1,:newDurationStdDev][1]
+            newAvg    = activeMonitorsDF[t1:t1,:newDurationAvg][1]
         end
 
         oldAvgRangeLower = oldAvg - oldStdDev
