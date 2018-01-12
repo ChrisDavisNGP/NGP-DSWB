@@ -548,19 +548,20 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         beautifyDF(test2DF[1:3,:])
     end
 
-    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
+#    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],oldSize=Int64[],newSize=Int64[],oldDuration=Float64[],newDuration=Float64[])
+    diffDF = DataFrame(host=ASCIIString[],delta=Float64[],old=Float64[],new=Float64[])
 
     t1 = 0
     for hostT1 in test1DF[:,:host]
         printed = false
         t1 += 1
-        sizeT1 = test1DF[t1:t1,:bodySize][1]
+        sizeT1 = test1DF[t1:t1,:bodySize][1] * 1.0
         durationT1 = test1DF[t1:t1,:duration][1]
         t2 = 0
         for hostT2 in test2DF[:,:host]
             t2 += 1
             if hostT1 == hostT2
-                sizeT2 = test2DF[t2:t2,:bodySize][1]
+                sizeT2 = test2DF[t2:t2,:bodySize][1] * 1.0
                 durationT2 = test2DF[t2:t2,:duration][1]
                 #println(hostT1," h1=",sizeT1," h2=",sizeT2)
                 if diffBySize && sizeT2 == sizeT1
@@ -593,13 +594,15 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
                     deltaPercent = (sizeT2-sizeT1) / sizeT1 * 100.0
                     if !(deltaPercent > -5.0 && deltaPercent < 5.0)
                         #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                        #push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2])
                     end
                 else
                     deltaPercent = (durationT2-durationT1) / durationT1 * 100.0
                     if !(deltaPercent > -25.0 && deltaPercent < 25.0)
                         #println(hostT1," delta=",deltaPercent," h1=",sizeT1," h2=",sizeT2)
-                        push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                        #push!(diffDF,[hostT1,deltaPercent,sizeT1,sizeT2,durationT1,durationT2])
+                        push!(diffDF,[hostT1,deltaPercent,durationT1,durationT2])
                     end
                 end
 
@@ -608,40 +611,39 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
                 break
             end
         end
-        if !printed && sizeT1 > 999
+        if !printed && sizeT1 > 999 && diffBySize
             #println(hostT1," h1=", sizeT1)
-            push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
+            #push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
+            push!(diffDF,[hostT1,0.0,sizeT1])
+        elseif !printed && durationT1 > 250 && !diffBySize
+            push!(diffDF,[hostT1,0.0,0.0,durationT1])
         end
     end
 
     t2 = 0
     for hostT2 in test2DF[:,:host]
         t2 += 1
-        sizeT2 = test2DF[t2:t2,:bodySize][1]
+        sizeT2 = test2DF[t2:t2,:bodySize][1] * 1.0
         durationT2 = test2DF[t2:t2,:duration][1]
-        if sizeT2 > 999
+        if sizeT2 > 999 && diffBySize
             #println(hostT2," h2=", sizeT2)
-            push!(diffDF,[hostT2,0.0,0,sizeT2,0,durationT2])
+            push!(diffDF,[hostT2,0.0,0.0,sizeT2])
+        elseif durationT2 > 250 && !diffBySize
+            push!(diffDF,[hostT2,0.0,0.0,durationT2])
         end
     end
 
-    printDF = DataFrame()
-
     if diffBySize
         sort!(diffDF,cols=:delta,rev=true)
-        printDF = stack(diffDF,[:host,:delta,:oldSize,:newSize])
-        printDF = names!(printDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size")])
-        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+        #diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Size Change"),Symbol("Old Size"),Symbol("New Size")])
     else
         sort!(diffDF,cols=:delta,rev=true)
-        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+        #diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Size"),Symbol("New Size"),Symbol("Old Duration"),Symbol("New Duration")])
+        diffDF = names!(diffDF,[Symbol("Web Host"),Symbol("% Duration Change"),Symbol("Old Duration"),Symbol("New Duration")])
     end
 
-    if diffBySize
-        beautifyDF(printDF,defaultNumberFormat=(:precision => 0, :commas => true))
-    else
-        beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
-    end
+    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
 
 end
 
