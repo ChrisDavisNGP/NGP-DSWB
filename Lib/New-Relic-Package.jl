@@ -614,7 +614,7 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         end
 
         if !printed
-            println(hostT1," siz1=", sizeT1," dur1=", durationT1)
+            println("Extra1=",hostT1," siz1=", sizeT1," dur1=", durationT1)
             if diffBySize && sizeT1 > 999
                 #push!(diffDF,[hostT1,0.0,sizeT1,0,durationT1,0])
                 push!(diffDF,[hostT1,0.0,sizeT1,0.0])
@@ -624,12 +624,14 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
         end
     end
 
+    println()
+
     t2 = 0
     for hostT2 in test2DF[:,:host]
         t2 += 1
         sizeT2 = test2DF[t2:t2,:bodySize][1] * 1.0
         durationT2 = test2DF[t2:t2,:duration][1]
-        println(hostT2," siz2=", sizeT2," dur2=", durationT2)
+        println("Extra2=",hostT2," siz2=", sizeT2," dur2=", durationT2)
         if diffBySize && sizeT2 > 999
             #println(hostT2," h2=", sizeT2)
             push!(diffDF,[hostT2,0.0,0.0,sizeT2])
