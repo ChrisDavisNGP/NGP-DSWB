@@ -31,6 +31,8 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
+WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
+
 # Get the data frame of data by using CURL and Json Parse
 
 synChkBodySizeDict = curlJsonWorkflow(TV,SP,CU)
