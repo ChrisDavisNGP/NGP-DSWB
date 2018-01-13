@@ -488,7 +488,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
     hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[],duration=Float64[])
 
     i = 0
-    for host in NR.requlsts.row[:,:host]
+    for host in NR.results.row[:,:host]
         i += 1
         ascHost = ASCIIString(host)
         #println("LookupHost=",ascHost," typeof=",typeof(ascHost))
