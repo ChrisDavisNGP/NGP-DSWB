@@ -496,6 +496,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
             ascHost = ASCIIString(host)
             #println("LookupHost=",ascHost," typeof=",typeof(ascHost))
             println("ascHost=",ascHost,"lookupHost=",lookupHost(ascHost))
+        end
     end
 
     i = 0
