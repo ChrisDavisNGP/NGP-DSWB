@@ -1,4 +1,4 @@
-
+include("URL-Classification-Data.jl")
 
 function curlJsonWorkflow(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
@@ -487,6 +487,8 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
 
     hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[],duration=Float64[])
 
+    println("LookupHost=",lookupHost(NR.results.row[:,:host]))
+
     i = 0
     for host in NR.results.row[:,:host]
         i += 1
@@ -699,7 +701,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
             oldAvgRangeLower = 0
         end
         oldAvgRangeUpper = oldAvg + (oldStdDev * CU.howManyStdDev)
-        
+
         #println("Name=",name," newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
 
         if newAvg < oldAvgRangeLower || newAvg > oldAvgRangeUpper
