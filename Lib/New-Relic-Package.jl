@@ -503,40 +503,6 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
         end
     end
 
-#    i = 0
-#    for host in NR.results.row[:,:host]
-#        i += 1
-#        if isna(host)
-#            continue
-#        elseif (ismatch(r".*segment.*",host))
-#            NR.results.row[i:i,:host] = "Segment"
-#        elseif (ismatch(r".*blueconic.*",host))
-#            NR.results.row[i:i,:host] = "Blue Conic"
-#        elseif (ismatch(r".*krxd.*",host))
-#            NR.results.row[i:i,:host] = "Krxd"
-#        elseif (ismatch(r".*google-analytics.*",host))
-#        elseif (ismatch(r".*unrulymedia.*",host))
-#            NR.results.row[i:i,:host] = "Unruly Media"
-#        elseif (ismatch(r".*demdex.*",host))
-#            NR.results.row[i:i,:host] = "Demdex"
-#        elseif (ismatch(r".*monetate.*",host))
-#            NR.results.row[i:i,:host] = "Monetate"
-#        elseif (ismatch(r".*moatads.*",host))
-#            NR.results.row[i:i,:host] = "Moatads"
-#        elseif (ismatch(r".*addthis.*",host))
-#            NR.results.row[i:i,:host] = "Addthis"
-#        elseif (ismatch(r".*doubleverify.*",host))
-#            NR.results.row[i:i,:host] = "DoubleVerify"
-#        elseif (ismatch(r".*doubleclick.*",host))
-#            NR.results.row[i:i,:host] = "DoubleClick"
-#        elseif (ismatch(r".*googlesyndication.*",host))
-#            NR.results.row[i:i,:host] = "Google Syndication"
-#        elseif (ismatch(r".*extremereach.*",host))
-#            NR.results.row[i:i,:host] = "Extreme Reach"
-#        end
-#
-#    end
-
     for subDF in groupby(NR.results.row,:host)
 
         if isna(subDF[1:1,:host][1])
