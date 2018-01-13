@@ -490,9 +490,12 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
     i = 0
     for host in NR.results.row[:,:host]
         i += 1
-        ascHost = ASCIIString(host)
-        #println("LookupHost=",ascHost," typeof=",typeof(ascHost))
-        println("lookupHost=",lookupHost(ascHost))
+        if isna(host)
+            continue
+        else
+            ascHost = ASCIIString(host)
+            #println("LookupHost=",ascHost," typeof=",typeof(ascHost))
+            println("ascHost=",ascHost,"lookupHost=",lookupHost(ascHost))
     end
 
     i = 0
