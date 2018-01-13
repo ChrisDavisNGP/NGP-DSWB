@@ -484,6 +484,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
     if SP.debugLevel > 8
         println("Starting dumpHostGroups")
     end
+    WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
 
     hostGroupsDF = DataFrame(host=ASCIIString[],bodySize=Int64[],resources=Int64[],duration=Float64[])
 
