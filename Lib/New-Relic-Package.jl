@@ -279,25 +279,27 @@ end
 function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
 
     fillNrTotal(SP,NR,synChkBodySizeDict["total"])
-    println()
-    println("Total: Inspected=",NR.totals.inspectedCount,
-            " Begin Sec=",NR.totals.beginTimeSeconds,
-            " End Sec=",NR.totals.endTimeSeconds,
-            " Result Average=",NR.totals.resultAverage
-            )
 
     fillNrMetadata(SP,NR,synChkBodySizeDict["metadata"])
-    println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
 
     fillNrRunPerf(SP,NR,synChkBodySizeDict["performanceStats"])
-    println("Run Perf: Inspected=",NR.runPerf.inspectedCount,
-             " Wall Time=",NR.runPerf.wallClockTime)
-
-    println()
 
     fillNrTimeSeries(SP,NR,synChkBodySizeDict["timeSeries"])
-    println("Times Series: size",size(NR.timeSeries.row,1))
+
     #This is an array println("TimeS Dict ",keys(synChkBodySizeDict["timeSeries"]))
+    if SP.debugLevel > 0
+        println()
+        println("Total: Inspected=",NR.totals.inspectedCount,
+                " Begin Sec=",NR.totals.beginTimeSeconds,
+                " End Sec=",NR.totals.endTimeSeconds,
+                " Result Average=",NR.totals.resultAverage
+                )
+        println("Metadata: Begin=",NR.metadata.beginTime," End=",NR.metadata.endTime)
+
+        println("Run Perf: Inspected=",NR.runPerf.inspectedCount,
+                 " Wall Time=",NR.runPerf.wallClockTime)
+         println("Times Series: size=",size(NR.timeSeries.row,1))
+     end
 
 end
 
@@ -378,7 +380,8 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
     sort!(df,cols=[order(:timestamp,rev=false)])
 
     if SP.debugLevel > 4
-        beautifyDF(df,maxRows=500)
+        quickTitle("Debug4: Fill New Relic Results")
+        beautifyDF(df[1:10,:],maxRows=500)
     end
 
     NR.results.row = deepcopy(df)

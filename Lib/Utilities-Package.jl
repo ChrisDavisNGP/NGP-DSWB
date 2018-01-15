@@ -95,3 +95,7 @@ function standardChartTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams,openingStr
         displayTitle(chart_title = chartTitle, chart_info = [TV.timeString], showTimeStamp=false)
     end
 end
+
+function quickTitle(openingString::ASCIIString)
+    displayTitle(chart_title = openingString, showTimeStamp=false)
+end
