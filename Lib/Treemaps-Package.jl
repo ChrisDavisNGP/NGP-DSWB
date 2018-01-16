@@ -519,7 +519,7 @@ function criticalPathFinalTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,crit
         [Symbol("urlgroup"),Symbol("average"),Symbol("maximum"),Symbol("counter"),Symbol("label")])
 
         totalAverage = sum(cpDF[:,:average])
-        
+
         treeDF = DataFrame()
         treeDF[:,:urlgroup] = cpDF[:,:urlgroup]
         treeDF[:,:beacons] = cpDF[:,:average]
@@ -1126,7 +1126,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             """);
         end
 
-        #displayTitle(chart_title = "Top URL Page Views for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        #displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         #topurl = names!(topurl[:,:],[Symbol("beacons"),Symbol("urlgroup"),Symbol("load_time"),Symbol("start_time"),Symbol("redirect"),Symbol("blocking"),Symbol("dns"),Symbol("tcp"),Symbol("request"),Symbol("response")])
         topurl = names!(topurl[:,:],[Symbol("urlgroup"),Symbol("load_time_int"),Symbol("beacons"),Symbol("request_count")]);
 

@@ -524,7 +524,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   setTable(UP.btView)
 
   if (wfShowSessions)
-    #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup)", chart_info = [TV.timeString])
+    #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup)", chart_info = [TV.timeString])
     chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
   end
 
@@ -632,7 +632,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowCustomReferrers)
     localTable = UP.btView
-    productPageGroup = UP.pageGroup
     customRefPGD(TV,UP)
   end
 
@@ -700,7 +699,7 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowLoadTimes)
-    #displayTitle(chart_title = "Median Load Times for $(productPageGroup)", chart_info = [TV.timeString])
+    #displayTitle(chart_title = "Median Load Times for $(UP.pageGroup)", chart_info = [TV.timeString])
     chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
   end
 
@@ -713,7 +712,7 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowSessionsAndBeacons)
-    #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(productPageGroup)", chart_info = [TV.timeString])
+    #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup)", chart_info = [TV.timeString])
     chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
   end
 

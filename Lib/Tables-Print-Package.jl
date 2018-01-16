@@ -511,7 +511,9 @@ function displayMatchingResourcesByParentUrlPrintTable(TV::TimeVars,UP::UrlParam
         if (size(joinTablesDF)[1] > 0)
             displayTitle(chart_title = "Any Parent Url (params_u) for pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
             scrubUrlToPrint(SP,joinTablesDF,:parenturl)
+            joinTablesDF = names!(joinTablesDF,[Symbols("Resource Count"),Symbols("Parent URLs for Resources")])
             beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+            joinTablesDF = names!(joinTablesDF,[Symbols("count"),Symbols("parenturl")])
             dataframeFieldStats(TV,SP,joinTablesDF,:count,"on column count")
         else
             displayTitle(chart_title = "Any Parent Url (params_u) for pattern $(UP.resRegEx) is empty", showTimeStamp=false)

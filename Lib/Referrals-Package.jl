@@ -83,11 +83,11 @@ function standardReferrals(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         if SP.debugLevel > 8
             println("Starting standardReferrals")
         end
-                
+
         toprDF = getTopReferrers(TV.startTimeUTC, TV.endTimeUTC, n=UP.limitRows)
         limit = (min(UP.limitRows,size(toprDF)[1]))
         chartTopN(TV.startTimeUTC, TV.endTimeUTC, n=limit; variable=:referrers;)
-        displayTitle(chart_title = "Top Referrers for $(productPageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Top Referrers for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(toprDF)
     catch y
         println("standardReferrals Exception ",y)
