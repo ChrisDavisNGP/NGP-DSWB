@@ -261,13 +261,13 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
     end
 
     fillNrResults(SP,NR,timeDict["results"])
-    test1DF = dumpHostGroups(SP,NR;showGroups=false)
+    test1DF = dumpHostGroups(SP,NR;showGroups=true)
 
 
     jsonTimeString = curlSelectAllByTime(TV,SP,CU,CU.newStart,CU.newEnd,CU.syntheticMonitor)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
     fillNrResults(SP,NR,timeDict["results"])
-    test2DF = dumpHostGroups(SP,NR;showGroups=false)
+    test2DF = dumpHostGroups(SP,NR;showGroups=true)
 
     test1DFSize = deepcopy(test1DF)
     test2DFSize = deepcopy(test2DF)
