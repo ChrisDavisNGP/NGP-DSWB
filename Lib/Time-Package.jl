@@ -292,13 +292,13 @@ function pickTime()
 
         localtv = timeVariables(
             parse(Int64,timeStartPart1[3]),
-            parse(Int64,timeStartPart1[2]),
             parse(Int64,timeStartPart1[1]),
+            parse(Int64,timeStartPart1[2]),
             parse(Int64,timeStartPart2[1]),
             parse(Int64,timeStartPart2[2]),
             parse(Int64,timeEndPart1[3]),
-            parse(Int64,timeEndPart1[2]),
             parse(Int64,timeEndPart1[1]),
+            parse(Int64,timeEndPart1[2]),
             parse(Int64,timeEndPart2[1]),
             parse(Int64,timeEndPart2[2])
             )
