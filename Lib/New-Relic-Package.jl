@@ -117,23 +117,16 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
         Key = "unknown"
     end
 
+    #Grab the UP urlRegEx and convert it
+    localUrl = "https%3A%2F%2Fwww.nationalgeographic.com%2Fphotography%2Fproof%2F2017%2F09%2Ffall-equinox-gallery%2F"
+
     apiKey = "X-Query-Key:" * CU.apiQueryKey
     #curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=select%20average(totalResponseBodySize)%20FROM%20SyntheticCheck%20WHERE%20%20monitorName%20%3D%27JTP-Gallery-Equinox-M%27%20SINCE%2030%20days%20ago%20TIMESERIES%20%20auto"
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
-        "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20with%20timezone%20%27America%2FNew_York%27%20limit%20500"
+        "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
+        "and%20URL%20like%20%27" * localUrl * "%27%20" *
+        "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
     curlStr = ["-H","$apiKey","$curlCommand"]
-
-# Dec 20 Small   https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201513793700000%20UNTIL%201513795500000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27
-#SELECT * FROM SyntheticRequest SINCE 1513793700000 UNTIL 1513795500000 WHERE monitorName = 'JTP-Gallery-Equinox-M'
-
-# Dec 20 Large   https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201513835100000%20UNTIL%201513836900000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27"
-#SELECT * FROM SyntheticRequest SINCE 1513835100000 UNTIL 1513836900000 WHERE monitorName = 'JTP-Gallery-Equinox-M' 21 dec 01:06:34
-
-# Jan 5 Normal  https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="SELECT%20*%20FROM%20SyntheticRequest%20SINCE%201515189420000%20UNTIL%201515193020000%20WHERE%20monitorName%20%3D%20%27JTP-Gallery-Equinox-M%27"
-#SELECT * FROM SyntheticRequest SINCE 1515189420000 UNTIL 1515193020000 WHERE monitorName = 'JTP-Gallery-Equinox-M'  05 Jan 18 17:36
-
-    # curl -H "Accept: application/json" -H ""
-    #
 
     # Todo regular expression tests for "unknown" and report failure and return empty
     if SP.debugLevel > 4
@@ -294,6 +287,20 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
     timeDict = curlSyntheticJson(SP,jsonTimeString)
 
     fillNrResults(SP,NR,timeDict["results"])
+
+    #df = deepcopy(NR.results.row)
+    #delRows = Int64[]
+    #i = 0
+    #for r in eachrow(df)
+    #        i += 1
+    #    if !ismatch(r"https://www.nationalgeographic.com/photography/proof/2017/09/fall-equinox-gallery/$",r[:URL])
+    #        push!(delRows,i)
+    #    end
+    #end
+    #println(" row count 1 ",size(NR.results.row,1))
+    #deleterows!(df,delRows)
+
+#    println(" row count 1 ",size(df,1))
 
     if SP.debugLevel > -1
         beautifyDF(NR.results.row[1:3,:])
