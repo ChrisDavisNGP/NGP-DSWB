@@ -321,9 +321,9 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
         drawDF[:data1] = NR.results.row[theSymbol]
 
         #dv = Float64[]
-        #dv = NR.results.row[theSymbol] * 1.0
-        #dv = dropna(dv)
-        #println(Title," stddev=",std(dv)," skew=",skewness(dv))
+        dv = NR.results.row[theSymbol]
+        dv = dropna(dv)
+        println(Title," stddev=",std(dv)," skew=",skewness(dv))
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title], mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
     catch y
