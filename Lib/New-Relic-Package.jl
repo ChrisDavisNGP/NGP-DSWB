@@ -319,7 +319,7 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
     try
         drawDF = DataFrame()
         drawDF[:col1] = NR.results.row[:timestamp]
-        drawDF[:data1] = NR.results.row[:duratrion]
+        drawDF[:data1] = NR.results.row[:duration]
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Duration"], mPulseWidget=false, chart_title="Duration Chart", vizTypes=["line"])
     catch y
