@@ -296,17 +296,17 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
     fillNrResults(SP,NR,timeDict["results"])
 
     if SP.debugLevel > -1
-        beautifyDF(NR.timeSeries.row[1:3,:])
+        beautifyDF(NR.results.row[1:3,:])
+    end
 
-        try
-            drawDF = DataFrame()
-            drawDF[:col1] = NR.timeSeries.row[:beginTimeSeconds]
-            drawDF[:data1] = NR.timeSeries.row[:averageTotalReceivedSize]
+    try
+        drawDF = DataFrame()
+        drawDF[:col1] = NR.results.row[:timestamp]
+        drawDF[:data1] = NR.results.row[:onPageLoad]
 
-            c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Average Size"], mPulseWidget=false, chart_title="Size Chart", vizTypes=["line"])
-        catch y
-            println("draw Avg Recd Size exception ",y)
-        end
+        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["On Page Load"], mPulseWidget=false, chart_title="On Page Chart", vizTypes=["line"])
+    catch y
+        println("draw Avg Recd Size exception ",y)
     end
 
 
