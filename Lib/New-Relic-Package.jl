@@ -306,26 +306,8 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
         beautifyDF(NR.results.row[1:3,:])
     end
 
-    try
-        drawDF = DataFrame()
-        drawDF[:col1] = NR.results.row[:timestamp]
-        drawDF[:data1] = NR.results.row[:onPageLoad]
-
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["On Page Load"], mPulseWidget=false, chart_title="On Page Chart", vizTypes=["line"])
-    catch y
-        println("draw OnPageLoad exception ",y)
-    end
-
-    try
-        drawDF = DataFrame()
-        drawDF[:col1] = NR.results.row[:timestamp]
-        drawDF[:data1] = NR.results.row[:duration]
-
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Duration"], mPulseWidget=false, chart_title="Duration Chart", vizTypes=["line"])
-    catch y
-        println("draw Duration exception ",y)
-    end
-
+    quickTimestampViz(NR,:onPageLoad,"On Page Load")
+    quickTimestampViz(NR,:duration,"Duration")
     quickTimestampViz(NR,:onPageContentLoad,"On Page Content Load")
     quickTimestampViz(NR,:durationBlocked,"Duration Blocked")
 
@@ -337,6 +319,8 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
         drawDF = DataFrame()
         drawDF[:col1] = NR.results.row[:timestamp]
         drawDF[:data1] = NR.results.row[theSymbol]
+
+        println(Title," stddev=",stddev(drawDF[:data1])," skew=",skewness(drawDF[:data1]))
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title], mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
     catch y
