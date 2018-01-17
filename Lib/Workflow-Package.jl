@@ -790,12 +790,12 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  if (wfShowResourcesByParamsU)
-      displayMatchingResourcesByParentUrlPrintTable(TV,UP,SP)
-  end
-
   if (wfShowResourcesByUrl)
       displayMatchingResourcesByUrlRtPrintTable(TV,UP,SP)
+  end
+
+  if (wfShowResourcesByParamsU)
+      displayMatchingResourcesByParentUrlPrintTable(TV,UP,SP)
   end
 
   defaultBeaconCreateView(TV,UP,SP)

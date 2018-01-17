@@ -232,6 +232,71 @@ function pickTime()
         return localtv
     end
 
+    if isdefined(:TvExactRange)
+        timeValues = split(TvExactRange,",")
+
+        println(size(timeValues,1))
+
+        if size(timeValues,1) != 2
+            println("Bad TvExactRange, need two date strings (m/d/yyyy hh:mm) separated by comma")
+            return
+        end
+
+        timeStartParts = split(timeValues[1])
+
+        if size(timeStartParts,1) != 2
+            println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            return
+        end
+
+        timeStartPart1 = split(timeStartParts[1],"/")
+        if size(timeStartPart1,1) != 3
+            println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            return
+        end
+
+        timeStartPart2 = split(timeStartParts[2],":")
+        if size(timeStartPart2,1) != 2
+            println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            return
+        end
+
+        timeEndParts = split(timeValues[2])
+
+
+        if size(timeEndParts,1) != 2
+            println("Bad Date time in second position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            return
+        end
+
+        timeEndPart1 = split(timeEndParts[1],"/")
+        if size(timeEndPart1,1) != 3
+            println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            return
+        end
+
+        timeEndPart2 = split(timeEndParts[2],":")
+        if size(timeEndPart2,1) != 2
+            println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            return
+        end
+
+        if timeStartPart2[1] == "00" timeStartPart2[1] = "0" end
+        if timeStartPart2[2] == "00" timeStartPart2[2] = "0" end
+        if timeEndPart2[1] == "00" timeEndPart2[1] = "0" end
+        if timeEndPart2[2] == "00" timeEndPart2[2] = "0" end
+
+        #println("TV = timeVariables(",timeStartPart1[3],",",timeStartPart1[2],",",timeStartPart1[1],",",timeStartPart2[1],",",timeStartPart2[2],",",
+        #timeEndPart1[3],",",timeEndPart1[2],",",timeEndPart1[1],",",timeEndPart2[1],",",timeEndPart2[2],")"
+        #)
+
+        localtv = timeVariables(timeStartPart1[3],timeStartPart1[2],timeStartPart1[1],timeStartPart2[1],timeStartPart2[2],
+                                timeEndPart1[3],timeEndPart1[2],timeEndPart1[1],timeEndPart2[1],timeEndPart2[2])
+
+        return localtv
+
+    end
+
     localtv = yesterdayTimeVariables()
     return localtv
 end
