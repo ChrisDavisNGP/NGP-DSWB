@@ -290,8 +290,18 @@ function pickTime()
         #timeEndPart1[3],",",timeEndPart1[2],",",timeEndPart1[1],",",timeEndPart2[1],",",timeEndPart2[2],")"
         #)
 
-        localtv = timeVariables(timeStartPart1[3],timeStartPart1[2],timeStartPart1[1],timeStartPart2[1],timeStartPart2[2],
-                                timeEndPart1[3],timeEndPart1[2],timeEndPart1[1],timeEndPart2[1],timeEndPart2[2])
+        localtv = timeVariables(
+            parse(Int64,timeStartPart1[3]),
+            parse(Int64,timeStartPart1[2]),
+            parse(Int64,timeStartPart1[1]),
+            parse(Int64,timeStartPart2[1]),
+            parse(Int64,timeStartPart2[2]),
+            parse(Int64,timeEndPart1[3]),
+            parse(Int64,timeEndPart1[2]),
+            parse(Int64,timeEndPart1[1]),
+            parse(Int64,timeEndPart2[1]),
+            parse(Int64,timeEndPart2[2])
+            )
 
         return localtv
 
