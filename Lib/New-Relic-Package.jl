@@ -326,16 +326,7 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
         println("draw Duration exception ",y)
     end
 
-    try
-        drawDF = DataFrame()
-        drawDF[:col1] = NR.results.row[:timestamp]
-        drawDF[:data1] = NR.results.row[:onPageContentLoad]
-
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["On Page Content Load"], mPulseWidget=false, chart_title="On Page Content Load Chart", vizTypes=["line"])
-    catch y
-        println("draw On Page Content Load exception ",y)
-    end
-
+    quickTimestampViz(NR,:onPageContentLoad,"On Page Content Load")
     quickTimestampViz(NR,:durationBlocked,"Duration Blocked")
 
 
