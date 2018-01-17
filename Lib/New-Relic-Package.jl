@@ -326,6 +326,31 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
         println("draw Duration exception ",y)
     end
 
+    try
+        drawDF = DataFrame()
+        drawDF[:col1] = NR.results.row[:timestamp]
+        drawDF[:data1] = NR.results.row[:onPageContentLoad]
+
+        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["On Page Content Load"], mPulseWidget=false, chart_title="On Page Content Load Chart", vizTypes=["line"])
+    catch y
+        println("draw On Page Content Load exception ",y)
+    end
+
+    quickTimestampViz(NR,:durationBlocked,"Duration Blocked")
+
+
+end
+
+function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
+    try
+        drawDF = DataFrame()
+        drawDF[:col1] = NR.results.row[:timestamp]
+        drawDF[:data1] = NR.results.row[theSymbol]
+
+        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title], mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
+    catch y
+        println("quickTimestampViz exception ",y)
+    end
 end
 
 function newRelicConvert(SP::ShowParams,NR::NrParams,synChkBodySizeDict::Dict)
