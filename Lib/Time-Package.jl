@@ -235,8 +235,6 @@ function pickTime()
     if isdefined(:TvExactRange)
         timeValues = split(TvExactRange,",")
 
-        println(size(timeValues,1))
-
         if size(timeValues,1) != 2
             println("Bad TvExactRange, need two date strings (m/d/yyyy hh:mm) separated by comma")
             return
@@ -262,7 +260,6 @@ function pickTime()
         end
 
         timeEndParts = split(timeValues[2])
-
 
         if size(timeEndParts,1) != 2
             println("Bad Date time in second position, need (m/d/yyyy hh:mm) using 24 hour clock")
