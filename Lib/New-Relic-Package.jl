@@ -235,7 +235,7 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
         println("Starting investigateSizeProblems")
     end
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 6
         beautifyDF(NR.timeSeries.row[1:3,:])
 
         try
@@ -271,22 +271,43 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
     test1DFSize = deepcopy(test1DF)
     test2DFSize = deepcopy(test2DF)
-    test1DrawDF = deepcopy(test1DF)
     diffHostGroups(SP,test1DF,test2DF;diffBySize=false)
     diffHostGroups(SP,test1DFSize,test2DFSize;diffBySize=true)
 
+end
 
-    beautifyDF(test1DrawDF[1:3,:])
+function syntheticStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
-#    try
-#        drawDF = DataFrame()
-#        drawDF[:col1] = NR.timeSeries.row[:beginTimeSeconds]
-#        drawDF[:data1] = NR.timeSeries.row[:averageTotalReceivedSize]
-#
-#        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Average Size"], mPulseWidget=false, chart_title="Size Chart", vizTypes=["line"])
-#    catch y
-#        println("draw Avg Recd Size exception ",y)
-#    end
+    #openingTitle(TV,UP,SP)
+
+    investigateStats(TV,UP,SP,NR,CU)
+
+end
+
+function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+
+    if SP.debugLevel > 8
+        println("Starting investigateStats")
+    end
+
+    jsonTimeString = curlSelectAllByTime(TV,SP,CU,CU.oldStart,CU.oldEnd,CU.syntheticMonitor)
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+
+    fillNrResults(SP,NR,timeDict["results"])
+
+    if SP.debugLevel > -1
+        beautifyDF(NR.timeSeries.row[1:3,:])
+
+        try
+            drawDF = DataFrame()
+            drawDF[:col1] = NR.timeSeries.row[:beginTimeSeconds]
+            drawDF[:data1] = NR.timeSeries.row[:averageTotalReceivedSize]
+
+            c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Average Size"], mPulseWidget=false, chart_title="Size Chart", vizTypes=["line"])
+        catch y
+            println("draw Avg Recd Size exception ",y)
+        end
+    end
 
 
 end
