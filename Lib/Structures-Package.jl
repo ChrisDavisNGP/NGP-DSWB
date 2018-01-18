@@ -279,7 +279,7 @@ function CurlParamsInit(nb::ASCIIString)
     end
 
     if isdefined(:CuSyntheticListAllMonitors)
-        CU.syntheticListAllMonitors = curlSyntheticListAllMonitors
+        CU.syntheticListAllMonitors = CuSyntheticListAllMonitors
     end
 
     # Typically we should just put in the Monitor ID
