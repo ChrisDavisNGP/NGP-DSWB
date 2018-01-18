@@ -106,6 +106,38 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
 end
 
+function curlSelectActiveSyntheticMonitors(SP::ShowParams,CU::CurlParams)
+
+    if SP.debugLevel > 8
+        println("Started curlSelectActiveSyntheticMonitors ")
+    end
+
+    if CU.apiAdminKey != "no id"
+    else
+        Key = "unknown"
+    end
+
+    apiKey = "X-Query-Key:" * CU.apiQueryKey
+
+    #SELECT uniques(monitorName) FROM SyntheticCheck where type in ('BROWSER','SCRIPT_BROWSER') SINCE 1 day AGO
+
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
+        "SELECT%20uniques(monitorName)%20FROM%20SyntheticCheck%20where%20type%20in%20(%27BROWSER%27%2C%27SCRIPT_BROWSER%27)%20SINCE%201%20day%20AGO"
+    curlStr = ["-H","$apiKey","$curlCommand"]
+
+    if SP.debugLevel > -1
+        println("curlStr=",curlStr)
+    end
+
+    curlCmd = `curl $curlStr`
+    jsonString = readstring(curlCmd)
+
+    return jsonString
+
+end
+
+
+
 function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::ASCIIString,endTimeNR::ASCIIString)
 
     if SP.debugLevel > 8
@@ -235,7 +267,8 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
     # Get a list of Monitors
 
-    monitorListDict = syntheticCommands(TV,SP,CU)
+    jsonMonitorList = curlSelectActiveSyntheticMonitors(SP,CU)
+    monitorListDict = curlSyntheticJson(SP,jsonMonitorList)
     println(monitorListDict)
 
     return
