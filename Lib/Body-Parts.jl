@@ -121,7 +121,7 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
   row = DataFrame()
   row[:url] = UP.urlFull
 
-  dv = localTableDF[:beacon_time]
+  dv = Array{Float64}(localTableDF[:beacon_time])
   statsBeaconTimeDF = limitedStatsFromDV(dv)
   row[:beacon_time] = statsBeaconTimeDF[:median]
   samples = statsBeaconTimeDF[:count]
@@ -138,7 +138,7 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
       showLimitedStats(TV,statsBeaconTimeDF,chartTitle)
   end
 
-  dv = localTableDF[:request_count]
+  dv = Array{Float64}(localTableDF[:request_count])
   statsRequestCountDF = limitedStatsFromDV(dv)
   row[:request_count] = statsRequestCountDF[:median]
   if (SP.devView)
@@ -268,7 +268,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         statsFullDF2 = statsBtViewTableToDF(UP)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2)
+            statsDF2 = basicStats(UP,statsFullDF2)
             dispDMT[1:1,:Unit] = statsDF2[2:2,:unit]
             dispDMT[1:1,:Count] = statsDF2[2:2,:count]
             dispDMT[1:1,:Mean] = statsDF2[2:2,:mean]
@@ -280,7 +280,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         statsFullDF2 = statsBtViewTableToDF(UP)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2)
+            statsDF2 = basicStats(UP,statsFullDF2)
             dispDMT[2:2,:Unit] = statsDF2[2:2,:unit]
             dispDMT[2:2,:Count] = statsDF2[2:2,:count]
             dispDMT[2:2,:Mean] = statsDF2[2:2,:mean]
@@ -292,7 +292,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         statsFullDF2 = statsBtViewTableToDF(UP)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
-            statsDF2 = basicStats(statsFullDF2)
+            statsDF2 = basicStats(UP,statsFullDF2)
             dispDMT[3:3,:Unit] = statsDF2[2:2,:unit]
             dispDMT[3:3,:Count] = statsDF2[2:2,:count]
             dispDMT[3:3,:Mean] = statsDF2[2:2,:mean]
@@ -572,10 +572,10 @@ function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;minEncoded::Int6
         #scrubUrlToPrint(joinTables,limit=150)
         beautifyDF(joinTables[1:min(SP.showLines,end),:])
 
-        dv1 = joinTables[:encoded_size]
+        dv1 = Array{Float64}(joinTables[:encoded_size])
         statsDF1 = limitedStatsFromDV(dv1)
         showLimitedStats(statsDF1,"Encoded Size Stats (Page Views are Groups In Above Table)")
-        dv2 = joinTables[:transferred_size]
+        dv2 = Array{Float64}(joinTables[:transferred_size])
         statsDF2 = limitedStatsFromDV(dv2)
         showLimitedStats(statsDF2,"Transferred Size Stats")
 
@@ -712,35 +712,35 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         [Symbol("taken"),Symbol("start"),Symbol("fetch"),Symbol("dns"),Symbol("tcp"),Symbol("req_start"),Symbol("req_fb"),Symbol("req_lb"),Symbol("url")
             ,Symbol("redirect_start"),Symbol("redirect_end"),Symbol("secure_conn_start")])
 
-        dv1 = timeTable[:taken]
+        dv1 = Array{Float64}(timeTable[:taken])
         statsDF1 = limitedStatsFromDV(dv1)
         showLimitedStats(TV,statsDF1,"Time Taken Stats")
 
-        dv2 = timeTable[:dns]
+        dv2 = Array{Float64}(timeTable[:dns])
         statsDF2 = limitedStatsFromDV(dv2)
         showLimitedStats(TV,statsDF2,"DNS Stats")
 
-        dv3 = timeTable[:tcp]
+        dv3 = Array{Float64}(timeTable[:tcp])
         statsDF3 = limitedStatsFromDV(dv3)
         showLimitedStats(TV,statsDF3,"TCP Stats")
 
-        dv4 = timeTable[:start]
+        dv4 = Array{Float64}(timeTable[:start])
         statsDF4 = limitedStatsFromDV(dv4)
         showLimitedStats(TV,statsDF4,"Start Time On Page Stats")
 
-        dv5 = timeTable[:fetch]
+        dv5 = Array{Float64}(timeTable[:fetch])
         statsDF5 = limitedStatsFromDV(dv5)
         showLimitedStats(TV,statsDF5,"Fetching Request Stats")
 
-        dv6 = timeTable[:req_start]
+        dv6 = Array{Float64}(timeTable[:req_start])
         statsDF6 = limitedStatsFromDV(dv6)
         showLimitedStats(TV,statsDF6,"Request Start Stats")
 
-        dv7 = timeTable[:req_fb]
+        dv7 = Array{Float64}(timeTable[:req_fb])
         statsDF7 = limitedStatsFromDV(dv7)
         showLimitedStats(TV,statsDF7,"Request First Byte Stats")
 
-        dv8 = timeTable[:req_lb]
+        dv8 = Array{Float64}(timeTable[:req_lb])
         statsDF8 = limitedStatsFromDV(dv8)
         showLimitedStats(TV,statsDF8,"Request Last Byte Stats")
 

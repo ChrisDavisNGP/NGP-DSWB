@@ -146,11 +146,13 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
           if(SP.debugLevel > 4)
               println("Finding page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
+
           if (UP.usePageLoad)
               timeVar = subdf[1,:timers_t_done]
           else
               timeVar = subdf[1,:timers_domready]
           end
+
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
               if io <= SP.showLines
@@ -245,11 +247,13 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
           if(SP.debugLevel > 2)
               println("Current Page Size=",s," Target Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
+
           if (UP.usePageLoad)
               timeVar = subdf[1,:timers_t_done]
           else
               timeVar = subdf[1,:timers_domready]
           end
+          
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
               #println("Testing $(io) against $(SP.showLines)")

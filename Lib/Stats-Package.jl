@@ -3,7 +3,7 @@
 function basicFieldStats(localStatsDF::DataFrame,fieldStat::Symbol)
     try
 
-        dv = localStatsDF[fieldStat]
+        dv = Array{Float64}(localStatsDF[fieldStat])
         statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000.0,1)]
 
         dv = dropna(dv)
@@ -38,10 +38,15 @@ function basicFieldStats(localStatsDF::DataFrame,fieldStat::Symbol)
     end
 end
 
-function basicStats(localStatsDF::DataFrame)
+function basicStats(UP::UrlParams,localStatsDF::DataFrame)
     try
 
-        dv = localStatsDF[:timers_t_done]
+        if UP.usePageLoad
+            dv = Array{Float64}(localStatsDF[:timers_t_done])
+        else
+            dv = Array{Float64}(localStatsDF[:timers_domready])
+        end
+
         statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000.0,1)]
 
         dv = dropna(dv)
@@ -51,7 +56,7 @@ function basicStats(localStatsDF::DataFrame)
         stats[:mean] = statsArr(mean(dv))
         stats[:median] = statsArr(median(dv))
         stats[:stddev] = statsArr(std(dv))
-        #stats[:variance] = statsArr(var(dv))
+        stats[:variance] = statsArr(var(dv))
         stats[:min] = statsArr(minimum(dv))
         stats[:max] = statsArr(maximum(dv))
 
@@ -147,10 +152,15 @@ function basicStatsFromDV(dv::Array)
     end
 end
 
-function runningStats(year::Int64,month::Int64,day::Int64,hour::Int64,localStatsDF::DataFrame)
+function runningStats(UP::UrlParams,year::Int64,month::Int64,day::Int64,hour::Int64,localStatsDF::DataFrame)
     try
 
-        dv = localStatsDF[:timers_t_done]
+        if UP.usePageLoad
+            dv = Array{Float64}(localStatsDF[:timers_t_done])
+        else
+            dv = Array{Float64}(localStatsDF[:timers_domready])
+        end
+
         statsArr(v) = round(v/1000.0,3)
 
         dv = dropna(dv)
@@ -259,14 +269,14 @@ end
 function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
-        localStatsDF = statsBtViewTableToDF(UP);
+        localStatsDF = Array{Float64}(statsBtViewTableToDF(UP));
 
         if size(localStatsDF,1) == 0
             println("No data returned")
             return
         end
 
-        statsDF = basicStats(localStatsDF)
+        statsDF = basicStats(UP,localStatsDF)
 
         if size(statsDF,1) == 0
             println("No statsDF data")
@@ -324,7 +334,7 @@ function fetchGraph7Stats(UP::UrlParams)
     statsDF = DataFrame()
     try
         localStatsDF = statsBtViewTableToExtraDF(UP);
-        #statsDF = basicStats(localStatsDF)
+        #statsDF = basicStats(UP,localStatsDF)
         #medianThreshold = statsDF[1:1,:median][1]
 
         #displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
@@ -337,14 +347,18 @@ function fetchGraph7Stats(UP::UrlParams)
     end
 end
 
-function distributionStats(TV::TimeVars,UP::UrlParams)
+function distributionStats(UP::UrlParams)
     try
         # Does not work
 
         #statsDV = Float64()
         #statsDV = [18585.0,9499.0,19617.0,9624.0,28572.0,4255.0,9198.0,21984.0,27154.0,34180.0,14190.0,5248.0,6802.0,55169.0,55917.0,15414.0,33405.0]
         localStatsDF = statsBtViewTableToDF(UP);
-        statsDV = localStatsDF[:timers_t_done]
+        if (UP.usePageLoad)
+            statsDV = localStatsDF[:timers_t_done]
+        else
+            statsDV = localStatsDF[:timers_domready]
+        end
         n = fit(Normal, statsDV)
         println("normal ",n)
         println(dof(n))
@@ -421,7 +435,7 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
             localStatsDF = statsBtViewByHourToDF(UP.btView,startTimeMsUTC,endTimeMsUTC)
             if size(localStatsDF,1) > 0
-                statsDF = runningStats(year1,month1,day,hour,localStatsDF)
+                statsDF = runningStats(UP,year1,month1,day,hour,localStatsDF)
 
                 if size(statsDF,1) > 0
                     if SP.debugLevel > 8
@@ -545,7 +559,11 @@ end
 
 function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
     try
-        dv = localStats2[:timers_t_done]
+        if (UP.usePageLoad)
+            dv = localStats2[:timers_t_done]
+        else
+            dv = localStats2[:timers_domready]
+        end
 
         statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000,1)]
 
