@@ -251,6 +251,8 @@ type CurlParams
 
     #Misc
     howManyStdDev::Int64
+    urlRegEx::ASCIIString
+
 
     #NR accounts
     #masterAccountId 78783
@@ -268,7 +270,7 @@ function CurlParamsInit(nb::ASCIIString)
         false, false, false, false, false, "no id", "no name",
         "0","0","0","0",
         "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx",
-        1,
+        1,"",
         "$nb.json"
     )
 
@@ -316,6 +318,13 @@ function CurlParamsInit(nb::ASCIIString)
         CU.newEnd = CuNewEnd
         CU.newEnd = replace(CU.newEnd," ","%20")
         CU.newEnd = replace(CU.newEnd,":","%3A")
+    end
+
+    if isdefined(:CuUrlRegEx)
+        CU.urlRegEx = CuUrlRegEx
+        CU.urlRegEx = replace(CU.urlRegEx,":","%3A")
+        CU.urlRegEx = replace(CU.urlRegEx,"/","%2F")
+        CU.urlRegEx = replace(CU.urlRegEx," ","%20")
     end
 
     if isdefined(:CuSyntheticBodySize)
