@@ -557,7 +557,7 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
 end
 
-function monitorListResults(SP::ShowParams,NR::NrParams,monitorListDict::Dict)
+function monitorListResults(SP::ShowParams,monitorListDict::Dict)
 
     if SP.debugLevel > 8
         println("Monitor List Results ",monitorListDict)
