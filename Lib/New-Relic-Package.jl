@@ -320,9 +320,17 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
         drawDF[:col1] = NR.results.row[:timestamp]
         drawDF[:data1] = NR.results.row[theSymbol]
 
+        #Trim points above 3 StdDev
         dv = Array{Float64}(drawDF[:data1])
         statsDF = basicStatsFromDV(dv)
-        beautifyDF(statsDF)
+        topRangeA = statsDF[:median] + (3 * statsDF[:stddev])
+        topRange = topRangeA[1]
+        nrows, ncols = size(drawDF)
+        for row in 1:nrows
+            if drawDF[row,:data1] > topRange
+                drawDF[row,:data1] = topRange
+            end
+        end
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title], mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
     catch y
