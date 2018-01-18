@@ -269,6 +269,7 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
     jsonMonitorList = curlSelectActiveSyntheticMonitors(SP,CU)
     monitorListDict = curlSyntheticJson(SP,jsonMonitorList)
+    monitorListDF = returnMonitorList(SP,monitorListDict)
     println(monitorListDict)
 
     return
@@ -556,23 +557,19 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
 end
 
-function monitorListResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
+function monitorListResults(SP::ShowParams,NR::NrParams,monitorListDict::Dict)
 
     if SP.debugLevel > 8
-        println("Monitor List Results ",resultsArray)
+        println("Monitor List Results ",monitorListDict)
     end
 
-    eventsDict = resultsArray[1]
-    eventArray = eventsDict["events"]
+    resultsArray = monitorListDict["results"]
+    eventArray = resultsArray["members"]
 
     nrows = length(eventArray)
     #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
 
-    colnames = ["timestamp","jobId","onPageContentLoad","onPageLoad",
-        "duration","durationBlocked","durationConnect","durationDNS","durationReceive","durationSend","durationSSL","durationWait",
-        "requestBodySize","requestHeaderSize","responseBodySize","responseHeaderSize","responseStatus","responseCode","pageref",
-        "contentType","contentCategory","verb","externalResource","host","path",
-        "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"]
+    colnames = ["name"]
 
     ncols = length(colnames)
 
@@ -585,17 +582,11 @@ function monitorListResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
         end
     end
 
-    df = names!(df,[Symbol("timestamp"),Symbol("jobId"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
-    Symbol("duration"),Symbol("durationBlocked"),Symbol("durationConnect"),Symbol("durationDNS"),
-    Symbol("durationReceive"),Symbol("durationSend"),Symbol("durationSSL"),Symbol("durationWait"),
-    Symbol("requestBodySize"),Symbol("requestHeaderSize"),Symbol("responseBodySize"),Symbol("responseHeaderSize"),
-    Symbol("responseStatus"),Symbol("responseCode"),Symbol("pageref"),Symbol("contentType"),
-    Symbol("contentCategory"),Symbol("verb"),Symbol("externalResource"),Symbol("host"),Symbol("path"),
-    Symbol("hierarchicalURL"),Symbol("URL"),Symbol("domain"),Symbol("serverIPAddress""jobId"),Symbol("monitorName")])
+    df = names!(df,[Symbol("name")])
 
-    sort!(df,cols=[order(:timestamp,rev=false)])
+    sort!(df,cols=[order(:name,rev=false)])
 
-    if SP.debugLevel > 4
+    if SP.debugLevel > -1
         quickTitle("Debug4: Fill New Relic Results")
         beautifyDF(df[1:10,:],maxRows=500)
     end
