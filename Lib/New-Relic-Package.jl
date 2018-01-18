@@ -321,7 +321,7 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
         drawDF[:data1] = NR.results.row[theSymbol]
 
         dv = Array{Float64}(drawDF[:data1])
-        stats = basicStatsFromDv(dv)
+        stats = basicStatsFromDV(dv)
         println(stats)
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title], mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
