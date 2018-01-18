@@ -118,15 +118,11 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
     end
 
     #Grab the UP urlRegEx and convert it
-    localUrl = "https%3A%2F%2Fwww.nationalgeographic.com%2Fphotography%2Fproof%2F2017%2F09%2Ffall-equinox-gallery%2F"
-    println(localUrl)
-    println(CU.urlRegEx)
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
-    #curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=select%20average(totalResponseBodySize)%20FROM%20SyntheticCheck%20WHERE%20%20monitorName%20%3D%27JTP-Gallery-Equinox-M%27%20SINCE%2030%20days%20ago%20TIMESERIES%20%20auto"
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
         "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
-        "and%20URL%20like%20%27" * localUrl * "%27%20" *
+        "and%20URL%20like%20%27" * CU.urlRegEx * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
     curlStr = ["-H","$apiKey","$curlCommand"]
 
