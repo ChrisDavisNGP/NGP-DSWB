@@ -346,7 +346,8 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
         beautifyDF(statsDF)
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title],
-                mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
+                mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"],
+                axis_x_min=axis_x_min)
     catch y
         println("quickTimestampViz exception ",y)
     end
