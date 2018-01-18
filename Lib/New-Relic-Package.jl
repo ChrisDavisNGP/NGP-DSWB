@@ -270,7 +270,12 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
     jsonMonitorList = curlSelectActiveSyntheticMonitors(SP,CU)
     monitorListDict = curlSyntheticJson(SP,jsonMonitorList)
     monitorListDF = monitorListResults(SP,monitorListDict)
-    println(monitorListDict)
+
+    for monitor in monitorListDF[:name]
+
+        #select on page load data
+
+    end
 
     return
     jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
