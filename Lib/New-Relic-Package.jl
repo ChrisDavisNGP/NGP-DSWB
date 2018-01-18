@@ -227,6 +227,29 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
+function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::CurlParams)
+
+    if SP.debugLevel > 8
+        println("Starting dailyChangeCheckOnPageLoad")
+    end
+
+    # Get a list of Monitors
+
+    monitorListDict = syntheticCommands(TV,SP,CU)
+    println(monitorListDict)
+
+    return
+    jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+    monitorsDF = fillNrTotalResults(SP,NR,timeDict)
+    sizeMonitorsDF = deepcopy(monitorsDF)
+
+    diffDailyChange(SP,monitorsDF;diffBySize=false)
+    diffDailyChange(SP,sizeMonitorsDF;diffBySize=true)
+
+end
+
+
 function dailyChangeCheckWorkflow(SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     dailyChangeCheck(SP,NR,CU)
@@ -456,6 +479,54 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
     if SP.debugLevel > 8
         println("Series ",resultsArray)
+    end
+
+    eventsDict = resultsArray[1]
+    eventArray = eventsDict["events"]
+
+    nrows = length(eventArray)
+    #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
+
+    colnames = ["timestamp","jobId","onPageContentLoad","onPageLoad",
+        "duration","durationBlocked","durationConnect","durationDNS","durationReceive","durationSend","durationSSL","durationWait",
+        "requestBodySize","requestHeaderSize","responseBodySize","responseHeaderSize","responseStatus","responseCode","pageref",
+        "contentType","contentCategory","verb","externalResource","host","path",
+        "hierarchicalURL","URL","domain","serverIPAddress""jobId","monitorName"]
+
+    ncols = length(colnames)
+
+    #println("events=",colnames," nrows=",nrows," ncols=",ncols)
+
+    df = DataFrame(Any,nrows,ncols)
+    for i in 1:nrows
+        for j in 1:ncols
+            df[i, j] = get(eventArray[i],colnames[j],NA)
+        end
+    end
+
+    df = names!(df,[Symbol("timestamp"),Symbol("jobId"),Symbol("onPageContentLoad"),Symbol("onPageLoad"),
+    Symbol("duration"),Symbol("durationBlocked"),Symbol("durationConnect"),Symbol("durationDNS"),
+    Symbol("durationReceive"),Symbol("durationSend"),Symbol("durationSSL"),Symbol("durationWait"),
+    Symbol("requestBodySize"),Symbol("requestHeaderSize"),Symbol("responseBodySize"),Symbol("responseHeaderSize"),
+    Symbol("responseStatus"),Symbol("responseCode"),Symbol("pageref"),Symbol("contentType"),
+    Symbol("contentCategory"),Symbol("verb"),Symbol("externalResource"),Symbol("host"),Symbol("path"),
+    Symbol("hierarchicalURL"),Symbol("URL"),Symbol("domain"),Symbol("serverIPAddress""jobId"),Symbol("monitorName")])
+
+    sort!(df,cols=[order(:timestamp,rev=false)])
+
+    if SP.debugLevel > 4
+        quickTitle("Debug4: Fill New Relic Results")
+        beautifyDF(df[1:10,:],maxRows=500)
+    end
+
+    NR.results.row = deepcopy(df)
+
+end
+
+function monitorListResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
+
+    if SP.debugLevel > 8
+        println("Monitor List Results ",resultsArray)
     end
 
     eventsDict = resultsArray[1]
