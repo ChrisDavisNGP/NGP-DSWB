@@ -329,6 +329,7 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
         drawDF = DataFrame()
         drawDF[:col1] = NR.results.row[:timestamp]
         drawDF[:data1] = NR.results.row[theSymbol]
+        axis_x_min = 0
 
         #Trim points above 3 StdDev
         dv = Array{Float64}(drawDF[:data1])
@@ -344,7 +345,8 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
 
         beautifyDF(statsDF)
 
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title], mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
+        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title],
+                mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
     catch y
         println("quickTimestampViz exception ",y)
     end
