@@ -269,7 +269,7 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
     jsonMonitorList = curlSelectActiveSyntheticMonitors(SP,CU)
     monitorListDict = curlSyntheticJson(SP,jsonMonitorList)
-    monitorListDF = returnMonitorList(SP,monitorListDict)
+    monitorListDF = monitorListResults(SP,monitorListDict)
     println(monitorListDict)
 
     return
@@ -591,7 +591,7 @@ function monitorListResults(SP::ShowParams,NR::NrParams,monitorListDict::Dict)
         beautifyDF(df[1:10,:],maxRows=500)
     end
 
-    NR.results.row = deepcopy(df)
+    return df
 
 end
 
