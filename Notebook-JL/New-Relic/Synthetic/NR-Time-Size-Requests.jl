@@ -43,5 +43,5 @@ end
 
 newRelicConvert(SP,NR,synChkBodySizeDict)
 
-timeSizeRequestsWorkflow(TV,UP,SP,NR,CU)
+timeSizeRequestsWorkflow(TV,SP,NR,CU)
 ;

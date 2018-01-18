@@ -30,5 +30,5 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-syntheticStatsWorkflow(TV,SP,NR,CU)
+dailyChangeCheckOnPageLoadWorkflow(SP,NR,CU)
 ;

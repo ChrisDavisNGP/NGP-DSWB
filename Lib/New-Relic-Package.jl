@@ -66,6 +66,46 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
 end
 
+function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParams,monitor::ASCIIString)
+
+# Select all monitors and call the following
+
+#SELECT timestamp,checkId,monitorName,onPageLoad FROM SyntheticRequest
+#where pageref = 'page_0' and externalResource is false and responseStatus = 'OK'
+#and port = 443 and contentType = 'text/html' and verb = 'GET' and
+#monitorName = 'JTP-Gallery-Beach' since 1 day ago limit 1000
+
+    if SP.debugLevel > 8
+        println("Started Page Loaded ",TV.timeString)
+    end
+
+    if CU.apiAdminKey != "no id"
+    else
+        Key = "unknown"
+    end
+
+    apiKey = "X-Query-Key:" * CU.apiQueryKey
+
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
+        "SELECT%20timestamp%2CcheckId%2CmonitorName%2ConPageLoad%20FROM%20SyntheticRequest%20" *
+        "where%20pageref%20%3D%20%27page_0%27%20and%20externalResource%20is%20false%20and%20" *
+        "responseStatus%20%3D%20%27OK%27%20and%20port%20%3D%20443%20and%20contentType%20%3D%20" *
+        "%27text%2Fhtml%27%20and%20verb%20%3D%20%27GET%27%20and%20" *
+        "monitorName%20%3D%20%27" * monitor * "%27%20since%201%20day%20ago%20limit%201000"
+
+    curlStr = ["-H","$apiKey","$curlCommand"]
+
+    if SP.debugLevel > -1
+        println("curlStr=",curlStr)
+    end
+
+    curlCmd = `curl $curlStr`
+    jsonString = readstring(curlCmd)
+
+    return jsonString
+
+end
+
 function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::ASCIIString,endTimeNR::ASCIIString)
 
     if SP.debugLevel > 8
@@ -102,7 +142,6 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
     jsonString = readstring(curlCmd)
 
     return jsonString
-
 
 end
 
@@ -188,15 +227,13 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
-function dailyChangeCheckWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+function dailyChangeCheckWorkflow(SP::ShowParams,NR::NrParams,CU::CurlParams)
 
-    #openingTitle(TV,UP,SP)
-
-    dailyChangeCheck(UP,SP,NR,CU)
+    dailyChangeCheck(SP,NR,CU)
 
 end
 
-function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+function dailyChangeCheck(SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     if SP.debugLevel > 8
         println("Starting dailyChangeCheck")
@@ -212,15 +249,15 @@ function dailyChangeCheck(UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlPara
 
 end
 
-function timeSizeRequestsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+function timeSizeRequestsWorkflow(TV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     #openingTitle(TV,UP,SP)
 
-    investigateSizeProblems(TV,UP,SP,NR,CU)
+    investigateSizeProblems(TV,SP,NR,CU)
 
 end
 
-function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+function investigateSizeProblems(TV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     if SP.debugLevel > 8
         println("Starting investigateSizeProblems")
@@ -267,15 +304,15 @@ function investigateSizeProblems(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::N
 
 end
 
-function syntheticStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+function syntheticStatsWorkflow(TV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     #openingTitle(TV,UP,SP)
 
-    investigateStats(TV,UP,SP,NR,CU)
+    investigateStats(TV,SP,NR,CU)
 
 end
 
-function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams,CU::CurlParams)
+function investigateStats(TV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     if SP.debugLevel > 8
         println("Starting investigateStats")

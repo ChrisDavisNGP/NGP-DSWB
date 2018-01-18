@@ -30,5 +30,5 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-dailyChangeCheckWorkflow(TV,UP,SP,NR,CU)
+dailyChangeCheckWorkflow(SP,NR,CU)
 ;
