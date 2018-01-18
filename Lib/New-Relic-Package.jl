@@ -564,7 +564,8 @@ function monitorListResults(SP::ShowParams,monitorListDict::Dict)
     end
 
     resultsArray = monitorListDict["results"]
-    eventArray = resultsArray["members"]
+    resultsDict = resultsArray[1]
+    eventArray = resultsDict["members"]
 
     nrows = length(eventArray)
     #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
@@ -577,9 +578,7 @@ function monitorListResults(SP::ShowParams,monitorListDict::Dict)
 
     df = DataFrame(Any,nrows,ncols)
     for i in 1:nrows
-        for j in 1:ncols
-            df[i, j] = get(eventArray[i],colnames[j],NA)
-        end
+        df[i, 1] = eventArray[i]
     end
 
     df = names!(df,[Symbol("name")])
