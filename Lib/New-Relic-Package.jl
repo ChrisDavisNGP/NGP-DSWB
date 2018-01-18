@@ -310,7 +310,17 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
     quickTimestampViz(NR,:duration,"Duration")
     quickTimestampViz(NR,:onPageContentLoad,"On Page Content Load")
     quickTimestampViz(NR,:durationBlocked,"Duration Blocked")
-
+    quickTimestampViz(NR,:durationConnect,"Duration Connect")
+    quickTimestampViz(NR,:durationDNS,"Duration DNS")
+    quickTimestampViz(NR,:durationReceive,"Duration Receive")
+    quickTimestampViz(NR,:durationSend,"Duration Send")
+    quickTimestampViz(NR,:durationSSL,"Duration SSL")
+    quickTimestampViz(NR,:durationWait,"Duration Wait")
+    quickTimestampViz(NR,:requestBodySize,"Request Body Size")
+    quickTimestampViz(NR,:requestHeaderSize,"Request Header Size")
+    quickTimestampViz(NR,:responseBodySize,"Response Body Size")
+    quickTimestampViz(NR,:responseHeaderSize,"Response Header Size")
+    quickTimestampViz(NR,:responseCode,"Response Code")
 
 end
 
