@@ -123,7 +123,7 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
         "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
         "and%20URL%20like%20%27" * CU.urlRegEx * "%27%20" *
-        "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
+        "with%20timezone%20%27America%2FNew_York%27"
     curlStr = ["-H","$apiKey","$curlCommand"]
 
     # Todo regular expression tests for "unknown" and report failure and return empty
