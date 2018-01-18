@@ -302,7 +302,7 @@ function investigateStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,NR::NrParams
 
 #    println(" row count 1 ",size(df,1))
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 6
         beautifyDF(NR.results.row[1:3,:])
     end
 
@@ -341,6 +341,8 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
                 drawDF[row,:data1] = topRange
             end
         end
+
+        beautifyDF(statsDF)
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=[Title], mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"])
     catch y
