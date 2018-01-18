@@ -111,6 +111,42 @@ function basicStatsFromDV(dv::DataVector)
     end
 end
 
+# Safer Version with array of floats
+function basicStatsFromDV(dv::Array)
+    try
+
+        statsArr(v) = round(v,0)
+
+        dv = dropna(dv)
+        stats = DataFrame()
+        stats[:unit] = ["milliseconds"]
+        stats[:count] = size(dv,1)
+        stats[:mean] = statsArr(mean(dv))
+        stats[:median] = statsArr(median(dv))
+        stats[:stddev] = statsArr(std(dv))
+        stats[:variance] = statsArr(var(dv))
+        stats[:min] = statsArr(minimum(dv))
+        stats[:max] = statsArr(maximum(dv))
+        stats[:q25] = statsArr(quantile(dv,[0.25]))
+        stats[:q75] = statsArr(quantile(dv,[0.75]))
+        stats[:kurtosis] = round((kurtosis(dv)),1)
+        stats[:skewness] = round((skewness(dv)),1)
+        stats[:entropy] = round((entropy(dv)),0)
+        stats[:modes] = (modes(dv)[1])
+
+        # Range 1 Std Dev
+        rangeLowerByStd = stats[1,:median] - (3 * stats[1,:stddev])
+        if (rangeLowerByStd < 0.0) rangeLowerByStd = 1.0 end
+        rangeUpperByStd = stats[1,:median] + (3 * stats[1,:stddev])
+
+        stats[:LowerBy3Stddev] = (rangeLowerByStd)
+        stats[:UpperBy3Stddev] = (rangeUpperByStd)
+        return stats
+    catch y
+        println("basicStatsFromDV Array Exception ",y)
+    end
+end
+
 function runningStats(year::Int64,month::Int64,day::Int64,hour::Int64,localStatsDF::DataFrame)
     try
 
