@@ -88,8 +88,8 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
 
-    startTimeNR = standardStartTimeNR(TV)
-    endTimeNR = standardStartTimeNR(TV)
+    #startTimeNR = standardStartTimeNR(TV)
+    #endTimeNR = standardStartTimeNR(TV)
 
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "SELECT%20timestamp%2CcheckId%2CmonitorName%2ConPageLoad%20FROM%20SyntheticRequest%20" *

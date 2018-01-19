@@ -352,11 +352,3 @@ function pickTime()
     localtv = yesterdayTimeVariables()
     return localtv
 end
-
-function standardStartTimeNR(TV::TimeVars)
-    # return time that New Relic can read
-
-    return TV.startTime
-    )
-
-end
