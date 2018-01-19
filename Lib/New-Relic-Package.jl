@@ -270,14 +270,14 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
         jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"1")
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         onPageLoadNewDF = monitorOnPageLoad(SP,onPageLoadDict)
-        beautifyDF(onPageLoadNewDF)
+        #beautifyDF(onPageLoadNewDF)
 
-        #jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"2")
-        #onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
-        #onPageLoadOldDF = returnOnPageLoad(SP,onPageLoadDict)
+        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"2")
+        onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
+        onPageLoadOldDF = returnOnPageLoad(SP,onPageLoadDict)
 
         #diffDailyChangeOnPage(SP,onPageLoadNewDF,onPageLoadOldDF)
-        break;
+        #break;
     end
 
     return
@@ -598,19 +598,18 @@ end
 
 function monitorOnPageLoad(SP::ShowParams,onPageLoadDict::Dict)
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 8
         println("On Page Load Results ",onPageLoadDict)
     end
 
-    return
-    resultsArray = monitorListDict["results"]
-    resultsDict = resultsArray[1]
-    eventArray = resultsDict["members"]
+    resultsArray = onPageLoadDict["results"]
+    eventsDict = resultsArray[1]
+    eventArray = eventsDict["events"]
 
     nrows = length(eventArray)
     #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
 
-    colnames = ["name"]
+    colnames = ["checkId","monitorName","timestamp","onPageLoad"]
 
     ncols = length(colnames)
 
@@ -618,16 +617,18 @@ function monitorOnPageLoad(SP::ShowParams,onPageLoadDict::Dict)
 
     df = DataFrame(Any,nrows,ncols)
     for i in 1:nrows
-        df[i, 1] = eventArray[i]
+        for j in 1:ncols
+            df[i, j] = get(eventArray[i],colnames[j],NA)
+        end
     end
 
-    df = names!(df,[Symbol("name")])
+    df = names!(df,[Symbol("Id"),Symbol("monitor"),Symbol("timestamp"),Symbol("time")])
 
-    sort!(df,cols=[order(:name,rev=false)])
+    sort!(df,cols=[order(:timestamp,rev=false)])
 
-    if SP.debugLevel > 4
+    if SP.debugLevel > -1
         quickTitle("Debug4: Fill New Relic Results")
-        beautifyDF(df[1:10,:],maxRows=500)
+        beautifyDF(df[:,:],maxRows=500)
     end
 
     return df
