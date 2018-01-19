@@ -1007,8 +1007,8 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         drawDF[:data1] = oldDF[:OnPageLoad]
         axis_x_min = 0
 
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Old"],
-                mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"],
+        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["On Page Load"],
+                mPulseWidget=false, chart_title= "Old Chart", vizTypes=["line"],
                 axis_x_min=axis_x_min)
     catch y
         println("quickTimestampViz Old exception ",y)
@@ -1023,8 +1023,8 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         drawDF[:data1] = newDF[:OnPageLoad]
         axis_x_min = 0
 
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["New"],
-                mPulseWidget=false, chart_title= Title * " Chart", vizTypes=["line"],
+        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["On Page Load"],
+                mPulseWidget=false, chart_title= "New Chart", vizTypes=["line"],
                 axis_x_min=axis_x_min)
     catch y
         println("quickTimestampViz New exception ",y)
