@@ -88,8 +88,10 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
 
-    #startTimeNR = standardStartTimeNR(TV)
-    #endTimeNR = standardStartTimeNR(TV)
+    startTimeNR = replace(TV.startTimeStr," ","%20")
+    startTimeNR = replace(startTimeNR,":","%3A")
+    endTimeNR = replace(TV.endTimeStr," ","%20")
+    endTimeNR = replace(endTimeNR,":","%3A")
 
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "SELECT%20timestamp%2CcheckId%2CmonitorName%2ConPageLoad%20FROM%20SyntheticRequest%20" *
@@ -97,7 +99,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
         "responseStatus%20%3D%20%27OK%27%20and%20port%20%3D%20443%20and%20contentType%20%3D%20" *
         "%27text%2Fhtml%27%20and%20verb%20%3D%20%27GET%27%20and%20" *
         "monitorName%20%3D%20%27" * monitor * "%27%20" *
-        "since%20%27" * TV.startTime * "%27%20until%20%27" * TV.endTime * "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%" *
+        "since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR * "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%" *
         "%20limit%201000"
 #        since%20" * day * "%20day%20ago
 

@@ -213,6 +213,8 @@ type TimeVars
     endTime::DateTime
     startTimeMs::Int64
     endTimeMs::Int64
+    startTimeStr::ASCIIString
+    endTimeStr::ASCIIString
     startTimeUTC::DateTime
     endTimeUTC::DateTime
     startTimeMsUTC::Int64
