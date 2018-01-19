@@ -66,7 +66,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
 end
 
-function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParams,monitor::ASCIIString)
+function curlSelectByMonitorOnPageLoad(SP::ShowParams,CU::CurlParams,monitor::ASCIIString,day::Int64)
 
 # Select all monitors and call the following
 
@@ -76,8 +76,10 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 #monitorName = 'JTP-Gallery-Beach' since 1 day ago limit 1000
 
     if SP.debugLevel > 8
-        println("Started Page Loaded ",TV.timeString)
+        println("Started Page Loaded ")
     end
+
+    monitor = replace(monitor," ","%20")
 
     if CU.apiAdminKey != "no id"
     else
@@ -91,7 +93,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
         "where%20pageref%20%3D%20%27page_0%27%20and%20externalResource%20is%20false%20and%20" *
         "responseStatus%20%3D%20%27OK%27%20and%20port%20%3D%20443%20and%20contentType%20%3D%20" *
         "%27text%2Fhtml%27%20and%20verb%20%3D%20%27GET%27%20and%20" *
-        "monitorName%20%3D%20%27" * monitor * "%27%20since%201%20day%20ago%20limit%201000"
+        "monitorName%20%3D%20%27" * monitor * "%27%20since%20" * day * "%20day%20ago%20limit%201000"
 
     curlStr = ["-H","$apiKey","$curlCommand"]
 
@@ -158,15 +160,7 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
         "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500%20COMPARE%20WITH%20" * compareWith
     curlStr = ["-H","$apiKey","$curlCommand"]
 
-    #SELECT stddev(totalResponseBodySize),average(totalResponseBodySize),stddev(duration),average(duration) FROM SyntheticCheck facet monitorName since '2018-01-10 00:07:00' until '2018-01-10 17:00:00' with TIMEZONE 'America/New_York' limit 500
-    # https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20
-    #stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20
-    #FROM%20SyntheticCheck%20facet%20monitorName%20%
-    #since%20%272018-01-10%2007%3A00%3A00%27%20
-    #until%20%272018-01-10%2017%3A00%3A0027%20
-    #with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500
-
-    if SP.debugLevel > 4
+    if SP.debugLevel > -1
         println("curlStr=",curlStr)
     end
 
@@ -273,18 +267,21 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
     for monitor in monitorListDF[:name]
 
-        #select on page load data
+        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,1)
+        onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
+        onPageLoadNewDF = returnOnPageLoad(SP,onPageLoadDict)
+        beautifyDF(onPageLoadNewDF)
 
+        #jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,2)
+        #onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
+        #onPageLoadOldDF = returnOnPageLoad(SP,onPageLoadDict)
+
+        #diffDailyChangeOnPage(SP,onPageLoadNewDF,onPageLoadOldDF)
+        break;
     end
 
     return
-    jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
-    timeDict = curlSyntheticJson(SP,jsonTimeString)
-    monitorsDF = fillNrTotalResults(SP,NR,timeDict)
-    sizeMonitorsDF = deepcopy(monitorsDF)
 
-    diffDailyChange(SP,monitorsDF;diffBySize=false)
-    diffDailyChange(SP,sizeMonitorsDF;diffBySize=true)
 
 end
 
@@ -590,7 +587,7 @@ function monitorListResults(SP::ShowParams,monitorListDict::Dict)
 
     sort!(df,cols=[order(:name,rev=false)])
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 4
         quickTitle("Debug4: Fill New Relic Results")
         beautifyDF(df[1:10,:],maxRows=500)
     end
