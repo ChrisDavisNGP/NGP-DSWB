@@ -56,7 +56,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
     end
 
     curlCmd = `curl $curlStr`
-    jsonString = readstring(curlCmd)
+    jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
 
     # Picked syn monitor "JTP-Gallery-Equinox-M"
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d'
@@ -111,7 +111,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
     end
 
     curlCmd = `curl $curlStr`
-    jsonString = readstring(curlCmd)
+    jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
 
     return jsonString
 
@@ -141,7 +141,7 @@ function curlSelectActiveSyntheticMonitors(SP::ShowParams,CU::CurlParams)
     end
 
     curlCmd = `curl $curlStr`
-    jsonString = readstring(curlCmd)
+    jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
 
     return jsonString
 
@@ -174,7 +174,7 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
     end
 
     curlCmd = `curl $curlStr`
-    jsonString = readstring(curlCmd)
+    jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
 
     return jsonString
 
@@ -206,7 +206,7 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
     end
 
     curlCmd = `curl $curlStr`
-    jsonString = readstring(curlCmd)
+    jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
 
     # Picked syn monitor "JTP-Gallery-Equinox-M"
     #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d'
