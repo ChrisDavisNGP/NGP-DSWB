@@ -968,9 +968,9 @@ function diffDailyChangeOnPageLoad(SP::ShowParams,newDF::DataFrame,oldDF::DataFr
         beautifyDF(oldDF[1:min(10,end),:])
     end
 
-    dvOld = Array{Float64}(oldDF[:onPageLoad])
+    dvOld = Array{Float64}(oldDF[:OnPageLoad])
     statsOldDF = basicStatsFromDV(dvOld)
-    dvNew = Array{Float64}(newDF[:onPageLoad])
+    dvNew = Array{Float64}(newDF[:OnPageLoad])
     statsNewDF = basicStatsFromDV(dvNew)
 
     beautifyDF(statsOldDF)

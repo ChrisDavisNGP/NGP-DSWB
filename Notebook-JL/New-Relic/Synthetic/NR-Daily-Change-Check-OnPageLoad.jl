@@ -16,7 +16,10 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 
 include("../../../Lib/Include-Package.jl")
 
-TV = pickTime()
+#Default is yesterday from 7 to 17
+oldTV = pickTime()
+TvTodayWorkDay = true
+newTV = pickTime()
 #TV = timeVariables(2017,10,27,23,59,2017,11,3,23,59)
 
 UP = UrlParamsInit(scriptName)

@@ -214,11 +214,50 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
     end
 end
 
+function todayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
+    try
+        if (hours > 0)
+            startHour = 13
+            endHour = startHour + hours
+            if (endHour > 23)
+                endHour = 23
+            end
+        end
+        #firstAndLast = getBeaconsFirstAndLast()
+        endTime = DateTime(Dates.today() - Hour(24-endHour))
+        startTime = DateTime(endTime - Hour(endHour-startHour) + Second(1))
+
+        localtv =
+        timeVariables(
+            Dates.year(startTime),
+            Dates.month(startTime),
+            Dates.day(startTime),
+            Dates.hour(startTime),
+            Dates.minute(startTime),
+            Dates.year(endTime),
+            Dates.month(endTime),
+            Dates.day(endTime),
+            Dates.hour(endTime),
+            Dates.minute(endTime)
+        );
+
+        return localtv
+
+    catch y
+        println("yesterdayTimeVariables Exception ",y)
+    end
+end
+
 function pickTime()
 
     # Greater than 10 hours is the usual work day
     if isdefined(:TvHours) && TvHours < 10
         localtv = yesterdayTimeVariables(hours=TvHours)
+        return localtv
+    end
+
+    if isdefined(:TvTodayWorkDay)
+        localtv = todayTimeVariables()
         return localtv
     end
 
