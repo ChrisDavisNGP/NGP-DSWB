@@ -106,7 +106,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
     curlStr = ["-H","$apiKey","$curlCommand"]
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 4
         println("curlStr=",curlStr)
     end
 
@@ -136,7 +136,7 @@ function curlSelectActiveSyntheticMonitors(SP::ShowParams,CU::CurlParams)
         "SELECT%20uniques(monitorName)%20FROM%20SyntheticCheck%20where%20type%20in%20(%27BROWSER%27%2C%27SCRIPT_BROWSER%27)%20SINCE%201%20day%20AGO"
     curlStr = ["-H","$apiKey","$curlCommand"]
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 4
         println("curlStr=",curlStr)
     end
 
@@ -293,7 +293,7 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
             continue
         end
 
-        diffDailyChangeOnPageLoad(SP,onPageLoadNewDF,onPageLoadOldDF)
+        diffDailyChangeOnPageLoad(oldTV,newTV,SP,onPageLoadNewDF,onPageLoadOldDF)
         #break;
     end
 
@@ -968,7 +968,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
 
 end
 
-function diffDailyChangeOnPageLoad(SP::ShowParams,newDF::DataFrame,oldDF::DataFrame)
+function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParams,newDF::DataFrame,oldDF::DataFrame)
 
 
     if SP.debugLevel > 8
@@ -982,35 +982,12 @@ function diffDailyChangeOnPageLoad(SP::ShowParams,newDF::DataFrame,oldDF::DataFr
     dvNew = Array{Float64}(newDF[:OnPageLoad])
     statsNewDF = basicStatsFromDV(dvNew)
 
+    quickTitle(oldDF[1:1,:monitorName] * " " * oldTV.timeString)
     beautifyDF(statsOldDF)
+
+    quickTitle(newDF[1:1,:monitorName] * " " * newTV.timeString)
     beautifyDF(statsNewDF)
     return
-
-    activeMonitorsDF = DataFrame()
-
-    activeMonitorsDF = monitorsDF[Bool[x > 0 for x in monitorsDF[:oldDurationStdDev]],:]
-    activeMonitorsDF = activeMonitorsDF[Bool[x > 0 for x in activeMonitorsDF[:newDurationStdDev]],:]
-
-    if SP.debugLevel > 6
-        beautifyDF(activeMonitorsDF[1:10,:])
-    end
-
-    diffDF = DataFrame(name=ASCIIString[],delta=Float64[],oldStdDev=Float64[],oldAvg=Float64[],newStdDev=Float64[],newAvg=Float64[])
-
-    t1 = 0
-    for name in activeMonitorsDF[:,:name]
-        t1 += 1
-        if diffBySize
-            oldStdDev = activeMonitorsDF[t1:t1,:oldSizeStdDev][1]
-            oldAvg    = activeMonitorsDF[t1:t1,:oldSizeAvg][1]
-            newStdDev = activeMonitorsDF[t1:t1,:newSizeStdDev][1]
-            newAvg    = activeMonitorsDF[t1:t1,:newSizeAvg][1]
-        else
-            oldStdDev = activeMonitorsDF[t1:t1,:oldDurationStdDev][1]
-            oldAvg    = activeMonitorsDF[t1:t1,:oldDurationAvg][1]
-            newStdDev = activeMonitorsDF[t1:t1,:newDurationStdDev][1]
-            newAvg    = activeMonitorsDF[t1:t1,:newDurationAvg][1]
-        end
 
         oldAvgRangeLower = oldAvg - (oldStdDev * CU.howManyStdDev)
         if oldAvgRangeLower < 0
