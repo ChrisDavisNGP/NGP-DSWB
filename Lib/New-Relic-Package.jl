@@ -99,7 +99,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
         "responseStatus%20%3D%20%27OK%27%20and%20port%20%3D%20443%20and%20contentType%20%3D%20" *
         "%27text%2Fhtml%27%20and%20verb%20%3D%20%27GET%27%20and%20" *
         "monitorName%20%3D%20%27" * monitor * "%27%20" *
-        "since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR * "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%" *
+        "since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR * "%27%20with%20TIMEZONE%20%27America%2FNew_York%27" *
         "%20limit%201000"
 #        since%20" * day * "%20day%20ago
 
