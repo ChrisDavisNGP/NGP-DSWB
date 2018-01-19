@@ -66,7 +66,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
 end
 
-function curlSelectByMonitorOnPageLoad(SP::ShowParams,CU::CurlParams,monitor::ASCIIString,day::Int64)
+function curlSelectByMonitorOnPageLoad(SP::ShowParams,CU::CurlParams,monitor::UTF8String,day::Int64)
 
 # Select all monitors and call the following
 
@@ -269,7 +269,7 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
         jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,1)
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
-        onPageLoadNewDF = returnOnPageLoad(SP,onPageLoadDict)
+        onPageLoadNewDF = monitorOnPageLoad(SP,onPageLoadDict)
         beautifyDF(onPageLoadNewDF)
 
         #jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,2)
@@ -565,6 +565,44 @@ function monitorListResults(SP::ShowParams,monitorListDict::Dict)
         println("Monitor List Results ",monitorListDict)
     end
 
+    resultsArray = monitorListDict["results"]
+    resultsDict = resultsArray[1]
+    eventArray = resultsDict["members"]
+
+    nrows = length(eventArray)
+    #colnames = convert(Vector{UTF8String}, collect(keys(eventArray[1])))
+
+    colnames = ["name"]
+
+    ncols = length(colnames)
+
+    #println("events=",colnames," nrows=",nrows," ncols=",ncols)
+
+    df = DataFrame(Any,nrows,ncols)
+    for i in 1:nrows
+        df[i, 1] = eventArray[i]
+    end
+
+    df = names!(df,[Symbol("name")])
+
+    sort!(df,cols=[order(:name,rev=false)])
+
+    if SP.debugLevel > 4
+        quickTitle("Debug4: Fill New Relic Results")
+        beautifyDF(df[1:10,:],maxRows=500)
+    end
+
+    return df
+
+end
+
+function monitorOnPageLoad(SP::ShowParams,onPageLoadDict::Dict)
+
+    if SP.debugLevel > -1
+        println("On Page Load Results ",onPageLoadDict)
+    end
+
+    return
     resultsArray = monitorListDict["results"]
     resultsDict = resultsArray[1]
     eventArray = resultsDict["members"]
