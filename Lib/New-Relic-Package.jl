@@ -293,7 +293,7 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
             continue
         end
 
-        diffDailyChangeOnPageLoad(oldTV,newTV,SP,onPageLoadNewDF,onPageLoadOldDF)
+        diffDailyChangeOnPageLoad(oldTV,newTV,SP,CU,onPageLoadNewDF,onPageLoadOldDF)
         #break;
     end
 
@@ -968,7 +968,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
 
 end
 
-function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParams,newDF::DataFrame,oldDF::DataFrame)
+function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParams,CU::CurlParams,newDF::DataFrame,oldDF::DataFrame)
 
 
     if SP.debugLevel > 8
@@ -982,7 +982,18 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
     dvNew = Array{Float64}(newDF[:OnPageLoad])
     statsNewDF = basicStatsFromDV(dvNew)
 
+    oldLower = statsOldDF[1:1,:median][1] - (statsOldDF[1:1,:stddev][1] * CU.howManyStdDev)
+    if oldLower < 0
+        oldLower = 0
+    end
+    oldUpper = statsOldDF[1:1,:median][1] + (statsOldDF[1:1,:stddev][1] * CU.howManyStdDev)
 
+    if statsNewDF[1:1,:median][1] > oldLower && statsNewDF[1:1,:median][1] < oldUpper
+        if SP.debugLevel > 4
+            println("Rejecting oldLower=$oldLower, oldUpper=$oldUpper, new value=",statsNewDF[1:1,:median][1])
+        end
+        return
+    end
     # Figure out if it is worth printing
 
     quickTitle(ASCIIString(oldDF[1:1,:monitor][1] * " " * oldTV.timeString))
