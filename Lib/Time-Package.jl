@@ -63,8 +63,8 @@ function timeVariables(
         tempTime.endTime = DateTime(Y2,M2,D2,H2,MM2)
         tempTime.startTimeMs = datetimeToMs(tempTime.startTime)
         tempTime.endTimeMs = datetimeToMs(tempTime.endTime)
-        tempTime.startTimeStr = "$(padDateTime(DateTime(tempTime.startTime,"YYYY-mm-dd HH:MM:SS")))"
-        tempTime.endTimeStr = "$(padDateTime(DateTime(tempTime.endTime,"YYYY-mm-dd HH:MM:SS")))"
+        tempTime.startTimeStr = Dates.format(tempTime.startTime,"yyyy-mm-dd HH:MM:SS")
+        tempTime.endTimeStr = Dates.format(tempTime.endTime,"yyyy-mm-dd HH:MM:SS")
 
         tempTime.startTimeUTC = datetimeToUTC(tempTime.startTime, TimeZone("America/New_York"))
         tempTime.endTimeUTC = datetimeToUTC(tempTime.endTime, TimeZone("America/New_York"))
