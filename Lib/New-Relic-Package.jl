@@ -66,7 +66,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
 end
 
-function curlSelectByMonitorOnPageLoad(SP::ShowParams,CU::CurlParams,monitor::UTF8String,day::Int64)
+function curlSelectByMonitorOnPageLoad(SP::ShowParams,CU::CurlParams,monitor::UTF8String,day::ASCIIString)
 
 # Select all monitors and call the following
 
@@ -267,12 +267,12 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
     for monitor in monitorListDF[:name]
 
-        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,1)
+        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"1")
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         onPageLoadNewDF = monitorOnPageLoad(SP,onPageLoadDict)
         beautifyDF(onPageLoadNewDF)
 
-        #jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,2)
+        #jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"2")
         #onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         #onPageLoadOldDF = returnOnPageLoad(SP,onPageLoadDict)
 
