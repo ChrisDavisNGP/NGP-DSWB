@@ -973,8 +973,8 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
 
     if SP.debugLevel > 8
         println("Starting diffDailyChangeOnPageLoad")
-        beautifyDF(newDF[1:min(10,end),:])
-        beautifyDF(oldDF[1:min(10,end),:])
+        beautifyDF(newDF[1:min(3,end),:])
+        beautifyDF(oldDF[1:min(3,end),:])
     end
 
     dvOld = Array{Float64}(oldDF[:OnPageLoad])
@@ -985,10 +985,10 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
 
     # Figure out if it is worth printing
 
-    quickTitle(oldDF[1:1,:monitorName] * " " * oldTV.timeString)
+    quickTitle(ASCIIString(oldDF[1:1,:monitor][1] * " " * oldTV.timeString))
     beautifyDF(statsOldDF)
 
-    quickTitle(newDF[1:1,:monitorName] * " " * newTV.timeString)
+    quickTitle(ASCIIString(newDF[1:1,:monitor][1] * " " * newTV.timeString))
     beautifyDF(statsNewDF)
 
 end
