@@ -1001,6 +1001,9 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
     quickTitle(oldTV.timeString)
     beautifyDF(statsOldDF)
 
+    quickTitle(newTV.timeString)
+    beautifyDF(statsNewDF)
+
     try
         drawDF = DataFrame()
         drawDF[:col1] = oldDF[:timestamp]
@@ -1009,26 +1012,12 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         axis_x_min = 0
 
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Old","New"],
-                mPulseWidget=false, chart_title= "Old Chart", vizTypes=["line","line"],
+                mPulseWidget=false, chart_title= "On Page Load Chart", vizTypes=["line","line"],
                 axis_x_min=axis_x_min)
     catch y
         println("quickTimestampViz Old exception ",y)
     end
 
-    quickTitle(newTV.timeString)
-    beautifyDF(statsNewDF)
 
-    try
-        drawDF = DataFrame()
-        drawDF[:col1] = newDF[:timestamp]
-        drawDF[:data1] = newDF[:OnPageLoad]
-        axis_x_min = 0
-
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["On Page Load"],
-                mPulseWidget=false, chart_title= "New Chart", vizTypes=["line"],
-                axis_x_min=axis_x_min)
-    catch y
-        println("quickTimestampViz New exception ",y)
-    end
 
 end
