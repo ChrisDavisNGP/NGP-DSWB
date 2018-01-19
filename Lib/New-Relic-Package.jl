@@ -66,7 +66,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
 
 end
 
-function curlSelectByMonitorOnPageLoad(SP::ShowParams,CU::CurlParams,monitor::UTF8String,day::ASCIIString)
+function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParams,monitor::UTF8String)
 
 # Select all monitors and call the following
 
@@ -88,12 +88,19 @@ function curlSelectByMonitorOnPageLoad(SP::ShowParams,CU::CurlParams,monitor::UT
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
 
+    startTimeNR = standardStartTimeNR(TV)
+    endTimeNR = standardStartTimeNR(TV)
+
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
         "SELECT%20timestamp%2CcheckId%2CmonitorName%2ConPageLoad%20FROM%20SyntheticRequest%20" *
         "where%20pageref%20%3D%20%27page_0%27%20and%20externalResource%20is%20false%20and%20" *
         "responseStatus%20%3D%20%27OK%27%20and%20port%20%3D%20443%20and%20contentType%20%3D%20" *
         "%27text%2Fhtml%27%20and%20verb%20%3D%20%27GET%27%20and%20" *
-        "monitorName%20%3D%20%27" * monitor * "%27%20since%20" * day * "%20day%20ago%20limit%201000"
+        "monitorName%20%3D%20%27" * monitor * "%27%20" *
+        "since%20%27" * TV.startTime * "%27%20until%20%27" * TV.endTime * "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%" *
+        "%20limit%201000"
+#        since%20" * day * "%20day%20ago
+
 
     curlStr = ["-H","$apiKey","$curlCommand"]
 
@@ -253,7 +260,7 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
-function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::CurlParams)
+function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     if SP.debugLevel > 8
         println("Starting dailyChangeCheckOnPageLoad")
@@ -268,7 +275,7 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
     for monitor in monitorListDF[:name]
 
         # To Do look for locations and divide
-        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"1")
+        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(newTV,SP,CU,monitor)
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         onPageLoadNewDF = monitorOnPageLoad(SP,onPageLoadDict)
 
@@ -276,7 +283,7 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
             continue
         end
 
-        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"2")
+        jsonOnPageLoad = curlSelectByMonitorOnPageLoad(oldTV,SP,CU,monitor)
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         onPageLoadOldDF = monitorOnPageLoad(SP,onPageLoadDict)
 

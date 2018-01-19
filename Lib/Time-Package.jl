@@ -224,7 +224,7 @@ function todayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
             end
         end
         #firstAndLast = getBeaconsFirstAndLast()
-        endTime = DateTime(Dates.today() - Hour(24-endHour))
+        endTime = DateTime(Dates.now() - Hour(24-endHour))
         startTime = DateTime(endTime - Hour(endHour-startHour) + Second(1))
 
         localtv =
@@ -244,7 +244,7 @@ function todayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
         return localtv
 
     catch y
-        println("yesterdayTimeVariables Exception ",y)
+        println("todayTimeVariables Exception ",y)
     end
 end
 
@@ -343,6 +343,20 @@ function pickTime()
 
     end
 
+    # Check if the default was forced
+    if isdefined(:TvYesterdayWorkDay)
+        localtv = yesterdayTimeVariables()
+        return localtv
+    end
+
     localtv = yesterdayTimeVariables()
     return localtv
+end
+
+function standardStartTimeNR(TV::TimeVars)
+    # return time that New Relic can read
+
+    return TV.startTime
+    )
+
 end

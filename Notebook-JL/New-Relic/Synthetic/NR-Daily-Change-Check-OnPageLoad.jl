@@ -17,7 +17,9 @@ setTable(tableRt, tableType = "RESOURCE_TABLE")
 include("../../../Lib/Include-Package.jl")
 
 #Default is yesterday from 7 to 17
+TvYesterdayWorkDay = true
 oldTV = pickTime()
+#Best run after 17:00 each day to get exact comparison
 TvTodayWorkDay = true
 newTV = pickTime()
 #TV = timeVariables(2017,10,27,23,59,2017,11,3,23,59)
@@ -33,5 +35,5 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-dailyChangeCheckOnPageLoadWorkflow(SP,NR,CU)
+dailyChangeCheckOnPageLoadWorkflow(oldTV,newTV,SP,NR,CU)
 ;
