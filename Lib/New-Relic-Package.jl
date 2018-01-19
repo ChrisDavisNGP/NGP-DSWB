@@ -267,16 +267,24 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
     for monitor in monitorListDF[:name]
 
+        # To Do look for locations and divide
         jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"1")
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         onPageLoadNewDF = monitorOnPageLoad(SP,onPageLoadDict)
-        #beautifyDF(onPageLoadNewDF)
+
+        if size(onPageLoadNewDF,1) == 0
+            continue
+        end
 
         jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"2")
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         onPageLoadOldDF = monitorOnPageLoad(SP,onPageLoadDict)
 
-        #diffDailyChangeOnPage(SP,onPageLoadNewDF,onPageLoadOldDF)
+        if size(onPageLoadOldDF,1) == 0
+            continue
+        end
+
+        diffDailyChangeOnPageLoad(SP,onPageLoadNewDF,onPageLoadOldDF)
         #break;
     end
 
@@ -622,11 +630,11 @@ function monitorOnPageLoad(SP::ShowParams,onPageLoadDict::Dict)
         end
     end
 
-    df = names!(df,[Symbol("Id"),Symbol("monitor"),Symbol("timestamp"),Symbol("time")])
+    df = names!(df,[Symbol("Id"),Symbol("monitor"),Symbol("timestamp"),Symbol("OnPageLoad")])
 
     sort!(df,cols=[order(:timestamp,rev=false)])
 
-    if SP.debugLevel > -1
+    if SP.debugLevel > 6
         quickTitle("Debug4: Fill New Relic Results")
         beautifyDF(df[:,:],maxRows=500)
     end
@@ -903,6 +911,76 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
         activeMonitorsDF = monitorsDF[Bool[x > 0 for x in monitorsDF[:oldDurationStdDev]],:]
         activeMonitorsDF = activeMonitorsDF[Bool[x > 0 for x in activeMonitorsDF[:newDurationStdDev]],:]
     end
+
+    if SP.debugLevel > 6
+        beautifyDF(activeMonitorsDF[1:10,:])
+    end
+
+    diffDF = DataFrame(name=ASCIIString[],delta=Float64[],oldStdDev=Float64[],oldAvg=Float64[],newStdDev=Float64[],newAvg=Float64[])
+
+    t1 = 0
+    for name in activeMonitorsDF[:,:name]
+        t1 += 1
+        if diffBySize
+            oldStdDev = activeMonitorsDF[t1:t1,:oldSizeStdDev][1]
+            oldAvg    = activeMonitorsDF[t1:t1,:oldSizeAvg][1]
+            newStdDev = activeMonitorsDF[t1:t1,:newSizeStdDev][1]
+            newAvg    = activeMonitorsDF[t1:t1,:newSizeAvg][1]
+        else
+            oldStdDev = activeMonitorsDF[t1:t1,:oldDurationStdDev][1]
+            oldAvg    = activeMonitorsDF[t1:t1,:oldDurationAvg][1]
+            newStdDev = activeMonitorsDF[t1:t1,:newDurationStdDev][1]
+            newAvg    = activeMonitorsDF[t1:t1,:newDurationAvg][1]
+        end
+
+        oldAvgRangeLower = oldAvg - (oldStdDev * CU.howManyStdDev)
+        if oldAvgRangeLower < 0
+            oldAvgRangeLower = 0
+        end
+        oldAvgRangeUpper = oldAvg + (oldStdDev * CU.howManyStdDev)
+
+        #println("Name=",name," newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
+
+        if newAvg < oldAvgRangeLower || newAvg > oldAvgRangeUpper
+            deltaPercent = (newAvg-oldAvg) / oldAvg * 100.0
+            push!(diffDF,[name,deltaPercent,oldStdDev,oldAvg,newStdDev,newAvg])
+        end
+    end
+
+    sort!(diffDF,cols=[order(:delta,rev=true),order(:oldAvg,rev=true),order(:newAvg,rev=true)])
+
+    if diffBySize
+        diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Size Change"),Symbol("Old Size StdDev"),Symbol("Old Size"),Symbol("New Size StdDev"),Symbol("New Size")])
+    else
+        diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Duration Change"),Symbol("Old Duration StdDev"),Symbol("Old Duration"),Symbol("New Duration StdDev"),Symbol("New Duration")])
+    end
+
+    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
+
+end
+
+function diffDailyChangeOnPageLoad(SP::ShowParams,newDF::DataFrame,oldDF::DataFrame)
+
+
+    if SP.debugLevel > 8
+        println("Starting diffDailyChangeOnPageLoad")
+        beautifyDF(newDF[1:min(10,end),:])
+        beautifyDF(oldDF[1:min(10,end),:])
+    end
+
+    dvOld = Array{Float64}(oldDF[:onPageLoad])
+    statsOldDF = basicStatsFromDV(dvOld)
+    dvNew = Array{Float64}(newDF[:onPageLoad])
+    statsNewDF = basicStatsFromDV(dvNew)
+
+    beautifyDF(statsOldDF)
+    beautifyDF(statsNewDF)
+    return
+
+    activeMonitorsDF = DataFrame()
+
+    activeMonitorsDF = monitorsDF[Bool[x > 0 for x in monitorsDF[:oldDurationStdDev]],:]
+    activeMonitorsDF = activeMonitorsDF[Bool[x > 0 for x in activeMonitorsDF[:newDurationStdDev]],:]
 
     if SP.debugLevel > 6
         beautifyDF(activeMonitorsDF[1:10,:])
