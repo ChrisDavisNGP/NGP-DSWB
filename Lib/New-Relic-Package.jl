@@ -274,7 +274,7 @@ function dailyChangeCheckOnPageLoadWorkflow(SP::ShowParams,NR::NrParams,CU::Curl
 
         jsonOnPageLoad = curlSelectByMonitorOnPageLoad(SP,CU,monitor,"2")
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
-        onPageLoadOldDF = returnOnPageLoad(SP,onPageLoadDict)
+        onPageLoadOldDF = monitorOnPageLoad(SP,onPageLoadDict)
 
         #diffDailyChangeOnPage(SP,onPageLoadNewDF,onPageLoadOldDF)
         #break;
