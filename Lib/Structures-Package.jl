@@ -226,7 +226,7 @@ end
 
 function TimeVarsInit()
     dt = DateTime(2000,1,1,1,1)
-    TV = TimeVars(dt,dt,0,0,dt,dt,0,0,:hour,"a","b")
+    TV = TimeVars(dt,dt,0,0,"","",dt,dt,0,0,:hour,"a","b")
     return TV
 end
 
