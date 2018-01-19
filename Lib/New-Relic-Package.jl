@@ -982,35 +982,13 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
     dvNew = Array{Float64}(newDF[:OnPageLoad])
     statsNewDF = basicStatsFromDV(dvNew)
 
+
+    # Figure out if it is worth printing
+
     quickTitle(oldDF[1:1,:monitorName] * " " * oldTV.timeString)
     beautifyDF(statsOldDF)
 
     quickTitle(newDF[1:1,:monitorName] * " " * newTV.timeString)
     beautifyDF(statsNewDF)
-    return
-
-        oldAvgRangeLower = oldAvg - (oldStdDev * CU.howManyStdDev)
-        if oldAvgRangeLower < 0
-            oldAvgRangeLower = 0
-        end
-        oldAvgRangeUpper = oldAvg + (oldStdDev * CU.howManyStdDev)
-
-        #println("Name=",name," newAvg=",newAvg," oldAvgRangeLower=",oldAvgRangeLower," oldAvgRangeUpper=",oldAvgRangeUpper)
-
-        if newAvg < oldAvgRangeLower || newAvg > oldAvgRangeUpper
-            deltaPercent = (newAvg-oldAvg) / oldAvg * 100.0
-            push!(diffDF,[name,deltaPercent,oldStdDev,oldAvg,newStdDev,newAvg])
-        end
-    end
-
-    sort!(diffDF,cols=[order(:delta,rev=true),order(:oldAvg,rev=true),order(:newAvg,rev=true)])
-
-    if diffBySize
-        diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Size Change"),Symbol("Old Size StdDev"),Symbol("Old Size"),Symbol("New Size StdDev"),Symbol("New Size")])
-    else
-        diffDF = names!(diffDF,[Symbol("Monitor"),Symbol("% Duration Change"),Symbol("Old Duration StdDev"),Symbol("Old Duration"),Symbol("New Duration StdDev"),Symbol("New Duration")])
-    end
-
-    beautifyDF(diffDF,defaultNumberFormat=(:precision => 0, :commas => true))
 
 end
