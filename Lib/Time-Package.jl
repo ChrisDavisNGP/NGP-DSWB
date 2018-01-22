@@ -218,18 +218,15 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
     end
 end
 
-function todayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
+function todayTimeVariables()
     try
-        if (hours > 0)
-            startHour = 13
-            endHour = startHour + hours
-            if (endHour > 23)
-                endHour = 23
-            end
-        end
-        #firstAndLast = getBeaconsFirstAndLast()
-        endTime = DateTime(Dates.now() - Hour(24-endHour))
-        startTime = DateTime(endTime - Hour(endHour-startHour) + Second(1))
+        # If you want today between 7 am and 5 pm use this function
+        # Not much use before 7 am and best used after 5 pm like the daily Synthetic runs
+        # Otherwise use exact time input like TvExactRange
+
+        starTime = Dates.now() # comes back UTC
+        endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 17, 0)
+        startTime = DateTime(endTime - Hour(10) + Second(1))
 
         localtv =
         timeVariables(
