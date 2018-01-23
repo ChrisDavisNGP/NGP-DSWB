@@ -473,7 +473,7 @@ end
 function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
     try
         drawDF = DataFrame()
-        drawDF[:col1] = NR.results.row[:timestamp]
+        drawDF[:col1] = unix2datetime(NR.results.row[:timestamp]/1000.0)
         drawDF[:data1] = NR.results.row[theSymbol]
         axis_x_min = 0
 

@@ -353,3 +353,18 @@ function pickTime()
     localtv = yesterdayTimeVariables()
     return localtv
 end
+
+
+# Kernal 5.0
+#
+#using Dates
+#const DATEEPOCH = Dates.value(Date(0))
+#const DATETIMEEPOCH = Dates.value(DateTime(0))
+#println("DE=",DATEEPOCH, " DTE=", DATETIMEEPOCH)
+#
+#epochms2datetime(i) = DateTime(Dates.UTM(DATETIMEEPOCH + Int64(i)))
+#
+#i = 1516410204146
+#println(typeof(i))
+#epochms2datetime(1516410204)
+#Dates.epochms2datetime(i)
