@@ -224,7 +224,7 @@ function todayTimeVariables()
         # Not much use before 7 am and best used after 5 pm like the daily Synthetic runs
         # Otherwise use exact time input like TvExactRange
 
-        starTime = Dates.now() # comes back UTC
+        startTime = Dates.now() # comes back UTC
         endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 17, 0)
         startTime = DateTime(endTime - Hour(10) + Second(1))
 
