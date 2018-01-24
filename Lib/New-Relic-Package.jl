@@ -1052,7 +1052,7 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
 
     try
         data1=size(oldDF[:OnPageLoad],1)
-        data2=size(newDF[:OnPageLoad],1))
+        data2=size(newDF[:OnPageLoad],1)
         minRows = min(data1,data2)
 
         #drawDF = DataFrame()
@@ -1073,9 +1073,10 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         drawDF = DataFrame(col1=DateTime[],data1=Float64[],data2=Float64[])
 
         for i=1:minRows
-            drawDF[i:i,:col1] = unix2datetime(oldDF[i:i,:timestamp]/1000.0)
-            drawDF[i:i,:data1] = oldDF[:OnPageLoad]
-            drawDF[i:i,:data2] = newDF[:OnPageLoad]
+            testDT = unix2datetime(oldDF[i:i,:timestamp][1]/1000.0)
+            dataPL1 = oldDF[i:i,:OnPageLoad]
+            dataPL2 = newDF[i:i,:OnPageLoad]
+            push!(drawDF,[testDT;dataPL1;dataPL2])
         end
 
         axis_x_min = 0
@@ -1083,7 +1084,7 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
                 mPulseWidget=false, chart_title= "On Page Load Chart", vizTypes=["line","line"],
                 axis_x_min=axis_x_min)
     catch y
-        println("quickTimestampViz Old exception ",y)
+        println("diffDailyChangeOnPageLoad Old exception ",y)
     end
 
 
