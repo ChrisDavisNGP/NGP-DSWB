@@ -1051,23 +1051,34 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
     beautifyDF(statsNewDF)
 
     try
-        println(" data1=",size(oldDF[:OnPageLoad],1)," data2=",size(newDF[:OnPageLoad],1))
+        data1=size(oldDF[:OnPageLoad],1)
+        data2=size(newDF[:OnPageLoad],1))
+        minRows = min(data1,data2)
 
-        drawDF = DataFrame()
-        drawDF[:col1] = oldDF[:timestamp]
-        drawDF[:data1] = oldDF[:OnPageLoad]
-        drawDF[:data2] = newDF[:OnPageLoad]
-        axis_x_min = 0
+        #drawDF = DataFrame()
 
-        i = 0
-        for row in eachrow(drawDF)
-            i += 1
+        #drawDF[:col1] = oldDF[:timestamp]
+        #drawDF[:data1] = oldDF[:OnPageLoad]
+        #drawDF[:data2] = newDF[:OnPageLoad]
+
+        #i = 0
+        #for row in eachrow(drawDF)
+        #    i += 1
             #println("row ",i, " ",typeof(row[:col1]))
-            if typeof(row[:col1]) == Int64
-                row[:col1] = unix2datetime(row[:col1]/1000.0)
-            end
+        #    if typeof(row[:col1]) == Int64
+        #        row[:col1] = unix2datetime(row[:col1]/1000.0)
+        #    end
+        #end
+
+        drawDF = DataFrame(col1=DateTime[],data1=Float64[],data2=Float64[])
+
+        for i=1:minRows
+            drawDF[i:i,:col1] = unix2datetime(oldDF[i:i,:timestamp]/1000.0)
+            drawDF[i:i,:data1] = oldDF[:OnPageLoad]
+            drawDF[i:i,:data2] = newDF[:OnPageLoad]
         end
 
+        axis_x_min = 0
         c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Old","New"],
                 mPulseWidget=false, chart_title= "On Page Load Chart", vizTypes=["line","line"],
                 axis_x_min=axis_x_min)
