@@ -477,6 +477,15 @@ function quickTimestampViz(NR::NrParams,theSymbol::Symbol,Title::ASCIIString)
         drawDF[:data1] = NR.results.row[theSymbol]
         axis_x_min = 0
 
+        i = 0
+        for row in eachrow(drawDF)
+            i += 1
+            #println("row ",i, " ",typeof(row[:col1]))
+            if typeof(row[:col1]) == Int64
+                row[:col1] = unix2datetime(row[:col1]/1000.0)
+            end
+        end
+
         #Trim points above 3 StdDev
         dv = Array{Float64}(drawDF[:data1])
         statsDF = basicStatsFromDV(dv)
