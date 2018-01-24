@@ -1080,7 +1080,7 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         end
 
         axis_x_min = 0
-        c3 = drawC3Viz(drawDF; axisLabels=["Seconds"],dataNames=["Old","New"],
+        c3 = drawC3Viz(drawDF; axisLabels=["Date Time"],dataNames=["Old","New"],
                 mPulseWidget=false, chart_title= "On Page Load Chart", vizTypes=["line","line"],
                 axis_x_min=axis_x_min)
     catch y
