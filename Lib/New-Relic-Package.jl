@@ -1051,6 +1051,8 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
     beautifyDF(statsNewDF)
 
     try
+        println(" data1=",size(oldDF[:OnPageLoad],1)," data2=",size(newDF[:OnPageLoad],1))
+
         drawDF = DataFrame()
         drawDF[:col1] = oldDF[:timestamp]
         drawDF[:data1] = oldDF[:OnPageLoad]
