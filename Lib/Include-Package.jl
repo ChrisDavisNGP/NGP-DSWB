@@ -5,6 +5,7 @@ include("Structures-New-Relic.jl")
 include("Time-Package.jl")
 
 include("Body-Parts.jl")
+include("Curl-Package.jl")
 include("Debug-Package.jl")
 include("Explain-Package.jl")
 include("Grouping-Package.jl")

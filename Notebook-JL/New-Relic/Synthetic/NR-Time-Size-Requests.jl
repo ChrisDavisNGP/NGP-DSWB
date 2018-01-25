@@ -35,7 +35,7 @@ WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
 
 # Get the data frame of data by using CURL and Json Parse
 
-synChkBodySizeDict = curlJsonWorkflow(TV,SP,CU)
+synChkBodySizeDict = synCheckWorkflow(TV,SP,CU)
 
 if !isdefined(:synChkBodySizeDict)
     return
