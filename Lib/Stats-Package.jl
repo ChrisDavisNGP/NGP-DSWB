@@ -68,7 +68,7 @@ function SetStatsRange(statsDF::DataFrame;
     percentLower = 0.90, percentUpper = 1.10
 )
 
-    #println("useMedian=",useMedian," useStdDev=",useStdDev)
+    println("useMedian=",useMedian," useStdDev=",useStdDev)
 
     if useMedian
         mid = statsDF[1,:median]
@@ -84,7 +84,7 @@ function SetStatsRange(statsDF::DataFrame;
         upperSubtract = (mid * percentUpper) - mid
     end
 
-    #println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract)
+    println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract)
     rl = mid - lowerSubtract
     ru = mid + upperSubtract
 
@@ -107,7 +107,7 @@ function SetStatsRange(statsDF::DataFrame;
 
 end
 
-function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
+function displayStats(TV::TimeVars,statsDF::DataFrame,chartTitle::ASCIIString;showRowOne=true,showShort=true)
     try
         nrows = 1
         if !showRowOne
@@ -144,6 +144,7 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
             #beautifyDF(statsDF[1:min(nrows,end),:])
         end
 
+        displayTitle(TV,chart_title = chartTitle, chart_info = [TV.timeString], showTimeStamp=false)
         beautifyDF(prtDF[1:min(nrows,end),:])
 
     catch y
@@ -175,7 +176,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         else
             chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
         end
-        displayStats(statsDF;showShort=true)
+        displayStats(statsDF,chartTitle;showShort=true)
     end
 
     return statsDF
