@@ -68,7 +68,7 @@ function SetStatsRange(statsDF::DataFrame;
     percentLower = 0.90, percentUpper = 1.10
 )
 
-    println("useMedian=",useMedian," useStdDev=",useStdDev)
+    #println("useMedian=",useMedian," useStdDev=",useStdDev)
 
     if useMedian
         mid = statsDF[1,:median]
@@ -84,7 +84,7 @@ function SetStatsRange(statsDF::DataFrame;
         upperSubtract = (mid * percentUpper) - mid
     end
 
-    println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract)
+    #println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract)
     rl = mid - lowerSubtract
     ru = mid + upperSubtract
 
@@ -114,7 +114,6 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
             nrows = nrow(statsDF)
         end
 
-
         if showShort
             colnames = ["unit";"count";"median";"rangeLower";"rangeUpper"]
             ncols = 5
@@ -126,14 +125,14 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
                 end
             end
 
+            prtDF = names!(prtDF,[Symbol("unit");Symbol("count");Symbol("median");Symbol("rangeLower");Symbol("rangeUpper")])
+
+        else
+            beautifyDF(statsDF[1:min(nrows,end),:])
         end
 
-        #printStatsDF = names!(statsDF[:,:],
-        #[Symbol("Page Views"),Symbol("Mean(ms)"),Symbol("Median(ms)"),Symbol("Min(ms)"),Symbol("Max(ms)"),Symbol("25 Percentile"),Symbol("75 Percentile")])
-
-        #displayTitle(chart_title = chartTitle, chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(prtDF[1:min(nrows,end),:])
-        #beautifyDF(statsDF[:,:])
+
     catch y
         println("displayStats Exception ",y)
     end
@@ -163,8 +162,8 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         else
             chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
         end
-        #showLimitedStats(TV,statsDF,chartTitle)
-        displayStats(statsDF)
+        displayStats(statsDF;showShort=true)
+        displayStats(statsDF;showShort=false)
     end
 
     return statsDF
