@@ -667,29 +667,11 @@ function statsAndTreemapsData(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function statsAndTreemapsStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
-    try
-
-        # Stats on the data
-        statsDF = DataFrame()
-        dv = localTableDF[:timers_t_done]
-        statsDF = basicStatsFromDV(dv)
-
-        standardChartTitle(TV,UP,SP,"Beacon Data Stats")
-        beautifyDF(statsDF[:,:])
-
-        return statsDF
-
-    catch y
-        println("statsAndTreemapsStats Exception ",y)
-    end
-end
-
 function statsAndTreemapsFinalData(TV::TimeVars,UP::UrlParams,SP::ShowParams,statsDF::DataFrame)
     try
 
-        rangeLower = statsDF[1:1,:q25][1]
-        rangeUpper = statsDF[1:1,:q75][1]
+        UP.timeLowerMs = statsDF[1:1,:rangeLower][1]
+        UP.timeUpperMs = statsDF[1:1,:rangeUpper][1]
 
         studyTime = 0
         studySession = "None"
