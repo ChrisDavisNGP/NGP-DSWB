@@ -68,6 +68,8 @@ function SetStatsRange(statsDF::DataFrame;
     percentLower = 0.90, percentUpper = 1.10
 )
 
+    println("useMedian=",useMedian," useStdDev=",useStdDev)
+
     if useMedian
         mid = statsDF[1,:median]
     else
@@ -82,6 +84,7 @@ function SetStatsRange(statsDF::DataFrame;
         upperSubtract = mid * percentUpper
     end
 
+    println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract)
     rl = mid - lowerSubtract
     ru = mid + upperSubtract
 
@@ -89,8 +92,8 @@ function SetStatsRange(statsDF::DataFrame;
         rl = 1.0
     end
 
-    statsDF[1,:rangeLower] = rl
-    statsDF[1,:rangeUpper] = ru
+    statsDF[1,:rangeLower] = round(rl)
+    statsDF[1,:rangeUpper] = round(ru)
 
 end
 
