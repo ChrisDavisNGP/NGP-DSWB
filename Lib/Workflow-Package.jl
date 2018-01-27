@@ -1159,8 +1159,8 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     # Stats on the data
     statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,useStdDev=false)
-    UP.timeLowerMs = convert(Int64,statsDF[1,1,:rangeLower][1])
-    UP.timeUpperMs = convert(Int64,statsDF[1,2,:rangeUpper][1])
+    UP.timeLowerMs = convert(Int64,statsDF[1:1,:rangeLower][1])
+    UP.timeUpperMs = convert(Int64,statsDF[1:1,:rangeUpper][1])
     #UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
     #UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 

@@ -92,12 +92,22 @@ function SetStatsRange(statsDF::DataFrame;
         rl = 1.0
     end
 
-    statsDF[1,:rangeLower] = round(rl)
-    statsDF[1,:rangeUpper] = round(ru)
+    nrows = nrow(statsDF)
+    for i in 1:nrows
+        if i == 1
+            denom = 1.0
+        elseif i == 2
+            denom = 1000.0
+        else
+            denom = 60000.0
+        end
+        statsDF[i:i,:rangeLower] = round(rl/denom)
+        statsDF[i:i,:rangeUpper] = round(ru/denom)
+    end
 
 end
 
-function displayStats(statsDF::DataFrame)
+function displayStats(statsDF::DataFrame;showRowOne=true)
     try
 
         #colnames = [""]
@@ -106,7 +116,10 @@ function displayStats(statsDF::DataFrame)
         #[Symbol("Page Views"),Symbol("Mean(ms)"),Symbol("Median(ms)"),Symbol("Min(ms)"),Symbol("Max(ms)"),Symbol("25 Percentile"),Symbol("75 Percentile")])
 
         #displayTitle(chart_title = chartTitle, chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(statsDF[:,:])
+        if showRowOne
+            beautifyDF(statsDF[1:1,:])
+        end
+        #beautifyDF(statsDF[:,:])
     catch y
         println("displayStats Exception ",y)
     end
