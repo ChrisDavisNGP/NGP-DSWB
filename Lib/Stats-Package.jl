@@ -125,10 +125,25 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
                 end
             end
 
-            prtDF = names!(prtDF,[Symbol("unit");Symbol("count");Symbol("median");Symbol("rangeLower");Symbol("rangeUpper")])
+            prtDF = names!(prtDF,[Symbol("Unit");Symbol("Count");Symbol("Median");Symbol("Range Lower");Symbol("Range Upper")])
 
         else
-            beautifyDF(statsDF[1:min(nrows,end),:])
+            colnames = ["unit";"count";"median";"rangeLower";"rangeUpper";"mean";"stddev";"variance";"min";"max";"q25";"q75";"kurtosis";"skewness";"entropy";"modes"]
+            ncols = 16
+            prtDF = DataFrame(Any,nrows,ncols)
+
+            for i in 1:nrows
+                for j in 1:ncols
+                    prtDF[i,j] = statsDF[i,j]
+                end
+            end
+
+            prtDF = names!(prtDF,[Symbol("Unit");Symbol("Count");Symbol("Median");Symbol("Range Lower");Symbol("Range Upper");
+                Symbol("Mean");Symbol("Std Dev");Symbol("Variance");Symbol("Minimum");Symbol("Maximum");
+                Symbol("Quartile 25");Symbol("Quartile 75");Symbol("Kurtosis");Symbol("Skewness");Symbol("Entropy");Symbol("Modes")
+            ])
+
+            #beautifyDF(statsDF[1:min(nrows,end),:])
         end
 
         beautifyDF(prtDF[1:min(nrows,end),:])
