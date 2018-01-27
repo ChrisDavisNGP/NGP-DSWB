@@ -1122,3 +1122,15 @@ function findAdsResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     ;
 
 end
+
+function statsAndTreemapsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    localTableDF = statsAndTreemapsData(TV,UP,SP)
+
+    statsDF = statsAndTreemapsStats(TV,UP,SP,localTableDF)
+
+    topPageUrlDF = statsAndTreemapsFinalData(TV,UP,SP,statsDF)
+
+    statsAndTreemapsOutput(TV,UP,SP,topPageUrlDF)
+
+end

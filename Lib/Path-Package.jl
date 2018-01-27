@@ -253,7 +253,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
           else
               timeVar = subdf[1,:timers_domready]
           end
-          
+
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
               #println("Testing $(io) against $(SP.showLines)")
@@ -703,7 +703,7 @@ function newPagesList(UP::UrlParams,SP::ShowParams)
   end
 end
 
-function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function statsAndTreemapsData(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
 
         UrlParamsValidate(UP)
@@ -715,6 +715,16 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           println("")
         end
 
+        return localTableDF
+
+    catch y
+        println("statsAndTreemapsData Exception ",y)
+    end
+end
+
+function statsAndTreemapsStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
+    try
+
         # Stats on the data
         statsDF = DataFrame()
         dv = localTableDF[:timers_t_done]
@@ -722,6 +732,16 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         standardChartTitle(TV,UP,SP,"Beacon Data Stats")
         beautifyDF(statsDF[:,:])
+
+        return statsDF
+
+    catch y
+        println("statsAndTreemapsStats Exception ",y)
+    end
+end
+
+function statsAndTreemapsFinalData(TV::TimeVars,UP::UrlParams,SP::ShowParams,statsDF::DataFrame)
+    try
 
         rangeLower = statsDF[1:1,:q25][1]
         rangeUpper = statsDF[1:1,:q75][1]
@@ -742,6 +762,16 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           println("topPageUrl rows and column counts are ",size(toppageurl))
           println("")
         end
+
+        return toppageurl
+
+    catch y
+        println("statsAndTreemapsStats Exception ",y)
+    end
+end
+
+function statsAndTreemapsOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame)
+    try
 
         toppageurl = names!(toppageurl[:,:],
         [Symbol("urlpagegroup"),Symbol("Start"),Symbol("Total"),Symbol("Redirect"),Symbol("Blocking"),Symbol("DNS"),
@@ -791,6 +821,7 @@ function statsAndTreemaps(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             tcpTreemap(TV,UP,SP,toppageurl)
             redirectTreemap(TV,UP,SP,toppageurl)
         end
+
     catch y
         println("statsAndTreemaps Exception ",y)
     end
