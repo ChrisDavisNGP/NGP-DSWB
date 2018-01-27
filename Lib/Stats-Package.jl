@@ -71,13 +71,13 @@ function SetStatsRange(statsDF::DataFrame;
     println("useMedian=",useMedian," useStdDev=",useStdDev)
 
     if useMedian
-        mid = statsDF[1,:median]
+        mid = statsDF[1:1,:median]
     else
-        mid = statsDF[1,:mean]
+        mid = statsDF[1:1,:mean]
     end
 
     if useStdDev
-        stdVar = statsDF[1,:stddev]
+        stdVar = statsDF[1:1,:stddev]
         lowerSubtract = stdDevLower * stdVar
         upperSubtract = stdDevUpper * stdVar
     else
@@ -145,7 +145,7 @@ function displayStats(TV::TimeVars,statsDF::DataFrame,chartTitle::ASCIIString;sh
             #beautifyDF(statsDF[1:min(nrows,end),:])
         end
 
-        displayTitle(TV,chart_title = chartTitle, chart_info = [TV.timeString], showTimeStamp=false)
+        displayTitle(chart_title=chartTitle,chart_info=[TV.timeString],showTimeStamp=false)
         beautifyDF(prtDF[1:min(nrows,end),:])
 
     catch y
@@ -177,7 +177,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         else
             chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
         end
-        displayStats(TV,statsDF,chartTitle;showShort=true)
+        displayStats(TV,statsDF,chartTitle;showShort=showShort)
     end
 
     return statsDF
