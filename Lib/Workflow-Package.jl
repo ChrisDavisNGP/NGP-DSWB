@@ -1139,7 +1139,7 @@ function statsAndTreemapsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     #statsOldDF = statsAndTreemapsStats(TV,UP,SP,localTableDF)
     #beautifyDF(statsOldDF)
 
-    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,useStdDev=true,showShort=false)
+    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,showShort=false,useQuartile=true)
 
     topPageUrlDF = statsAndTreemapsFinalData(TV,UP,SP,statsDF)
 
@@ -1161,7 +1161,7 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 
     # Stats on the data
-    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,useStdDev=false)
+    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent)
     UP.timeLowerMs = convert(Int64,statsDF[1:1,:rangeLower][1])
     UP.timeUpperMs = convert(Int64,statsDF[1:1,:rangeUpper][1])
 

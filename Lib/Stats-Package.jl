@@ -63,7 +63,8 @@ function buildOtherStats(localStatsDF::DataFrame,fieldStat::Symbol,unit::ASCIISt
 end
 
 function SetStatsRange(statsDF::DataFrame;
-    useMedian=true, useStdDev=true,
+    useMedian=true,
+    useStdDev=false, usePercent=false, useQuartile=false,
     stdDevLower=2.0, stdDevUpper=2.0,
     percentLower = 0.90, percentUpper = 1.10
 )
@@ -71,23 +72,29 @@ function SetStatsRange(statsDF::DataFrame;
     println("useMedian=",useMedian," useStdDev=",useStdDev)
 
     if useMedian
-        mid = statsDF[1:1,:median]
+        mid = statsDF[1:1,:median][1]
     else
-        mid = statsDF[1:1,:mean]
+        mid = statsDF[1:1,:mean][1]
     end
 
     if useStdDev
-        stdVar = statsDF[1:1,:stddev]
+        stdVar = statsDF[1:1,:stddev][1]
         lowerSubtract = stdDevLower * stdVar
         upperSubtract = stdDevUpper * stdVar
-    else
+        println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
+        rl = mid - lowerSubtract
+        ru = mid + upperSubtract
+    elseif usePercent
         lowerSubtract = mid - (mid * percentLower)
         upperSubtract = (mid * percentUpper) - mid
+        println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
+        rl = mid - lowerSubtract
+        ru = mid + upperSubtract
+    elseif useQuartile
+        rl = statsDF[1:1,:q25][1]
+        ru = statsDF[1:1,:q75][1]
     end
 
-    println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
-    rl = mid - lowerSubtract
-    ru = mid + upperSubtract
 
     if rl < 1.0
         rl = 1.0
@@ -154,7 +161,8 @@ function displayStats(TV::TimeVars,statsDF::DataFrame,chartTitle::ASCIIString;sh
 end
 
 function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;
-    showAdditional::Bool=true, useStdDev::Bool=true, showShort=true
+    showAdditional::Bool=true, useStdDev::Bool=false, showShort::Bool=true,
+    usePercent::Bool=false,useQuartile::Bool=false
     )
 
     statsDF = DataFrame()
@@ -169,7 +177,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         return statsDF
     end
 
-    SetStatsRange(statsDF;useStdDev=useStdDev)
+    SetStatsRange(statsDF;useStdDev=useStdDev,usePercent=usePercent,useQuartile=useQuartile)
 
     if (showAdditional)
         if (UP.usePageLoad)
