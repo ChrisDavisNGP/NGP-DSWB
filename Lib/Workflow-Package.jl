@@ -1161,13 +1161,11 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,useStdDev=false)
     UP.timeLowerMs = convert(Int64,statsDF[1:1,:rangeLower][1])
     UP.timeUpperMs = convert(Int64,statsDF[1:1,:rangeUpper][1])
-    #UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
-    #UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
 
-    if (SP.debugLevel > -1)
+    if (SP.debugLevel > 6)
         println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
     end
-return
+
     showAvailableSessionsStreamline(TV,UP,SP,localTableDF)
 
 end

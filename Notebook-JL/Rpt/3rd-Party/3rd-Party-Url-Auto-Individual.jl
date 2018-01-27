@@ -27,8 +27,8 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-#WellKnownHostDirectory = wellKnownHostEncyclopedia();
-#WellKnownPath = wellKnownPathDictionary();
+WellKnownHostDirectory = wellKnownHostEncyclopedia();
+WellKnownPath = wellKnownPathDictionary();
 
 urlAutoIndividualWorkflow(TV,UP,SP)
 ;

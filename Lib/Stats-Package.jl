@@ -176,7 +176,6 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
             chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
         end
         displayStats(statsDF;showShort=true)
-        displayStats(statsDF;showShort=false)
     end
 
     return statsDF
