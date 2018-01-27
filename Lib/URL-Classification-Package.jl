@@ -64,8 +64,13 @@ function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
                         todo += 1
                         #@show todo uri.host  uri.path
                         if (ismatch(r"^.*",uri.host))
-                            #println("Host ", uri.host, " Path ",uri.path)
-                            println("        (\"", uri.host,"\",\"",uri.host,"\"),")
+                            if SP.debugLevel > 4
+                                #println("Host ", uri.host, " Path ",uri.path)
+                                println("        (\"", uri.host,"\",\"",uri.host,"\"),")
+                            end
+                            # We do not need to classify further URL unless they show /^function updateProgress(text::ASCIIString)
+                            # With significant times.  Insert the first miss into the correct place for the
+                            # next time the request is used
                             insertTemporarily(uri.host)
                         end
                     end
@@ -370,13 +375,6 @@ function insertTemporarily(host::ASCIIString)
         end
 
         Volume[host] = host
-#        newUrlPageGroup = "NoneInner"
-#        if (haskey(Volume,host))
-#            newUrlPageGroup = get(Volume,host,"NoneInner")
-#        end
-
-        #println("New Group ",newUrlPageGroup)
-        #println("")
 
     catch y
         println("insertTemporarily Exception",y)
