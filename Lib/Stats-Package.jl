@@ -1,5 +1,175 @@
 #using Distributions
 
+function buildTimeStats(localStatsDF::DataFrame,fieldStat::Symbol)
+    try
+
+        dv = Array{Float64}(localStatsDF[fieldStat])
+        statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000.0,1)]
+
+        dv = dropna(dv)
+        stats = DataFrame()
+        stats[:unit] = ["milliseconds","seconds","minutes"]
+        stats[:count] = size(dv,1)
+        stats[:mean] = statsArr(mean(dv))
+        stats[:median] = statsArr(median(dv))
+        stats[:stddev] = statsArr(std(dv))
+        stats[:variance] = statsArr(var(dv))
+        stats[:min] = statsArr(minimum(dv))
+        stats[:max] = statsArr(maximum(dv))
+        stats[:rangeLower] = statsArr(0.0)
+        stats[:rangeUpper] = statsArr(0.0)
+        stats[:q25] = statsArr(quantile(dv,[0.25]))
+        stats[:q75] = statsArr(quantile(dv,[0.75]))
+        stats[:kurtosis] = statsArr(kurtosis(dv))
+        stats[:skewness] = statsArr(skewness(dv))
+        stats[:entropy] = statsArr(entropy(dv))
+        stats[:modes] = statsArr(modes(dv)[1])
+
+        return stats
+    catch y
+        println("buildTimeStats Exception ",y)
+    end
+end
+
+function buildOtherStats(localStatsDF::DataFrame,fieldStat::Symbol,unit::ASCIIString)
+    try
+
+        dv = Array{Float64}(localStatsDF[fieldStat])
+        statsArr(v) = [round(v,0)]
+
+        dv = dropna(dv)
+        stats = DataFrame()
+        stats[:unit] = [unit]
+        stats[:count] = size(dv,1)
+        stats[:mean] = statsArr(mean(dv))
+        stats[:median] = statsArr(median(dv))
+        stats[:stddev] = statsArr(std(dv))
+        stats[:variance] = statsArr(var(dv))
+        stats[:min] = statsArr(minimum(dv))
+        stats[:max] = statsArr(maximum(dv))
+        stats[:rangeLower] = statsArr(0.0)
+        stats[:rangeUpper] = statsArr(0.0)
+        stats[:q25] = statsArr(quantile(dv,[0.25]))
+        stats[:q75] = statsArr(quantile(dv,[0.75]))
+        stats[:kurtosis] = statsArr(kurtosis(dv))
+        stats[:skewness] = statsArr(skewness(dv))
+        stats[:entropy] = statsArr(entropy(dv))
+        stats[:modes] = statsArr(modes(dv)[1])
+
+        return stats
+    catch y
+        println("buildOtherStats Exception ",y)
+    end
+end
+
+function SetStatsRange(statsDF::DataFrame;
+    useMedian=true, useStdDev=true,
+    stdDevLower=2.0, stdDevUpper=2.0,
+    percentLower = 0.90, percentUpper = 1.10
+)
+
+    if useMedian
+        mid = stats[1,:median]
+    else
+        mid = stats[1,:mean]
+    end
+
+    if useStdDev
+        lowerSubtract = stdDevLower * stats[1,:stddev]
+        upperSubtract = stdDevUpper * stats[1,:stddev]
+    else
+        lowerSubtract = mid * percentLower
+        upperSubtract = mid * percentUpper
+    end
+
+    rl = mid - lowerSubtract
+    ru = mid + upperSubtract
+
+    if rl < 1.0
+        rl = 1.0
+    end
+
+    stats[1,:rangeLower] = rl
+    stats[1,:rangeUpper] = ru
+
+end
+
+function displayStats(statsDF::DataFrame)
+    try
+
+        #colnames = [""]
+
+        #printStatsDF = names!(statsDF[:,:],
+        #[Symbol("Page Views"),Symbol("Mean(ms)"),Symbol("Median(ms)"),Symbol("Min(ms)"),Symbol("Max(ms)"),Symbol("25 Percentile"),Symbol("75 Percentile")])
+
+        #displayTitle(chart_title = chartTitle, chart_info = [TV.timeString],showTimeStamp=false)
+        beautifyDF(statsDF[:,:])
+    catch y
+        println("displayStats Exception ",y)
+    end
+end
+
+function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;
+    showAdditional::Bool=true, useStdDev::Bool=true
+    )
+
+    statsDF = DataFrame()
+
+    if (UP.usePageLoad)
+        statsDF = buildTimeStats(localTableDF,:timers_t_done)
+    else
+        statsDF = buildTimeStats(localTableDF,:timers_domready)
+    end
+
+    if nrows(statsDF) == 0
+        return statsDF
+    end
+
+    SetStatsRange(statsDF;useStdDev=useStdDev)
+
+    if (showAdditional)
+        if (UP.usePageLoad)
+            chartTitle = "Page Load Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
+        else
+            chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
+        end
+        #showLimitedStats(TV,statsDF,chartTitle)
+        displayStats(statsDF)
+    end
+
+    return statsDF
+end
+
+
+# old routines below try to replace
+
+function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;showAdditional::Bool=true)
+
+    if SP.debugLevel > 8
+        println("Starting beaconStats")
+    end
+
+    if (UP.usePageLoad)
+        dv = localTableDF[:timers_t_done]
+    else
+        dv = localTableDF[:timers_domready]
+    end
+
+    # Get page views #, median, min, max and more
+    statsDF = limitedStatsFromDV(dv)
+
+    if (showAdditional)
+        if (UP.usePageLoad)
+            chartTitle = "Page Load Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
+        else
+            chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
+        end
+        showLimitedStats(TV,statsDF,chartTitle)
+    end
+    return statsDF
+end
+
+
 function basicFieldStats(localStatsDF::DataFrame,fieldStat::Symbol)
     try
 
@@ -299,33 +469,6 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     catch y
         println("beaconViewStats Exception ",y)
     end
-end
-
-
-function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;showAdditional::Bool=true)
-
-    if SP.debugLevel > 8
-        println("Starting beaconStats")
-    end
-
-    if (UP.usePageLoad)
-        dv = localTableDF[:timers_t_done]
-    else
-        dv = localTableDF[:timers_domready]
-    end
-
-    # Get page views #, median, min, max and more
-    statsDF = limitedStatsFromDV(dv)
-
-    if (showAdditional)
-        if (UP.usePageLoad)
-            chartTitle = "Page Load Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
-        else
-            chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
-        end
-        showLimitedStats(TV,statsDF,chartTitle)
-    end
-    return statsDF
 end
 
 function fetchGraph7Stats(UP::UrlParams)
