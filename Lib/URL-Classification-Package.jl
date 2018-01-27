@@ -66,6 +66,7 @@ function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
                         if (ismatch(r"^.*",uri.host))
                             #println("Host ", uri.host, " Path ",uri.path)
                             println("        (\"", uri.host,"\",\"",uri.host,"\"),")
+                            insertTemporarily(uri.host)
                         end
                     end
                 end
@@ -353,6 +354,33 @@ function lookupHost(host::ASCIIString)
         return "NoneInner"
     end
 
+end
+
+function insertTemporarily(host::ASCIIString)
+    hs = uppercase(host[1])
+    hostStart = string(hs)
+    #println("[",host,"] and [",hostStart,"]")
+
+    try
+        if (haskey(WellKnownHostDirectory,hostStart))
+            #println("Fetch Volume ",hostStart)
+            Volume = get(WellKnownHostDirectory,hostStart,"NoVolume")
+        else
+            Volume = get(WellKnownHostDirectory,"Other","NoVolume")
+        end
+
+        Volume[host] = host
+#        newUrlPageGroup = "NoneInner"
+#        if (haskey(Volume,host))
+#            newUrlPageGroup = get(Volume,host,"NoneInner")
+#        end
+
+        #println("New Group ",newUrlPageGroup)
+        #println("")
+
+    catch y
+        println("insertTemporarily Exception",y)
+    end
 end
 
 function lookupUrlGroup(urlGroup::ASCIIString)

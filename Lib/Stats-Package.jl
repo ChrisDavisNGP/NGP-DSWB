@@ -69,7 +69,7 @@ function SetStatsRange(statsDF::DataFrame;
     percentLower = 0.90, percentUpper = 1.10
 )
 
-    println("useMedian=",useMedian," useStdDev=",useStdDev)
+    #println("useMedian=",useMedian," useStdDev=",useStdDev)
 
     if useMedian
         mid = statsDF[1:1,:median][1]
@@ -81,13 +81,13 @@ function SetStatsRange(statsDF::DataFrame;
         stdVar = statsDF[1:1,:stddev][1]
         lowerSubtract = stdDevLower * stdVar
         upperSubtract = stdDevUpper * stdVar
-        println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
+        #println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
         rl = mid - lowerSubtract
         ru = mid + upperSubtract
     elseif usePercent
         lowerSubtract = mid - (mid * percentLower)
         upperSubtract = (mid * percentUpper) - mid
-        println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
+        #println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
         rl = mid - lowerSubtract
         ru = mid + upperSubtract
     elseif useQuartile
