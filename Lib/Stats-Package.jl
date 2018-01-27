@@ -152,7 +152,7 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
 end
 
 function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;
-    showAdditional::Bool=true, useStdDev::Bool=true
+    showAdditional::Bool=true, useStdDev::Bool=true, showShort=true
     )
 
     statsDF = DataFrame()
