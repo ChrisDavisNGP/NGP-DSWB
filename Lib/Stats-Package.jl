@@ -77,14 +77,15 @@ function SetStatsRange(statsDF::DataFrame;
     end
 
     if useStdDev
-        lowerSubtract = stdDevLower * statsDF[1,:stddev]
-        upperSubtract = stdDevUpper * statsDF[1,:stddev]
+        stdVar = statsDF[1,:stddev]
+        lowerSubtract = stdDevLower * stdVar
+        upperSubtract = stdDevUpper * stdVar
     else
         lowerSubtract = mid - (mid * percentLower)
         upperSubtract = (mid * percentUpper) - mid
     end
 
-    println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract)
+    println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
     rl = mid - lowerSubtract
     ru = mid + upperSubtract
 
@@ -176,7 +177,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         else
             chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
         end
-        displayStats(statsDF,chartTitle;showShort=true)
+        displayStats(TV,statsDF,chartTitle;showShort=true)
     end
 
     return statsDF
