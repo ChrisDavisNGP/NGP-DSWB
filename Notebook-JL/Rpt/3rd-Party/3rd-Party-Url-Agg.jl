@@ -28,5 +28,5 @@ ShowParamsValidate(SP)
 WellKnownHostDirectory = wellKnownHostEncyclopedia();
 WellKnownPath = wellKnownPathDictionary();
 
-statsAndTreemaps(TV,UP,SP)
+statsAndTreemapsWorkflow(TV,UP,SP)
 ;
