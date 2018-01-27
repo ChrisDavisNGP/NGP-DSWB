@@ -1195,6 +1195,10 @@ function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       UP.timeLowerMs = round(statsDF[1:1,:q25][1])
       UP.timeUpperMs = round(statsDF[1:1,:q75][1])
 
+      WellKnownHostDirectory = wellKnownHostEncyclopedia();
+      WellKnownPath = wellKnownPathDictionary();
+      WellKnownUrlGroup = wellKnownUrlGroup();
+
       criticalPathStreamline(TV,UP,SP,localTableDF)
 
       UP.timeLowerMs = saveTimeLowerMs
