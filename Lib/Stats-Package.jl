@@ -10,14 +10,14 @@ function buildTimeStats(localStatsDF::DataFrame,fieldStat::Symbol)
         stats = DataFrame()
         stats[:unit] = ["milliseconds","seconds","minutes"]
         stats[:count] = size(dv,1)
-        stats[:mean] = statsArr(mean(dv))
         stats[:median] = statsArr(median(dv))
+        stats[:rangeLower] = statsArr(0.0)
+        stats[:rangeUpper] = statsArr(0.0)
+        stats[:mean] = statsArr(mean(dv))
         stats[:stddev] = statsArr(std(dv))
         stats[:variance] = statsArr(var(dv))
         stats[:min] = statsArr(minimum(dv))
         stats[:max] = statsArr(maximum(dv))
-        stats[:rangeLower] = statsArr(0.0)
-        stats[:rangeUpper] = statsArr(0.0)
         stats[:q25] = statsArr(quantile(dv,[0.25]))
         stats[:q75] = statsArr(quantile(dv,[0.75]))
         stats[:kurtosis] = statsArr(kurtosis(dv))
@@ -115,7 +115,6 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
         end
 
         if showShort
-            colnames = ["unit";"count";"median";"rangeLower";"rangeUpper"]
             ncols = 5
             prtDF = DataFrame(Any,nrows,ncols)
 
@@ -128,7 +127,6 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
             prtDF = names!(prtDF,[Symbol("Unit");Symbol("Count");Symbol("Median");Symbol("Range Lower");Symbol("Range Upper")])
 
         else
-            colnames = ["unit";"count";"median";"rangeLower";"rangeUpper";"mean";"stddev";"variance";"min";"max";"q25";"q75";"kurtosis";"skewness";"entropy";"modes"]
             ncols = 16
             prtDF = DataFrame(Any,nrows,ncols)
 
