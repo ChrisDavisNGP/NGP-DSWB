@@ -69,6 +69,44 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
+function critAggLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    bt = UP.beaconTable
+
+    if (SP.debugLevel > 4)
+        println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
+        println("urlRegEx $(UP.urlRegEx)")
+        println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
+        println("time Range: $(UP.timeLowerMs),$(UP.timeUpperMs)")
+    end
+
+    try
+        localTableDF = query("""\
+            select "timestamp",session_id,timers_t_done,timers_domready
+            from $bt
+            where
+                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                session_id IS NOT NULL and
+                params_rt_quit IS NULL and
+                params_u ilike '$(UP.urlRegEx)' and
+                user_agent_device_type ilike '$(UP.deviceType)' and
+                user_agent_os ilike '$(UP.agentOs)' and
+                page_group ilike '$(UP.pageGroup)' and
+                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+            limit $(UP.limitRows)
+        """)
+
+        if (SP.debugLevel > -1)
+            standardChartTitle(TV,UP,SP,"Debug8: critAggLimitedBeaconsToDF All Columns")
+            beautifyDF(localTableDF[1:min(3,end),:])
+        end
+
+        return localTableDF
+    catch y
+        println("critAggLimitedBeaconsToDF Exception ",y)
+    end
+end
+
 function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     bt = UP.beaconTable
