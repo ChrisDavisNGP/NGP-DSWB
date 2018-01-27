@@ -1136,7 +1136,10 @@ function statsAndTreemapsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         println("Individual part 1 done with ", nrow(localTableDF), " records")
     end
 
-    statsDF = statsAndTreemapsStats(TV,UP,SP,localTableDF)
+    statsOldDF = statsAndTreemapsStats(TV,UP,SP,localTableDF)
+    beautifyDF(statsOldDF)
+
+    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,useStdDev=false)
 
     topPageUrlDF = statsAndTreemapsFinalData(TV,UP,SP,statsDF)
 
