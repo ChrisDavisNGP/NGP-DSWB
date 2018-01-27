@@ -37,61 +37,6 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 end
 
-
-# From Individual-Streamline-Body
-
-function individualStreamlineMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-  try
-
-      localTableDF = DataFrame()
-#      localTableRtDF = DataFrame()
-      statsDF = DataFrame()
-
-      localTableDF = defaultBeaconsToDF(TV,UP,SP)
-      recordsFound = nrow(localTableDF)
-
-      if recordsFound == 0
-          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
-          return
-      end
-
-      if (SP.debugLevel > 8)
-          println("Individual part 1 done with ",recordsFound, " records")
-      end
-
-      # Stats on the data
-      statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
-      UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
-
-      if (SP.debugLevel > 2)
-          println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
-      end
-
-#      localTableRtDF = getResourcesForBeaconToDF(TV,UP)
-#      recordsFound = nrow(localTableRtDF)
-#
-#      if (SP.debugLevel > 4)
-#          println("part 2 done with ",recordsFound, " resource table records")
-#      end
-#
-#      if recordsFound == 0
-#          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) has no resource matches during this time",showTimeStamp=false)
-#          return
-#      end
-#
-#      if (SP.debugLevel > 8)
-#          println("part 3 done")
-#      end
-
-      showAvailableSessionsStreamline(TV,UP,SP,localTableDF)
-
-
-  catch y
-      println("IndividualStreamlineMain Exception ",y)
-  end
-end
-
 # From Individual-Streamline-Body
 
 function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;repeat::Int64=1)

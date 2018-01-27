@@ -1127,10 +1127,45 @@ function statsAndTreemapsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     localTableDF = statsAndTreemapsData(TV,UP,SP)
 
+    if nrow(localTableDF) == 0
+        displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
+        return
+    end
+
+    if (SP.debugLevel > 8)
+        println("Individual part 1 done with ", nrow(localTableDF), " records")
+    end
+
     statsDF = statsAndTreemapsStats(TV,UP,SP,localTableDF)
 
     topPageUrlDF = statsAndTreemapsFinalData(TV,UP,SP,statsDF)
 
     statsAndTreemapsOutput(TV,UP,SP,topPageUrlDF)
+
+end
+
+function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    localTableDF = statsAndTreemapsData(TV,UP,SP)
+
+    if nrow(localTableDF) == 0
+        displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
+        return
+    end
+
+    if (SP.debugLevel > 8)
+        println("Individual part 1 done with ", nrow(localTableDF), " records")
+    end
+
+    # Stats on the data
+    statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
+    UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.90)
+    UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.10)
+
+    if (SP.debugLevel > 2)
+        println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
+    end
+
+    showAvailableSessionsStreamline(TV,UP,SP,localTableDF)
 
 end

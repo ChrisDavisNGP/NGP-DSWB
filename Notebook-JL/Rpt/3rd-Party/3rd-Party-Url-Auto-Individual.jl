@@ -30,5 +30,5 @@ ShowParamsValidate(SP)
 WellKnownHostDirectory = wellKnownHostEncyclopedia();
 WellKnownPath = wellKnownPathDictionary();
 
-individualStreamlineMain(TV,UP,SP)
+urlAutoIndividualWorkflow(TV,UP,SP)
 ;
