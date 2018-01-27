@@ -121,7 +121,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         statsDF = buildTimeStats(localTableDF,:timers_domready)
     end
 
-    if nrows(statsDF) == 0
+    if nrow(statsDF) == 0
         return statsDF
     end
 
