@@ -22,8 +22,6 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       saveTimeUpperMs = UP.timeUpperMs
 
       statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
-      #UP.timeLowerMs = round(statsDF[1:1,:median][1] * 0.75)
-      #UP.timeUpperMs = round(statsDF[1:1,:median][1] * 1.25)
       UP.timeLowerMs = round(statsDF[1:1,:q25][1])
       UP.timeUpperMs = round(statsDF[1:1,:q75][1])
 
@@ -720,14 +718,8 @@ function statsAndTreemapsOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
         removeNegitiveTime(toppageurl,:Request)
         removeNegitiveTime(toppageurl,:Response)
 
-        summaryOldStatsDF = DataFrame()
-        dv = toppageurl[:Total]
-        summaryOldStatsDF = basicStatsFromDV(dv)
-        standardChartTitle(TV,UP,SP,"RT Data Stats Old")
-        beautifyDF(summaryOldStatsDF[:,:])
-
-        summaryOldStatsDF = anyBeaconStats(TV,UP,SP,toppageurl,:Total;
-            showAdditional=true,showShort=false,chartTitle="Beacons and Resource Table Stats",useQuartile=true)
+        summaryStatsDF = anyBeaconStats(TV,UP,SP,toppageurl,:Total;
+            showAdditional=true,showShort=false,chartTitle="Resource Requests Stats For Current Beacons",useQuartile=true)
 
         classifyUrl(SP,toppageurl);
         scrubUrlToPrint(SP,toppageurl,:urlgroup);

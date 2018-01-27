@@ -1159,8 +1159,6 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     # Stats on the data
     statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent)
-    UP.timeLowerMs = convert(Int64,statsDF[1:1,:rangeLower][1])
-    UP.timeUpperMs = convert(Int64,statsDF[1:1,:rangeUpper][1])
 
     if (SP.debugLevel > 6)
         println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
@@ -1168,4 +1166,41 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     showAvailableSessionsStreamline(TV,UP,SP,localTableDF)
 
+end
+
+function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+  try
+
+      localTableDF = DataFrame()
+      statsDF = DataFrame()
+
+      saveUpLimitRows = UP.limitRows
+      # if you want 10 rows then 100 samples should be enough, if you want 500, then 5000 should be enough
+      UP.limitRows = SP.showLines * 10
+      localTableDF = defaultLimitedBeaconsToDF(TV,UP,SP)
+      UP.limitRows = saveUpLimitRows
+
+      recordsFound = nrow(localTableDF)
+
+      if recordsFound == 0
+          displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
+          return
+      end
+
+      # Stats on the data
+      saveTimeLowerMs = UP.timeLowerMs
+      saveTimeUpperMs = UP.timeUpperMs
+
+      statsDF = beaconStats(TV,UP,SP,localTableDF;showAdditional=true)
+      UP.timeLowerMs = round(statsDF[1:1,:q25][1])
+      UP.timeUpperMs = round(statsDF[1:1,:q75][1])
+
+      criticalPathStreamline(TV,UP,SP,localTableDF)
+
+      UP.timeLowerMs = saveTimeLowerMs
+      UP.timeUpperMs = saveTimeUpperMs
+
+  catch y
+      println("criticalPathAggregationMain Exception ",y)
+  end
 end

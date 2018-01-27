@@ -177,7 +177,17 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         return statsDF
     end
 
-    SetStatsRange(statsDF;useStdDev=useStdDev,usePercent=usePercent,useQuartile=useQuartile)
+    if useStdDev || usePercent || useQuartile
+        SetStatsRange(statsDF;useStdDev=useStdDev,usePercent=usePercent,useQuartile=useQuartile)
+
+        # Store the range into the UP structure
+        UP.timeLowerMs = convert(Int64,statsDF[1:1,:rangeLower][1])
+        UP.timeUpperMs = convert(Int64,statsDF[1:1,:rangeUpper][1])
+    else
+        if SP.debugLevel > -1
+            println("No Range was requested for Stats block")
+        end
+    end
 
     if (showAdditional)
         if (UP.usePageLoad)
