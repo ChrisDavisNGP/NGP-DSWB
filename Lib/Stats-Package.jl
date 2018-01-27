@@ -80,8 +80,8 @@ function SetStatsRange(statsDF::DataFrame;
         lowerSubtract = stdDevLower * statsDF[1,:stddev]
         upperSubtract = stdDevUpper * statsDF[1,:stddev]
     else
-        lowerSubtract = mid * percentLower
-        upperSubtract = mid * percentUpper
+        lowerSubtract = mid - (mid * percentLower)
+        upperSubtract = (mid * percentUpper) - mid
     end
 
     println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract)
