@@ -4,7 +4,7 @@ function buildTimeStats(localStatsDF::DataFrame,fieldStat::Symbol)
     try
 
         dv = Array{Float64}(localStatsDF[fieldStat])
-        statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000.0,1)]
+        statsArr(v) = [round(v,0);round(v/1000.0,3);round(v/60000.0,1)]
 
         dv = dropna(dv)
         stats = DataFrame()
