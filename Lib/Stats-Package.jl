@@ -114,11 +114,11 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
             nrows = nrow(statsDF)
         end
 
-        prtDF = DataFrame(Any,nrows,ncols)
 
         if showShort
             colnames = ["unit";"count";"median";"rangeLower";"rangeUpper"]
             ncols = 5
+            prtDF = DataFrame(Any,nrows,ncols)
 
             for i in 1:nrows
                 for j in 1:ncols
@@ -132,7 +132,7 @@ function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
         #[Symbol("Page Views"),Symbol("Mean(ms)"),Symbol("Median(ms)"),Symbol("Min(ms)"),Symbol("Max(ms)"),Symbol("25 Percentile"),Symbol("75 Percentile")])
 
         #displayTitle(chart_title = chartTitle, chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(statsDF[1:min(nrows,end),:])
+        beautifyDF(prtDF[1:min(nrows,end),:])
         #beautifyDF(statsDF[:,:])
     catch y
         println("displayStats Exception ",y)
