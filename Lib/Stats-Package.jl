@@ -107,18 +107,32 @@ function SetStatsRange(statsDF::DataFrame;
 
 end
 
-function displayStats(statsDF::DataFrame;showRowOne=true)
+function displayStats(statsDF::DataFrame;showRowOne=true,showShort=true)
     try
+        nrows = 1
+        if !showRowOne
+            nrows = nrow(statsDF)
+        end
 
-        #colnames = [""]
+        prtDF = DataFrame(Any,nrows,ncols)
+
+        if showShort
+            colnames = ["unit";"count";"median";"rangeLower";"rangeUpper"]
+            ncols = 5
+
+            for i in 1:nrows
+                for j in 1:ncols
+                    prtDF[i,j] = statsDF[i,j]
+                end
+            end
+
+        end
 
         #printStatsDF = names!(statsDF[:,:],
         #[Symbol("Page Views"),Symbol("Mean(ms)"),Symbol("Median(ms)"),Symbol("Min(ms)"),Symbol("Max(ms)"),Symbol("25 Percentile"),Symbol("75 Percentile")])
 
         #displayTitle(chart_title = chartTitle, chart_info = [TV.timeString],showTimeStamp=false)
-        if showRowOne
-            beautifyDF(statsDF[1:1,:])
-        end
+        beautifyDF(statsDF[1:min(nrows,end),:])
         #beautifyDF(statsDF[:,:])
     catch y
         println("displayStats Exception ",y)
