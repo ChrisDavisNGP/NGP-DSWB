@@ -191,6 +191,27 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
     return statsDF
 end
 
+function anyBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,useField::Symbol;
+    showAdditional::Bool=true, useStdDev::Bool=false, showShort::Bool=true,
+    usePercent::Bool=false,useQuartile::Bool=false,chartTitle::ASCIIString="SKIP"
+    )
+
+    statsDF = DataFrame()
+
+    statsDF = buildTimeStats(localTableDF,useField)
+
+    if nrow(statsDF) == 0
+        return statsDF
+    end
+
+    SetStatsRange(statsDF;useStdDev=useStdDev,usePercent=usePercent,useQuartile=useQuartile)
+
+    if (showAdditional && chartTitle != "SKIP")
+        displayStats(TV,statsDF,chartTitle;showShort=showShort)
+    end
+
+    return statsDF
+end
 
 # old routines below try to replace
 

@@ -720,12 +720,14 @@ function statsAndTreemapsOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
         removeNegitiveTime(toppageurl,:Request)
         removeNegitiveTime(toppageurl,:Response)
 
-        summaryStatsDF = DataFrame()
+        summaryOldStatsDF = DataFrame()
         dv = toppageurl[:Total]
-        summaryStatsDF = basicStatsFromDV(dv)
+        summaryOldStatsDF = basicStatsFromDV(dv)
+        standardChartTitle(TV,UP,SP,"RT Data Stats Old")
+        beautifyDF(summaryOldStatsDF[:,:])
 
-        standardChartTitle(TV,UP,SP,"RT Data Stats")
-        beautifyDF(summaryStatsDF[:,:])
+        summaryOldStatsDF = anyBeaconStats(TV,UP,SP,toppageurl,:Total;
+            showAdditional=true,showShort=false,chartTitle="Beacons and Resource Table Stats",useQuartile=true)
 
         classifyUrl(SP,toppageurl);
         scrubUrlToPrint(SP,toppageurl,:urlgroup);
