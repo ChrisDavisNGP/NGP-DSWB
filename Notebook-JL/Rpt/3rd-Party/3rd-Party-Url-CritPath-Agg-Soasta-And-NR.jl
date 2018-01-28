@@ -27,9 +27,14 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-WellKnownHostDirectory = wellKnownHostEncyclopedia();
-WellKnownPath = wellKnownPathDictionary();
-WellKnownUrlGroup = wellKnownUrlGroup();
+CU = CurlParamsInit(scriptName)
+CurlParamsValidate(CU)
 
-criticalPathAggWorkflow(TV,UP,SP)
+NR = NrParamsInit()
+
+#WellKnownHostDirectory = wellKnownHostEncyclopedia();
+#WellKnownPath = wellKnownPathDictionary();
+#WellKnownUrlGroup = wellKnownUrlGroup();
+
+criticalPathAggWorkflow(TV,UP,SP,CU,NR)
 ;

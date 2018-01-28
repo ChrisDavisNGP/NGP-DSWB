@@ -1168,7 +1168,7 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
-function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
   try
 
       localTableDF = DataFrame()
@@ -1177,7 +1177,7 @@ function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       saveUpLimitRows = UP.limitRows
       # if you want 10 rows then 100 samples should be enough, if you want 500, then 5000 should be enough
       UP.limitRows = SP.showLines * 10
-      localTableDF = critAggLimitedBeaconsToDF(TV,UP,SP)
+      localTableDF = critAggLimitedBeaconsToDF(TV,UP,SP,CU,NR)
       UP.limitRows = saveUpLimitRows
 
       recordsFound = nrow(localTableDF)

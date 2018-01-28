@@ -69,7 +69,33 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function critAggLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function critAggLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
+
+    if CU.syntheticMonitor == "no name"
+        critAggLimitedBeaconsToDFSoasta(TV,UP,SP,CU,NR)
+    else
+        critAggLimitedBeaconsToDFNR(TV,SP,CU)
+    end
+
+end
+
+function critAggLimitedBeaconsToDFNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
+
+    jsonTimeString = curlCritAggLimitedBeaconsToDFNR(TV,SP,CU)
+    timeDict = curlSyntheticJson(SP,jsonTimeString)
+
+    fillNrResults(SP,NR,timeDict["results"])
+
+    if SP.debugLevel > -1
+        beautifyDF(NR.results.row[1:3,:])
+    end
+
+    #drawDF[:col1] = unix2datetime(NR.results.row[:timestamp]/1000.0)
+
+
+end
+
+function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     bt = UP.beaconTable
 
