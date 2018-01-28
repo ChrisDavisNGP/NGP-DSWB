@@ -81,20 +81,31 @@ end
 
 function critAggLimitedBeaconsToDFNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
 
-    jsonTimeString = curlCritAggLimitedBeaconsToDFNR(TV,SP,CU)
-    timeDict = curlSyntheticJson(SP,jsonTimeString)
+    try
+        jsonTimeString = curlCritAggLimitedBeaconsToDFNR(TV,SP,CU)
+        timeDict = curlSyntheticJson(SP,jsonTimeString)
 
-    fillNrResults(SP,NR,timeDict["results"])
+        fillNrResults(SP,NR,timeDict["results"])
 
-    if SP.debugLevel > -1
-        beautifyDF(NR.results.row[1:3,:])
+        if SP.debugLevel > 8
+            beautifyDF(NR.results.row[1:3,:])
+        end
+
+        localTableDF = DataFrame(jobid=ASCIIString[],timestamp=Int64[],onpageload=Float64[],onpagecontentload=Float64[])
+        for row in eachrow(NR.results.row)
+            push!(localTableDF,[row[:jobId];row[:timestamp];row[:onPageLoad];row[:onPageContentLoad]])
+        end
+
+        localTableDF = names!(localTableDF,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
+
+        if SP.debugLevel > -1
+            beautifyDF(localTableDF)
+        end
+        return localTableDF
+
+    catch y
+        println("critAggLimitedBeaconsToDFNR Exception ",y)
     end
-
-    localTableDF = names!(NR.results.row,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
-    if SP.debugLevel > -1
-        beautifyDF(localTableDF)
-    end
-
 
 end
 
