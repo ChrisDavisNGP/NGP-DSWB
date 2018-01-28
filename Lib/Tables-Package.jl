@@ -90,7 +90,10 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,C
         beautifyDF(NR.results.row[1:3,:])
     end
 
-    #drawDF[:col1] = unix2datetime(NR.results.row[:timestamp]/1000.0)
+    localTableDF = names!(NR.results.row,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
+    if SP.debugLevel > -1
+        beautifyDF(localTableDF)
+    end
 
 
 end

@@ -164,7 +164,7 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
     curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
-        "SELECT%20checkId%2Ctimestamp%2ConPageLoad%2ConPageContentLoad%20FROM%20SyntheticRequest%20SINCE%20%27" *
+        "SELECT%20jobId%2Ctimestamp%2ConPageLoad%2ConPageContentLoad%20FROM%20SyntheticRequest%20SINCE%20%27" *
         startTimeNR * "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * CU.syntheticMonitor * "%27%20" *
         "and%20URL%20like%20%27" * CU.urlRegEx * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27"
