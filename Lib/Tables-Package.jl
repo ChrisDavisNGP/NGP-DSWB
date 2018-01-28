@@ -72,9 +72,9 @@ end
 function critAggLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
 
     if CU.syntheticMonitor == "no name"
-        critAggLimitedBeaconsToDFSoasta(TV,UP,SP,CU,NR)
+        critAggLimitedBeaconsToDFSoasta(TV,UP,SP)
     else
-        critAggLimitedBeaconsToDFNR(TV,SP,CU)
+        critAggLimitedBeaconsToDFNR(TV,UP,SP,CU,NR)
     end
 
 end
