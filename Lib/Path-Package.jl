@@ -275,24 +275,26 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           beautifyDF(NR.results.row[1:3,:])
       end
 
-      #toppageurl = DataFrame(
-      #   urlpagegroup=ASCIIString[],Start=Int64[],Total=Float64[],Redirect=Float64[],"Blocking","DNS",
-      #"TCP","Request","Response","Gap","Critical","urlgroup",
-      #"request_count","label","load_time","beacon_time"
-      #)
+      toppageurl = DataFrame(
+         urlpagegroup=ASCIIString[],Start=Int64[],Total=Float64[],Redirect=Float64[],Blocking=Float64[],
+         DNS=Float64[],TCP=Float64[],Request=Float64[],Response=Float64[],
+         Gap=Float64[],Critical=Float64[],urlgroup=ASCIIString[],
+         request_count=Float64[],label=ASCIIString[],load_time=Float64[],beacon_time=Float64[]
+      )
 
-      #for row in eachrow(NR.results.row)
-    #      push!(localTableDF,
-    #        [row[:URL];row[:Timestamp];row[:Duration];row[:Duration_Connect]]
-    #      )
-     # end
+      for row in eachrow(NR.results.row)
+          push!(localTableDF,[
+            row[:URL];row[:timestamp];row[:duration];row[:durationWait];row[:durationBlocked];
+            row[:durationDNS];row[:durationConnect];row[:durationSend];row[:durationReceive];
+            0.0;0.0;0.0;1.0;"";0.0,0.0]
+          )
+      end
 
-      #localTableDF = names!(localTableDF,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
+      #localDF = names!(toppageurl,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
 
-      #if SP.debugLevel > -1
-    #      beautifyDF(localTableDF)
-     # end
-
+      if SP.debugLevel > -1
+          beautifyDF(toppageurl)
+      end
 
       return toppageurl
 
