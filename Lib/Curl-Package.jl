@@ -197,7 +197,7 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
 
     println("curlStr=",curlStr)
 
-    debugPrintCurlCommand(SP,curlStr,sqlCommand)
+    debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
