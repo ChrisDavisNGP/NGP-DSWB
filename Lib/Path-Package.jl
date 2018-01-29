@@ -294,8 +294,15 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               startTimeStamp = row[:timestamp]
           end
 
+          startOffset = row[:timestamp]-startTimeStamp
+
+          if startOffset > studyTime
+              println("startOffset=",startOffset," studyTime=",studyTime)
+              #continue
+          end
+
           push!(toppageurl,[
-                  "";(row[:timestamp]-startTimeStamp);round(row[:duration],0);round(row[:durationWait],0);round(row[:durationBlocked],0);
+                  "";startOffset;round(row[:duration],0);round(row[:durationWait],0);round(row[:durationBlocked],0);
                   round(row[:durationDNS],0);round(row[:durationConnect],0);round(row[:durationSend],0);round(row[:durationReceive],0);
               0;0;row[:URL];1;"Label";0.0;0]
             )
