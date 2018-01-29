@@ -252,10 +252,12 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,
     CU::CurlParams,NR::NrParams,studySession::ASCIIString,studyTime::Int64)
   try
       if CU.syntheticMonitor == "no name"
-          individualPageDataSoasta(TV,UP,SP,studySession,studyTime)
+          toppageurl = individualPageDataSoasta(TV,UP,SP,studySession,studyTime)
       else
-          individualPageDataNR(TV,UP,SP,CU,NR,studySession,studyTime)
+          toppageurl = individualPageDataNR(TV,UP,SP,CU,NR,studySession,studyTime)
       end
+
+      return toppageurl
 
   catch y
       println("individualPageData Exception ",y)
