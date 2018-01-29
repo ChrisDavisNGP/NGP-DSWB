@@ -348,6 +348,10 @@ function CurlParamsInit(nb::ASCIIString)
 
     if isdefined(:CuAccount)
         CU.account = CuAccount
+
+        if CU.account == "775840"
+            cu.apiQueryKey = "DuGn43YjpU5aZyZ8gWcS5mlz33fBc1Fm"
+        end
     end
 
     # Hard coded keys for now but anyone can add the code for apiAdminKey et al
