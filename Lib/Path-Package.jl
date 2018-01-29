@@ -286,7 +286,7 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           push!(localTableDF,[
             row[:URL];row[:timestamp];row[:duration];row[:durationWait];row[:durationBlocked];
             row[:durationDNS];row[:durationConnect];row[:durationSend];row[:durationReceive];
-            0.0;0.0;0.0;1.0;"";0.0,0.0]
+            0.0;0.0;0.0;1.0;"";0.0;0.0]
           )
       end
 
