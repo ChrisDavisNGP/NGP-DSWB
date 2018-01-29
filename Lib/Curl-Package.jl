@@ -188,7 +188,7 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/" * CU.account * "/query?nrql="
 
     sqlCommand =
         "SELECT%20jobId%2Ctimestamp%2ConPageLoad%2ConPageContentLoad%20FROM%20SyntheticRequest%20SINCE%20%27" *
@@ -227,7 +227,7 @@ function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/" * CU.account * "/query?nrql="
 
     sqlCommand =
         "SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" *
