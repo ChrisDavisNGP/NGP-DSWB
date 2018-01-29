@@ -83,7 +83,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
       if SP.debugLevel > -1
-          println(localTableDF[1:3,:])
+          beautifyDF(localTableDF[1:3,:])
       end
 
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
