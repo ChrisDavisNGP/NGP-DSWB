@@ -283,7 +283,7 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       )
 
       for row in eachrow(NR.results.row)
-          push!(localTableDF,[
+          push!(toppageurl,[
             row[:URL];row[:timestamp];row[:duration];row[:durationWait];row[:durationBlocked];
             row[:durationDNS];row[:durationConnect];row[:durationSend];row[:durationReceive];
             0.0;0.0;0.0;1.0;"";0.0;0.0]
