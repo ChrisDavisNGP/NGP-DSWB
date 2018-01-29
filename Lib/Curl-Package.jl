@@ -209,7 +209,7 @@ function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParam
     curlStr = ["-H","$apiKey","$curlCommand"]
 
     # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > -1
+    if SP.debugLevel > 4
         println("curlStr=",curlStr)
     end
 
