@@ -350,7 +350,7 @@ function CurlParamsInit(nb::ASCIIString)
         CU.account = CuAccount
 
         if CU.account == "775840"
-            cu.apiQueryKey = "DuGn43YjpU5aZyZ8gWcS5mlz33fBc1Fm"
+            CU.apiQueryKey = "DuGn43YjpU5aZyZ8gWcS5mlz33fBc1Fm"
         end
     end
 
