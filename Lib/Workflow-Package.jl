@@ -1201,6 +1201,6 @@ function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::C
       UP.timeUpperMs = saveTimeUpperMs
 
   catch y
-      println("criticalPathAggregationMain Exception ",y)
+      println("criticalPathAggWorkflow Exception ",y)
   end
 end

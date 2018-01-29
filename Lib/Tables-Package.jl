@@ -87,7 +87,7 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,C
 
         fillNrResults(SP,NR,timeDict["results"])
 
-        if SP.debugLevel > 8
+        if SP.debugLevel > 6
             beautifyDF(NR.results.row[1:3,:])
         end
 

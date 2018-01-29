@@ -1,5 +1,7 @@
 function debugPrintCurlCommand(SP::ShowParams,curlStr::ASCIIString,sqlStr::ASCIIString)
 
+    println("sql=",sqlStr)
+
     if SP.debugLevel > 6
         println(curlStr)
     end
@@ -192,6 +194,8 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
         "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+
+    println("curlStr=",curlStr)
 
     debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
