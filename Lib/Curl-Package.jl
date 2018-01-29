@@ -1,3 +1,20 @@
+function debugPrintCurlCommand(SP::ShowParams,curlStr::ASCIIString,sqlStr::ASCIIString)
+
+    if SP.debugLevel > 6
+        println(curlStr)
+    end
+
+    if SP.debugLevel > 4
+        sqlStr = replace(sqlStr,"%20"," ")
+        sqlStr = replace(sqlStr,"%27","'")
+        sqlStr = replace(sqlStr,"%2C",",")
+        sqlStr = replace(sqlStr,"%3A",":")
+        sqlStr = replace(sqlStr,"%3D","=")
+        println(sqlStr)
+    end
+
+end
+
 function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParams,monitor::UTF8String)
 
 # Select all monitors and call the following
@@ -25,8 +42,9 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
     endTimeNR = replace(TV.endTimeStr," ","%20")
     endTimeNR = replace(endTimeNR,":","%3A")
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
-        "SELECT%20timestamp%2CcheckId%2CmonitorName%2ConPageLoad%20FROM%20SyntheticRequest%20" *
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+
+    sqlCommand = "SELECT%20timestamp%2CcheckId%2CmonitorName%2ConPageLoad%20FROM%20SyntheticRequest%20" *
         "where%20pageref%20%3D%20%27page_0%27%20and%20externalResource%20is%20false%20and%20" *
         "responseStatus%20%3D%20%27OK%27%20and%20port%20%3D%20443%20and%20contentType%20%3D%20" *
         "%27text%2Fhtml%27%20and%20verb%20%3D%20%27GET%27%20and%20" *
@@ -36,11 +54,9 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 #        since%20" * day * "%20day%20ago
 
 
-    curlStr = ["-H","$apiKey","$curlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
 
-    if SP.debugLevel > 4
-        println("curlStr=",curlStr)
-    end
+    debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -64,13 +80,14 @@ function curlSelectActiveSyntheticMonitors(SP::ShowParams,CU::CurlParams)
 
     #SELECT uniques(monitorName) FROM SyntheticCheck where type in ('BROWSER','SCRIPT_BROWSER') SINCE 1 day AGO
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
-        "SELECT%20uniques(monitorName)%20FROM%20SyntheticCheck%20where%20type%20in%20(%27BROWSER%27%2C%27SCRIPT_BROWSER%27)%20SINCE%201%20day%20AGO"
-    curlStr = ["-H","$apiKey","$curlCommand"]
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
 
-    if SP.debugLevel > 4
-        println("curlStr=",curlStr)
-    end
+    sqlCommand =  "SELECT%20uniques(monitorName)%20FROM%20SyntheticCheck%20" *
+        "where%20type%20in%20(%27BROWSER%27%2C%27SCRIPT_BROWSER%27)%20SINCE%201%20day%20AGO"
+
+    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+
+    debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -95,15 +112,16 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
     apiKey = "X-Query-Key:" * CU.apiQueryKey
     compareWith = "2%20days%20ago"
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+
+    sqlCommand =
         "SELECT%20stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20" *
         "FROM%20SyntheticCheck%20facet%20monitorName%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
         "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500%20COMPARE%20WITH%20" * compareWith
-    curlStr = ["-H","$apiKey","$curlCommand"]
 
-    if SP.debugLevel > -1
-        println("curlStr=",curlStr)
-    end
+    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+
+    debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -126,16 +144,17 @@ function curlSelectAllByTimeAndUrl(TV::TimeVars,SP::ShowParams,CU::CurlParams,st
     #Grab the UP urlRegEx and convert it
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
+
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+
+    sqlCommand = "SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
         "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
         "and%20URL%20like%20%27" * CU.urlRegEx * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27"
-    curlStr = ["-H","$apiKey","$curlCommand"]
 
-    # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > 8
-        println("curlStr=",curlStr)
-    end
+    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+
+    debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -163,17 +182,18 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
     #Grab the UP urlRegEx and convert it
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
+
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+
+    sqlCommand =
         "SELECT%20jobId%2Ctimestamp%2ConPageLoad%2ConPageContentLoad%20FROM%20SyntheticRequest%20SINCE%20%27" *
         startTimeNR * "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * CU.syntheticMonitor * "%27%20" *
         "and%20URL%20like%20%27" * CU.urlRegEx * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
-    curlStr = ["-H","$apiKey","$curlCommand"]
 
-    # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > 4
-        println("curlStr=",curlStr)
-    end
+    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+
+    debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -201,17 +221,18 @@ function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParam
     #Grab the UP urlRegEx and convert it
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
+
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+
+    sqlCommand =
         "SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" *
         startTimeNR * "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * CU.syntheticMonitor * "%27%20" *
         "and%20jobId%20%3D%20%27" * studySession * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
-    curlStr = ["-H","$apiKey","$curlCommand"]
 
-    # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > 4
-        println("curlStr=",curlStr)
-    end
+    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+
+    debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -238,15 +259,16 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
     #Grab the UP urlRegEx and convert it
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
+
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+
+    sqlCommand = "SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
         "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27"
-    curlStr = ["-H","$apiKey","$curlCommand"]
 
-    # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > -1
-        println("curlStr=",curlStr)
-    end
+    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+
+    debugPrintCurlCommand(SP,curlStr,sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -295,7 +317,7 @@ function curlCommands(TV::TimeVars,SP::ShowParams,CU::CurlParams)
     curlStr = ["-H","$apiKey","$curlCommand"]
 
     # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > -1
+    if SP.debugLevel > 4
         println("curlStr=",curlStr)
     end
 

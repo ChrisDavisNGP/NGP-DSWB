@@ -49,7 +49,7 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
 
     jParsed = JSON.parse(jList)
 
-    if SP.debugLevel > 6
+    if SP.debugLevel > 8
         println(jParsed)
         println(typeof(jParsed))
     end
@@ -364,7 +364,7 @@ function monitorOnPageLoad(SP::ShowParams,onPageLoadDict::Dict)
 
     sort!(df,cols=[order(:timestamp,rev=false)])
 
-    if SP.debugLevel > 6
+    if SP.debugLevel > 4
         quickTitle("Debug4: Fill New Relic Results")
         beautifyDF(df[:,:],maxRows=500)
     end
