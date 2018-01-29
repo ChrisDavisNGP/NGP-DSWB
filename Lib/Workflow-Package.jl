@@ -1195,7 +1195,7 @@ function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::C
       UP.timeLowerMs = round(statsDF[1:1,:q25][1])
       UP.timeUpperMs = round(statsDF[1:1,:q75][1])
 
-      criticalPathStreamline(TV,UP,SP,localTableDF)
+      criticalPathStreamline(TV,UP,SP,CU,NR,localTableDF)
 
       UP.timeLowerMs = saveTimeLowerMs
       UP.timeUpperMs = saveTimeUpperMs

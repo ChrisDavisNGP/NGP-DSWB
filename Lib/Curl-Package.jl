@@ -186,6 +186,44 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
 
 end
 
+function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,studySession::ASCIIString,studyTime::Int64)
+
+    if CU.apiAdminKey != "no id"
+    else
+        Key = "unknown"
+    end
+
+    startTimeNR = replace(TV.startTimeStr," ","%20")
+    startTimeNR = replace(startTimeNR,":","%3A")
+    endTimeNR = replace(TV.endTimeStr," ","%20")
+    endTimeNR = replace(endTimeNR,":","%3A")
+
+    #Grab the UP urlRegEx and convert it
+
+    apiKey = "X-Query-Key:" * CU.apiQueryKey
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql=" *
+        "SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" *
+        startTimeNR * "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * CU.syntheticMonitor * "%27%20" *
+        "and%20jobId%20%3D%20%27" * studySession * "%27%20" *
+        "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
+    curlStr = ["-H","$apiKey","$curlCommand"]
+
+    # Todo regular expression tests for "unknown" and report failure and return empty
+    if SP.debugLevel > -1
+        println("curlStr=",curlStr)
+    end
+
+    curlCmd = `curl $curlStr`
+    jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
+
+    # Picked syn monitor "JTP-Gallery-Equinox-M"
+    #  curl -v  -H 'X-Api-Key:b2abadd58593d10bb39329981e8b702d'
+    #'https://synthetics.newrelic.com/synthetics/api/v3/monitors/69599173-5b61-41e0-b4e6-ba69e179bc70'
+
+    return jsonString
+
+end
+
 function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTimeNR::ASCIIString,endTimeNR::ASCIIString,monitor::ASCIIString)
 
     if SP.debugLevel > 8

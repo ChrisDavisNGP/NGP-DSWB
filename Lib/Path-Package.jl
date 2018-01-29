@@ -73,7 +73,8 @@ function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;r
 end
 
 # From Individual-Streamline-Body
-function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
+function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
+    CU::CurlParams,NR::NrParams,localTableDF::DataFrame)
   try
       io = 0
       pageCount = 0
@@ -110,7 +111,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localT
                           println("executeSingleSession(TV,UP,SP,",timeVar,",\"",sessionId,"\",",timeStampVar,") #    Time=",timeVar)
                       end
                   end
-                  topPageUrl = individualPageData(TV,UP,SP,sessionIdString,timeStampVar)
+                  topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,sessionIdString,timeStampVar)
                   if (!suitable)
                       SP.showLines += 1
@@ -246,9 +247,63 @@ function executeSingleSession(TV::TimeVars,UP::UrlParams,SP::ShowParams,timerDon
 
 end
 
+
+function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,
+    CU::CurlParams,NR::NrParams,studySession::ASCIIString,studyTime::Int64)
+  try
+      if CU.syntheticMonitor == "no name"
+          individualPageDataSoasta(TV,UP,SP,studySession,studyTime)
+      else
+          individualPageDataNR(TV,UP,SP,CU,NR,studySession,studyTime)
+      end
+
+  catch y
+      println("individualPageData Exception ",y)
+  end
+end
+
+function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
+    CU::CurlParams,NR::NrParams,studySession::ASCIIString,studyTime::Int64)
+  try
+
+      jsonTimeString = curlCritAggStudySessionToDFNR(TV,SP,CU,studySession,studyTime)
+      timeDict = curlSyntheticJson(SP,jsonTimeString)
+
+      fillNrResults(SP,NR,timeDict["results"])
+
+      if SP.debugLevel > -1
+          beautifyDF(NR.results.row[1:3,:])
+      end
+
+      #toppageurl = DataFrame(
+      #   urlpagegroup=ASCIIString[],Start=Int64[],Total=Float64[],Redirect=Float64[],"Blocking","DNS",
+      #"TCP","Request","Response","Gap","Critical","urlgroup",
+      #"request_count","label","load_time","beacon_time"
+      #)
+
+      #for row in eachrow(NR.results.row)
+    #      push!(localTableDF,
+    #        [row[:URL];row[:Timestamp];row[:Duration];row[:Duration_Connect]]
+    #      )
+     # end
+
+      #localTableDF = names!(localTableDF,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
+
+      #if SP.debugLevel > -1
+    #      beautifyDF(localTableDF)
+     # end
+
+
+      return toppageurl
+
+  catch y
+      println("individualPageDataNR Exception ",y)
+  end
+end
+
 # From Individual-Streamline-Body
 
-function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+function individualPageDataSoasta(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
   try
 
       toppageurl = DataFrame()
@@ -273,7 +328,7 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySessi
       return toppageurl
 
   catch y
-      println("individualPageData Exception ",y)
+      println("individualPageDataSoasta Exception ",y)
   end
 end
 
