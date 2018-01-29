@@ -98,7 +98,7 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,C
 
         localTableDF = names!(localTableDF,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
 
-        if SP.debugLevel > -1
+        if SP.debugLevel > 6
             beautifyDF(localTableDF)
         end
         return localTableDF
@@ -136,7 +136,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitRows)
         """)
 
-        if (SP.debugLevel > -1)
+        if (SP.debugLevel > 6)
             standardChartTitle(TV,UP,SP,"Debug8: critAggLimitedBeaconsToDF All Columns")
             beautifyDF(localTableDF[1:min(3,end),:])
         end

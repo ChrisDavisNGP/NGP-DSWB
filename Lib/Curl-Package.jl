@@ -133,7 +133,7 @@ function curlSelectAllByTimeAndUrl(TV::TimeVars,SP::ShowParams,CU::CurlParams,st
     curlStr = ["-H","$apiKey","$curlCommand"]
 
     # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > -1
+    if SP.debugLevel > 8
         println("curlStr=",curlStr)
     end
 
@@ -171,7 +171,7 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
     curlStr = ["-H","$apiKey","$curlCommand"]
 
     # Todo regular expression tests for "unknown" and report failure and return empty
-    if SP.debugLevel > -1
+    if SP.debugLevel > 4
         println("curlStr=",curlStr)
     end
 

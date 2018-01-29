@@ -82,7 +82,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
-      if SP.debugLevel > -1
+      if SP.debugLevel > 8
           beautifyDF(localTableDF[1:3,:])
       end
 
@@ -277,7 +277,7 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       fillNrResults(SP,NR,timeDict["results"])
 
-      if SP.debugLevel > -1
+      if SP.debugLevel > 8
           beautifyDF(NR.results.row[1:3,:])
       end
 
@@ -303,7 +303,7 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       #localDF = names!(toppageurl,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
 
-      if SP.debugLevel > -1
+      if SP.debugLevel > 6
           beautifyDF(toppageurl)
       end
 
