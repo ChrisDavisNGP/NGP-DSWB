@@ -296,8 +296,8 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
           startOffset = row[:timestamp]-startTimeStamp
 
+          println("startOffset=",startOffset," studyTime=",studyTime)
           if startOffset > studyTime
-              println("startOffset=",startOffset," studyTime=",studyTime)
               #continue
           end
 
