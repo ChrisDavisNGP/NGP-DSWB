@@ -302,7 +302,9 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           startOffset = row[:timestamp]-startTimeStamp
 
           if startOffset > studyTime
-              println("startOffset=",startOffset," studyTime=",studyTime)
+              if SP.debugLevel > 4
+                  println("Dropping startOffset=",startOffset," studyTime=",studyTime)
+              end
               continue
           end
 
