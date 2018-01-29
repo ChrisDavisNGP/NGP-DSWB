@@ -276,18 +276,23 @@ function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       toppageurl = DataFrame(
-         urlpagegroup=ASCIIString[],Start=Int64[],Total=Float64[],Redirect=Float64[],Blocking=Float64[],
-         DNS=Float64[],TCP=Float64[],Request=Float64[],Response=Float64[],
-         Gap=Float64[],Critical=Float64[],urlgroup=ASCIIString[],
-         request_count=Float64[],label=ASCIIString[],load_time=Float64[],beacon_time=Float64[]
+        urlpagegroup=ASCIIString[],Start=Int64[],Total=Int64[],Redirect=Int64[],Blocking=Int64[],
+        DNS=Int64[],TCP=Int64[],Request=Int64[],Response=Int64[],
+         Gap=Int64[],Critical=Int64[],urlgroup=ASCIIString[],
+         request_count=Int64[],label=ASCIIString[],load_time=Float64[],beacon_time=Int64[]
       )
 
+      startTimeStamp = 0
       for row in eachrow(NR.results.row)
+          if startTimeStamp == 0
+              startTimeStamp = row[:timestamp]
+          end
+
           push!(toppageurl,[
-            row[:URL];row[:timestamp];row[:duration];row[:durationWait];row[:durationBlocked];
-            row[:durationDNS];row[:durationConnect];row[:durationSend];row[:durationReceive];
-            0.0;0.0;"";1.0;"";0.0;0.0]
-          )
+                  "";(row[:timestamp]-startTimeStamp);round(row[:duration],0);round(row[:durationWait],0);round(row[:durationBlocked],0);
+                  round(row[:durationDNS],0);round(row[:durationConnect],0);round(row[:durationSend],0);round(row[:durationReceive],0);
+              0;0;row[:URL];1;"Label";0.0;0]
+            )
       end
 
       #localDF = names!(toppageurl,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
