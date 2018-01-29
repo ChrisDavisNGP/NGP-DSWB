@@ -91,9 +91,9 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,C
             beautifyDF(NR.results.row[1:3,:])
         end
 
-        localTableDF = DataFrame(jobid=ASCIIString[],timestamp=Int64[],onpageload=Float64[],onpagecontentload=Float64[])
+        localTableDF = DataFrame(jobid=ASCIIString[],timestamp=Int64[],onpageload=Int64[],onpagecontentload=Int64[])
         for row in eachrow(NR.results.row)
-            push!(localTableDF,[row[:jobId];row[:timestamp];row[:onPageLoad];row[:onPageContentLoad]])
+            push!(localTableDF,[row[:jobId];row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
         end
 
         localTableDF = names!(localTableDF,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
