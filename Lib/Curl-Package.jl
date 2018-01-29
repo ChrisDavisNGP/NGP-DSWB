@@ -1,9 +1,5 @@
 function debugPrintCurlCommand(SP::ShowParams,curlStr::ASCIIString,sqlStr::ASCIIString)
 
-    println()
-    println("sql=",sqlStr)
-    println()
-
     if SP.debugLevel > 6
         println()
         println(curlStr)
@@ -14,6 +10,7 @@ function debugPrintCurlCommand(SP::ShowParams,curlStr::ASCIIString,sqlStr::ASCII
         sqlStr = replace(sqlStr,"%20"," ")
         sqlStr = replace(sqlStr,"%27","'")
         sqlStr = replace(sqlStr,"%2C",",")
+        sqlStr = replace(sqlStr,"%2F","/")
         sqlStr = replace(sqlStr,"%3A",":")
         sqlStr = replace(sqlStr,"%3D","=")
         println()
@@ -62,7 +59,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 #        since%20" * day * "%20day%20ago
 
 
-    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand $sqlCommand"]
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
@@ -93,7 +90,7 @@ function curlSelectActiveSyntheticMonitors(SP::ShowParams,CU::CurlParams)
     sqlCommand =  "SELECT%20uniques(monitorName)%20FROM%20SyntheticCheck%20" *
         "where%20type%20in%20(%27BROWSER%27%2C%27SCRIPT_BROWSER%27)%20SINCE%201%20day%20AGO"
 
-    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand $sqlCommand"]
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
@@ -127,7 +124,7 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
         "FROM%20SyntheticCheck%20facet%20monitorName%20since%20%27" * startTimeNR * "%27%20until%20%27" * endTimeNR *
         "%27%20with%20TIMEZONE%20%27America%2FNew_York%27%20limit%20500%20COMPARE%20WITH%20" * compareWith
 
-    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand $sqlCommand"]
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
@@ -160,7 +157,7 @@ function curlSelectAllByTimeAndUrl(TV::TimeVars,SP::ShowParams,CU::CurlParams,st
         "and%20URL%20like%20%27" * CU.urlRegEx * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27"
 
-    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand $sqlCommand"]
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
@@ -199,7 +196,7 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
         "and%20URL%20like%20%27" * CU.urlRegEx * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
 
-    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand $sqlCommand"]
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
@@ -238,7 +235,7 @@ function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParam
         "and%20jobId%20%3D%20%27" * studySession * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
 
-    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand $sqlCommand"]
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
@@ -274,7 +271,7 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
         "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
         "with%20timezone%20%27America%2FNew_York%27"
 
-    curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
+    curlStr = ["-H","$apiKey","$curlCommand $sqlCommand"]
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
