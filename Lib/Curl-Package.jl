@@ -47,7 +47,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
     endTimeNR = replace(TV.endTimeStr," ","%20")
     endTimeNR = replace(endTimeNR,":","%3A")
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/" * CU.account * "/query?nrql="
 
     sqlCommand = "SELECT%20timestamp%2CcheckId%2CmonitorName%2ConPageLoad%20FROM%20SyntheticRequest%20" *
         "where%20pageref%20%3D%20%27page_0%27%20and%20externalResource%20is%20false%20and%20" *
@@ -85,7 +85,7 @@ function curlSelectActiveSyntheticMonitors(SP::ShowParams,CU::CurlParams)
 
     #SELECT uniques(monitorName) FROM SyntheticCheck where type in ('BROWSER','SCRIPT_BROWSER') SINCE 1 day AGO
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/" * CU.account * "/query?nrql="
 
     sqlCommand =  "SELECT%20uniques(monitorName)%20FROM%20SyntheticCheck%20" *
         "where%20type%20in%20(%27BROWSER%27%2C%27SCRIPT_BROWSER%27)%20SINCE%201%20day%20AGO"
@@ -117,7 +117,7 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
     apiKey = "X-Query-Key:" * CU.apiQueryKey
     compareWith = "2%20days%20ago"
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/" * CU.account * "/query?nrql="
 
     sqlCommand =
         "SELECT%20stddev(totalResponseBodySize)%2Caverage(totalResponseBodySize)%2Cstddev(duration)%2Caverage(duration)%20" *
@@ -150,7 +150,7 @@ function curlSelectAllByTimeAndUrl(TV::TimeVars,SP::ShowParams,CU::CurlParams,st
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/" * CU.account * "/query?nrql="
 
     sqlCommand = "SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
         "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
@@ -265,7 +265,7 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
 
     apiKey = "X-Query-Key:" * CU.apiQueryKey
 
-    curlCommand = "https://insights-api.newrelic.com/v1/accounts/78783/query?nrql="
+    curlCommand = "https://insights-api.newrelic.com/v1/accounts/" * CU.account * "/query?nrql="
 
     sqlCommand = "SELECT%20*%20FROM%20SyntheticRequest%20SINCE%20%27" * startTimeNR *
         "%27%20UNTIL%20%27" * endTimeNR * "%27%20WHERE%20monitorName%20%3D%20%27" * monitor * "%27%20" *
