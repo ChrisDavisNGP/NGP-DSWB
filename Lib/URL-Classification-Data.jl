@@ -2075,6 +2075,7 @@ function VolumeEList()
     ("events.steelhousemedia.com","Steelhousemedia.com"),
     ("events.streamrail.net","events.streamrail.net"),
     ("events.tremorhub.com","Tremorhub Ads"),
+    ("c.evidon.com","Evidon.com"),
     ("evm1.stackadapt.com","evm1.stackadapt.com"),
     ("evs.jivox.com","Jivox.com"),
     ("ex1.coull.com","ex1.coull.com"),
@@ -6270,6 +6271,7 @@ function wellKnownUrlGroup()
     ("Mxptint.net","3rd Party Internet Operations"),
     ("TubeMogul Ads","3rd Party Ad Operations"),
     ("Extend.tv","3rd Party Internet Operations"),
+    ("Evidon.com","3rd Party Internet Operations"),
 
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
