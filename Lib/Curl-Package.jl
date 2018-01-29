@@ -1,9 +1,13 @@
 function debugPrintCurlCommand(SP::ShowParams,curlStr::ASCIIString,sqlStr::ASCIIString)
 
+    println()
     println("sql=",sqlStr)
+    println()
 
     if SP.debugLevel > 6
+        println()
         println(curlStr)
+        println()
     end
 
     if SP.debugLevel > 4
@@ -12,7 +16,9 @@ function debugPrintCurlCommand(SP::ShowParams,curlStr::ASCIIString,sqlStr::ASCII
         sqlStr = replace(sqlStr,"%2C",",")
         sqlStr = replace(sqlStr,"%3A",":")
         sqlStr = replace(sqlStr,"%3D","=")
+        println()
         println(sqlStr)
+        println()
     end
 
 end
@@ -58,7 +64,7 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
 
-    debugPrintCurlCommand(SP,curlStr,sqlCommand)
+    debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -89,7 +95,7 @@ function curlSelectActiveSyntheticMonitors(SP::ShowParams,CU::CurlParams)
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
 
-    debugPrintCurlCommand(SP,curlStr,sqlCommand)
+    debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -123,7 +129,7 @@ function curlSelectDurationAndSize(SP::ShowParams,CU::CurlParams,startTimeNR::AS
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
 
-    debugPrintCurlCommand(SP,curlStr,sqlCommand)
+    debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -156,7 +162,7 @@ function curlSelectAllByTimeAndUrl(TV::TimeVars,SP::ShowParams,CU::CurlParams,st
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
 
-    debugPrintCurlCommand(SP,curlStr,sqlCommand)
+    debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -194,8 +200,6 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
         "with%20timezone%20%27America%2FNew_York%27%20limit%201000"
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
-
-    println("curlStr=",curlStr)
 
     debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
@@ -236,7 +240,7 @@ function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
 
-    debugPrintCurlCommand(SP,curlStr,sqlCommand)
+    debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
@@ -272,7 +276,7 @@ function curlSelectAllByTime(TV::TimeVars,SP::ShowParams,CU::CurlParams,startTim
 
     curlStr = ["-H","$apiKey","$curlCommand","$sqlCommand"]
 
-    debugPrintCurlCommand(SP,curlStr,sqlCommand)
+    debugPrintCurlCommand(SP,"curl $curlStr",sqlCommand)
 
     curlCmd = `curl $curlStr`
     jsonString = readstring(pipeline(curlCmd,stderr=DevNull))
