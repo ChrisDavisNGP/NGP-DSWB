@@ -106,7 +106,12 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               if io <= SP.showLines
                   sessionId = subdf[1,:session_id]
                   sessionIdString = ASCIIString(sessionId)
-                  timeStampVar = subdf[1,:timestamp]
+                  if CU.syntheticMonitor == "no name"
+                      timeStampVar = subdf[1,:timestamp]
+                  else
+                      timeStampVar = subdf[1,:onPageLoad]
+                  end
+
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 8)
                       labelString = "$(timeVarSec) Seconds"
