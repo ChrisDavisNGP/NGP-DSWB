@@ -97,8 +97,10 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
           if (UP.usePageLoad)
               timeVar = subdf[1,:timers_t_done]
+              timeStampVar = subdf[1,:timers_t_done]
           else
               timeVar = subdf[1,:timers_domready]
+              timeStampVar = subdf[1,:timers_domready]
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
@@ -108,8 +110,6 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   sessionIdString = ASCIIString(sessionId)
                   if CU.syntheticMonitor == "no name"
                       timeStampVar = subdf[1,:timestamp]
-                  else
-                      timeStampVar = subdf[1,:onPageLoad]
                   end
 
                   timeVarSec = timeVar / 1000.0
