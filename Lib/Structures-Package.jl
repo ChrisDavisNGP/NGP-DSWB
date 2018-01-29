@@ -272,7 +272,7 @@ function CurlParamsInit(nb::ASCIIString)
     CU = CurlParams(
         false, false, false, false, false, "no id", "no name",
         "0","0","0","0",
-        "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx","78783"
+        "b2abadd58593d10bb39329981e8b702d","HFdC9JQE7P3Bkwk9HMl0kgVTH2j5yucx","78783",
         1,"",
         "$nb.json"
     )
