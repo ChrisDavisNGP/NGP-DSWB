@@ -201,7 +201,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
     return statsDF
 end
 
-function anyBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame,useField::Symbol;
+function anyBeaconStats(TV::TimeVars,localTableDF::DataFrame,useField::Symbol;
     showAdditional::Bool=true, useStdDev::Bool=false, showShort::Bool=true,
     usePercent::Bool=false,useQuartile::Bool=false,chartTitle::ASCIIString="SKIP"
     )

@@ -35,9 +35,7 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 end
 
-# From Individual-Streamline-Body
-
-function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams;repeat::Int64=1)
+function individualStreamlineTableV2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   try
 
       # Get Started
@@ -121,7 +119,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                       end
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
-                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar,sessionIdString,timeStampVar)
+                  suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
                   if (!suitable)
                       SP.showLines += 1
                   else
@@ -137,7 +135,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           println("size of criticalPathDF is ",size(criticalPathDF,1)," Using $pageCount pages")
       end
 
-      finalCriticalPathDF = finalCriticalPath(TV,UP,SP,criticalPathDF)
+      finalCriticalPathDF = finalCriticalPath(SP,criticalPathDF)
 
       summaryCriticalPathDF = deepcopy(finalCriticalPathDF)
 
@@ -166,7 +164,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
         finalCriticalPathDF[Bool[isless(hitMin,x) for x in finalCriticalPathDF[:counter]], :]
       )
 
-      summaryUrlGroupDF = summaryReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
+      summaryUrlGroupDF = summaryReduce(SP,summaryCriticalPathDF,pageCount)
 
       if (SP.debugLevel > 4)
           beautifyDF(summaryUrlGroupDF)
@@ -176,7 +174,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       SP.devView = saveDevView
 
       summaryCriticalPathDF = deepcopy(finalCriticalPathDF)
-      summaryTableUrlGroupDF = summaryTableReduce(TV,UP,SP,summaryCriticalPathDF,pageCount)
+      summaryTableUrlGroupDF = summaryTableReduce(TV,UP,SP,summaryCriticalPathDF)
 
   catch y
       println("criticalPathStreamline Exception ",y)
@@ -263,7 +261,7 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       if CU.syntheticMonitor == "no name"
           toppageurl = individualPageDataSoasta(TV,UP,SP,studySession,studyTime)
       else
-          toppageurl = individualPageDataNR(TV,UP,SP,CU,NR,studySession,studyTime)
+          toppageurl = individualPageDataNR(TV,SP,CU,NR,studySession,studyTime)
       end
 
       return toppageurl
@@ -273,11 +271,10 @@ function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   end
 end
 
-function individualPageDataNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,
-    CU::CurlParams,NR::NrParams,studySession::ASCIIString,studyTime::Int64)
+function individualPageDataNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,NR::NrParams,studySession::ASCIIString,studyTime::Int64)
   try
 
-      jsonTimeString = curlCritAggStudySessionToDFNR(TV,SP,CU,studySession,studyTime)
+      jsonTimeString = curlCritAggStudySessionToDFNR(TV,SP,CU,studySession)
       timeDict = curlSyntheticJson(SP,jsonTimeString)
 
       fillNrResults(SP,NR,timeDict["results"])
@@ -359,8 +356,7 @@ function individualPageDataSoasta(TV::TimeVars,UP::UrlParams,SP::ShowParams,stud
   end
 end
 
-function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
-  toppageurl::DataFrame,criticalPathDF::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
+function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame,criticalPathDF::DataFrame,timerDone::Int64)
   try
 
       if size(toppageurl,1) == 0
@@ -412,7 +408,7 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           beautifyDF(toppageurl)
       end
 
-      reduceCriticalPath(TV,UP,SP,toppageurl,criticalPathDF)
+      reduceCriticalPath(SP,toppageurl,criticalPathDF)
 
       # Save the fields
 
@@ -494,21 +490,21 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       labelField = UP.urlFull
-      criticalPathTreemapV2(TV,UP,SP,labelField,toppageurl)
+      criticalPathTreemapV2(SP,labelField,toppageurl)
 
       if (SP.devView)
-          gapTreemapV2(TV,UP,SP,toppageurl;showTreemap=false)
+          gapTreemapV2(TV,SP,toppageurl;showTreemap=false)
       end
 
       if (!SP.criticalPathOnly)
-          #itemCountTreemap(TV,UP,SP,toppageurl)      All entries are 1
-          endToEndTreemap(TV,UP,SP,toppageurl)
-          blockingTreemap(TV,UP,SP,toppageurl)
-          requestTreemap(TV,UP,SP,toppageurl)
-          responseTreemap(TV,UP,SP,toppageurl)
-          dnsTreemap(TV,UP,SP,toppageurl)
-          tcpTreemap(TV,UP,SP,toppageurl)
-          redirectTreemap(TV,UP,SP,toppageurl)
+          #itemCountTreemap(SP,toppageurl)      All entries are 1
+          endToEndTreemap(TV,SP,toppageurl)
+          blockingTreemap(TV,SP,toppageurl)
+          requestTreemap(TV,SP,toppageurl)
+          responseTreemap(TV,SP,toppageurl)
+          dnsTreemap(TV,SP,toppageurl)
+          tcpTreemap(TV,SP,toppageurl)
+          redirectTreemap(TV,SP,toppageurl)
       end
 
       return true
@@ -800,7 +796,7 @@ function statsAndTreemapsOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
         removeNegitiveTime(toppageurl,:Request)
         removeNegitiveTime(toppageurl,:Response)
 
-        summaryStatsDF = anyBeaconStats(TV,UP,SP,toppageurl,:Total;
+        summaryStatsDF = anyBeaconStats(TV,toppageurl,:Total;
             showAdditional=true,showShort=false,chartTitle="Resource Requests Stats For Current Beacons",useQuartile=true)
 
         classifyUrl(SP,toppageurl);
@@ -813,16 +809,16 @@ function statsAndTreemapsOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
         # This is the non-Url specific report so get the summary table and overwrite toppageurl
         toppageurl = deepcopy(summaryPageGroup);
 
-        endToEndTreemap(TV,UP,SP,toppageurl)
-        itemCountTreemap(TV,UP,SP,toppageurl)
+        endToEndTreemap(TV,SP,toppageurl)
+        itemCountTreemapSP,toppageurl)
 
         if (SP.reportLevel > 1)
-            blockingTreemap(TV,UP,SP,toppageurl)
-            requestTreemap(TV,UP,SP,toppageurl)
-            responseTreemap(TV,UP,SP,toppageurl)
-            dnsTreemap(TV,UP,SP,toppageurl)
-            tcpTreemap(TV,UP,SP,toppageurl)
-            redirectTreemap(TV,UP,SP,toppageurl)
+            blockingTreemap(TV,SP,toppageurl)
+            requestTreemap(TV,SP,toppageurl)
+            responseTreemap(TV,SP,toppageurl)
+            dnsTreemap(TV,SP,toppageurl)
+            tcpTreemap(TV,SP,toppageurl)
+            redirectTreemap(TV,SP,toppageurl)
         end
 
     catch y
@@ -932,7 +928,7 @@ function createJoinTableSummary(SP::ShowParams,joinTableSummary::DataFrame,joinT
     return joinTableSummary
 end
 
-function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::DataFrame,criticalPathDF::DataFrame)
+function reduceCriticalPath(SP::ShowParams,pageDF::DataFrame,criticalPathDF::DataFrame)
 
     if (SP.debugLevel > 8)
         println("Starting reduceCriticalPath")
@@ -960,7 +956,7 @@ function reduceCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,pageDF::Da
     end
 end
 
-function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame,pageCount::Int64)
+function summaryReduce(SP::ShowParams,summaryDF::DataFrame,pageCount::Int64)
 
     if (SP.debugLevel > 8)
         println("Starting summaryReduce")
@@ -991,7 +987,7 @@ function summaryReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::Data
     end
 end
 
-function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame,pageCount::Int64)
+function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF::DataFrame)
 
     if (SP.debugLevel > 8)
         println("Starting summaryTableReduce")
@@ -1084,7 +1080,7 @@ function summaryTableReduce(TV::TimeVars,UP::UrlParams,SP::ShowParams,summaryDF:
     end
 end
 
-function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPathDF::DataFrame)
+function finalCriticalPath(SP::ShowParams,criticalPathDF::DataFrame)
 
     if (SP.debugLevel > 8)
         println("Starting finalCriticalPathDF")
@@ -1107,7 +1103,7 @@ function finalCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,criticalPat
     end
 end
 
-function printWellKnownUrlGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function printWellKnownUrlGroup(SP::ShowParams)
 
     if (SP.debugLevel > 8)
         println("Starting printWellKnownUrlGroup")
@@ -1135,7 +1131,7 @@ function printWellKnownUrlGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function printCsvWellKnownUrlGroup(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function printCsvWellKnownUrlGroup(SP::ShowParams)
 
     if (SP.debugLevel > 8)
         println("Starting printWellKnownUrlGroup")

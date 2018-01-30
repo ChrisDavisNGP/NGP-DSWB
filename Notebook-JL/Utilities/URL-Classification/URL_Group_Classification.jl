@@ -26,7 +26,7 @@ ShowParamsValidate(SP)
 
 WellKnownUrlGroup = wellKnownUrlGroup();
 
-printWellKnownUrlGroup(TV,UP,SP)
+printWellKnownUrlGroup(SP)
 
-printCsvWellKnownUrlGroup(TV,UP,SP)
+printCsvWellKnownUrlGroup(SP)
 ;

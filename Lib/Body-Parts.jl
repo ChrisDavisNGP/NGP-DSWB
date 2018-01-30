@@ -24,7 +24,7 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
       UP.urlRegEx = string("%",ASCIIString(testUrl))
       UP.urlFull = testUrl
       if (UP.deviceType == "Mobile")
-          row = individualStreamlineTableV2(TV,UP,SP,repeat=1)
+          row = individualStreamlineTableV2(TV,UP,SP)
 
           if (UP.orderBy == "size")
               if (row[:encoded_size][1] < UP.sizeMin)
@@ -58,7 +58,7 @@ function finalUrlTableOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,topUrls::
       end
 
       if (UP.deviceType == "Desktop")
-          row = individualStreamlineTableV2(TV,UP,SP,repeat=1)
+          row = individualStreamlineTableV2(TV,UP,SP)
 
           if (UP.orderBy == "size")
               if (row[:encoded_size][1] < UP.sizeMin)

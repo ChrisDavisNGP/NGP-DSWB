@@ -74,12 +74,12 @@ function critAggLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU:
     if CU.syntheticMonitor == "no name"
         critAggLimitedBeaconsToDFSoasta(TV,UP,SP)
     else
-        critAggLimitedBeaconsToDFNR(TV,UP,SP,CU,NR)
+        critAggLimitedBeaconsToDFNR(TV,SP,CU,NR)
     end
 
 end
 
-function critAggLimitedBeaconsToDFNR(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
+function critAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,NR::NrParams)
 
     try
         jsonTimeString = curlCritAggLimitedBeaconsToDFNR(TV,SP,CU)

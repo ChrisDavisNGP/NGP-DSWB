@@ -396,7 +396,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     treemapsPGD(TV,UP,SP)
 
-    datePartQuartiles(TV,UP)
+    datePartQuartiles(TV)
 
     try
         result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=60, f=getAbandonPaths);
@@ -704,7 +704,7 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowDurationByDate)
-      datePartQuartiles(TV,UP)
+      datePartQuartiles(TV)
   end
 
   if (wfShowTopUrls)

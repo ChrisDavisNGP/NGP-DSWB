@@ -164,7 +164,7 @@ function notBlocking(localDF::DataFrame)
     end
 end
 
-function bodyTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame,beaconString::ASCIIString;showPageUrl::Bool=false,showTreemap::Bool=true)
+function bodyTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame,beaconString::ASCIIString;showPageUrl::Bool=false,showTreemap::Bool=true)
     try
         totalTime = sum(toppageurl[:,:Total])
         currentTime = sum(toppageurl[:,:beacons])
@@ -222,7 +222,7 @@ function bodyTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataF
     end
 end
 
-function gapTreemapV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false,showTreemap::Bool=true)
+function gapTreemapV2(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false,showTreemap::Bool=true)
     try
         #beacons on Blocking
         beaconString = "Gap"
@@ -231,14 +231,14 @@ function gapTreemapV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::Data
             Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("beacons"),Symbol("Critical"),Symbol("urlgroup"),
             Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
-        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl,showTreemap=showTreemap)
+        bodyTreemap(TV,SP,toppageurl,beaconString;showPageUrl=showPageUrl,showTreemap=showTreemap)
 
     catch y
         println("gapTreemapV2 Exception ",y)
     end
 end
 
-function blockingTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false,showTreemap::Bool=true)
+function blockingTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false,showTreemap::Bool=true)
     try
         #beacons on Blocking
         beaconString = "Blocking"
@@ -247,14 +247,14 @@ function blockingTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::D
             Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
             Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
-        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl,showTreemap=showTreemap)
+        bodyTreemap(TV,SP,toppageurl,beaconString;showPageUrl=showPageUrl,showTreemap=showTreemap)
 
     catch y
         println("blockingTreemap Exception ",y)
     end
 end
 
-function dnsTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
+function dnsTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on DNS
         beaconString = "DNS"
@@ -263,14 +263,14 @@ function dnsTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFr
             Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
             Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
-        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
+        bodyTreemap(TV,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("dnsTreemap Exception ",y)
     end
 end
 
-function redirectTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
+function redirectTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Redirect
         beaconString = "Redirect"
@@ -279,14 +279,14 @@ function redirectTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::D
             Symbol("TCP"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
             Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
-        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
+        bodyTreemap(TV,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("redirectTreemap Exception ",y)
     end
 end
 
-function requestTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
+function requestTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Request
         beaconString = "Request"
@@ -295,14 +295,14 @@ function requestTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::Da
             Symbol("TCP"),Symbol("beacons"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
             Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
-        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
+        bodyTreemap(TV,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("requestTreemap Exception ",y)
     end
 end
 
-function responseTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
+function responseTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Response
         beaconString = "Response"
@@ -311,14 +311,14 @@ function responseTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::D
             Symbol("TCP"),Symbol("Request"),Symbol("beacons"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
             Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
-        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
+        bodyTreemap(TV,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("responseTreemap Exception ",y)
     end
 end
 
-function tcpTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
+function tcpTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on TCP
         beaconString = "TCP"
@@ -327,7 +327,7 @@ function tcpTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFr
             Symbol("beacons"),Symbol("Request"),Symbol("Response"),Symbol("Gap"),Symbol("Critical"),Symbol("urlgroup"),
             Symbol("request_count"),Symbol("label"),Symbol("load_time"),Symbol("beacon_time")])
 
-        bodyTreemap(TV,UP,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
+        bodyTreemap(TV,SP,toppageurl,beaconString;showPageUrl=showPageUrl)
 
     catch y
         println("tcpTreemap Exception ",y)
@@ -335,7 +335,7 @@ function tcpTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFr
 end
 
 # Critical Path Display
-function criticalPathTreemapV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,labelField::ASCIIString,toppageurl::DataFrame)
+function criticalPathTreemapV2(SP::ShowParams,labelField::ASCIIString,toppageurl::DataFrame)
     try
         #beacons on Critical
         toppageurl = names!(toppageurl[:,:],
@@ -385,7 +385,7 @@ function criticalPathTreemapV2(TV::TimeVars,UP::UrlParams,SP::ShowParams,labelFi
     end
 end
 
-function endToEndTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
+function endToEndTreemap(TV::TimeVars,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #beacons on Total
         toppageurl = names!(toppageurl[:,:],
@@ -450,7 +450,7 @@ function endToEndTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::D
     end
 end
 
-function itemCountTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
+function itemCountTreemap(SP::ShowParams,toppageurl::DataFrame;showPageUrl::Bool=false)
     try
         #Note: This one is not time based.  Do not use this one as a template for others
 
@@ -620,7 +620,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     #beautifyDF(toppageurl[:,:])
 
-    criticalPathTreemapV2(TV,UP,SP,UP.urlFull,toppageurl)
+    criticalPathTreemapV2(SP,UP.urlFull,toppageurl)
 
     # Gap Graph
 

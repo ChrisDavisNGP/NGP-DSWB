@@ -35,5 +35,5 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-dailyChangeCheckOnPageLoadWorkflow(oldTV,newTV,SP,NR,CU)
+dailyChangeCheckOnPageLoadWorkflow(oldTV,newTV,SP,CU)
 ;

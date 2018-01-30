@@ -217,8 +217,10 @@ function classifyUrlGroup(SP::ShowParams,summaryDF::DataFrame)
     try
         i = 0
         todo = 0
-        #println("Starting classifyUrlGroup")
-        #beautifyDF(summaryDF)
+        if SP.debugLevel > 8
+            println("Starting classifyUrlGroup")
+            #beautifyDF(summaryDF)
+        end
 
         for urlGroupItem in summaryDF[:,:urlgroup]
             i += 1

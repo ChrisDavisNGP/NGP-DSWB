@@ -211,7 +211,7 @@ function curlCritAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlPar
 
 end
 
-function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,studySession::ASCIIString,studyTime::Int64)
+function curlCritAggStudySessionToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,studySession::ASCIIString)
 
     if CU.apiAdminKey != "no id"
     else

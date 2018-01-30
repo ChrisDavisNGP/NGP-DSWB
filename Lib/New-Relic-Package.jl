@@ -57,7 +57,7 @@ function curlSyntheticJson(SP::ShowParams,jList::ASCIIString)
     return jParsed
 end
 
-function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParams)
+function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::ShowParams,CU::CurlParams)
 
     if SP.debugLevel > 8
         println("Starting dailyChangeCheckOnPageLoad")
@@ -98,13 +98,13 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
 end
 
 
-function dailyChangeCheckWorkflow(SP::ShowParams,NR::NrParams,CU::CurlParams)
+function dailyChangeCheckWorkflow(SP::ShowParams,CU::CurlParams)
 
-    dailyChangeCheck(SP,NR,CU)
+    dailyChangeCheck(SP,CU)
 
 end
 
-function dailyChangeCheck(SP::ShowParams,NR::NrParams,CU::CurlParams)
+function dailyChangeCheck(SP::ShowParams,CU::CurlParams)
 
     if SP.debugLevel > 8
         println("Starting dailyChangeCheck")
@@ -112,7 +112,7 @@ function dailyChangeCheck(SP::ShowParams,NR::NrParams,CU::CurlParams)
 
     jsonTimeString = curlSelectDurationAndSize(SP,CU,CU.oldStart,CU.oldEnd)
     timeDict = curlSyntheticJson(SP,jsonTimeString)
-    monitorsDF = getMonitorsFromTotalResults(SP,NR,timeDict)
+    monitorsDF = getMonitorsFromTotalResults(SP,timeDict)
     sizeMonitorsDF = deepcopy(monitorsDF)
 
     diffDailyChange(SP,monitorsDF;diffBySize=false)
@@ -373,7 +373,7 @@ function monitorOnPageLoad(SP::ShowParams,onPageLoadDict::Dict)
 
 end
 
-function getMonitorsFromTotalResults(SP::ShowParams,NR::NrParams,totalResultsDict::Dict)
+function getMonitorsFromTotalResults(SP::ShowParams,totalResultsDict::Dict)
 
     if SP.debugLevel > 8
         println()
