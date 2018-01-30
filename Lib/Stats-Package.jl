@@ -184,7 +184,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
         UP.timeLowerMs = convert(Int64,statsDF[1:1,:rangeLower][1])
         UP.timeUpperMs = convert(Int64,statsDF[1:1,:rangeUpper][1])
     else
-        if SP.debugLevel > -1
+        if SP.debugLevel > 0
             println("No Range was requested for Stats block")
         end
     end
