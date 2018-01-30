@@ -810,7 +810,7 @@ function statsAndTreemapsOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
         toppageurl = deepcopy(summaryPageGroup);
 
         endToEndTreemap(TV,SP,toppageurl)
-        itemCountTreemapSP,toppageurl)
+        itemCountTreemap(SP,toppageurl)
 
         if (SP.reportLevel > 1)
             blockingTreemap(TV,SP,toppageurl)
