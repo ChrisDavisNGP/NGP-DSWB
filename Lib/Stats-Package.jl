@@ -63,10 +63,10 @@ function buildOtherStats(localStatsDF::DataFrame,fieldStat::Symbol,unit::ASCIISt
 end
 
 function SetStatsRange(statsDF::DataFrame;
-    useMedian=true,
-    useStdDev=false, usePercent=false, useQuartile=false,
-    stdDevLower=2.0, stdDevUpper=2.0,
-    percentLower = 0.90, percentUpper = 1.10
+    useMedian::Bool=true,
+    useStdDev::Bool=false, usePercent::Bool=false, useQuartile::Bool=false,
+    stdDevLower::Float64=2.0, stdDevUpper::Float64=2.0,
+    percentLower::Float64=0.90, percentUpper::Float64=1.10
 )
 
     #println("useMedian=",useMedian," useStdDev=",useStdDev)
@@ -162,7 +162,8 @@ end
 
 function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame;
     showAdditional::Bool=true, useStdDev::Bool=false, showShort::Bool=true,
-    usePercent::Bool=false,useQuartile::Bool=false
+    usePercent::Bool=false,useQuartile::Bool=false,
+    percentLower::Float64=0.90,percentUpper::Float64=1.10
     )
 
     statsDF = DataFrame()
@@ -178,7 +179,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
     end
 
     if useStdDev || usePercent || useQuartile
-        SetStatsRange(statsDF;useStdDev=useStdDev,usePercent=usePercent,useQuartile=useQuartile)
+        SetStatsRange(statsDF;useStdDev=useStdDev,usePercent=usePercent,useQuartile=useQuartile,percentLower=percentLower,percentUpper=percentUpper)
 
         # Store the range into the UP structure
         UP.timeLowerMs = convert(Int64,statsDF[1:1,:rangeLower][1])
