@@ -1168,6 +1168,30 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
+function urlAutoInvWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
+
+    localTableDF = critAggLimitedBeaconsToDF(TV,UP,SP,CU,NR)
+
+    if nrow(localTableDF) == 0
+        displayTitle(chart_title = "$(UP.urlFull) for $(UP.deviceType) was not found during $(TV.timeString)",showTimeStamp=false)
+        return
+    end
+
+    if (SP.debugLevel > 8)
+        println("Individual part 1 done with ", nrow(localTableDF), " records")
+    end
+
+    # Stats on the data
+    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent)
+
+    if (SP.debugLevel > 6)
+        println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
+    end
+
+    showAvailableSessionsStreamline(TV,UP,SP,CU,NR,localTableDF)
+
+end
+
 function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
   try
 

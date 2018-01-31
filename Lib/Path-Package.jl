@@ -111,12 +111,9 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   end
 
                   timeVarSec = timeVar / 1000.0
-                  if (SP.debugLevel > 8)
+                  if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
                       println("Page $(io) of $(SP.showLines): $(labelString)")
-                      if (SP.debugLevel > 6)
-                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",sessionId,"\",",timeStampVar,") #    Time=",timeVar)
-                      end
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
@@ -182,9 +179,9 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 end
 
 
-function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
+function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
+    CU::CurlParams,NR::NrParams,localTableDF::DataFrame)
   try
-#      full = join(localTableDF,localTableRtDF, on = [:session_id,:timestamp])
       io = 0
       sessionIdString = ASCIIString("")
 
@@ -201,8 +198,10 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
           if (UP.usePageLoad)
               timeVar = subdf[1,:timers_t_done]
+              timeStampVar = subdf[1,:timers_t_done]
           else
               timeVar = subdf[1,:timers_domready]
+              timeStampVar = subdf[1,:timers_domready]
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
@@ -212,17 +211,16 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                   sessionId = subdf[1,:session_id]
                   #println("Session_id $(sessionId)")
                   sessionIdString = ASCIIString(sessionId)
-                  timeStampVar = subdf[1,:timestamp]
+                  if CU.syntheticMonitor == "no name"
+                      timeStampVar = subdf[1,:timestamp]
+                  end
                   timeVarSec = timeVar / 1000.0
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
-                  if (SP.debugLevel > 2)
+                  if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
                       println("Page $(io) of $(SP.showLines): $(labelString)")
-                      if (SP.debugLevel > 6)
-                          println("executeSingleSession(TV,UP,SP,",timeVar,",\"",sessionId,"\",",timeStampVar,") #    Time=",timeVar)
-                      end
                   end
-                  topPageUrl = individualPageData(TV,UP,SP,sessionIdString,timeStampVar)
+                  topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,sessionIdString,timeStampVar)
                   if (!suitable)
                       if (SP.debugLevel > 2)
@@ -236,7 +234,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
           end
       end
   catch y
-      println("showAvailSessions Exception ",y)
+      println("showAvailableSessionsStreamline Exception ",y)
   end
 end
 
