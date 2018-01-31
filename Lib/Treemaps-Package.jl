@@ -348,13 +348,13 @@ function criticalPathTreemapV2(SP::ShowParams,labelField::ASCIIString,toppageurl
         toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:Gap] = 0  # Nice shade of red for waiting time
         toppageurl[toppageurl[:,:urlgroup] .== "Not Blocking",:beacons] = sum(toppageurl[:,:Gap])
 
-        totalAverage = sum(toppageurl[:,:load_time])
+        totalAverage = sum(toppageurl[:,:beacons])
 
         treeDF = DataFrame()
         treeDF[:,:urlpagegroup] = toppageurl[:,:urlpagegroup]
         treeDF[:,:beacons] = toppageurl[:,:beacons]                      # Sum of all critical path numbers
         treeDF[:,:label] = toppageurl[:,:label]                          # Median of all load times in MS
-        treeDF[:,:load_time] = (toppageurl[:,:load_time]/totalAverage) * 2
+        treeDF[:,:load_time] = (toppageurl[:,:beacons]/totalAverage) * 2
 
         #display(treeDF[1:3,:])
         displayTitle(chart_title = "$labelField",showTimeStamp=false)
