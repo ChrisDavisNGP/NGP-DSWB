@@ -85,11 +85,16 @@ function SetStatsRange(statsDF::DataFrame;
         rl = mid - lowerSubtract
         ru = mid + upperSubtract
     elseif usePercent
-        lowerSubtract = mid - (mid * percentLower)
-        upperSubtract = (mid * percentUpper) - mid
-        #println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
-        rl = mid - lowerSubtract
-        ru = mid + upperSubtract
+        if percentLower == 0.0 && percentUpper == 1.0
+            rl = statsDF[1:1,:min][1] - 0.1
+            ru = statsDF[1:1,:max][1] + 0.1
+        else
+            lowerSubtract = mid - (mid * percentLower)
+            upperSubtract = (mid * percentUpper) - mid
+            #println("mid=",mid," ls=",lowerSubtract," us=",upperSubtract," std=",stdVar)
+            rl = mid - lowerSubtract
+            ru = mid + upperSubtract
+        end
     elseif useQuartile
         rl = statsDF[1:1,:q25][1]
         ru = statsDF[1:1,:q75][1]

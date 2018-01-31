@@ -1181,8 +1181,8 @@ function urlAutoInvWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPa
         println("Individual part 1 done with ", nrow(localTableDF), " records")
     end
 
-    # Stats on the data
-    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent=true,percentLower=0.10,percentUpper=1.90)
+    # Stats on the data Note: 0 and 0 means all data
+    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent=true,percentLower=0.0,percentUpper=0.0)
 
     if (SP.debugLevel > 6)
         println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
