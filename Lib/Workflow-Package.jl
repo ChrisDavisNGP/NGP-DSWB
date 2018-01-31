@@ -1158,7 +1158,7 @@ function urlAutoIndividualWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 
     # Stats on the data
-    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent)
+    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent=true)
 
     if (SP.debugLevel > 6)
         println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
@@ -1182,7 +1182,7 @@ function urlAutoInvWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlPa
     end
 
     # Stats on the data
-    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent)
+    statsDF = timeBeaconStats(TV,UP,SP,localTableDF;showAdditional=true,usePercent=true)
 
     if (SP.debugLevel > 6)
         println("Individual selecting from $(UP.timeLowerMs) to $(UP.timeUpperMs)")
