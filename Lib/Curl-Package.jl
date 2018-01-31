@@ -418,7 +418,7 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
     if SP.debugLevel > 4
         quickTitle("Debug4: Fill New Relic Results")
-        beautifyDF(df[1:10,:],maxRows=500)
+        beautifyDF(df[1:min(10,end),:],maxRows=500)
     end
 
     NR.results.row = deepcopy(df)
