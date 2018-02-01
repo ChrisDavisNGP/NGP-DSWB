@@ -423,6 +423,13 @@ function fillNrResults(SP::ShowParams,NR::NrParams,resultsArray::Array)
 
     NR.results.row = deepcopy(df)
 
+    #for row in eachrow(df)
+    #    whenUTC = unix2datetime(row[:timestamp]/1000.0)
+    #    whenUTCz = ZonedDateTime(whenUTC,TimeZone("UTC"))
+    #    when = astimezone(whenUTCz,TimeZone("America/New_York"))
+    #    println(when)
+    #end
+
 end
 
 function fillNrTotal(SP::ShowParams,NR::NrParams,totalDict::Dict)

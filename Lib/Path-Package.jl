@@ -213,6 +213,11 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                   sessionIdString = ASCIIString(sessionId)
                   if CU.syntheticMonitor == "no name"
                       timeStampVar = subdf[1,:timestamp]
+                      displayTime = " "
+                  else
+                      whenUTC = unix2datetime(subdf[1,:timestamp]/1000.0)
+                      whenUTCz = ZonedDateTime(whenUTC,TimeZone("UTC"))
+                      displayTime = astimezone(whenUTCz,TimeZone("America/New_York"))
                   end
                   timeVarSec = timeVar / 1000.0
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
@@ -221,7 +226,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                       println("Page $(io) of $(SP.showLines): $(labelString)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
-                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,sessionIdString,timeStampVar)
+                  suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,sessionIdString,timeStampVar,displayTime)
                   if (!suitable)
                       if (SP.debugLevel > 2)
                           println("Not suitable: $(UP.urlRegEx),$(sessionIdString),$(timeStampVar),$(timeVar)")
@@ -244,7 +249,7 @@ function executeSingleSession(TV::TimeVars,UP::UrlParams,SP::ShowParams,timerDon
   try
 
     sessionPageUrl = individualPageData(TV,UP,SP,studySession,studyTime)
-    individualPageReport(TV,UP,SP,sessionPageUrl,timerDone,studySession,studyTime)
+    individualPageReport(TV,UP,SP,sessionPageUrl,timerDone,studySession,studyTime," ")
 
   catch y
       println("showAvailSessions Exception ",y)
@@ -420,7 +425,7 @@ end
 
 
 function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
-  toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64)
+  toppageurl::DataFrame,timerDone::Int64,studySession::ASCIIString,studyTime::Int64,displayTime::ASCIIString)
   try
       UrlParamsValidate(UP)
 
@@ -487,7 +492,7 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           beautifyDF(toppageurl)
       end
 
-      labelField = UP.urlFull
+      labelField = UP.urlFull * " (Starting $displayTime)"
       criticalPathTreemapV2(SP,labelField,toppageurl)
 
       if (SP.devView)
