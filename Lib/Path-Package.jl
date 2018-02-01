@@ -217,7 +217,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                       whenUTC = unix2datetime(subdf[1,:timestamp]/1000.0)
                       whenUTCz = ZonedDateTime(whenUTC,TimeZone("UTC"))
                       displayTimez = astimezone(whenUTCz,TimeZone("America/New_York"))
-                      displayTime = Dates.format(displaytTimez,"yyyy-mm-dd HH:MM")
+                      displayTime = Dates.format(displayTimez,"yyyy-mm-dd HH:MM")
                   end
                   timeVarSec = timeVar / 1000.0
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
