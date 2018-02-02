@@ -1,6 +1,8 @@
 using URIParser
 
-function scrubWhatIf(SP::ShowParams,UP::UrlParams,urlDF::DataFrame;temp::DataArray=["whatif"])
+function scrubWhatIf(SP::ShowParams,UP::UrlParams,urlDF::DataFrame)
+
+    temp = ["Krux","Segment"]
 
     if SP.debugLevel > 6
         println("Starting WhatIF ",temp)

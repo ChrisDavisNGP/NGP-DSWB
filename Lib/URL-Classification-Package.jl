@@ -255,9 +255,9 @@ function wellKnownHostEncyclopedia(SP::ShowParams)
     end
 
     if SP.debug == true
-      wellKnownHostEncyclopediaInternal()
+      wellKnownHostEncyclopediaInternal(SP)
     else
-      wellKnownHostEncyclopediaInternal()
+      wellKnownHostEncyclopediaInternal(SP)
     end
 
     if SP.debugLevel > 4
@@ -266,36 +266,63 @@ function wellKnownHostEncyclopedia(SP::ShowParams)
 
 end
 
-function wellKnownHostEncyclopediaInternal()
+function wellKnownHostEncyclopediaInternal(SP::ShowParams)
 
     VolumeA = VolumeAList()
+    if SP.debug > 6 println("A Done") end
     VolumeB = VolumeBList()
+    if SP.debug > 6 println("B") end
     VolumeC = VolumeCList()
+    if SP.debug > 6 println("C") end
     VolumeD = VolumeDList()
+    if SP.debug > 6 println("D") end
     VolumeE = VolumeEList()
+    if SP.debug > 6 println("E") end
     VolumeF = VolumeFList()
+    if SP.debug > 6 println("F") end
     VolumeG = VolumeGList()
+    if SP.debug > 6 println("G") end
     VolumeH = VolumeHList()
+    if SP.debug > 6 println("H") end
     VolumeI = VolumeIList()
+    if SP.debug > 6 println("I") end
     VolumeJ = VolumeJList()
+    if SP.debug > 6 println("J") end
     VolumeK = VolumeKList()
+    if SP.debug > 6 println("K") end
     VolumeL = VolumeLList()
+    if SP.debug > 6 println("L") end
     VolumeM = VolumeMList()
+    if SP.debug > 6 println("M") end
     VolumeN = VolumeNList()
+    if SP.debug > 6 println("N") end
     VolumeO = VolumeOList()
+    if SP.debug > 6 println("O") end
     VolumeP = VolumePList()
+    if SP.debug > 6 println("P") end
     VolumeQ = VolumeQList()
+    if SP.debug > 6 println("Q") end
     VolumeR = VolumeRList()
+    if SP.debug > 6 println("R") end
     VolumeS = VolumeSList()
+    if SP.debug > 6 println("S") end
     VolumeT = VolumeTList()
+    if SP.debug > 6 println("T") end
     VolumeU = VolumeUList()
+    if SP.debug > 6 println("U") end
     VolumeV = VolumeVList()
+    if SP.debug > 6 println("V") end
     VolumeW = VolumeWList()
+    if SP.debug > 6 println("W") end
     VolumeX = VolumeXList()
+    if SP.debug > 6 println("X") end
     VolumeY = VolumeYList()
+    if SP.debug > 6 println("Y") end
     VolumeZ = VolumeZList()
+    if SP.debug > 6 println("Z Done") end
 
     VolumeOther = VolumeOtherList()
+    if SP.debug > 6 println("Other Done") end
 
     WellKnownHostDirectory = Dict([
     ("A",VolumeA),
@@ -348,7 +375,7 @@ function lookupHost(host::ASCIIString)
 
     hs = uppercase(host[1])
     hostStart = string(hs)
-    println("host=[",host,"] and hostStart=[",hostStart,"]")
+    #println("host=[",host,"] and hostStart=[",hostStart,"]")
 
     try
         if (haskey(WellKnownHostDirectory,hostStart))
@@ -369,7 +396,7 @@ function lookupHost(host::ASCIIString)
 
         return newUrlPageGroup
     catch y
-        println("lookupHost Exception",y)
+        #println("lookupHost Exception",y)
         return "NoneInner"
     end
 
