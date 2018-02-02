@@ -4679,7 +4679,7 @@ function VolumeTList()
     ("t0.ssl.ak.tiles.virtualearth.net","Virtualearth.net"),
     ("t1.baijia78.com","t1.baijia78.com"),
     ("t1.ssl.ak.tiles.virtualearth.net","Virtualearth.net"),
-    ("t1.stormiq.com","Rakuten Marketing")
+    ("t1.stormiq.com","Rakuten Marketing"),
     ("t10.baidu.com","baidu.com"),
     ("t11.baidu.com","baidu.com"),
     ("t12.baidu.com","baidu.com"),
@@ -4848,7 +4848,7 @@ function VolumeTList()
     ("tracker.affility.com","tracker.affility.com"),
     ("tracker.bannerflow.com","Tracker.bannerflow.com"),
     ("tracker.book-secure.com","Book-secure.com"),
-    ("tracking.dc-storm.com","Rakuten Marketing")
+    ("tracking.dc-storm.com","Rakuten Marketing"),
     ("tracker.departapp.com","tracker.departapp.com"),
     ("tracker.samplicio.us","tracker.samplicio.us"),
     ("tracking.campaign-tracking-service.placelocal.com","tracking.campaign-tracking-service.placelocal.com"),
