@@ -1,3 +1,87 @@
+function PartialKnownHost(uriHost::ASCIIString)
+    try
+        newuristring = "To Classify"
+
+        if (ismatch(r"^www.nationalgeographic.com",uriHost))    newuristring = "NGP Page Content"
+        elseif (ismatch(r".*fls\.doubleclick.*",uriHost))       newuristring = "Google DoubleClick Floodlight"
+        elseif (ismatch(r"bid.g.doubleclick.net",uriHost))      newuristring = "Google DoubleClick Bid Manager Ads"
+        elseif (ismatch(r".*ad.doubleclick.net",uriHost))       newuristring = "Google DoubleClick Spotlight Ads"
+        elseif (ismatch(r".*doubleclick.*",uriHost))            newuristring = "Google DoubleClick Ads"
+        elseif (ismatch(r".*---sn-.*2mdn.net",uriHost))         newuristring = "Google DoubleClick Ads"
+        elseif (ismatch(r"adservice.google.*",uriHost))         newuristring = "Google Adsense"
+        elseif (ismatch(r".*moatads.com",uriHost))              newuristring = "Moat Ads"
+        elseif (ismatch(r".*doubleverify.com",uriHost))         newuristring = "DoubleVerify.com"
+        elseif (ismatch(r".*scorecardresearch.com",uriHost))    newuristring = "Scorecard Research Ads"
+        elseif (ismatch(r".*unrulymedia.com",uriHost))          newuristring = "Unrulymedia.Com"
+        elseif (ismatch(r".*livefyre.com",uriHost))             newuristring = "Livefyre Commenting"
+        elseif (ismatch(r".*fyre.co",uriHost))                  newuristring = "Livefyre Commenting"
+        elseif (ismatch(r".*krxd.net",uriHost))                 newuristring = "Krux Digital"
+        elseif (ismatch(r".*zergnet.com",uriHost))              newuristring = "Zergnet"
+
+        elseif (ismatch(r"^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$",uriHost)) newuristring = "xxx.xxx.xxx.xxx"
+        elseif (ismatch(r"^news.nationalgeographic.com",uriHost)) newuristring = "NGP Page Content"
+        elseif (ismatch(r".*nationalgeographic.siteintercept.qualtrics.com.*",uriHost)) newuristring = "Qualtrics Site Analytics"
+
+            # Less used
+
+        elseif (ismatch(r".*adsafeprotected.com",uriHost))      newuristring = "Adsafeprotected.com"
+        elseif (ismatch(r".*mookie1.com",uriHost))              newuristring = "Mookie Tracking Cookie Ads"
+        elseif (ismatch(r".*\.effectivemeasure.net",uriHost))   newuristring = "Effective Measure Ads"
+        elseif (ismatch(r".*\.media6degrees.com",uriHost))      newuristring = "Dstillery Ads"
+        elseif (ismatch(r".*\.adsymptotic.com",uriHost))        newuristring = "Drawbridge Ads"
+        elseif (ismatch(r".*\.dotomi.com",uriHost))             newuristring = "Dotomi Ads"
+        elseif (ismatch(r".*\.gigapan.org",uriHost))            newuristring = "Gigapan"
+        elseif (ismatch(r".*\.gigapan.com",uriHost))            newuristring = "Gigapan"
+        elseif (ismatch(r".*\.openx.net",uriHost))              newuristring = "OpenX Ads"
+        elseif (ismatch(r".*\.c3tag.com",uriHost))              newuristring = "C3tag.com"
+        elseif (ismatch(r".*\.btrll.com",uriHost))              newuristring = "BrightRoll Ads"
+        elseif (ismatch(r".*\.atemda.com",uriHost))             newuristring = "Admeta Ads"
+        elseif (ismatch(r".*\.adition.com",uriHost))            newuristring = "Adition Ads"
+        elseif (ismatch(r".*\.amazon-adsystem.com",uriHost))    newuristring = "Amazon Associates Ads"
+        elseif (ismatch(r"EdgeExtension.*",uriHost))            newuristring = "Microsoft Edge Extension"
+        elseif (ismatch(r".*alchemy-edge.*.alcvid.com",uriHost)) newuristring = "alchemy-edge.alcvid"
+        elseif (ismatch(r".*.casalemedia.com",uriHost))         newuristring = "Casale Ads"
+        elseif (ismatch(r".*rubiconproject.com",uriHost))       newuristring = "Rubicon Project Ads"
+        elseif (ismatch(r".*\.pubmatic.com",uriHost))           newuristring = "PubMatic Ads"
+        elseif (ismatch(r".*EvernoteEvernoteWebClipper.*",uriHost)) newuristring = "Evernote"
+        elseif (ismatch(r".*yourshot.nationalgeographic.com",uriHost)) newuristring = "NGP Yourshot"
+        elseif (ismatch(r".*adlooxtracking.com",uriHost))       newuristring = "Adlooxtracking.com"
+        elseif (ismatch(r".*adnxs.com",uriHost))                newuristring = "AppNexus Ads"
+#        elseif (ismatch(r".*addthis.com",uriHost))              newuristring = "AddThis Ads"
+#        elseif (ismatch(r".*demdex.net",uriHost))               newuristring = "Adobe Audience Manager Ads"
+#        elseif (ismatch(r".*bidswitch.net",uriHost))            newuristring = "BidSwitch Ads"
+#        elseif (ismatch(r".*criteo.com",uriHost))               newuristring = "Criteo Targetting"
+#        elseif (ismatch(r".*criteo.net",uriHost))               newuristring = "Criteo Targetting"
+#        elseif (ismatch(r".*vertamedia.com",uriHost))           newuristring = "Vertamedia.com"
+#        elseif (ismatch(r".*mpstat.us",uriHost))                newuristring = "Soasta Analytics"
+#        elseif (ismatch(r".*gigya.com",uriHost))                newuristring = "Gigya Social"
+#        elseif (ismatch(r".*rfihub.com",uriHost))               newuristring = "Rocket Fuel Ads"
+#        elseif (ismatch(r".*rfihub.net",uriHost))               newuristring = "Rocket Fuel Ads"
+#        elseif (ismatch(r".*tubemogul.com",uriHost))            newuristring = "TubeMogul Ads"
+#        elseif (ismatch(r".*platform.twitter.com",uriHost))     newuristring = "Twitter"
+#        elseif (ismatch(r".*zalando.*",uriHost))                newuristring = "Zalando"
+#        elseif (ismatch(r".*gravatar.com",uriHost))             newuristring = "Gravatar"
+#        elseif (ismatch(r".*lijit.com",uriHost))                newuristring = "Sovrn/Lijit Networds Ads"
+#        elseif (ismatch(r".*twenga.com",uriHost))               newuristring = "Twenga.com"
+#        elseif (ismatch(r"dnn.*cloudfront.net",uriHost))        newuristring = "CrazyEgg Analytics"
+#        elseif (ismatch(r"dc8.*cloudfront.net",uriHost))        newuristring = "Snowplow Analytics"
+#        elseif (ismatch(r"*.sitescout.com",uriHost))            newuristring = "Sitescout"
+#        elseif (ismatch(r"*.vdoserv.com",uriHost))              newuristring = "Algovid.tv"
+#        elseif (ismatch(r"*.algovid.com",uriHost))              newuristring = "Algovid.tv"
+#        elseif (ismatch(r".*api4load\..*",uriHost))             newuristring = "Api4load"
+#        elseif (ismatch(r".*\.ru$",uriHost))                    newuristring = "Russian Domains"
+#        else
+#            #not found
+#            newuristring = "To Classify"
+        end
+
+        return newuristring
+
+    catch y
+        println("PartialKnownHost Exception",y)
+    end
+end
+
 function YourshotClassification(uriPath::ASCIIString)
     try
         newString = "NGP Yourshot"
@@ -51,90 +135,6 @@ function YourshotClassification(uriPath::ASCIIString)
         println("Yourshotclassification Exception ",y)
     end
 
-end
-
-function PartialKnownHost(uriHost::ASCIIString)
-    try
-        newuristring = "To Classify"
-
-        if (ismatch(r"^www.nationalgeographic.com",uriHost))    newuristring = "NGP Page Content"
-        elseif (ismatch(r".*fls\.doubleclick.*",uriHost))       newuristring = "Google DoubleClick Floodlight"
-        elseif (ismatch(r"bid.g.doubleclick.net",uriHost))      newuristring = "Google DoubleClick Bid Manager Ads"
-        elseif (ismatch(r".*ad.doubleclick.net",uriHost))       newuristring = "Google DoubleClick Spotlight Ads"
-        elseif (ismatch(r".*doubleclick.*",uriHost))            newuristring = "Google DoubleClick Ads"
-        elseif (ismatch(r".*---sn-.*2mdn.net",uriHost))         newuristring = "Google DoubleClick Ads"
-        elseif (ismatch(r"adservice.google.*",uriHost))         newuristring = "Google Adsense"
-        elseif (ismatch(r".*moatads.com",uriHost))              newuristring = "Moat Ads"
-        elseif (ismatch(r".*doubleverify.com",uriHost))         newuristring = "DoubleVerify.com"
-        elseif (ismatch(r".*scorecardresearch.com",uriHost))    newuristring = "Scorecard Research Ads"
-        elseif (ismatch(r".*unrulymedia.com",uriHost))          newuristring = "Unrulymedia.Com"
-        elseif (ismatch(r".*livefyre.com",uriHost))             newuristring = "Livefyre Commenting"
-        elseif (ismatch(r".*fyre.co",uriHost))                  newuristring = "Livefyre Commenting"
-        elseif (ismatch(r".*krxd.net",uriHost))                 newuristring = "Krux Digital"
-        elseif (ismatch(r".*zergnet.com",uriHost))              newuristring = "Zergnet"
-
-        elseif (ismatch(r"^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$",uriHost)) newuristring = "xxx.xxx.xxx.xxx"
-        elseif (ismatch(r"^news.nationalgeographic.com",uriHost)) newuristring = "NGP Page Content"
-        elseif (ismatch(r".*nationalgeographic.siteintercept.qualtrics.com.*",uriHost)) newuristring = "Qualtrics Site Analytics"
-
-            # Less used
-
-        elseif (ismatch(r".*adsafeprotected.com",uriHost))      newuristring = "Adsafeprotected.com"
-        elseif (ismatch(r".*mookie1.com",uriHost))              newuristring = "Mookie Tracking Cookie Ads"
-        elseif (ismatch(r".*\.effectivemeasure.net",uriHost))   newuristring = "Effective Measure Ads"
-        elseif (ismatch(r".*\.media6degrees.com",uriHost))      newuristring = "Dstillery Ads"
-        elseif (ismatch(r".*\.adsymptotic.com",uriHost))        newuristring = "Drawbridge Ads"
-        elseif (ismatch(r".*\.dotomi.com",uriHost))             newuristring = "Dotomi Ads"
-        elseif (ismatch(r".*\.gigapan.org",uriHost))            newuristring = "Gigapan"
-        elseif (ismatch(r".*\.gigapan.com",uriHost))            newuristring = "Gigapan"
-        elseif (ismatch(r".*\.openx.net",uriHost))              newuristring = "OpenX Ads"
-        elseif (ismatch(r".*\.c3tag.com",uriHost))              newuristring = "C3tag.com"
-        elseif (ismatch(r".*\.btrll.com",uriHost))              newuristring = "BrightRoll Ads"
-        elseif (ismatch(r".*\.atemda.com",uriHost))             newuristring = "Admeta Ads"
-        elseif (ismatch(r".*\.adition.com",uriHost))            newuristring = "Adition Ads"
-        elseif (ismatch(r".*\.amazon-adsystem.com",uriHost))    newuristring = "Amazon Associates Ads"
-        elseif (ismatch(r"EdgeExtension.*",uriHost))            newuristring = "Microsoft Edge Extension"
-        elseif (ismatch(r".*alchemy-edge.*.alcvid.com",uriHost)) newuristring = "alchemy-edge.alcvid"
-        elseif (ismatch(r".*.casalemedia.com",uriHost))         newuristring = "Casale Ads"
-        elseif (ismatch(r".*rubiconproject.com",uriHost))       newuristring = "Rubicon Project Ads"
-        elseif (ismatch(r".*\.pubmatic.com",uriHost))           newuristring = "PubMatic Ads"
-        elseif (ismatch(r".*EvernoteEvernoteWebClipper.*",uriHost)) newuristring = "Evernote"
-        elseif (ismatch(r".*yourshot.nationalgeographic.com",uriHost)) newuristring = "NGP Yourshot"
-        elseif (ismatch(r".*adlooxtracking.com",uriHost))       newuristring = "Adlooxtracking.com"
-        elseif (ismatch(r".*adnxs.com",uriHost))                newuristring = "AppNexus Ads"
-        elseif (ismatch(r".*addthis.com",uriHost))              newuristring = "AddThis Ads"
-        elseif (ismatch(r".*demdex.net",uriHost))               newuristring = "Adobe Audience Manager Ads"
-        elseif (ismatch(r".*bidswitch.net",uriHost))            newuristring = "BidSwitch Ads"
-        elseif (ismatch(r".*criteo.com",uriHost))               newuristring = "Criteo Targetting"
-        elseif (ismatch(r".*criteo.net",uriHost))               newuristring = "Criteo Targetting"
-        elseif (ismatch(r".*vertamedia.com",uriHost))           newuristring = "Vertamedia.com"
-        elseif (ismatch(r".*mpstat.us",uriHost))                newuristring = "Soasta Analytics"
-        elseif (ismatch(r".*gigya.com",uriHost))                newuristring = "Gigya Social"
-        elseif (ismatch(r".*rfihub.com",uriHost))               newuristring = "Rocket Fuel Ads"
-        elseif (ismatch(r".*rfihub.net",uriHost))               newuristring = "Rocket Fuel Ads"
-        elseif (ismatch(r".*tubemogul.com",uriHost))            newuristring = "TubeMogul Ads"
-        elseif (ismatch(r".*platform.twitter.com",uriHost))     newuristring = "Twitter"
-        elseif (ismatch(r".*zalando.*",uriHost))                newuristring = "Zalando"
-        elseif (ismatch(r".*gravatar.com",uriHost))             newuristring = "Gravatar"
-        elseif (ismatch(r".*lijit.com",uriHost))                newuristring = "Sovrn/Lijit Networds Ads"
-        elseif (ismatch(r".*twenga.com",uriHost))               newuristring = "Twenga.com"
-        elseif (ismatch(r"dnn.*cloudfront.net",uriHost))        newuristring = "CrazyEgg Analytics"
-        elseif (ismatch(r"dc8.*cloudfront.net",uriHost))        newuristring = "Snowplow Analytics"
-        elseif (ismatch(r"*.sitescout.com",uriHost))            newuristring = "Sitescout"
-        elseif (ismatch(r"*.vdoserv.com",uriHost))              newuristring = "Algovid.tv"
-        elseif (ismatch(r"*.algovid.com",uriHost))              newuristring = "Algovid.tv"
-        elseif (ismatch(r".*api4load\..*",uriHost))             newuristring = "Api4load"
-        elseif (ismatch(r".*\.ru$",uriHost))                    newuristring = "Russian Domains"
-        else
-            #not found
-            newuristring = "To Classify"
-        end
-
-        return newuristring
-
-    catch y
-        println("PartialKnownHost Exception",y)
-    end
 end
 
 function PartialKnownPath(uriPath::ASCIIString)
