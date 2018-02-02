@@ -5826,7 +5826,7 @@ end
 
 function wellKnownPathDictionaryInternal()
 
-    if SP.debugLevel
+    if SP.debugLevel > 4
         println()
         println("Loading Path Dictionary")
     end
