@@ -394,6 +394,7 @@ function lookupHost(host::ASCIIString)
         return newUrlPageGroup
     catch y
         println("lookupHost Exception",y)
+        println("lookupHost Exception Continued ","host=[",host,"] and hostStart=[",hostStart,"]")
         return "NoneInner"
     end
 
