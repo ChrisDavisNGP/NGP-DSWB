@@ -471,12 +471,12 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       classifyUrl(SP,toppageurl);
 
       #UP.whatIf put in UP structure after it works
-      if (SP.debugLevel > 4)
-        println("Remove WhatIf Data");
+      if (SP.debugLevel > -1)
+        println("Remove WhatIf Data ",UP.whatIf);
       end
-      whatIf = ["Krux","Segment"]
+      #whatIf = ["Krux","Segment"]
 
-      if whatIf[1] != "whatIf"
+      if UP.whatIf[1] != "whatIf"
           scrubWhatIf(SP,UP,toppageurl)
       end
 

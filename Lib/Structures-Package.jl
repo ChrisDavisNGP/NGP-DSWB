@@ -20,6 +20,7 @@ type UrlParams
     agentOs::ASCIIString
     useJson::Bool
     jsonFilename::ASCIIString
+    whatIf::DataArray
 end
 
 function UrlParamsInit(nb::ASCIIString)
@@ -28,7 +29,8 @@ function UrlParamsInit(nb::ASCIIString)
 
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
-    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",2000,60000,250,10,10000,"time",true,"%","%",false,"")
+    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",
+     2000,60000,250,10,10000,"time",true,"%","%",false,"",["whatIf"])
 
     if isdefined(:UpPageGroup)
         UP.pageGroup = UpPageGroup
@@ -88,6 +90,10 @@ function UrlParamsInit(nb::ASCIIString)
 
     if isdefined(:UpJsonFilename)
         UP.jsonFilename = UpJsonFilename
+    end
+
+    if isdefined(:UpWhatIf)
+        UP.whatIf = UpWhatIf
     end
 
     return UP

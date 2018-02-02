@@ -2,9 +2,10 @@ using URIParser
 
 function scrubWhatIf(SP::ShowParams,UP::UrlParams,urlDF::DataFrame)
 
-    temp = ["Krux","Segment"]
+    #temp = ["Krux","Segment"]
 
-    if SP.debugLevel > 6
+
+    if SP.debugLevel > -1
         println("Starting WhatIF ",temp)
     end
 

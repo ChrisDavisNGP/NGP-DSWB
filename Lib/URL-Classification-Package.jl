@@ -377,12 +377,12 @@ function lookupHost(host::ASCIIString)
 
     hs = uppercase(host[1])
     hostStart = string(hs)
-    println()
-    println("host=[",host,"] and hostStart=[",hostStart,"]")
+    #println()
+    #println("host=[",host,"] and hostStart=[",hostStart,"]")
 
     try
         if (haskey(WellKnownHostDirectory,hostStart))
-            println("Fetch Volume ",hostStart)
+            #println("Fetch Volume ",hostStart)
             Volume = get(WellKnownHostDirectory,hostStart,"NoVolume")
         else
             Volume = get(WellKnownHostDirectory,"Other","NoVolume")
@@ -390,11 +390,11 @@ function lookupHost(host::ASCIIString)
 
         newUrlPageGroup = "NoneInner"
         if (haskey(Volume,host))
-            println("Fetch Host ",host)
+            #println("Fetch Host ",host)
             newUrlPageGroup = get(Volume,host,"NoneInner")
         end
 
-        println("New Group ",newUrlPageGroup)
+        #println("New Group ",newUrlPageGroup)
         #println("")
 
         return newUrlPageGroup
