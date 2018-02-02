@@ -67,6 +67,9 @@ function PartialKnownHost(uriHost::ASCIIString)
         elseif (ismatch(r"dc8.*cloudfront.net",uriHost))        newuristring = "Snowplow Analytics"
         elseif (ismatch(r".*api4load\..*",uriHost))             newuristring = "Api4load"
         elseif (ismatch(r".*\.ru$",uriHost))                    newuristring = "Russian Domains"
+        elseif (ismatch(r".*sitescout.com",uriHost))            newuristring = "Sitescout"
+        elseif (ismatch(r".*vdoserv.com",uriHost))              newuristring = "Algovid TV"
+        elseif (ismatch(r".*algovid.com",uriHost))              newuristring = "Algovid TV"
         end
 
 #        if newuristring == "To Classify"
