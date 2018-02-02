@@ -1,5 +1,28 @@
 using URIParser
 
+function scrubWhatIf(SP::ShowParams,UP::UrlParams,urlDF::DataFrame;temp::DataArray[]=["whatif"])
+
+    if SP.debugLevel > 6
+        println("Starting WhatIF ",temp)
+    end
+
+    for removeItem in temp
+        println("Remove ",removeItem)
+
+        delRows = Int64[]
+        i = 0
+        for row in eachrow(urlDF)
+            i += 1
+            if removeItem == row[:urlpagegroup]
+                push!(delRows,i)
+            end
+        end
+        #println(" row count 1 ",size(NR.results.row,1))
+        deleterows!(urlDF,delRows)
+    end
+
+end
+
 function scrubUrlToPrint(SP::ShowParams,urlDF::DataFrame,urlColumn::Symbol)
     try
         i = 0
