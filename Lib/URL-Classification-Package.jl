@@ -268,6 +268,7 @@ end
 
 function wellKnownHostEncyclopediaInternal(SP::ShowParams)
 
+    if SP.debug > 6 println("A") end
     VolumeA = VolumeAList()
     if SP.debug > 6 println("A Done") end
     VolumeB = VolumeBList()
@@ -396,7 +397,7 @@ function lookupHost(host::ASCIIString)
 
         return newUrlPageGroup
     catch y
-        #println("lookupHost Exception",y)
+        println("lookupHost Exception",y)
         return "NoneInner"
     end
 
