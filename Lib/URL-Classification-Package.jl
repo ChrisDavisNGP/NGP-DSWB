@@ -241,7 +241,7 @@ function wellKnownPathDictionary(debug::Bool)
       println("Loading Path Dictionary")
   end
 
-  if debug == true
+  if SP.debug == true
     # There is no debug Path so far
     wellKnownPathDictionaryInternal()
   else
@@ -254,7 +254,7 @@ function wellKnownHostEncyclopedia(SP::ShowParams)
         println("Loading Encyclopedia")
     end
 
-    if debug == true
+    if SP.debug == true
       wellKnownHostEncyclopediaInternal()
     else
       wellKnownHostEncyclopediaInternal()
