@@ -2,44 +2,25 @@ function PartialKnownHost(uriHost::ASCIIString)
     try
         newuristring = "To Classify"
 
-        if (ismatch(r"^www.nationalgeographic.com",uriHost))
-            newuristring = "NGP Page Content"
-        elseif (ismatch(r".*fls\.doubleclick.*",uriHost))
-            newuristring = "Google DoubleClick Floodlight"
-        elseif (ismatch(r"bid.g.doubleclick.net",uriHost))
-            newuristring = "Google DoubleClick Bid Manager Ads"
-        elseif (ismatch(r".*ad.doubleclick.net",uriHost))
-            newuristring = "Google DoubleClick Spotlight Ads"
-        elseif (ismatch(r".*doubleclick.*",uriHost))
-            newuristring = "Google DoubleClick Ads"
-        elseif (ismatch(r".*---sn-.*2mdn.net",uriHost))
-            newuristring = "Google DoubleClick Ads"
-        elseif (ismatch(r"adservice.google.*",uriHost))
-            newuristring = "Google Adsense"
-#        elseif (ismatch(r"www.google\..*",uriHost))
-#            newuristring = "Google Adsense"
-        elseif (ismatch(r".*nationalgeographic.siteintercept.qualtrics.com.*",uriHost))
-            newuristring = "Qualtrics Site Analytics"
-        elseif (ismatch(r"^news.nationalgeographic.com",uriHost))
-            newuristring = "NGP Page Content"
-        elseif (ismatch(r".*moatads.com",uriHost))
-            newuristring = "Moat Ads"
-        elseif (ismatch(r".*doubleverify.com",uriHost))
-            newuristring = "DoubleVerify.com"
-        elseif (ismatch(r".*scorecardresearch.com",uriHost))
-            newuristring = "Scorecard Research Ads"
-        elseif (ismatch(r".*unrulymedia.com",uriHost))
-            newuristring = "Unrulymedia.Com"
-        elseif (ismatch(r".*livefyre.com",uriHost))
-            newuristring = "Livefyre Commenting"
-        elseif (ismatch(r".*fyre.co",uriHost))
-            newuristring = "Livefyre Commenting"
-        elseif (ismatch(r".*krxd.net",uriHost))
-            newuristring = "Krux Digital"
-        elseif (ismatch(r".*zergnet.com",uriHost))
-            newuristring = "Zergnet"
-        elseif (ismatch(r"^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$",uriHost))
-            newuristring = "xxx.xxx.xxx.xxx"
+        if (ismatch(r"^www.nationalgeographic.com",uriHost))    newuristring = "NGP Page Content"
+        elseif (ismatch(r".*fls\.doubleclick.*",uriHost))       newuristring = "Google DoubleClick Floodlight"
+        elseif (ismatch(r"bid.g.doubleclick.net",uriHost))      newuristring = "Google DoubleClick Bid Manager Ads"
+        elseif (ismatch(r".*ad.doubleclick.net",uriHost))       newuristring = "Google DoubleClick Spotlight Ads"
+        elseif (ismatch(r".*doubleclick.*",uriHost))            newuristring = "Google DoubleClick Ads"
+        elseif (ismatch(r".*---sn-.*2mdn.net",uriHost))         newuristring = "Google DoubleClick Ads"
+        elseif (ismatch(r"adservice.google.*",uriHost))         newuristring = "Google Adsense"
+        elseif (ismatch(r".*moatads.com",uriHost))              newuristring = "Moat Ads"
+        elseif (ismatch(r".*doubleverify.com",uriHost))         newuristring = "DoubleVerify.com"
+        elseif (ismatch(r".*scorecardresearch.com",uriHost))    newuristring = "Scorecard Research Ads"
+        elseif (ismatch(r".*unrulymedia.com",uriHost))          newuristring = "Unrulymedia.Com"
+        elseif (ismatch(r".*livefyre.com",uriHost))             newuristring = "Livefyre Commenting"
+        elseif (ismatch(r".*fyre.co",uriHost))                  newuristring = "Livefyre Commenting"
+        elseif (ismatch(r".*krxd.net",uriHost))                 newuristring = "Krux Digital"
+        elseif (ismatch(r".*zergnet.com",uriHost))              newuristring = "Zergnet"
+
+        elseif (ismatch(r"^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$",uriHost)) newuristring = "xxx.xxx.xxx.xxx"
+        elseif (ismatch(r"^news.nationalgeographic.com",uriHost)) newuristring = "NGP Page Content"
+        elseif (ismatch(r".*nationalgeographic.siteintercept.qualtrics.com.*",uriHost)) newuristring = "Qualtrics Site Analytics"
 
             # Less used
 
@@ -123,7 +104,7 @@ function PartialKnownHost(uriHost::ASCIIString)
             newuristring = "Twenga.com"
             elseif (ismatch(r"dnn.*cloudfront.net",uriHost))
             newuristring = "CrazyEgg Analytics"
-            elseif (ismatch(r"dc8.*cloudfront.net",uriHost))
+        elseif (ismatch(r"dc8.*cloudfront.net",uriHost))
             newuristring = "Snowplow Analytics"
         elseif (ismatch(r"*.sitescout.com",uriHost))
             newuristring = "Sitescout"
@@ -5795,86 +5776,16 @@ function VolumeOtherList()
     ("06.creativecdn.com","06.creativecdn.com"),
     ("0815.mytoys.de","0815.mytoys.de"),
     ("0d37c3fd48cd4900b3a0097dc79e2699.com","0d37c3fd48cd4900b3a0097dc79e2699.com"),
-#    ("1.2.3.4","1.2.3.4"),
     ("1.base.maps.api.here.com","1.base.maps.api.here.com"),
     ("1.maps.nlp.nokia.com","1.maps.nlp.nokia.com"),
     ("1.qtmojo.com","1.qtmojo.com"),
-#    ("10.0.3.1","10.0.3.1"),
-#    ("10.1.81.225","10.1.81.225"),
-#    ("10.10.4.50","10.10.4.50"),
-#    ("10.129.15.129","10.129.15.129"),
-#    ("10.165.197.8","10.165.197.8"),
-#    ("10.179.73.88","10.179.73.88"),
-#    ("10.210.3.11","10.210.3.11"),
-#    ("10.224.63.166","10.224.63.166"),
-#    ("10.239.160.148","10.239.160.148"),
-#    ("10.239.160.149","10.239.160.149"),
-#    ("10.239.160.150","10.239.160.150"),
-#    ("10.239.160.164","10.239.160.164"),
-#    ("10.239.160.167","10.239.160.167"),
-#    ("10.244.2.44","10.244.2.44"),
-#    ("10.254.251.1","10.254.251.1"),
-#    ("10.35.15.200","10.35.15.200"),
-#    ("10.35.64.110","10.35.64.110"),
-#    ("10.40.0.39","10.40.0.39"),
-#    ("10.40.12.220","10.40.12.220"),
-#    ("10.50.11.215","10.50.11.215"),
-#    ("10.56.88.11","10.56.88.11"),
-#    ("10.7.39.80","10.7.39.80"),
-#    ("10.71.184.6","10.71.184.6"),
-#    ("10.81.0.13","10.81.0.13"),
-#    ("10.81.7.72","10.81.7.72"),
-#    ("10.56.129.185","10.56.129.185"),
     ("10153d23175801ec0a3d032efb.com","10153d23175801ec0a3d032efb.com"),
-#    ("103.245.147.222","103.245.147.222"),
     ("1087072589.rsc.cdn77.org","rsc.cdn77.org"),
-#    ("109.201.148.40","109.201.148.40"),
-#    ("120.76.216.149","120.76.216.149"),
-#    ("124.232.160.178","124.232.160.178"),
     ("1261595868.rsc.cdn77.org","rsc.cdn77.org"),
-#    ("127.0.0.1","127.0.0.1"),
     ("1487482361.rsc.cdn77.org","rsc.cdn77.org"),
     ("1480876790.rsc.cdn77.org","rsc.cdn77.org"),
- #    ("153.0.129.57","153.0.129.57"),
-#    ("162.150.127.13","162.150.127.13"),
-#    ("170.104.54.78","170.104.54.78"),
-#    ("172.16.38.69","172.16.38.69"),
-#    ("172.18.255.6","172.18.255.6"),
-#    ("172.20.0.91","172.20.0.91"),
-#    ("172.20.8.211","172.20.8.211"),
-#    ("172.25.203.115","172.25.203.115"),
-#    ("172.25.244.28","172.25.244.28"),
-#    ("175.6.223.15","175.6.223.15"),
     ("1841174252.rsc.cdn77.org","rsc.cdn77.org"),
-#    ("195.33.251.69","195.33.251.69"),
-#    ("196.25.211.41","196.25.211.41"),
-#    ("197.199.255.29","197.199.255.29"),
     ("1986635568.rsc.cdn77.org","rsc.cdn77.org"),
-#    ("199.46.249.167","199.46.249.xxx"),
-#    ("199.46.250.162","199.46.250.xxx"),
-#    ("199.46.251.166","199.46.251.xxx"),
-#    ("199.46.196.160","199.46.196.xxx"),
-#    ("199.46.196.161","199.46.196.xxx"),
-#    ("199.46.196.165","199.46.196.xxx"),
-#    ("199.46.196.166","199.46.196.xxx"),
-#    ("199.46.249.160","199.46.249.xxx"),
-#    ("199.46.249.161","199.46.249.xxx"),
-#    ("199.46.249.162","199.46.249.xxx"),
-#    ("199.46.249.163","199.46.249.xxx"),
-#    ("199.46.249.166","199.46.249.xxx"),
-#    ("199.46.249.168","199.46.249.xxx"),
-#    ("199.46.249.169","199.46.249.xxx"),
-#    ("199.46.249.171","199.46.249.xxx"),
-#    ("199.46.249.172","199.46.249.xxx"),
-#    ("199.46.249.173","199.46.249.xxx"),
-#    ("199.46.250.160","199.46.250.xxx"),
-#    ("199.46.250.165","199.46.250.xxx"),
-#    ("199.46.250.166","199.46.250.xxx"),
-#    ("199.46.250.168","199.46.250.xxx"),
-#    ("199.46.250.170","199.46.250.xxx"),
-#    ("199.46.251.165","199.46.251.xxx"),
-#    ("199.46.251.172","199.46.251.xxx"),
-#    ("199.46.251.173","199.46.251.xxx"),
     ("1a5d6wj.m.ns1p.net","1a5d6wj.m.ns1p.net"),
     ("1b1muk3.m.ns1p.net","1b1muk3.m.ns1p.net"),
     ("1b1o94j.m.ns1p.net","1b1o94j.m.ns1p.net"),
@@ -5888,9 +5799,6 @@ function VolumeOtherList()
     ("2.base.maps.api.here.com","2.base.maps.api.here.com"),
     ("2.bp.blogspot.com","2.bp.blogspot.com"),
     ("2.maps.nlp.nokia.com","2.maps.nlp.nokia.com"),
-#    ("203.94.227.141","203.94.227.141"),
-#    ("212.72.31.194","212.72.31.194"),
-#    ("212.72.31.34","212.72.31.34"),
     ("25.media.tumblr.com","25.media.tumblr.com"),
     ("27v9q.ads.tremorhub.com","Tremorhub Ads"),
     ("2a86.v.fwmrm.net","FreeWheel Video Player"),
@@ -5919,7 +5827,6 @@ function VolumeOtherList()
     ("4.bp.blogspot.com","4.bp.blogspot.com"),
     ("4.maps.nlp.nokia.com","4.maps.nlp.nokia.com"),
     ("418-v.tlnk.io","tlnk.io"),
-#    ("43.255.196.24","43.255.196.24"),
     ("46c9b034673744c4b56f10d7e1ae08ac.com","46c9b034673744c4b56f10d7e1ae08ac.com"),
     ("4711.lineadirecta.com","4711.lineadirecta.com"),
     ("4ddons.com","4ddons.com"),
@@ -5927,8 +5834,6 @@ function VolumeOtherList()
     ("4info.pc.cdn.bitgravity.com","4info.pc.cdn.bitgravity.com"),
     ("4x3zy4ql-l8bu4n1j.netdna-ssl.com","4x3zy4ql-l8bu4n1j.netdna-ssl.com"),
     ("5195.xg4ken.com","Xg4ken.com"),
-#    ("52.62.140.100","52.62.140.100"),
-#    ("54.171.234.214","54.171.234.214"),
     ("55165f90f27b465d97ab21a7aed0016f.com","55165f90f27b465d97ab21a7aed0016f.com"),
     ("5549b50ad61f4bee90a59b49d0bcb5cb.com","5549b50ad61f4bee90a59b49d0bcb5cb.com"),
     ("5601-newswatch.voxcdn.com","5601-newswatch.voxcdn.com"),
@@ -5939,22 +5844,11 @@ function VolumeOtherList()
     ("5sqfs-s4yc9.ads.tremorhub.com","Tremorhub Ads"),
     ("609d93yvzj2e-a.akamaihd.net","609d93yvzj2e"),
     ("618696d173d34038b9934e74523cf4b2.com","618696d173d34038b9934e74523cf4b2.com"),
-#    ("64.19.142.10","64.19.142.10"),
-#    ("64.19.142.11","64.19.142.11"),
-#    ("64.19.142.12","64.19.142.12"),
-#    ("64.19.142.13","64.19.142.13"),
     ("6607129fd4ee493fbcb7f8f4d3e0f606.s3.amazonaws.com","6607129fd4ee493fbcb7f8f4d3e0f606.s3.amazonaws.com"),
-#    ("68.87.60.43","68.87.60.43"),
-#    ("68.87.60.44","68.87.60.44"),
     ("68.media.tumblr.com","Tumblr.com"),
-#    ("69.195.124.140","69.195.124.140"),
-#    ("69.252.228.71","69.252.228.71"),
-#    ("69.252.251.29","69.252.251.29"),
-#    ("69.252.68.68","69.252.68.68"),
     ("693437d5c409409091a5f5f07abf66d3.com","693437d5c409409091a5f5f07abf66d3.com"),
     ("74f4d80a702c42f2ab4d44aaf2c3d182.com","74f4d80a702c42f2ab4d44aaf2c3d182.com"),
     ("757451810153427d8aeb1e7bb17a363d.com","757451810153427d8aeb1e7bb17a363d.com"),
-#    ("76.96.92.4","76.96.92.4"),
     ("7769domain.com","7769domain.com"),
     ("79423.analytics.edgesuite.net","Edgesuite.net"),
     ("7cdaf.v.fwmrm.net","FreeWheel Video Player"),
@@ -5968,13 +5862,6 @@ function VolumeOtherList()
     ("8c30d0904e8b39d0d903-000092c797254b10c6f28a1f9486b488.ssl.cf1.rackcdn.com","8c30d0904e8b39d0d903-000092c797254b10c6f28a1f9486b488.ssl.cf1.rackcdn.com"),
     ("8ugg.com","8ugg.com"),
     ("918ec7bd8a979be8d8f3-6e95fed53fb5a58b4332bc479f2dd214.ssl.cf5.rackcdn.com","918ec7bd8a979be8d8f3-6e95fed53fb5a58b4332bc479f2dd214.ssl.cf5.rackcdn.com"),
-#    ("96.114.154.75","96.114.154.75"),
-#    ("96.114.154.76","96.114.154.76"),
-#    ("96.114.18.22","96.114.18.22"),
-#    ("96.115.70.157","96.115.70.157"),
-#    ("96.115.70.172","96.115.70.172"),
-#    ("96.115.70.204","96.115.70.204"),
-#    ("96.115.70.61","96.115.70.61"),
     ("9803122665ef4e4d8b47d10485ef2251.com","9803122665ef4e4d8b47d10485ef2251.com"),
     ("9v528nau.ztkcdn.net","ztkcdn.net"),
     ])
