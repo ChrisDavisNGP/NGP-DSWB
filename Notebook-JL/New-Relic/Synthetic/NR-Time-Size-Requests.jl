@@ -31,7 +31,7 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
+WellKnownHostDirectory = wellKnownHostEncyclopedia(SP);
 
 # Get the data frame of data by using CURL and Json Parse
 

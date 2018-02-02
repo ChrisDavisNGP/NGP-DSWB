@@ -237,24 +237,32 @@ end
 
 
 function wellKnownPathDictionary(debug::Bool)
+  if SP.debugLevel > 4
+      println("Loading Path Dictionary")
+  end
+
   if debug == true
     # There is no debug Path so far
-    wellKnownPathDictionary()
+    wellKnownPathDictionaryInternal()
   else
-    wellKnownPathDictionary()
+    wellKnownPathDictionaryInternal()
   end
 end
 
-function wellKnownHostEncyclopedia(debug::Bool)
+function wellKnownHostEncyclopedia(SP::ShowParams)
+    if SP.debugLevel > 4
+        println("Loading Encyclopedia")
+    end
+
     if debug == true
-      wellKnownHostEncyclopedia()
+      wellKnownHostEncyclopediaInternal()
     else
-      wellKnownHostEncyclopedia()
+      wellKnownHostEncyclopediaInternal()
     end
 
 end
 
-function wellKnownHostEncyclopedia()
+function wellKnownHostEncyclopediaInternal()
 
     VolumeA = VolumeAList()
     VolumeB = VolumeBList()

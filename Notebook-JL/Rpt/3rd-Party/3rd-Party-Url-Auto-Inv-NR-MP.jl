@@ -32,8 +32,8 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-WellKnownHostDirectory = wellKnownHostEncyclopedia();
-WellKnownPath = wellKnownPathDictionary();
+WellKnownHostDirectory = wellKnownHostEncyclopedia(SP);
+WellKnownPath = wellKnownPathDictionary(SP);
 
 urlAutoInvWorkflow(TV,UP,SP,CU,NR)
 ;

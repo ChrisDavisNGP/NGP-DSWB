@@ -611,8 +611,8 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     #display(toppageurl[Bool[x < 0 for x in negDf[:blocking]],:])
 
-    WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
-    WellKnownPath = wellKnownPathDictionary();
+    WellKnownHostDirectory = wellKnownHostEncyclopedia(SP);
+    WellKnownPath = wellKnownPathDictionary(SP);
     scrubUrlToPrint(SP,toppageurl,:url);
     classifyUrl(SP,toppageurl);
 

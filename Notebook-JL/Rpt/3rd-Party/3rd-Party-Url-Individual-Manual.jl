@@ -28,8 +28,8 @@ SP = ShowParamsInit()
 SP.reportLevel=2
 ShowParamsValidate(SP)
 
-WellKnownHostDirectory = wellKnownHostEncyclopedia(SP.debug);
-WellKnownPath = wellKnownPathDictionary(SP.debug);
+WellKnownHostDirectory = wellKnownHostEncyclopedia(SP);
+WellKnownPath = wellKnownPathDictionary(SP);
 
 localTableDF = defaultBeaconsToDF(TV,UP,SP)
 println("Local Beacon Table count is ",size(localTableDF)[1])

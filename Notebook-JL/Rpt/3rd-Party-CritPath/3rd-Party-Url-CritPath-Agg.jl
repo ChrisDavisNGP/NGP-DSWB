@@ -27,9 +27,9 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-WellKnownHostDirectory = wellKnownHostEncyclopedia();
-WellKnownPath = wellKnownPathDictionary();
-WellKnownUrlGroup = wellKnownUrlGroup();
+WellKnownHostDirectory = wellKnownHostEncyclopedia(SP);
+WellKnownPath = wellKnownPathDictionary(SP);
+WellKnownUrlGroup = wellKnownUrlGroup(SP);
 
 criticalPathAggregationMain(TV,UP,SP)
 ;

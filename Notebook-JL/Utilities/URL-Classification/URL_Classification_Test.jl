@@ -29,8 +29,8 @@ ShowParamsValidate(SP)
 toppageurl = testUrlClassifyToDF(TV,UP,SP)
 display(size(toppageurl))
 
-WellKnownHostDirectory = wellKnownHostEncyclopedia();
-WellKnownPath = wellKnownPathDictionary();
+WellKnownHostDirectory = wellKnownHostEncyclopedia(SP);
+WellKnownPath = wellKnownPathDictionary(SP);
 
 scrubUrlToPrint(SP,toppageurl,:urlgroup);
 classifyUrl(SP,toppageurl);

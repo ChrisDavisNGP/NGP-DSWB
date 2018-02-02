@@ -32,9 +32,9 @@ CurlParamsValidate(CU)
 
 NR = NrParamsInit()
 
-WellKnownHostDirectory = wellKnownHostEncyclopedia();
-WellKnownPath = wellKnownPathDictionary();
-WellKnownUrlGroup = wellKnownUrlGroup();
+WellKnownHostDirectory = wellKnownHostEncyclopedia(SP);
+WellKnownPath = wellKnownPathDictionary(SP);
+WellKnownUrlGroup = wellKnownUrlGroup(SP);
 
 criticalPathAggWorkflow(TV,UP,SP,CU,NR)
 ;

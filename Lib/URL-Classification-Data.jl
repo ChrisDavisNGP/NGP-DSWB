@@ -5824,7 +5824,12 @@ function VolumeOtherList()
     return VolumeOther
 end
 
-function wellKnownPathDictionary()
+function wellKnownPathDictionaryInternal()
+
+    if SP.debugLevel
+        println()
+        println("Loading Path Dictionary")
+    end
 
     WellKnownPath = Dict([
         ("/Assets/ErrorPages/WpcBlockFrame.htm","NGP Assets"),
@@ -5874,7 +5879,12 @@ function wellKnownPathDictionary()
     return WellKnownPath
 end
 
-function wellKnownUrlGroup()
+function wellKnownUrlGroup(SP::ShowParams)
+
+    if SP.debugLevel > 4
+        println("Loading Known Url Groups")
+    end
+
     WellKnownUrlGroup = Dict([
     ("Ad Slot","3rd Party Ad Operations"),
     ("AdapTV Advertising","3rd Party Ad Operations"),

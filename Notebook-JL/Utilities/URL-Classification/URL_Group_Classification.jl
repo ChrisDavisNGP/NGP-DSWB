@@ -24,7 +24,7 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-WellKnownUrlGroup = wellKnownUrlGroup();
+WellKnownUrlGroup = wellKnownUrlGroup(SP);
 
 printWellKnownUrlGroup(SP)
 
