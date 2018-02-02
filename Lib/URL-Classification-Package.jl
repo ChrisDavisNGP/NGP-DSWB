@@ -260,6 +260,10 @@ function wellKnownHostEncyclopedia(SP::ShowParams)
       wellKnownHostEncyclopediaInternal()
     end
 
+    if SP.debugLevel > 4
+        println("Loaded  Encyclopedia")
+    end
+
 end
 
 function wellKnownHostEncyclopediaInternal()
