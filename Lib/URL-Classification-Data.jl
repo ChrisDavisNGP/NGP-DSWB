@@ -5826,11 +5826,6 @@ end
 
 function wellKnownPathDictionaryInternal()
 
-    if SP.debugLevel > 4
-        println()
-        println("Loading Path Dictionary")
-    end
-
     WellKnownPath = Dict([
         ("/Assets/ErrorPages/WpcBlockFrame.htm","NGP Assets"),
         ("/ads/measurement/l","Google DoubleClick Ads"),
