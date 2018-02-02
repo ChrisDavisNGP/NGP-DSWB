@@ -69,12 +69,12 @@ function PartialKnownHost(uriHost::ASCIIString)
         elseif (ismatch(r".*\.ru$",uriHost))                    newuristring = "Russian Domains"
         end
 
-        if newuristring == "To Classify"
-            if (ismatch(r"*.sitescout.com",uriHost))            newuristring = "Sitescout"
-            elseif (ismatch(r"*.vdoserv.com",uriHost))          newuristring = "Algovid.tv"
-            elseif (ismatch(r"*.algovid.com",uriHost))          newuristring = "Algovid.tv"
-            end
-        end
+#        if newuristring == "To Classify"
+#            if (ismatch(r"*.sitescout.com",uriHost))            newuristring = "Sitescout"
+#            elseif (ismatch(r"*.vdoserv.com",uriHost))          newuristring = "Algovid.tv"
+#            elseif (ismatch(r"*.algovid.com",uriHost))          newuristring = "Algovid.tv"
+#            end
+#        end
 
         return newuristring
 
