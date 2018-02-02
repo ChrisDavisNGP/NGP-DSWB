@@ -243,10 +243,13 @@ function wellKnownPathDictionary(SP::ShowParams)
 
   if SP.debug == true
     # There is no debug Path so far
-    wellKnownPathDictionaryInternal()
+    WellKnownPath = wellKnownPathDictionaryInternal()
   else
-    wellKnownPathDictionaryInternal()
+    WellKnownPath = wellKnownPathDictionaryInternal()
   end
+
+  return WellKnownPath
+
 end
 
 function wellKnownHostEncyclopedia(SP::ShowParams)
@@ -254,11 +257,13 @@ function wellKnownHostEncyclopedia(SP::ShowParams)
         println("Loading Encyclopedia")
     end
 
-    wellKnownHostEncyclopediaInternal(SP)
+    WellKnownHostDirectory = wellKnownHostEncyclopediaInternal(SP)
 
     if SP.debugLevel > 4
         println("Loaded  Encyclopedia")
     end
+
+    return WellKnownHostDirectory
 
 end
 
