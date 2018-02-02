@@ -72,13 +72,6 @@ function PartialKnownHost(uriHost::ASCIIString)
         elseif (ismatch(r".*algovid.com",uriHost))              newuristring = "Algovid TV"
         end
 
-#        if newuristring == "To Classify"
-#            if (ismatch(r"*.sitescout.com",uriHost))            newuristring = "Sitescout"
-#            elseif (ismatch(r"*.vdoserv.com",uriHost))          newuristring = "Algovid.tv"
-#            elseif (ismatch(r"*.algovid.com",uriHost))          newuristring = "Algovid.tv"
-#            end
-#        end
-
         return newuristring
 
     catch y

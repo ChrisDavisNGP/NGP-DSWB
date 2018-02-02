@@ -1170,6 +1170,11 @@ end
 
 function urlAutoInvWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
 
+    if SP.debugLevel > 4
+        println()
+        println("Start urlAutoInvWorkflow")
+    end
+
     localTableDF = critAggLimitedBeaconsToDF(TV,UP,SP,CU,NR)
 
     if nrow(localTableDF) == 0

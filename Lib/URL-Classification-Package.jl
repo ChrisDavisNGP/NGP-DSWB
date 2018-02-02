@@ -247,7 +247,7 @@ end
 
 function wellKnownHostEncyclopedia(debug::Bool)
     if debug == true
-      wellKnownHostEncyclopediaDebug()
+      wellKnownHostEncyclopedia()
     else
       wellKnownHostEncyclopedia()
     end
