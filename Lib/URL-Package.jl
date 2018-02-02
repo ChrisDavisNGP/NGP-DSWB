@@ -6,10 +6,10 @@ function scrubWhatIf(SP::ShowParams,UP::UrlParams,urlDF::DataFrame)
 
 
     if SP.debugLevel > -1
-        println("Starting WhatIF ",temp)
+        println("Starting WhatIF ",UP.whatIf)
     end
 
-    for removeItem in temp
+    for removeItem in UP.whatIf
         println("Remove ",removeItem)
 
         delRows = Int64[]
