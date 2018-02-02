@@ -236,7 +236,7 @@ function classifyUrlGroup(SP::ShowParams,summaryDF::DataFrame)
 end
 
 
-function wellKnownPathDictionary(debug::Bool)
+function wellKnownPathDictionary(SP::ShowParams)
   if SP.debugLevel > 4
       println("Loading Path Dictionary")
   end
