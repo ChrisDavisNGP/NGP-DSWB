@@ -394,6 +394,14 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
       end
       classifyUrl(SP,toppageurl);
 
+      if (SP.debugLevel > 4)
+        println("Remove WhatIf Data ",UP.whatIf);
+      end
+
+      if UP.whatIf[1] != "whatIf"
+          scrubWhatIf(SP,UP,toppageurl)
+      end
+
       if (SP.debugLevel > 8)
         println("Add Gap and Critical Path")
       end
@@ -470,11 +478,9 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
       classifyUrl(SP,toppageurl);
 
-      #UP.whatIf put in UP structure after it works
-      if (SP.debugLevel > -1)
+      if (SP.debugLevel > 4)
         println("Remove WhatIf Data ",UP.whatIf);
       end
-      #whatIf = ["Krux","Segment"]
 
       if UP.whatIf[1] != "whatIf"
           scrubWhatIf(SP,UP,toppageurl)
@@ -816,6 +822,15 @@ function statsAndTreemapsOutput(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
             showAdditional=true,showShort=false,chartTitle="Resource Requests Stats For Current Beacons",useQuartile=true)
 
         classifyUrl(SP,toppageurl);
+
+        if (SP.debugLevel > 4)
+          println("Remove WhatIf Data ",UP.whatIf);
+        end
+
+        if UP.whatIf[1] != "whatIf"
+            scrubWhatIf(SP,UP,toppageurl)
+        end
+
         scrubUrlToPrint(SP,toppageurl,:urlgroup);
 
         summaryPageGroup = summarizePageGroups(toppageurl)
