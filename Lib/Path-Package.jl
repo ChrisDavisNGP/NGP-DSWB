@@ -477,7 +477,7 @@ function individualPageReport(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       whatIf = ["Krux","Segment"]
 
       if whatIf[1] != "whatIf"
-          scrubWhatIf(SP,UP,toppageUrl;temp=whatIf)
+          scrubWhatIf(SP,UP,toppageurl;temp=whatIf)
       end
 
       if (SP.debugLevel > 4)

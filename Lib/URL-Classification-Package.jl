@@ -348,7 +348,7 @@ function lookupHost(host::ASCIIString)
 
     hs = uppercase(host[1])
     hostStart = string(hs)
-    #println("[",host,"] and [",hostStart,"]")
+    println("host=[",host,"] and hostStart=[",hostStart,"]")
 
     try
         if (haskey(WellKnownHostDirectory,hostStart))
