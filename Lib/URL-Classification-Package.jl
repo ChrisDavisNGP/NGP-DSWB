@@ -254,11 +254,7 @@ function wellKnownHostEncyclopedia(SP::ShowParams)
         println("Loading Encyclopedia")
     end
 
-    if SP.debug == true
-      wellKnownHostEncyclopediaInternal(SP)
-    else
-      wellKnownHostEncyclopediaInternal(SP)
-    end
+    wellKnownHostEncyclopediaInternal(SP)
 
     if SP.debugLevel > 4
         println("Loaded  Encyclopedia")
@@ -268,62 +264,62 @@ end
 
 function wellKnownHostEncyclopediaInternal(SP::ShowParams)
 
-    if SP.debug > 6 println("A") end
+    if SP.debugLevel > 6 println("A") end
     VolumeA = VolumeAList()
-    if SP.debug > 6 println("A Done") end
+    if SP.debugLevel > 6 println("A Done") end
     VolumeB = VolumeBList()
-    if SP.debug > 6 println("B") end
+    if SP.debugLevel > 6 println("B") end
     VolumeC = VolumeCList()
-    if SP.debug > 6 println("C") end
+    if SP.debugLevel > 6 println("C") end
     VolumeD = VolumeDList()
-    if SP.debug > 6 println("D") end
+    if SP.debugLevel > 6 println("D") end
     VolumeE = VolumeEList()
-    if SP.debug > 6 println("E") end
+    if SP.debugLevel > 6 println("E") end
     VolumeF = VolumeFList()
-    if SP.debug > 6 println("F") end
+    if SP.debugLevel > 6 println("F") end
     VolumeG = VolumeGList()
-    if SP.debug > 6 println("G") end
+    if SP.debugLevel > 6 println("G") end
     VolumeH = VolumeHList()
-    if SP.debug > 6 println("H") end
+    if SP.debugLevel > 6 println("H") end
     VolumeI = VolumeIList()
-    if SP.debug > 6 println("I") end
+    if SP.debugLevel > 6 println("I") end
     VolumeJ = VolumeJList()
-    if SP.debug > 6 println("J") end
+    if SP.debugLevel > 6 println("J") end
     VolumeK = VolumeKList()
-    if SP.debug > 6 println("K") end
+    if SP.debugLevel > 6 println("K") end
     VolumeL = VolumeLList()
-    if SP.debug > 6 println("L") end
+    if SP.debugLevel > 6 println("L") end
     VolumeM = VolumeMList()
-    if SP.debug > 6 println("M") end
+    if SP.debugLevel > 6 println("M") end
     VolumeN = VolumeNList()
-    if SP.debug > 6 println("N") end
+    if SP.debugLevel > 6 println("N") end
     VolumeO = VolumeOList()
-    if SP.debug > 6 println("O") end
+    if SP.debugLevel > 6 println("O") end
     VolumeP = VolumePList()
-    if SP.debug > 6 println("P") end
+    if SP.debugLevel > 6 println("P") end
     VolumeQ = VolumeQList()
-    if SP.debug > 6 println("Q") end
+    if SP.debugLevel > 6 println("Q") end
     VolumeR = VolumeRList()
-    if SP.debug > 6 println("R") end
+    if SP.debugLevel > 6 println("R") end
     VolumeS = VolumeSList()
-    if SP.debug > 6 println("S") end
+    if SP.debugLevel > 6 println("S") end
     VolumeT = VolumeTList()
-    if SP.debug > 6 println("T") end
+    if SP.debugLevel > 6 println("T") end
     VolumeU = VolumeUList()
-    if SP.debug > 6 println("U") end
+    if SP.debugLevel > 6 println("U") end
     VolumeV = VolumeVList()
-    if SP.debug > 6 println("V") end
+    if SP.debugLevel > 6 println("V") end
     VolumeW = VolumeWList()
-    if SP.debug > 6 println("W") end
+    if SP.debugLevel > 6 println("W") end
     VolumeX = VolumeXList()
-    if SP.debug > 6 println("X") end
+    if SP.debugLevel > 6 println("X") end
     VolumeY = VolumeYList()
-    if SP.debug > 6 println("Y") end
+    if SP.debugLevel > 6 println("Y") end
     VolumeZ = VolumeZList()
-    if SP.debug > 6 println("Z Done") end
+    if SP.debugLevel > 6 println("Z Done") end
 
     VolumeOther = VolumeOtherList()
-    if SP.debug > 6 println("Other Done") end
+    if SP.debugLevel > 6 println("Other Done") end
 
     WellKnownHostDirectory = Dict([
     ("A",VolumeA),
