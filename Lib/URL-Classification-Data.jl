@@ -70,9 +70,13 @@ function PartialKnownHost(uriHost::ASCIIString)
         elseif (ismatch(r"*.algovid.com",uriHost))              newuristring = "Algovid.tv"
         elseif (ismatch(r".*api4load\..*",uriHost))             newuristring = "Api4load"
         elseif (ismatch(r".*\.ru$",uriHost))                    newuristring = "Russian Domains"
+        else
+            #not found
+            newuristring = "To Classify"
         end
 
         return newuristring
+
     catch y
         println("PartialKnownHost Exception",y)
     end
