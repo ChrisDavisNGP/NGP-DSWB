@@ -55,7 +55,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
                 timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """)
 
         if (SP.debugLevel > 8)
@@ -133,7 +133,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
                 timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """)
 
         if (SP.debugLevel > 6)
@@ -169,7 +169,7 @@ function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
                 beacon_type = 'error'
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """)
 
         if (SP.debugLevel > 8)
@@ -674,7 +674,7 @@ function testUrlClassifyToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by urlgroup,urlpagegroup
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
          """)
 
         if (SP.debugLevel > 6)

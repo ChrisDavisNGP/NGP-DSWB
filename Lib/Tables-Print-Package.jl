@@ -29,7 +29,7 @@ function agentCountPrintTable(UP::UrlParams,SP::ShowParams)
                 beacon_type = 'page view'
             group by user_agent_raw
             order by count(*) desc
-        limit $(SP.showLines)
+        limit $(UP.limitQueryRows)
     """)
 
         beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
@@ -123,7 +123,7 @@ function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 beacon_type = 'page view'
             group by urlgroup
             order by count(*) desc
-            limit $(SP.showLines)
+            limit $(UP.limitQueryRows)
         """);
 
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
@@ -145,7 +145,7 @@ function countParamUBtViewPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 beacon_type = 'page view'
             group by params_u
             order by count(*) desc
-            limit $(SP.showLines)
+            limit $(UP.limitQueryRows)
         """)
 
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString,"URL: $(UP.urlRegEx)"])
@@ -167,7 +167,7 @@ function bigPages2PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
                 params_dom_sz IS NOT NULL and
                 params_dom_sz > $(minSizeBytes)
             order by params_dom_sz desc
-            limit $(SP.showLines)
+            limit $(UP.limitQueryRows)
         """);
 
         scrubUrlToPrint(SP,bigPagesDF,:urlgroup)
@@ -191,7 +191,7 @@ function bigPages3PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
                 params_dom_sz > $(minSizeBytes)
             group by urlgroup
             order by size desc
-            limit $(SP.showLines)
+            limit $(UP.limitQueryRows)
         """);
 
         scrubUrlToPrint(SP,bigAveragePagesDF,:urlgroup)
@@ -215,7 +215,7 @@ function bigPages4PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
                 params_dom_sz > $(minSizeBytes) and
                 session_id IS NOT NULL
             order by dom_size desc
-            limit $(SP.showLines)
+            limit $(UP.limitQueryRows)
         """);
 
         scrubUrlToPrint(SP,bigPagesSessionsDF,:urlgroup)
@@ -241,7 +241,7 @@ function bigPages5PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
                 $btv.session_id IS NOT NULL
             group by $btv.params_dom_sz, $btv.session_id, $btv."timestamp"
             order by $btv.params_dom_sz desc
-            limit $(SP.showLines)
+            limit $(UP.limitQueryRows)
         """);
 
         displayTitle(chart_title = "Big Pages With Timestamp (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -270,7 +270,7 @@ function bigPages6PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
                 $btv.params_dom_sz > $(minSizeBytes) and
                 $btv.session_id IS NOT NULL
             order by $btv.params_dom_sz
-            limit $(SP.showLines)
+            limit $(UP.limitQueryRows)
         """);
 
         displayTitle(chart_title = "Big Pages Details (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -431,7 +431,7 @@ function requestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams
         FROM $(UP.rtView)
         group by urlgroup
         order by reqcnt desc
-        LIMIT $(UP.limitRows)
+        LIMIT $(UP.limitQueryRows)
     """)
 
     displayTitle(chart_title = "$(typeStr): Request Counts By URL Group", chart_info = [TV.timeString], showTimeStamp=false)
@@ -448,7 +448,7 @@ function nonCacheRequestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::Sh
             (response_last_byte-response_first_byte) > 0
         group by urlgroup
         order by count(*) desc
-        LIMIT $(UP.limitRows)
+        LIMIT $(UP.limitQueryRows)
     """)
 
     displayTitle(chart_title = "$(typeStr): Non Cache Requests Total By URL Groups Across All Sessions", chart_info = [TV.timeString], showTimeStamp=false)
@@ -464,7 +464,7 @@ function cacheHitRatioPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString
             (response_last_byte-response_first_byte) = 0
         group by urlgroup
         order by count(*) desc
-        LIMIT 250
+        LIMIT $(UP.limitQueryRows)
     """)
 
     ratio = query("""\
@@ -474,7 +474,7 @@ function cacheHitRatioPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString
             (response_last_byte-response_first_byte) > 0
         group by urlgroup
         order by count(*) desc
-        LIMIT 250
+        LIMIT $(UP.limitQueryRows)
     """)
 
     for x in eachrow(ratio)
@@ -505,7 +505,7 @@ function displayMatchingResourcesByParentUrlPrintTable(TV::TimeVars,UP::UrlParam
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by parenturl
             order by count(*) desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         if (size(joinTablesDF)[1] > 0)
@@ -537,7 +537,7 @@ function displayMatchingResourcesByUrlRtPrintTable(TV::TimeVars,UP::UrlParams,SP
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by url
             order by count(*) desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         if (size(joinTablesDF)[1] > 0)
@@ -759,7 +759,7 @@ function resourceScreenPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by initiator_type,height,width,x,y,url
             order by count(*) desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         displayTitle(chart_title = "Screen Details For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)

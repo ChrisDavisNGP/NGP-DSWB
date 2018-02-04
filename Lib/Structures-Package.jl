@@ -5,13 +5,19 @@ type UrlParams
     btView::ASCIIString
     resourceTable::ASCIIString
     rtView::ASCIIString
+
     pageGroup::ASCIIString
     urlRegEx::ASCIIString
     urlFull::ASCIIString
     resRegEx::ASCIIString
+
     timeLowerMs::Int64
     timeUpperMs::Int64
-    limitRows::Int64
+
+    limitRows::Int64         # Trying to retire
+    limitQueryRows::Int64
+    limitPageViews::Int64
+
     samplesMin::Int64
     sizeMin::Int64
     orderBy::ASCIIString
@@ -29,8 +35,12 @@ function UrlParamsInit(nb::ASCIIString)
 
     btView = "$(table)_$(nb)_pview"
     rtView = "$(tableRt)_$(nb)_pview"
-    UP = UrlParams(table,btView,tableRt,rtView,"%","%","","%",
-     2000,60000,250,10,10000,"time",true,"%","%",false,"",["whatIf"])
+    UP = UrlParams(
+        table,btView,tableRt,rtView,
+        "%","%","","%",
+        2000,60000,
+        250,250,250,
+        10,10000,"time",true,"%","%",false,"",["whatIf"])
 
     if isdefined(:UpPageGroup)
         UP.pageGroup = UpPageGroup
@@ -58,6 +68,16 @@ function UrlParamsInit(nb::ASCIIString)
 
     if isdefined(:UpLimitRows)
         UP.limitRows = UpLimitRows
+        UP.limitQueryRows = UP.limitRows
+        UP.limitPageViews = UP.limitRows
+    end
+
+    if isdefined(:UpLimitQueryRows)
+        UP.limitQueryRows = UpLimitQueryRows
+    end
+
+    if isdefined(:UpLimitPageViews)
+        UP.limitPageViews = UpLimitPageViews
     end
 
     if isdefined(:UpSamplesMin)

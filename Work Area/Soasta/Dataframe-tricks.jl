@@ -101,7 +101,7 @@ end
 
 # Using more than one column
 #
-#We can group by more than one column.  In this case we use `page_group` and `geo_cc`.  We also use the `head` function to limit the results to the top 15 (the second parameter to `head` is 15)
+#We can group by more than one column.  In this case we use `page_group` and `geo_cc`.  We also use the `head` function to reduce the results to the top 15 (the second parameter to `head` is 15)
 
 head(by(results, [:geo_cc, :page_group]) do df
     DataFrame(m=median(df[:timers_t_done]), iqr = iqr(df[:timers_t_done]), s² = var(df[:timers_t_done]))

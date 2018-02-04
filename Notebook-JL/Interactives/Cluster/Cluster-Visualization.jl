@@ -81,7 +81,7 @@ results2 = query("""\
     from $(btv)
     where
         params_u ilike '$(UP.urlRegEx)'
-    limit $(UP.limitRows)
+    limit $(UP.limitQueryRows)
 """);
 
 # Render

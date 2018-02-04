@@ -24,11 +24,6 @@ function curlSelectByMonitorOnPageLoad(TV::TimeVars,SP::ShowParams,CU::CurlParam
 
 # Select all monitors and call the following
 
-#SELECT timestamp,checkId,monitorName,onPageLoad FROM SyntheticRequest
-#where pageref = 'page_0' and externalResource is false and responseStatus = 'OK'
-#and port = 443 and contentType = 'text/html' and verb = 'GET' and
-#monitorName = 'JTP-Gallery-Beach' since 1 day ago limit 1000
-
     if SP.debugLevel > 8
         println("Started Page Loaded ")
     end

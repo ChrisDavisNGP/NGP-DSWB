@@ -184,7 +184,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
             params_rt_quit IS NULL
         group by urlgroup
         order by cnt desc
-        limit $(UP.limitRows)
+        limit $(UP.limitQueryRows)
          """);
 
         return topUrlDF
@@ -194,7 +194,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
     end
 end
 
-function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64; limit::Int64=20)
+function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64)
     try
         topUrl = query("""\
 
@@ -209,7 +209,7 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
             params_rt_quit IS NULL
         group by params_u
         order by cnt desc
-        limit $(limit)
+        limit $(UP.limitQueryRows)
 
          """);
 
@@ -246,7 +246,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             beacon_type = 'page view'
             group by urlgroup
             order by count(*) desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
@@ -264,7 +264,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             timers_t_done > 0
             group by params_u
             order by cnt desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
@@ -304,7 +304,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
         group by urlgroup
         order by count(*) desc
-        limit $(SP.showLines)
+        limit $(UP.limitQueryRows)
         """);
 
         scrubUrlToPrint(SP,topurl,:urlgroup)
@@ -328,7 +328,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
         group by params_u
         order by cnt desc
-        limit $(SP.showLines)
+        limit $(UP.limitQueryRows)
         """);
 
         scrubUrlToPrint(SP,topurl,:urlgroup)

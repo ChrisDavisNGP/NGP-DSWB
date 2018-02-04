@@ -15,7 +15,7 @@ function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession:
             where
                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
             order by "timestamp" asc
-            LIMIT $(SP.showLines)
+            LIMIT $(UP.limitQueryRows)
         """)
 
         if size(waterfall,1) == 0
@@ -72,7 +72,7 @@ function openingTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     chartTitle = "Report Paramaters:"
     chartTitle *= " Page Group=$(UP.pageGroup), DeviceType=$(UP.deviceType), Browser OS=$(UP.agentOs)"
-    chartInfo  = "Other Settings: limitRows=$(UP.limitRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"
+    chartInfo  = "Other Settings: limitQueryRows=$(UP.limitQueryRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"
     chartInfoOptional = ""
     if UP.urlRegEx != "%" || UP.urlFull != "%" || UP.resRegEx != "%"
         chartInfoOptional = "urlRegEx=$(UP.urlRegEx)\nurlFull=$(UP.urlFull)\nresRegEx=$(UP.resRegEx)"
@@ -87,7 +87,7 @@ function standardChartTitle(TV::TimeVars,UP::UrlParams,SP::ShowParams,openingStr
     chartTitle *= " ($(UP.pageGroup),$(UP.deviceType),$(UP.agentOs))"
 
     if (SP.debugLevel > 4)
-        chartInfo  = "Other Settings: limitRows=$(UP.limitRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"
+        chartInfo  = "Other Settings: limitQueryRows=$(UP.limitQueryRows),time range ms=($(UP.timeLowerMs),$(UP.timeUpperMs))"
         chartInfo2 = "urlRegEx=$(UP.urlRegEx)"
         chartInfo3 = "urlFull=$(UP.urlFull)"
         displayTitle(chart_title = chartTitle, chart_info = [TV.timeString;chartInfo;chartInfo2;chartInfo3], showTimeStamp=false)

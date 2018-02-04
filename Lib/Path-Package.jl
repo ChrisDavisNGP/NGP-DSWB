@@ -4,11 +4,7 @@ function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       localTableDF = DataFrame()
       statsDF = DataFrame()
 
-      saveUpLimitRows = UP.limitRows
-      # if you want 10 rows then 100 samples should be enough, if you want 500, then 5000 should be enough
-      UP.limitRows = SP.showLines * 10
       localTableDF = defaultLimitedBeaconsToDF(TV,UP,SP)
-      UP.limitRows = saveUpLimitRows
 
       recordsFound = nrow(localTableDF)
 
@@ -86,7 +82,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
           # Quick out
-          if (io == SP.showLines)
+          if (io == UP.limitPageViews)
               break
           end
           if(SP.debugLevel > 4)
@@ -103,7 +99,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
-              if io <= SP.showLines
+              if io <= UP.limitPageViews
                   sessionId = subdf[1,:session_id]
                   sessionIdString = ASCIIString(sessionId)
                   if CU.syntheticMonitor == "no name"
@@ -113,12 +109,12 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
-                      println("Page $(io) of $(SP.showLines): $(labelString)")
+                      println("Page $(io) of $(UP.limitPageViews): $(labelString)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
                   if (!suitable)
-                      SP.showLines += 1
+                      UP.limitPageViews += 1
                   else
                       pageCount += 1
                   end
@@ -188,7 +184,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
 #      for subdf in groupby(full,[:session_id,:timestamp])
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
           #look for quick out
-          if (io == SP.showLines)
+          if (io == UP.limitPageViews)
               return
           end
           s = size(subdf,1)
@@ -206,8 +202,8 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               io += 1
-              #println("Testing $(io) against $(SP.showLines)")
-              if io <= SP.showLines
+              #println("Testing $(io) against $(UP.limitPageViews)")
+              if io <= UP.limitPageViews
                   sessionId = subdf[1,:session_id]
                   #println("Session_id $(sessionId)")
                   sessionIdString = ASCIIString(sessionId)
@@ -223,7 +219,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                   # We may be missing requests such that the timers_t_done is a little bigger than the treemap
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
-                      println("Page $(io) of $(SP.showLines): $(labelString)")
+                      println("Page $(io) of $(UP.limitPageViews): $(labelString)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualPageReport(TV,UP,SP,topPageUrl,timeVar,sessionIdString,timeStampVar;displayTime=displayTime)
@@ -231,7 +227,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                       if (SP.debugLevel > 2)
                           println("Not suitable: $(UP.urlRegEx),$(sessionIdString),$(timeStampVar),$(timeVar)")
                       end
-                      SP.showLines += 1
+                      UP.limitPageViews += 1
                   end
               else
                   return

@@ -1203,11 +1203,7 @@ function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::C
       localTableDF = DataFrame()
       statsDF = DataFrame()
 
-      saveUpLimitRows = UP.limitRows
-      # if you want 10 rows then 100 samples should be enough, if you want 500, then 5000 should be enough
-      UP.limitRows = SP.showLines * 10
       localTableDF = critAggLimitedBeaconsToDF(TV,UP,SP,CU,NR)
-      UP.limitRows = saveUpLimitRows
 
       recordsFound = nrow(localTableDF)
 

@@ -345,7 +345,7 @@ function displayGroupBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             push!(finalPrintDF,[size(subDF,1);subDF[1:1,:url];subDF[1:1,:params_u]])
         end
 
-        displayTitle(chart_title = "Top Beacons Counts (limit $(SP.showLines)) For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
+        displayTitle(chart_title = "Top Beacons Counts (show limit $(SP.showLines)) For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         sort!(finalPrintDF, cols=(order(:count, rev=true)))
         scrubUrlToPrint(SP,finalPrintDF,:params_u)
         beautifyDF(finalPrintDF[1:min(SP.showLines,end),:])
@@ -619,7 +619,7 @@ function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         where
           url ilike '$(UP.resRegEx)' and
           "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-        limit $(UP.limitRows)
+        limit $(UP.limitQueryRows)
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -641,7 +641,7 @@ function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by url, params_u
             order by count(*) desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         displayTitle(chart_title = "Domain Url For Resource Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -779,7 +779,7 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 start_time > 10000
             order by start_time desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         displayTitle(chart_title = "Raw Resource Url Pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
@@ -816,7 +816,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_sz > 3000000
             group by urlgroup
             order by beacons desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views");Symbol("Avg Size");Symbol("Avg Load Time (sec)");Symbol("URL Group")]))
@@ -843,7 +843,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_sz > 2000000
             group by urlgroup
             order by beacons desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         #display(names!(domSize[1:end,[1:4]],[Symbol("Page Views"),Symbol("Total Size"),Symbol("Avg Load Time(sec)"),Symbol("URL Group")]))
@@ -872,7 +872,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_doms IS NOT NULL
             group by urlgroup
             order by avgsize desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
         beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Avg Domains"),Symbol("URL Group")]))
     catch y
@@ -892,7 +892,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     #and params_dom_doms IS NOT NULL
     #group by urlgroup
     #order by cnt desc
-    #limit 15
+    #limit $(UP.limitQueryRows)
     #""");
     #beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Total Domains"),Symbol("URL Group")]))
 
@@ -911,7 +911,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_ln IS NOT NULL
             group by urlgroup
             order by avgsize desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
 
         beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Avg Nodes"),Symbol("URL Group")]))
@@ -928,7 +928,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     #and params_dom_res IS NOT NULL
     #group by page_group,params_u
     #order by avgsize desc
-    #limit $(UP.limitRows)
+    #limit $(UP.limitQueryRows)
     #""");
     #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
 
@@ -941,7 +941,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     #and params_dom_res IS NOT NULL
     #group by page_group,params_u
     #order by cnt desc
-    #limit $(UP.limitRows)
+    #limit $(UP.limitQueryRows)
     #""");
     #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
 
@@ -962,7 +962,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_img_ext IS NOT NULL
             group by urlgroup
             order by avgsize desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
         beautifyDF(names!(domSize[:,[1:4]],[Symbol("Views"),Symbol("Avg Images"),Symbol("Avg Images External"),Symbol("URL Group")]))
     catch y
@@ -986,7 +986,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_img_ext IS NOT NULL
             group by urlgroup
             order by CNT desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
         beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Sum Images"),Symbol("Sum Images External"),Symbol("URL Group")]))
     catch y
@@ -1013,7 +1013,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_script_ext IS NOT NULL
             group by urlgroup
             order by avgsize desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
         beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Scripts"),Symbol("Avg Scripts External"),Symbol("URL Group")]))
     catch y
@@ -1040,7 +1040,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                 and params_dom_script_ext IS NOT NULL
             group by urlgroup
             order by cnt desc
-            limit $(UP.limitRows)
+            limit $(UP.limitQueryRows)
         """);
         beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Total Scripts"),Symbol("Total Scripts External"),Symbol("URL Group")]))
     catch y
@@ -1061,7 +1061,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
             from $btv
             where
                 params_dom_sz IS NOT NULL
-            limit 250
+            limit $(UP.limitQueryRows)
         """);
 
         #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Size"),Symbol("Avg Load Time (sec)"),Symbol("URL Group")]))
