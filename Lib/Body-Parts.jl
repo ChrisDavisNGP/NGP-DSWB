@@ -115,52 +115,56 @@ end
 
 function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::DataFrame)
 
-  #Make a para later if anyone want to control
-  goal = 3000.0
+  try
+      #Make a para later if anyone want to control
+      goal = 3000.0
 
-  row = DataFrame()
-  row[:url] = UP.urlFull
+      row = DataFrame()
+      row[:url] = UP.urlFull
 
-  dv = Array{Float64}(localTableDF[:beacon_time])
-  statsBeaconTimeDF = limitedStatsFromDV(dv)
-  row[:beacon_time] = statsBeaconTimeDF[:median]
-  samples = statsBeaconTimeDF[:count]
-  if (SP.debugLevel > 4)
-      println("bt=",row[:beacon_time][1]," goal=",goal)
-  end
-
-  if (SP.devView)
-      if (UP.usePageLoad)
-          chartTitle = "Page Load Time Stats: $(UP.urlFull) for $(UP.deviceType)"
-      else
-          chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for $(UP.deviceType)"
+      dv = Array{Float64}(localTableDF[:beacon_time])
+      statsBeaconTimeDF = limitedStatsFromDV(dv)
+      row[:beacon_time] = statsBeaconTimeDF[:median]
+      samples = statsBeaconTimeDF[:count]
+      if (SP.debugLevel > 4)
+          println("bt=",row[:beacon_time][1]," goal=",goal)
       end
-      showLimitedStats(TV,statsBeaconTimeDF,chartTitle)
+
+      if (SP.devView)
+          if (UP.usePageLoad)
+              chartTitle = "Page Load Time Stats: $(UP.urlFull) for $(UP.deviceType)"
+          else
+              chartTitle = "Page Domain Ready Time Stats: $(UP.urlFull) for $(UP.deviceType)"
+          end
+          showLimitedStats(TV,statsBeaconTimeDF,chartTitle)
+      end
+
+      dv = Array{Float64}(localTableDF[:request_count])
+      statsRequestCountDF = limitedStatsFromDV(dv)
+      row[:request_count] = statsRequestCountDF[:median]
+      if (SP.devView)
+          chartTitle = "Request Count"
+          showLimitedStats(TV,statsRequestCountDF,chartTitle)
+      end
+
+      dv = localTableDF[:encoded_size]
+      statsEncodedSizeDF = limitedStatsFromDV(dv)
+      row[:encoded_size] = statsEncodedSizeDF[:median]
+
+      row[:samples] = samples
+
+      if (SP.devView)
+          chartTitle = "Encoded Size"
+          showLimitedStats(TV,statsEncodedSizeDF,chartTitle)
+      end
+
+      if (SP.debugLevel > 8)
+          beautifyDF(row[:,:])
+      end
+      return row
+  catch y
+      println("beaconStatsRow Exception ",y)
   end
-
-  dv = Array{Float64}(localTableDF[:request_count])
-  statsRequestCountDF = limitedStatsFromDV(dv)
-  row[:request_count] = statsRequestCountDF[:median]
-  if (SP.devView)
-      chartTitle = "Request Count"
-      showLimitedStats(TV,statsRequestCountDF,chartTitle)
-  end
-
-  dv = localTableDF[:encoded_size]
-  statsEncodedSizeDF = limitedStatsFromDV(dv)
-  row[:encoded_size] = statsEncodedSizeDF[:median]
-
-  row[:samples] = samples
-
-  if (SP.devView)
-      chartTitle = "Encoded Size"
-      showLimitedStats(TV,statsEncodedSizeDF,chartTitle)
-  end
-
-  if (SP.debugLevel > 8)
-      beautifyDF(row[:,:])
-  end
-  return row
 end
 
 # From Page Group Details
