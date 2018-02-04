@@ -122,7 +122,7 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
       row = DataFrame()
       row[:url] = UP.urlFull
 
-      dv = Array{Float64}(localTableDF[:beacon_time])
+      dv = localTableDF[:beacon_time]
       statsBeaconTimeDF = limitedStatsFromDV(dv)
       row[:beacon_time] = statsBeaconTimeDF[:median]
       samples = statsBeaconTimeDF[:count]
@@ -139,7 +139,7 @@ function beaconStatsRow(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::
           showLimitedStats(TV,statsBeaconTimeDF,chartTitle)
       end
 
-      dv = Array{Float64}(localTableDF[:request_count])
+      dv = localTableDF[:request_count]
       statsRequestCountDF = limitedStatsFromDV(dv)
       row[:request_count] = statsRequestCountDF[:median]
       if (SP.devView)
