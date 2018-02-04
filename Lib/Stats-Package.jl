@@ -244,7 +244,7 @@ function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::Dat
     end
 
     # Get page views #, median, min, max and more
-    statsDF = limitedStatsFromDV(dv)
+    statsDF = singleRowStatsFromDV(dv)
 
     if (showAdditional)
         if (UP.usePageLoad)
@@ -468,7 +468,7 @@ function showLimitedStats(TV::TimeVars,statsDF::DataFrame,chartTitle::ASCIIStrin
     end
 end
 
-function limitedStatsFromDV(dv::DataVector)
+function singleRowStatsFromDV(dv::DataVector)
     try
 
         statsArr(v) = round(v,0)
@@ -496,7 +496,7 @@ function limitedStatsFromDV(dv::DataVector)
         return stats
 
     catch y
-        println("limitedStatsFromDV Exception ",y)
+        println("singleRowStatsFromDV Exception ",y)
     end
 end
 
