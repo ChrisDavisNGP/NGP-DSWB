@@ -468,7 +468,7 @@ function showLimitedStats(TV::TimeVars,statsDF::DataFrame,chartTitle::ASCIIStrin
     end
 end
 
-function limitedStatsFromDV(dv::DataVector)
+function limitedStatsFromDV(dv::Array)
     try
 
         statsArr(v) = round(v,0)
