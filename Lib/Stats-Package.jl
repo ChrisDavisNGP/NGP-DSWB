@@ -528,6 +528,12 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
         localStatsDF = Array{Float64}(statsBtViewTableToDF(UP));
+
+        if SpDebugLevel > 8
+            println(typeof(localStatsDF))
+            println("localStatsDF ",localStatsDF)
+        end
+
         localStatsDF = dropna(localStatsDF)
 
         if size(localStatsDF,1) == 0
