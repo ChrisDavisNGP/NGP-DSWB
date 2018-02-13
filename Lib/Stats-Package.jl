@@ -541,7 +541,7 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             return
         end
 
-        localStatsDV = Array{Float64}(localStatsDF[:,:timers_t_done];
+        localStatsDV = Array{Float64}(localStatsDF[:,:timers_t_done]);
         localStatsDV = dropna(localStatsDV)
 
         statsDF = basicStats(UP,localStatsDV)
