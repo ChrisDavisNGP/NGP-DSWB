@@ -536,14 +536,15 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             beautifyDF(localStatsDF[1:min(3,end),:])
         end
 
-        #localStatsDF = dropna(localStatsDF)
-
         if size(localStatsDF,1) == 0
             println("No data returned")
             return
         end
 
-        statsDF = basicStats(UP,localStatsDF)
+        localStatsDV = Array{Float64}(localStatsDF[:,:timers_t_done];
+        localStatsDV = dropna(localStatsDV)
+
+        statsDF = basicStats(UP,localStatsDV)
 
         if size(statsDF,1) == 0
             println("No statsDF data")
