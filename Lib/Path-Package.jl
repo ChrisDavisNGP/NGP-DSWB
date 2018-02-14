@@ -209,6 +209,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                   sessionIdString = ASCIIString(sessionId)
                   if CU.syntheticMonitor == "no name"
                       timeStampVar = subdf[1,:timestamp]
+                      displayTime = timeStampVar
                   else
                       whenUTC = unix2datetime(subdf[1,:timestamp]/1000.0)
                       whenUTCz = ZonedDateTime(whenUTC,TimeZone("UTC"))
