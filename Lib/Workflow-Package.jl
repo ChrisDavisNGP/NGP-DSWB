@@ -340,8 +340,9 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     setTable(UP.btView);
 
     statsDF = beaconViewStats(TV,UP,SP)
-    if !isdefined(:statDF)
-        println("No data")
+    if !isdefined(:statsDF)
+        println("No data returned from beaconViewStats")
+        return
     end
 
     medianThreshold = statsDF[1:1,:median][1]
