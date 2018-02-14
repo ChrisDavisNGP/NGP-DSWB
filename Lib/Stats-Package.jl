@@ -3,11 +3,9 @@
 function buildTimeStats(localStatsDF::DataFrame,fieldStat::Symbol)
     try
 
-        #dv = Array{Float64}(localStatsDF[fieldStat])
         dv = localStatsDF[fieldStat]
         dv = dropna(dv)
         da = Array{Float64}(dv)
-
 
         statsArr(v) = [round(v,0);round(v/1000.0,3);round(v/60000.0,1)]
 
@@ -531,12 +529,9 @@ end
 function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         setTable(UP.btView)
-        #localStatsDF = Array{Float64}(statsBtViewTableToDF(UP));
         localStatsDF = statsBtViewTableToDF(UP);
 
         if SpDebugLevel > 8
-            #println(typeof(localStatsDF))
-            #println("localStatsDF ",localStatsDF)
             beautifyDF(localStatsDF[1:min(3,end),:])
         end
 
@@ -545,10 +540,6 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             return
         end
 
-        #localStatsDV = Array{Float64}(localStatsDF[:,:timers_t_done]);
-        #localStatsDV = dropna(localStatsDV)
-
-        #statsDF = basicStats(UP,localStatsDV)
         statsDF = buildTimeStats(localStatsDF,:timers_t_done)
 
         if size(statsDF,1) == 0
@@ -580,12 +571,6 @@ function fetchGraph7Stats(UP::UrlParams)
     statsDF = DataFrame()
     try
         localStatsDF = statsBtViewTableToExtraDF(UP);
-        #statsDF = basicStats(UP,localStatsDF)
-        #medianThreshold = statsDF[1:1,:median][1]
-
-        #displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        #beautifyDF(statsDF[:,:])
-
         return localStatsDF
 
     catch y
