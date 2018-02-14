@@ -3,27 +3,31 @@
 function buildTimeStats(localStatsDF::DataFrame,fieldStat::Symbol)
     try
 
-        dv = Array{Float64}(localStatsDF[fieldStat])
+        #dv = Array{Float64}(localStatsDF[fieldStat])
+        dv = localStatsDF[fieldStat]
+        dv = dropna(dv)
+        da = Array{Float64}(dv)
+
+
         statsArr(v) = [round(v,0);round(v/1000.0,3);round(v/60000.0,1)]
 
-        dv = dropna(dv)
         stats = DataFrame()
         stats[:unit] = ["milliseconds","seconds","minutes"]
-        stats[:count] = size(dv,1)
-        stats[:median] = statsArr(median(dv))
+        stats[:count] = size(da,1)
+        stats[:median] = statsArr(median(da))
         stats[:rangeLower] = statsArr(0.0)
         stats[:rangeUpper] = statsArr(0.0)
-        stats[:mean] = statsArr(mean(dv))
-        stats[:stddev] = statsArr(std(dv))
-        stats[:variance] = statsArr(var(dv))
-        stats[:min] = statsArr(minimum(dv))
-        stats[:max] = statsArr(maximum(dv))
-        stats[:q25] = statsArr(quantile(dv,[0.25]))
-        stats[:q75] = statsArr(quantile(dv,[0.75]))
-        stats[:kurtosis] = statsArr(kurtosis(dv))
-        stats[:skewness] = statsArr(skewness(dv))
-        stats[:entropy] = statsArr(entropy(dv))
-        stats[:modes] = statsArr(modes(dv)[1])
+        stats[:mean] = statsArr(mean(da))
+        stats[:stddev] = statsArr(std(da))
+        stats[:variance] = statsArr(var(da))
+        stats[:min] = statsArr(minimum(da))
+        stats[:max] = statsArr(maximum(da))
+        stats[:q25] = statsArr(quantile(da,[0.25]))
+        stats[:q75] = statsArr(quantile(da,[0.75]))
+        stats[:kurtosis] = statsArr(kurtosis(da))
+        stats[:skewness] = statsArr(skewness(da))
+        stats[:entropy] = statsArr(entropy(da))
+        stats[:modes] = statsArr(modes(da)[1])
 
         return stats
     catch y
@@ -541,10 +545,11 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             return
         end
 
-        localStatsDV = Array{Float64}(localStatsDF[:,:timers_t_done]);
-        localStatsDV = dropna(localStatsDV)
+        #localStatsDV = Array{Float64}(localStatsDF[:,:timers_t_done]);
+        #localStatsDV = dropna(localStatsDV)
 
-        statsDF = basicStats(UP,localStatsDV)
+        #statsDF = basicStats(UP,localStatsDV)
+        statsDF = buildTimeStats(localStatsDF,:timers_t_done)
 
         if size(statsDF,1) == 0
             println("No statsDF data")
