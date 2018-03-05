@@ -574,7 +574,7 @@ function displayMatchingResourcesByUrlBtvRtPrintTables(TV::TimeVars,UP::UrlParam
             displayTitle(chart_title = "Beacon table and resources joined with resource Url pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
             scrubUrlToPrint(SP,joinTablesDF,:url)
             scrubUrlToPrint(SP,joinTablesDF,:parenturl)
-            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
+            beautifyDF(joinTablesDF[1:min(SP.showLines,end),:],maxRows=SP.showLines)
             dataframeFieldStats(TV,SP,joinTablesDF,:count,"on column count")
         else
             displayTitle(chart_title = "Beacon table and resources joined with resource Url pattern $(UP.resRegEx) is empty", showTimeStamp=false)
