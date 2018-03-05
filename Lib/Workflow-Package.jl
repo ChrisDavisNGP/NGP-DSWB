@@ -820,6 +820,32 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
 end
 
+function findSingleResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+  #Turn sections on / off to debug
+  wfShowResourcesByParamsU = true
+  wfShowResourcesByUrl = true
+  wfShowResourcesByUrls = true
+  wfShowResourcesStats = true
+  wfShowResourcesAllFields = false
+
+  wfClearViews = true
+
+  openingTitle(TV,UP,SP)
+
+  defaultBeaconCreateView(TV,UP,SP)
+
+  if (wfShowResourcesByUrls)
+      displayMatchingResourcesByUrlBtvRtPrintTables(TV,UP,SP)
+  end
+
+  if (wfClearViews)
+    q = query(""" drop view if exists $(UP.btView);""")
+    q = query(""" drop view if exists $(UP.rtView);""")
+  end
+
+end
+
 function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   #Turn sections on / off to debug
