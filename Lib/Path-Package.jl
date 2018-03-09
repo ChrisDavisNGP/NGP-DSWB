@@ -114,7 +114,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
                   if (!suitable)
-                      UP.limitPageViews += 1
+                      io -= 1
                   else
                       pageCount += 1
                   end
@@ -231,7 +231,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                       if (SP.debugLevel > 2)
                           println("Not suitable: $(UP.urlRegEx),$(sessionIdString),$(timeStampVar),$(timeVar)")
                       end
-                      UP.limitPageViews += 1
+                      io -= 1
                   end
               else
                   return
