@@ -277,6 +277,7 @@ function pickTime()
 
         if size(timeValues,1) != 2
             println("Bad TvExactRange, need two date strings (m/d/yyyy hh:mm) separated by comma")
+            println("TvExactRange = \"3/7/2018 20:30,3/7/2018 21:00\" for example")
             return
         end
 
@@ -284,18 +285,21 @@ function pickTime()
 
         if size(timeStartParts,1) != 2
             println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            println("TvExactRange = \"3/7/2018 20:30,3/7/2018 21:00\" for example")
             return
         end
 
         timeStartPart1 = split(timeStartParts[1],"/")
         if size(timeStartPart1,1) != 3
             println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            println("TvExactRange = \"3/7/2018 20:30,3/7/2018 21:00\" for example")
             return
         end
 
         timeStartPart2 = split(timeStartParts[2],":")
         if size(timeStartPart2,1) != 2
             println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            println("TvExactRange = \"3/7/2018 20:30,3/7/2018 21:00\" for example")
             return
         end
 
@@ -303,18 +307,21 @@ function pickTime()
 
         if size(timeEndParts,1) != 2
             println("Bad Date time in second position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            println("TvExactRange = \"3/7/2018 20:30,3/7/2018 21:00\" for example")
             return
         end
 
         timeEndPart1 = split(timeEndParts[1],"/")
         if size(timeEndPart1,1) != 3
             println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            println("TvExactRange = \"3/7/2018 20:30,3/7/2018 21:00\" for example")
             return
         end
 
         timeEndPart2 = split(timeEndParts[2],":")
         if size(timeEndPart2,1) != 2
             println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
+            println("TvExactRange = \"3/7/2018 20:30,3/7/2018 21:00\" for example")
             return
         end
 
