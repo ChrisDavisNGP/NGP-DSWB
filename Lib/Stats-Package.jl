@@ -531,7 +531,7 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         setTable(UP.btView)
         localStatsDF = statsBtViewTableToDF(UP);
 
-        if SpDebugLevel > 8
+        if SP.debugLevel > 8
             beautifyDF(localStatsDF[1:min(3,end),:])
         end
 

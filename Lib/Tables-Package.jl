@@ -295,7 +295,7 @@ end
 function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
 
     if SP.debugLevel > 8
-        println("Starting allSessionUrlTableToDF")
+        println("Starting allSessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
     rt = UP.resourceTable

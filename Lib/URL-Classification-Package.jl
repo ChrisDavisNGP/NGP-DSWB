@@ -2,6 +2,10 @@ include("URL-Classification-Data.jl")
 
 function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
     try
+        if SP.noSymbols
+            return
+        end
+
         i = 0
         todo = 0
         for url in toppageurl[:,:urlgroup]
@@ -39,7 +43,7 @@ function classifyUrl(SP::ShowParams,toppageurl::DataFrame)
                 continue
             end
 
-            findHost = lookupHost(uri.host)
+            findHost = lookupHost(SP,uri.host)
             if (findHost != "NoneInner")
                 newUrlPageGroup = findHost
                 toppageurl[i:i,:urlpagegroup] = findHost
@@ -241,6 +245,10 @@ function wellKnownPathDictionary(SP::ShowParams)
       println("Loading Path Dictionary")
   end
 
+  if SP.noSymbols
+      return
+  end
+
   if SP.debug == true
     # There is no debug Path so far
     WellKnownPath = wellKnownPathDictionaryInternal()
@@ -255,6 +263,10 @@ end
 function wellKnownHostEncyclopedia(SP::ShowParams)
     if SP.debugLevel > 4
         println("Loading Encyclopedia")
+    end
+
+    if SP.noSymbols
+        return
     end
 
     WellKnownHostDirectory = wellKnownHostEncyclopediaInternal(SP)
@@ -373,12 +385,16 @@ function wellKnownHostEncyclopediaDebug()
     return WellKnownHostDirectory
 end
 
-function lookupHost(host::ASCIIString)
+function lookupHost(SP::ShowParams,host::ASCIIString)
 
     hs = uppercase(host[1])
     hostStart = string(hs)
     #println()
     #println("host=[",host,"] and hostStart=[",hostStart,"]")
+
+    if SP.noSymbols
+        return "NoneInner"
+    end
 
     try
         if (haskey(WellKnownHostDirectory,hostStart))

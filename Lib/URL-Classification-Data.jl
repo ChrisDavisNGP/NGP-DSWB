@@ -5882,6 +5882,10 @@ function wellKnownUrlGroup(SP::ShowParams)
         println("Loading Known Url Groups")
     end
 
+    if SP.noSymbols
+        return
+    end
+
     WellKnownUrlGroup = Dict([
     ("Ad Slot","3rd Party Ad Operations"),
     ("AdapTV Advertising","3rd Party Ad Operations"),

@@ -444,7 +444,7 @@ function dumpHostGroups(SP::ShowParams,NR::NrParams;showGroups::Bool=true)
             ascHost = ASCIIString(host)
             #println("LookupHost=",ascHost," typeof=",typeof(ascHost))
             #println("ascHost=",ascHost,"lookupHost=",lookupHost(ascHost))
-            newHost = lookupHost(ascHost)
+            newHost = lookupHost(SP,ascHost)
             if newHost != "NoneInner"
                 NR.results.row[i:i,:host] = newHost
             end

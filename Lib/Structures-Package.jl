@@ -173,6 +173,7 @@ type ShowParams
     devView::Bool
     criticalPathOnly::Bool
     debug::Bool
+    noSymbols::Bool
     debugLevel::Int64        #debugLevel = 10 # 1 for min output, 5 medium output, 10 all output
     reportLevel::Int64       #reportLevel = 10 # 1 for min output, 5 medium output, 10 all output
     showLines::Int64
@@ -182,7 +183,7 @@ type ShowParams
 end
 
 function ShowParamsInit()
-    SP = ShowParams(false,true,false,0,2,25,20,150,75)
+    SP = ShowParams(false,true,false,false,0,2,25,20,150,75)
 
     if isdefined(:SpDevView)
         SP.devView = SpDevView
@@ -194,6 +195,10 @@ function ShowParamsInit()
 
     if isdefined(:SpDebugLevel)
         SP.debugLevel = SpDebugLevel
+    end
+
+    if isdefined(:SpNoSymbols)
+        SP.noSymbols = SpNoSymbols
     end
 
     if isdefined(:SpReportLevel)
