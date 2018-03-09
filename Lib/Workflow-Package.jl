@@ -519,6 +519,8 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   wfClearViews = true
 
+  openingTitle(TV,UP,SP)
+
   defaultBeaconCreateView(TV,UP,SP)
   defaultResourceView(TV,UP)
 
