@@ -605,7 +605,8 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowBounceByUrl)
-    chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC, url=UP.urlFull)
+    #chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC, url=UP.urlFull)
+    chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC)
     #chartBouncesVsLoadTimes(startTime, endTime)
   end
 
