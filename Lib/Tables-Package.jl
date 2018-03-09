@@ -295,7 +295,7 @@ end
 function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
 
     if SP.debugLevel > 8
-        println("Starting allSessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
+        println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
     rt = UP.resourceTable
@@ -318,8 +318,8 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             0 as beacon_time
         FROM $(rt)
         where
-            session_id = '$(studySession)' and
-            "timestamp" = '$(studyTime)'
+            session_id ilike '$(studySession)' and
+            "timestamp" ilike '$(studyTime)'
         order by start_time asc
         """);
 
