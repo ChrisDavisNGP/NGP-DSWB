@@ -102,11 +102,11 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               if io <= UP.limitPageViews
                   sessionId = subdf[1,:session_id]
                   sessionIdString = ASCIIString(sessionId)
-                  println("SM=",CU.syntheticMonitor," timeStampVar=",timeStampVar)
+                  #println("SM=",CU.syntheticMonitor," timeStampVar=",timeStampVar)
                   if CU.syntheticMonitor == "no name"
                       timeStampVar = subdf[1,:timestamp]
                   end
-                  println(" tsv=",timeStampVar)
+                  #println(" tsv=",timeStampVar)
 
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 6)
