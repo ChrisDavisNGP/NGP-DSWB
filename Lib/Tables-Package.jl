@@ -36,6 +36,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     bt = UP.beaconTable
 
     if (SP.debugLevel > 4)
+        println("defaultLimitedBeaconsToDF Starting")
         println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
         println("urlRegEx $(UP.urlRegEx)")
         println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
@@ -114,6 +115,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
     bt = UP.beaconTable
 
     if (SP.debugLevel > 4)
+        println("critAggLimitedBeaconsToDFSoasta Starting")
         println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
         println("urlRegEx $(UP.urlRegEx)")
         println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
@@ -138,7 +140,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
         if (SP.debugLevel > 6)
             standardChartTitle(TV,UP,SP,"Debug8: critAggLimitedBeaconsToDF All Columns")
-            beautifyDF(localTableDF[1:min(3,end),:])
+            beautifyDF(localTableDF[1:min(10,end),:])
         end
 
         return localTableDF
@@ -152,6 +154,7 @@ function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     bt = UP.beaconTable
 
     if (SP.debugLevel > 4)
+        println("errorBeaconsToDF")
         println("Time MS UTC: $(TV.startTimeMsUTC),$(TV.endTimeMsUTC)")
         println("urlRegEx $(UP.urlRegEx)")
         println("dev=$(UP.deviceType), os=$(UP.agentOs), page grp=$(UP.pageGroup)")
@@ -318,8 +321,8 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             0 as beacon_time
         FROM $(rt)
         where
-            session_id ilike '$(studySession)' and
-            "timestamp" ilike '$(studyTime)'
+            session_id = '$(studySession)' and
+            "timestamp" = '$(studyTime)'
         order by start_time asc
         """);
 
