@@ -184,7 +184,7 @@ function prevWorkWeekTimeVariables()
     end
 end
 
-function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
+function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
     try
         if (hours > 0)
             startHour = 13
@@ -195,7 +195,7 @@ function yesterdayTimeVariables(;startHour::Int64=7,endHour::Int64=17,hours=0)
         end
         firstAndLast = getBeaconsFirstAndLast()
         endTime = DateTime(firstAndLast[1,2] - Hour(24-endHour))
-        startTime = DateTime(endTime - Hour(endHour-startHour) + Second(1))
+        startTime = DateTime(endTime - Hour(endHour-startHour) - Second(1))
 
         localtv =
         timeVariables(
@@ -225,8 +225,8 @@ function todayTimeVariables()
         # Otherwise use exact time input like TvExactRange
 
         startTime = Dates.now() # comes back UTC
-        endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 17, 0)
-        startTime = DateTime(endTime - Hour(10) + Second(1))
+        endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
+        startTime = DateTime(endTime - Hour(24) - Second(1))
 
         localtv =
         timeVariables(
