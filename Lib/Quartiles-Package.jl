@@ -50,16 +50,6 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuarti
             limit $(showQuartiles)
         """);
 
-        #if (SP.devView)
-            # pgAndCt = DataArray([]);
-            # for x in eachrow(pageGroupQuartilesDF)
-            #     newRow = [x[:page_group]*" \n \("*string(format(x[:count], commas=true))*"\)"]
-            #     pgAndCt = vcat(pgAndCt, newRow)
-            # end
-            # pageGroupQuartilesDF[:page_group] = pgAndCt;
-            # display(pageGroupQuartilesDF)
-        #end
-
         displayTitle(chart_title = "Top Page Group Times", chart_info = [TV.timeString],showTimeStamp=false)
         plotsDF = drawBoxPlots(pageGroupQuartilesDF, yAxisLabel = "Milliseconds");
     catch y

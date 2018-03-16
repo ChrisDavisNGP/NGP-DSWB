@@ -169,8 +169,6 @@ end
 
 # From Page Group Details
 
-# From Page Group Details
-
 function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCIIString,desktopView::ASCIIString)
     try
         if SP.debugLevel > 8
@@ -458,23 +456,6 @@ function knownPatterns()
 
             (r".*/content/dam/.*",["Image Mgr","Known",".*/content/dam/.*","Content Dam",0,""]),
             (r".*/interactive-assets/.*",["Interactive Assets","Ignoring",".*/interactive-assets/.*","Interactive Assets",0,""]),
-
-#            (r".*/content/dam/travel/.*",["Content Dam Travel",0,""]),
-#            (r".*/content/dam/photography/.*",["Photography",0,""]),
-#            (r".*/content/dam/adventure/.*",["Content Dam Adventure",0,""]),
-#            (r".*/content/dam/archaeologyandhistory/.*",["Content Dam Archaeologyandhistory",0,""]),
-#            (r".*/content/dam/magazine/.*",["Content Dam Magazine",0,""]),
-#            (r".*/content/dam/environment/.*",["Content Dam Environment",0,""]),
-#            (r".*/content/dam/news/.*",["content Dam News",0,""]),
-#            (r".*/content/dam/science/.*",["Content Dam Science",0,""]),
-#            (r".*/content/dam/contributors/.*",["Content Dam Contributors",0,""]),
-#            (r".*/content/dam/natgeo/video/.*",["Content Dam Video",0,""]),
-#            (r".*/content/dam/parks/.*",["Content Dam Parks",0,""]),
-#            (r".*/content/dam/animals/.*",["Content Dam Animals",0,""]),
-#            (r".*/content/dam/ngdotcom/.*",["Content Dam Ngdotcom",0,""]),
-#            (r".*/content/dam/peopleandculture/.*",["Content Dam People and Culture",0,""]),
-#            (r".*/content/dam/books/.*",["Content Dam Books",0,""]),
-
             (r".*/adventure/features/.*",["","",".*/adventure/features/.*","Adventure Features",0,""]),
             (r".*/contributors/r/melody-rowell/.*",["","",".*/contributors/r/melody-rowell/.*","Contributors Melody Rowell",0,""]),
             (r".*/countryman/assets/.*",["","","/countryman/assets/.*","Countryman",0,""]),
@@ -519,15 +500,12 @@ function knownPatterns()
             (r".*/voteyourpark/.*",["","",".*/voteyourpark/.*","Vote Your Park",0,""]),
             (r".*/west-snow-fail/.*",["","",".*/west-snow-fail/.*","West Snow Fail",0,""]),
             (r".*/year-in-review-.*",["","",".*/year-in-review-.*","Year In Review",0,""]),
-
-
             (r".*/visitpandora/.*",["Sponsor","Sponsor",".*/visitpandora/.*","Visit Pandora",0,""]),
             (r".*/microsoft/.*",["Sponsor","Sponsor",".*/microsoft/.*","Microsoft",0,""]),
             (r".*/stellaartois/.*",["Sponsor","Sponsor",".*/stellaartois/.*","Stella Artois",0,""]),
             (r".*/subaru/.*",["Sponsor","Sponsor",".*/subaru/.*","Subaru",0,""]),
             (r".*/visitcalifornia/.*",["Sponsor","Sponsor",".*/visitcalifornia/.*","Visit California",0,""]),
             (r".*/cisco/.*",["Sponsor","Sponsor",".*/cisco/.*","Cisco",0,""]),
-
 
             (r".*/unchartedwaters/.*",["Sponsor","Sponsor",".*/unchartedwaters/.*","Unchartedwaters",0,""])
             ]);
@@ -748,9 +726,6 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         statsDF8 = singleRowStatsFromDV(dv8)
         showLimitedStats(TV,statsDF8,"Request Last Byte Stats")
 
-
-
-
     catch y
         println("resourceTime2 Exception ",y)
     end
@@ -879,23 +854,6 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         println("uniqueDomainsUsed Exception ",y)
     end
 
-    #displayTitle(chart_title = "Friequent Unique Domains Used (50 dom min)", chart_info = [TV.timeString], showTimeStamp=false)
-
-    #domSize = query("""\
-    #select count(*) cnt,SUM(params_dom_doms) avgsize,
-    #CASE
-    #when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-    #else trim('/' from params_u)
-    #end urlgroup
-    #from $btv
-    #where params_dom_doms > 50
-    #and params_dom_doms IS NOT NULL
-    #group by urlgroup
-    #order by cnt desc
-    #limit $(UP.limitQueryRows)
-    #""");
-    #beautifyDF(names!(domSize[1:end,[1:3]],[Symbol("Views"),Symbol("Total Domains"),Symbol("URL Group")]))
-
     try
         displayTitle(chart_title = "Domains Nodes On Page (20k min)", chart_info = [TV.timeString], showTimeStamp=false)
 
@@ -918,32 +876,6 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     catch y
         println("domainNodesOnPage Exception ",y)
     end
-
-    #displayTitle(chart_title = "Domains Resource in RT", chart_info = [TV.timeString], showTimeStamp=false)
-
-    #domSize = query("""\
-    #select count(*) cnt,AVG(params_dom_res) avgsize,page_group,params_u
-    #from $btv
-    #where params_dom_res > 100
-    #and params_dom_res IS NOT NULL
-    #group by page_group,params_u
-    #order by avgsize desc
-    #limit $(UP.limitQueryRows)
-    #""");
-    #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
-
-    #displayTitle(chart_title = "Frequent High Resource in RT", chart_info = [TV.timeString], showTimeStamp=false)
-
-    #domSize = query("""\
-    #select count(*) cnt,AVG(params_dom_res) avgsize,page_group,params_u
-    #from $btv
-    #where params_dom_res > 400
-    #and params_dom_res IS NOT NULL
-    #group by page_group,params_u
-    #order by cnt desc
-    #limit $(UP.limitQueryRows)
-    #""");
-    #beautifyDF(names!(domSize[1:end,[1:4]],[Symbol("Views"),Symbol("Avg Resources"),Symbol("Page Group"),Symbol("URL")]))
 
     try
         displayTitle(chart_title = "Domains Images", chart_info = [TV.timeString], showTimeStamp=false)

@@ -584,18 +584,6 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
 
       end
 
-      #println("")
-      #println(" Result ")
-      #println("")
-
-      #i = 0
-      #for url in toppageurl2[1:end,:urlgroup]
-      #    i += 1
-      #    newStartTime = toppageurl2[i,:Start]
-      #    newTotalTime = toppageurl2[i,:Total]
-      #    println("XXX ",url," newStartTime=$(newStartTime), newTotalTime=$(newTotalTime), target=$(timerDone)")
-      #end
-
       toppageurl = deepcopy(toppageurl2)
 
       toppageurl[:Gap] = 0
@@ -673,11 +661,6 @@ function gapAndCriticalPathV2(toppageurl::DataFrame,timerDone::Int64)
           #println("rt", runningTime, " at ",prevStartTime)
 
       end
-
-      # Do not fix last record.  It is the "Not Blocking" Row.  Zero it out
-      #i += 1
-      #toppageurl[i,:Gap] = 0
-      #toppageurl[i,:Critical] = 0
 
       return toppageurl
 

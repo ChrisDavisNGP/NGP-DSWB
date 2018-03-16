@@ -194,20 +194,6 @@ function investigateStats(TV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParam
 
     fillNrResults(SP,NR,timeDict["results"])
 
-    #df = deepcopy(NR.results.row)
-    #delRows = Int64[]
-    #i = 0
-    #for r in eachrow(df)
-    #        i += 1
-    #    if !ismatch(r"https://www.nationalgeographic.com/photography/proof/2017/09/fall-equinox-gallery/$",r[:URL])
-    #        push!(delRows,i)
-    #    end
-    #end
-    #println(" row count 1 ",size(NR.results.row,1))
-    #deleterows!(df,delRows)
-
-#    println(" row count 1 ",size(df,1))
-
     if SP.debugLevel > 6
         beautifyDF(NR.results.row[1:3,:])
     end
@@ -689,21 +675,6 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         data1=size(oldDF[:OnPageLoad],1)
         data2=size(newDF[:OnPageLoad],1)
         minRows = min(data1,data2)
-
-        #drawDF = DataFrame()
-
-        #drawDF[:col1] = oldDF[:timestamp]
-        #drawDF[:data1] = oldDF[:OnPageLoad]
-        #drawDF[:data2] = newDF[:OnPageLoad]
-
-        #i = 0
-        #for row in eachrow(drawDF)
-        #    i += 1
-            #println("row ",i, " ",typeof(row[:col1]))
-        #    if typeof(row[:col1]) == Int64
-        #        row[:col1] = unix2datetime(row[:col1]/1000.0)
-        #    end
-        #end
 
         drawDF = DataFrame(col1=DateTime[],data1=Float64[],data2=Float64[])
 

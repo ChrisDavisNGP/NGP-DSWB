@@ -23,15 +23,6 @@ function generateDimensionMatrix(cols::Array{Symbol, 1}, dims::Int64; constraint
     return dimcols
 end
 
-# Old version?
-#generateDimensionMatrix(names(soasta_results), 2, constraints = Dict([
-#        (:geo_rg => :geo_cc),
-#        (:geo_city => :geo_rg),
-#        (:user_agent_major => :user_agent_family),
-#        (:user_agent_osversion => :user_agent_os)
-#        ])
-#    )
-
 function getBestGrouping(results::DataFrame, summaryDF::DataFrame; showProgress=true)
     minspread = summaryDF[summaryDF[:spread] .== minimum(summaryDF[:spread]), :]
 
