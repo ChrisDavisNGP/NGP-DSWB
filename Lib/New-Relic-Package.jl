@@ -697,7 +697,7 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         axis_x_min = 0
         c3 = drawC3Viz(drawDF; axisLabels=["Date Time"],dataNames=["Old","New"],
                 mPulseWidget=false, chart_title= "On Page Load Chart (Old Times Stamps Shown in GMT)", vizTypes=["line","line"],
-                axis_x_min=axis_x_min, axis_x_type="timeseries",axis_y_min=0)
+                axis_x_min=0,axis_y_min=0)
     catch y
         println("diffDailyChangeOnPageLoad Old exception ",y)
     end
