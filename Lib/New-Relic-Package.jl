@@ -63,8 +63,8 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
         println("Starting dailyChangeCheckOnPageLoad")
     end
 
-    displayTitle(chart_Title="New Time",chart_info[newTV.timeString], showTimeStamp=false)
-    displayTitle(chart_Title="Old Time",chart_info[oldTV.timeString], showTimeStamp=false)
+    displayTitle(chart_Title="New Time",chart_info=[newTV.timeString], showTimeStamp=false)
+    displayTitle(chart_Title="Old Time",chart_info=[oldTV.timeString], showTimeStamp=false)
 
     # Get a list of Monitors
 
