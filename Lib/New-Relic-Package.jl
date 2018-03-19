@@ -65,7 +65,7 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
 
     displayTitle(chart_title="New Time",chart_info=[newTV.timeString], showTimeStamp=false)
     displayTitle(chart_title="Old Time",chart_info=[oldTV.timeString], showTimeStamp=false)
-    
+
     # Get a list of Monitors
 
     jsonMonitorList = curlSelectActiveSyntheticMonitors(SP,CU)
@@ -80,6 +80,9 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
         onPageLoadNewDF = monitorOnPageLoad(SP,onPageLoadDict)
 
         if size(onPageLoadNewDF,1) == 0
+            if SP.debugLevel > 0
+                println("No new data in time range")
+            end
             continue
         end
 
@@ -88,6 +91,9 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
         onPageLoadOldDF = monitorOnPageLoad(SP,onPageLoadDict)
 
         if size(onPageLoadOldDF,1) == 0
+            if SP.debugLevel > 0
+                println("No old data in time range")
+            end
             continue
         end
 
@@ -641,7 +647,7 @@ end
 function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParams,CU::CurlParams,newDF::DataFrame,oldDF::DataFrame)
 
 
-    if SP.debugLevel > 8
+    if SP.debugLevel > 4
         println("Starting diffDailyChangeOnPageLoad")
         beautifyDF(newDF[1:min(3,end),:])
         beautifyDF(oldDF[1:min(3,end),:])
@@ -659,8 +665,8 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
     oldUpper = statsOldDF[1:1,:median][1] + (statsOldDF[1:1,:stddev][1] * CU.howManyStdDev)
 
     if statsNewDF[1:1,:median][1] > oldLower && statsNewDF[1:1,:median][1] < oldUpper
-        if SP.debugLevel > 4
-            println("Rejecting oldLower=$oldLower, oldUpper=$oldUpper, new value=",statsNewDF[1:1,:median][1])
+        if SP.debugLevel > 0
+            println("Rejecting old Median Lower Bounds=$oldLower, old Median Upper Bounds=$oldUpper, new Median=",statsNewDF[1:1,:median][1])
         end
         return
     end
@@ -690,7 +696,7 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
 
         axis_x_min = 0
         c3 = drawC3Viz(drawDF; axisLabels=["Date Time"],dataNames=["Old","New"],
-                mPulseWidget=false, chart_title= "On Page Load Chart", vizTypes=["line","line"],
+                mPulseWidget=false, chart_title= "On Page Load Chart (Old Times Stamps Shown in GMT)", vizTypes=["line","line"],
                 axis_x_min=axis_x_min)
     catch y
         println("diffDailyChangeOnPageLoad Old exception ",y)
