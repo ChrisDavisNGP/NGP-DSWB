@@ -208,7 +208,7 @@ function VolumeAList()
     ("a-lehdet-image.bannerflow.com","a-lehdet-image.bannerflow.com"),
     ("a-lehdet-urheilulehti.bannerflow.com","a-lehdet-urheilulehti.bannerflow.com"),
     ("a-nj.1rx.io","a-nj.1rx.io"),
-    ("a-nl-ams.netmng.com","a-nl-ams.netmng.com"),
+    ("a-nl-ams.netmng.com","Netmng.com"),
     ("a-sjo.1rx.io","a-sjo.1rx.io"),
     ("a-us-sjc.netmng.com","Netmng.com"),
     ("a-us-wdc.netmng.com","Netmng.com"),
@@ -1472,7 +1472,7 @@ function VolumeCList()
     ("cs600.wac.alphacdn.net","cs600.wac.alphacdn.net"),
     ("cs600.wac.edgecastcdn.net","cs600.wac.edgecastcdn.net"),
     ("csi.gstatic.com","Google Maps"),
-    ("csm2waycm-atl.netmng.com","csm2waycm-atl.netmng.com"),
+    ("csm2waycm-atl.netmng.com","Netmng.com"),
     ("csrtools.servicemagic.com","csrtools.servicemagic.com"),
     ("css.washingtonpost.com","css.washingtonpost.com"),
     ("css.zohostatic.com","css.zohostatic.com"),
@@ -2004,7 +2004,7 @@ function VolumeEList()
     ("extraarcade.com","extraarcade.com"),
     ("extstat.com","extstat.com"),
     ("extstats-a.akamaihd.net","Extstats"),
-    ("eyeota2waycm.netmng.com","eyeota2waycm.netmng.com")
+    ("eyeota2waycm.netmng.com","Netmng.com")
     ])
 
     return VolumeE
@@ -2357,7 +2357,7 @@ function VolumeGList()
     ("google-analytics.com","Google Analytics"),
     ("google-cm.p.veruta.com","google-cm.p.veruta.com"),
     ("google.com","google.com"),
-    ("google2waycm.netmng.com","google2waycm.netmng.com"),
+    ("google2waycm.netmng.com","Netmng.com"),
     ("gopro-online.info","gopro-online.info"),
     ("gotgamecheats.com","gotgamecheats.com"),
     ("goto.google.com","goto.google.com"),
@@ -4847,7 +4847,7 @@ function VolumeTList()
     ("trc.taboola.com","trc.taboola.com"),
     ("trcksrv1.com","trcksrv1.com"),
     ("tree.bio.ed.ac.uk","tree.bio.ed.ac.uk"),
-    ("tremor2waycm-atl.netmng.com","tremor2waycm-atl.netmng.com"),
+    ("tremor2waycm-atl.netmng.com","Netmng.com"),
     ("tri-pulley.xyz","tri-pulley.xyz"),
     ("triangletrail-a.akamaihd.net","triangletrail"),
     ("triboo.commander1.com","triboo.commander1.com"),
@@ -6021,6 +6021,7 @@ function wellKnownUrlGroup(SP::ShowParams)
     ("Evidon.com","3rd Party Internet Operations"),
     ("Rakuten Marketing","3rd Party Ad Operations"),
     ("Eyereturn Marketing","3rd Party Ad Operations"),
+    ("Netmng.com","3rd Party Ad Operations"),
 
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
