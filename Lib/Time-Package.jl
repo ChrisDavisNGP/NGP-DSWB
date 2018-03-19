@@ -186,6 +186,11 @@ end
 
 function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
     try
+        #firstAndLast = getBeaconsFirstAndLast()
+        startTime = Dates.now() - Dates.Day(1) # comes back UTC
+        endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
+        startTime = DateTime(endTime - Hour(24) + Minute(1))
+
         if (hours > 0)
             startHour = 13
             endHour = startHour + hours
@@ -193,9 +198,8 @@ function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
                 endHour = 23
             end
         end
-        firstAndLast = getBeaconsFirstAndLast()
-        endTime = DateTime(firstAndLast[1,2] - Hour(24-endHour))
-        startTime = DateTime(endTime - Hour(endHour-startHour) + Minute(1))
+        #endTime = DateTime(firstAndLast[1,2] - Hour(24-endHour))
+        #startTime = DateTime(endTime - Hour(endHour-startHour) + Minute(1))
 
         localtv =
         timeVariables(
