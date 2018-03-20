@@ -187,8 +187,10 @@ end
 function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
     try
         #firstAndLast = getBeaconsFirstAndLast()
-        println("    Clock: ",Dates.now())
-        startTime = Dates.now() - Dates.Day(1) # comes back UTC
+        gmtNow = Dates.now()
+        lclNow = gmtNow - Dates.Hour(4)
+        println("    Clock: ", gmtNow, " local: ", lclNow)
+        startTime = lclNow - Dates.Day(1) # comes back UTC
         println("StartTime: ",startTime)
         endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
         println("  endTime: ",endTime)
@@ -232,8 +234,10 @@ function todayTimeVariables()
         # Not much use before 7 am and best used after 5 pm like the daily Synthetic runs
         # Otherwise use exact time input like TvExactRange
 
-        println("    clock: ",Dates.now())
-        startTime = Dates.now() # comes back UTC
+        gmtNow = Dates.now()
+        lclNow = gmtNow - Dates.Hour(4)
+        println("    clock: ",gmtNow, " local: ",lclNow)
+        startTime = lclNow # comes back UTC
         println("startTime: ",startTime)
         endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
         println("  endTime: ",endTime)
