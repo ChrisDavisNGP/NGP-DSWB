@@ -187,9 +187,13 @@ end
 function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
     try
         #firstAndLast = getBeaconsFirstAndLast()
+        println("    Clock: ",Dates.now())
         startTime = Dates.now() - Dates.Day(1) # comes back UTC
+        println("StartTime: ",startTime)
         endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
+        println("  endTime: ",endTime)
         startTime = DateTime(endTime - Hour(24) + Minute(1))
+        println("adj start: ",startTime)
 
         if (hours > 0)
             startHour = 13
@@ -228,9 +232,13 @@ function todayTimeVariables()
         # Not much use before 7 am and best used after 5 pm like the daily Synthetic runs
         # Otherwise use exact time input like TvExactRange
 
+        println("    clock: ",Dates.now())
         startTime = Dates.now() # comes back UTC
+        println("startTime: ",startTime)
         endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
+        println("  endTime: ",endTime)
         startTime = DateTime(endTime - Hour(24) + Minute(1))
+        println(" adjStart:",startTime)
 
         localtv =
         timeVariables(
