@@ -205,7 +205,7 @@ function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
                 endHour = 23
             end
             endTime = DateTime(endTime - Hour(24-endHour))
-            startTime = DateTime(startTime + startHour + Minute(1))
+            startTime = DateTime(startTime + Hour(startHour) + Minute(1))
             println("hr  start: ",startTime)
             println("hr    end: ",endTime)
         end
