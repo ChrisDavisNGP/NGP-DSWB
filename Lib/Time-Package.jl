@@ -204,9 +204,11 @@ function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
             if (endHour > 23)
                 endHour = 23
             end
+            endTime = DateTime(endTime - Hour(24-endHour))
+            startTime = DateTime(startTime + startHour + Minute(1))
+            println("hr  start: ",startTime)
+            println("hr    end: ",endTime)
         end
-        #endTime = DateTime(firstAndLast[1,2] - Hour(24-endHour))
-        #startTime = DateTime(endTime - Hour(endHour-startHour) + Minute(1))
 
         localtv =
         timeVariables(
