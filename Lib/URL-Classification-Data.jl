@@ -4605,6 +4605,25 @@ function VolumeSList()
     ("sync.tidaltv.com","Videology Ads"),
     ("sync.users-api.com","sync.users-api.com"),
     ("sync.xoalt.com","sync.xoalt.com"),
+    ("sync.alienuniverse.com",""),
+    ("sync.apesvr.com","FOX Ads"),
+    ("sync.avatar.com","FOX Ads"),
+    ("sync.deadpoolcore.com","FOX Ads"),
+    ("sync.dearworldlovesimon.com","FOX Ads"),
+    ("sync.fox.com","FOX Ads"),
+    ("sync.foxconnect.com","FOX Ads"),
+    ("sync.foxdeportes.com","FOX Ads"),
+    ("sync.foxmovies.com","FOX Ads"),
+    ("sync.foxplus.com","FOX Ads"),
+    ("sync.foxredeem.com","FOX Ads"),
+    ("sync.fxnetworks.com","FOX Ads"),
+    ("sync.kingsmantickets.com","FOX Ads"),
+    ("sync.lovesimontickets.com","FOX Ads"),
+    ("sync.mazerunnertickets.com","FOX Ads"),
+    ("sync.redsparrowtickets.com","FOX Ads"),
+    ("sync.simpsonsworld.com","FOX Ads"),
+    ("sync.thepostmovietickets.com","FOX Ads"),
+    ("sync.theshapeofwaterthemovie.com","FOX Ads"),
     ("synch.optimatic.com","synch.optimatic.com"),
     ("syncsandromedabroda.com","syncsandromedabroda.com"),
     ("syncstoxicbroda.com","syncstoxicbroda.com"),
@@ -6022,6 +6041,7 @@ function wellKnownUrlGroup(SP::ShowParams)
     ("Rakuten Marketing","3rd Party Ad Operations"),
     ("Eyereturn Marketing","3rd Party Ad Operations"),
     ("Netmng.com","3rd Party Ad Operations"),
+    ("FOX Ads","3rd Party Ad Operations")
 
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
