@@ -4605,7 +4605,7 @@ function VolumeSList()
     ("sync.tidaltv.com","Videology Ads"),
     ("sync.users-api.com","sync.users-api.com"),
     ("sync.xoalt.com","sync.xoalt.com"),
-    ("sync.alienuniverse.com",""),
+    ("sync.alienuniverse.com","FOX Ads"),
     ("sync.apesvr.com","FOX Ads"),
     ("sync.avatar.com","FOX Ads"),
     ("sync.deadpoolcore.com","FOX Ads"),
@@ -6041,8 +6041,7 @@ function wellKnownUrlGroup(SP::ShowParams)
     ("Rakuten Marketing","3rd Party Ad Operations"),
     ("Eyereturn Marketing","3rd Party Ad Operations"),
     ("Netmng.com","3rd Party Ad Operations"),
-    ("FOX Ads","3rd Party Ad Operations")
-
+    ("FOX Ads","3rd Party Ad Operations"),
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
     return WellKnownUrlGroup
