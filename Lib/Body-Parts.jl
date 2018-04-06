@@ -331,6 +331,10 @@ end
 
 function displayGroupBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
+        currentResourceDF = defaultResourcesToDF(TV,UP,SP)
+        displayTitle(chart_title = "Resource Join Beacon Fields For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)        
+        beautifyDF(currentResourceDF[1:min(3,end),:])
+
         currentPageGroupDF = defaultBeaconsToDF(TV,UP,SP)
         #println("$pageGroup Beacons: ",size(currentPageGroupDF)[1])
 
@@ -347,6 +351,8 @@ function displayGroupBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         sort!(finalPrintDF, cols=(order(:count, rev=true)))
         scrubUrlToPrint(SP,finalPrintDF,:params_u)
         beautifyDF(finalPrintDF[1:min(SP.showLines,end),:])
+
+
     catch y
         println("displayGroupBody Exception ",y)
     end

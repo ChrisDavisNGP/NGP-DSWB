@@ -2,6 +2,39 @@
 # Functions which return a data frame
 #
 
+function defaultResourcesToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    tvUpSpDumpDebug(TV,UP,SP,"defaultResourcesToDF")
+
+    rt = UP.resourceTable
+    bt = UP.beaconTable
+
+    try
+        localTableDF = query("""\
+            select *
+            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
+                where
+                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $bt.session_id IS NOT NULL and
+                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.user_agent_device_type ilike '$(UP.deviceType)' and
+                $bt.user_agent_os ilike '$(UP.agentOs)' and
+                $bt.timers_domready >= $(UP.timeLowerMs) and $bt.timers_domready <= $(UP.timeUpperMs) and
+                $bt.params_rt_quit IS NULL
+        """)
+
+        tableDumpDFDebug(TV,UP,SP,localTableDF)
+
+        return localTableDF
+    catch y
+        println("defaultResourcesToDF Exception ",y)
+    end
+end
+
+
+
+
 function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     tvUpSpDumpDebug(TV,UP,SP,"defaultBeaconsToDF")
