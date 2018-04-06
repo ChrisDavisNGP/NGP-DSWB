@@ -11,7 +11,7 @@ function defaultResourcesToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         localTableDF = query("""\
-            select *
+            select $rt.*
             FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
                 where
                 $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
