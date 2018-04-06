@@ -333,11 +333,11 @@ function displayGroupBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         currentResourceDF = defaultResourcesToDF(TV,UP,SP)
         displayTitle(chart_title = "Resource Fields For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(currentResourceDF[1:min($(SP.showLines),end),:])
+        beautifyDF(currentResourceDF[1:min(SP.showLines),end),:])
 
         currentPageGroupDF = defaultBeaconsToDF(TV,UP,SP)
         displayTitle(chart_title = "Beacon Fields For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        beautifyDF(currentPageGroupDF[1:min($(SP.showLines),end),:])
+        beautifyDF(currentPageGroupDF[1:min(SP.showLines),end),:])
         #println("$pageGroup Beacons: ",size(currentPageGroupDF)[1])
 
         finalPrintDF = DataFrame(count=Int64[],url=ASCIIString[],params_u=ASCIIString[])
