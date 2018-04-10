@@ -109,6 +109,7 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
 
     if found == 0
         println("\n\n*********** All tests ($tried) were within ",CU.howManyStdDev,"\n\n")
+    end
 
     return
 
