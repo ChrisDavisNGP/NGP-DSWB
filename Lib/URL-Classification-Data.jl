@@ -24,6 +24,7 @@ function PartialKnownHost(uriHost::ASCIIString)
 
             # Less used
 
+        elseif (ismatch(r".*.mapbox.com",uriHost))      newuristring = "Mapbox.com"
         elseif (ismatch(r".*adsafeprotected.com",uriHost))      newuristring = "Adsafeprotected.com"
         elseif (ismatch(r".*mookie1.com",uriHost))              newuristring = "Mookie Tracking Cookie Ads"
         elseif (ismatch(r".*\.effectivemeasure.net",uriHost))   newuristring = "Effective Measure Ads"
@@ -241,7 +242,6 @@ function VolumeAList()
     ("a.teads.tv","Teads.tv"),
     ("a.tellapart.com","a.tellapart.com"),
     ("a.tfxiq.com","Tfxiq.com"),
-    ("a.tiles.mapbox.com","A.tiles.mapbox.com"),
     ("a.tiles.nationalgeographic.com","NGP Page Content"),
     ("a.top8844.com","a.top8844.com"),
     ("a.tribalfusion.com","tribalfusion"),
@@ -259,6 +259,7 @@ function VolumeAList()
     ("a433.com","A433.com"),
     ("aa.agkn.com","Aggregate Knowledge Ads"),
     ("ab.sspsky.com","ab.sspsky.com"),
+    ("abp.mxptint.net","Mxptint.net"),
     ("abjopieldicnknjgiplcjgepeijbealm","abjopieldicnknjgiplcjgepeijbealm"),
     ("abs.twimg.com","Twimg.com"),
     ("ac.brainient.com","Brainient.com"),
@@ -597,7 +598,6 @@ function VolumeAList()
     ("api.jollywallet.com","Api.jollywallet.com"),
     ("api.keen.io","api.keen.io"),
     ("api.knotifra.info","api.knotifra.info"),
-    ("api.mapbox.com","Api.mapbox.com"),
     ("api.maps.nokia.com","api.maps.nokia.com"),
     ("api.meucupom.com","api.meucupom.com"),
     ("api.microsofttranslator.com","microsofttranslator.com"),
@@ -617,7 +617,6 @@ function VolumeAList()
     ("api.speedshiftmedia.com","api.speedshiftmedia.com"),
     ("api.stathat.com","api.stathat.com"),
     ("api.streamingshowguide.com","api.streamingshowguide.com"),
-    ("api.tiles.mapbox.com","Api.tiles.mapbox.com"),
     ("api.tinymp.com","Tinymp.com"),
     ("api.topictorch.com","Api.topictorch.com"),
     ("api.traversedlp.com","api.traversedlp.com"),
@@ -816,7 +815,6 @@ function VolumeBList()
     ("b.squadboys.men","squadboys.men"),
     ("b.thanksearch.com","b.thanksearch.com"),
     ("b.thumbs.redditmedia.com","reddit.com"),
-    ("b.tiles.mapbox.com","B.tiles.mapbox.com"),
     ("b.tiles.nationalgeographic.com","NGP Page Content"),
     ("b.top-drawer-d.life","top-drawer.life"),
     ("b.top-drawer-x.life","top-drawer.life"),
@@ -1038,7 +1036,6 @@ function VolumeCList()
     ("c.steelhousemedia.com","Steelhousemedia.com"),
     ("c.t.tailtarget.com","c.t.tailtarget.com"),
     ("c.t4ft.de","c.t4ft.de"),
-    ("c.tiles.mapbox.com","Mapbox.com"),
     ("c.tiles.nationalgeographic.com","NGP Page Content"),
     ("c.us1.dyntrk.com","c.us1.dyntrk.com"),
     ("c.websearchplusjs.info","c.websearchplusjs.info"),
@@ -3456,6 +3453,7 @@ function VolumeOList()
     ("oojbgadfejifecebmdnhhkbhdjaphole","oojbgadfejifecebmdnhhkbhdjaphole"),
     ("open.spotify.com","open.spotify.com"),
     ("openapi.guanjia.qq.com","openapi.guanjia.qq.com"),
+    ("openexplorer.nationalgeographic.com","NGP Page Content"),
     ("openfontlibrary.org","Font"),
     ("opensource.keycdn.com","opensource.keycdn.com"),
     ("openxdisplay970503469688.s.moatpixel.com","Moatpixel Adware"),
@@ -6052,6 +6050,7 @@ function wellKnownUrlGroup(SP::ShowParams)
     ("Eyereturn Marketing","3rd Party Ad Operations"),
     ("Netmng.com","3rd Party Ad Operations"),
     ("FOX Ads","3rd Party Ad Operations"),
+    ("Mapbox.com","Digital Engineering"),
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
     return WellKnownUrlGroup
