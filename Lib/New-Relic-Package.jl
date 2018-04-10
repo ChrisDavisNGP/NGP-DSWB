@@ -678,7 +678,7 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         if SP.debugLevel > 0
             println("Rejecting old Median Lower Bounds=$oldLower, old Median Upper Bounds=$oldUpper, new Median=",statsNewDF[1:1,:median][1])
         end
-        return 0
+        return false
     end
     # Figure out if it is worth printing
 
@@ -712,5 +712,5 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         println("diffDailyChangeOnPageLoad Old exception ",y)
     end
 
-    return 1
+    return true
 end
