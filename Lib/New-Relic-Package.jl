@@ -101,14 +101,14 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
             continue
         end
 
-        found +=1
-
-        diffDailyChangeOnPageLoad(oldTV,newTV,SP,CU,onPageLoadNewDF,onPageLoadOldDF)
+        if (diffDailyChangeOnPageLoad(oldTV,newTV,SP,CU,onPageLoadNewDF,onPageLoadOldDF))
+            found += 1
+        end
         #break;
     end
 
     if found == 0
-        println("\n\n*********** All tests ($tried) were within ",CU.howManyStdDev,"\n\n")
+        println("\n\n*********** All tests ($tried) were within ",CU.howManyStdDev," standard deviation\n\n")
     end
 
     return
@@ -678,7 +678,7 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
         if SP.debugLevel > 0
             println("Rejecting old Median Lower Bounds=$oldLower, old Median Upper Bounds=$oldUpper, new Median=",statsNewDF[1:1,:median][1])
         end
-        return
+        return 0
     end
     # Figure out if it is worth printing
 
@@ -711,4 +711,6 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
     catch y
         println("diffDailyChangeOnPageLoad Old exception ",y)
     end
+
+    return 1
 end
