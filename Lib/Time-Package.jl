@@ -186,17 +186,16 @@ end
 
 function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
     try
-        #firstAndLast = getBeaconsFirstAndLast()
-        println("yesterdayTimeVariables")
         gmtNow = Dates.now()
         lclNow = now(TimeZone("America/New_York"))
-        println("    clock: ", gmtNow, " local: ", lclNow)
         startTime = lclNow - Dates.Day(1) # comes back UTC
-        println("StartTime: ",startTime)
         endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
-        println("  endTime: ",endTime)
         startTime = DateTime(endTime - Hour(24) + Minute(1))
-        println("adj start: ",startTime)
+
+        #println("    clock: ", gmtNow, " local: ", lclNow)
+        #println("StartTime: ",startTime)
+        #println("  endTime: ",endTime)
+        #println("adj start: ",startTime)
 
         if (hours > 0)
             startHour = 13
@@ -206,8 +205,8 @@ function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
             end
             endTime = DateTime(endTime - Hour(24-endHour))
             startTime = DateTime(startTime + Hour(startHour))
-            println("hr  start: ",startTime)
-            println("hr    end: ",endTime)
+            #println("hr  start: ",startTime)
+            #println("hr    end: ",endTime)
         end
 
         localtv =
@@ -237,16 +236,16 @@ function todayTimeVariables()
         # Not much use before 7 am and best used after 5 pm like the daily Synthetic runs
         # Otherwise use exact time input like TvExactRange
 
-        println("todayTimeVariables")
         gmtNow = Dates.now()
         lclNow = now(TimeZone("America/New_York"))
-        println("    clock: ",gmtNow, " local: ",lclNow)
         startTime = lclNow # comes back UTC
-        println("startTime: ",startTime)
         endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
-        println("  endTime: ",endTime)
         startTime = DateTime(endTime - Hour(24) + Minute(1))
-        println(" adjStart: ",startTime)
+
+        #println("    clock: ",gmtNow, " local: ",lclNow)
+        #println("startTime: ",startTime)
+        #println("  endTime: ",endTime)
+        #println(" adjStart: ",startTime)
 
         localtv =
         timeVariables(
