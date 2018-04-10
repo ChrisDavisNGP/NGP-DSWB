@@ -72,12 +72,16 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
     monitorListDict = curlSyntheticJson(SP,jsonMonitorList)
     monitorListDF = monitorListResults(SP,monitorListDict)
 
+    found = 0
+    tried = 0
+
     for monitor in monitorListDF[:name]
 
         # To Do look for locations and divide
         jsonOnPageLoad = curlSelectByMonitorOnPageLoad(newTV,SP,CU,monitor)
         onPageLoadDict = curlSyntheticJson(SP,jsonOnPageLoad)
         onPageLoadNewDF = monitorOnPageLoad(SP,onPageLoadDict)
+        tried += 1
 
         if size(onPageLoadNewDF,1) == 0
             if SP.debugLevel > 0
@@ -97,9 +101,14 @@ function dailyChangeCheckOnPageLoadWorkflow(oldTV::TimeVars,newTV::TimeVars,SP::
             continue
         end
 
+        found +=1
+
         diffDailyChangeOnPageLoad(oldTV,newTV,SP,CU,onPageLoadNewDF,onPageLoadOldDF)
         #break;
     end
+
+    if found == 0
+        println("\n\n*********** All tests ($tried) were within ",CU.howManyStdDev,"\n\n")
 
     return
 
