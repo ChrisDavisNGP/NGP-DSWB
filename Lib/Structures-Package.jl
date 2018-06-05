@@ -240,7 +240,7 @@ function ShowParamsValidate(SP::ShowParams)
 
     if (SP.debug)
       if (SP.debugLevel < 0 || SP.debugLevel > 10)
-        println("Warning: debugLevel value ",SP.debugLevel," outside 0 to 10. Continuing")
+        println("Warning: debugLevel value ",SP.debugLevel," outside 0 to 9. Continuing")
         if (SP.debugLevel < 0) SP.debugLevel = 0 end
         if (SP.debugLevel > 10) SP.debugLevel = 9 end
       end

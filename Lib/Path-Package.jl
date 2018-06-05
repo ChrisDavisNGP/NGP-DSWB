@@ -387,6 +387,12 @@ function individualCriticalPath(TV::TimeVars,UP::UrlParams,SP::ShowParams,toppag
           return false
       end
 
+      if (SP.debugLevel > 8)
+          standardChartTitle(TV,UP,SP,"Debug8: Raw Data Start")
+          beautifyDF(toppageurl)
+      end
+
+
       removeNegitiveTime(toppageurl,:Total)
       removeNegitiveTime(toppageurl,:Redirect)
       removeNegitiveTime(toppageurl,:Blocking)
