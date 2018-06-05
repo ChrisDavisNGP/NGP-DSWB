@@ -161,7 +161,8 @@ function UrlParamsValidate(UP::UrlParams)
         UP.pageGroup != "Unknown" &&
         UP.pageGroup != "Adventure AEM" &&
         UP.pageGroup != "Dev-QA-Stage-UAT" &&
-        UP.pageGroup != "Environment AEM"
+        UP.pageGroup != "Environment AEM" &&
+        UP.pageGroup != "Open Explorer"
         )
         println("Warning: pageGroup is an unusual value \"",UP.pageGroup,"\", See mPulse All Page Group filter for all values.")
         println("         Common names [News Article|Channel|Kids|Travel AEM|Photography AEM|Nat Get Homepage|Your Shot]")
@@ -199,6 +200,7 @@ function ShowParamsInit()
             SP.debugLevel += 1
             println("Warning: Debugging Levels inputs should be odd numbers.  Code uses even numbers (i.e., > 0,2,4,6,8,10). Adding 1, new value ",SP.debugLevel)
             println("")
+            if (SP.debugLevel == 10) SP.debugLevel = 9
         end
     end
 
@@ -239,6 +241,8 @@ function ShowParamsValidate(SP::ShowParams)
     if (SP.debug)
       if (SP.debugLevel < 0 || SP.debugLevel > 10)
         println("Warning: debugLevel value ",SP.debugLevel," outside 0 to 10. Continuing")
+        if (SP.debugLevel < 0) SP.debugLevel = 0
+        if (SP.debugLevel > 10) SP.debugLevel = 9
       end
     end
 

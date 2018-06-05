@@ -77,7 +77,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
       if SP.debugLevel > 8
-          beautifyDF(localTableDF[1:3,:])
+          beautifyDF(localTableDF[1:min(3,end),:])
       end
 
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
@@ -285,7 +285,7 @@ function individualPageDataNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,NR::NrP
       fillNrResults(SP,NR,timeDict["results"])
 
       if SP.debugLevel > 8
-          beautifyDF(NR.results.row[1:3,:])
+          beautifyDF(NR.results.row[1:min(3,end),:])
       end
 
       toppageurl = DataFrame(
@@ -924,7 +924,7 @@ function createJoinTableSummary(SP::ShowParams,joinTableSummary::DataFrame,joinT
 
     sort!(joinTables,cols=[order(:encoded,rev=true)])
     for subDf in groupby(joinTables,:urlgroup)
-        #beautifyDF(subDf[1:1,:])
+        #beautifyDF(subDf[1:min(3,end),:])
         i = 1
         for row in eachrow(subDf)
             if (i == 1)

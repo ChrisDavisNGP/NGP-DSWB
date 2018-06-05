@@ -364,7 +364,7 @@ function fillNrTimeSeries(SP::ShowParams,NR::NrParams,seriesArray::Array)
     df = names!(df,[Symbol("beginTimeSeconds"),Symbol("endTimeSeconds"),Symbol("inspectedCount"),Symbol("averageTotalReceivedSize")])
 
     if SP.debugLevel > 4
-        beautifyDF(df[1:3,:])
+        beautifyDF(df[1:min(3,end),:])
     end
 
     #todo store into structure

@@ -122,7 +122,7 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,
         fillNrResults(SP,NR,timeDict["results"])
 
         if SP.debugLevel > 6
-            beautifyDF(NR.results.row[1:3,:])
+            beautifyDF(NR.results.row[1:min(3,end),:])
         end
 
         localTableDF = DataFrame(jobid=ASCIIString[],timestamp=Int64[],onpageload=Int64[],onpagecontentload=Int64[])

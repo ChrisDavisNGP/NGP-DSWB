@@ -154,7 +154,7 @@ function investigateSizeProblems(TV::TimeVars,SP::ShowParams,NR::NrParams,CU::Cu
     end
 
     if SP.debugLevel > 6
-        beautifyDF(NR.timeSeries.row[1:3,:])
+        beautifyDF(NR.timeSeries.row[1:min(3,end),:])
 
         try
             drawDF = DataFrame()
@@ -214,7 +214,7 @@ function investigateStats(TV::TimeVars,SP::ShowParams,NR::NrParams,CU::CurlParam
     fillNrResults(SP,NR,timeDict["results"])
 
     if SP.debugLevel > 6
-        beautifyDF(NR.results.row[1:3,:])
+        beautifyDF(NR.results.row[1:min(3,end),:])
     end
 
     quickTimestampViz(NR,:onPageLoad,"On Page Load")
@@ -332,7 +332,7 @@ function monitorListResults(SP::ShowParams,monitorListDict::Dict)
 
     if SP.debugLevel > 4
         quickTitle("Debug4: Fill New Relic Results")
-        beautifyDF(df[1:10,:],maxRows=500)
+        beautifyDF(df[1:min(10,end),:],maxRows=500)
     end
 
     return df
@@ -478,8 +478,8 @@ function diffHostGroups(SP::ShowParams,test1DF::DataFrame,test2DF::DataFrame;dif
     # Assume test1DF is LHS
 
     if SP.debugLevel > 8
-        beautifyDF(test1DF[1:3,:])
-        beautifyDF(test2DF[1:3,:])
+        beautifyDF(test1DF[1:min(3,end),:])
+        beautifyDF(test2DF[1:min(3,end),:])
     end
 
     diffDF = DataFrame(host=ASCIIString[],delta=Float64[],old=Float64[],new=Float64[])
@@ -594,7 +594,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
 
     if SP.debugLevel > 8
         println("Starting diffDailyChange")
-        beautifyDF(monitorsDF[1:10,:])
+        beautifyDF(monitorsDF[1:min(10,end),:])
     end
 
     activeMonitorsDF = DataFrame()
@@ -608,7 +608,7 @@ function diffDailyChange(SP::ShowParams,monitorsDF::DataFrame;diffBySize::Bool=t
     end
 
     if SP.debugLevel > 6
-        beautifyDF(activeMonitorsDF[1:10,:])
+        beautifyDF(activeMonitorsDF[1:min(10,end),:])
     end
 
     diffDF = DataFrame(name=ASCIIString[],delta=Float64[],oldStdDev=Float64[],oldAvg=Float64[],newStdDev=Float64[],newAvg=Float64[])

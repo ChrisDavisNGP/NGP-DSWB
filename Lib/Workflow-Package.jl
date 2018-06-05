@@ -237,7 +237,7 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     if wfPageGroupGraph
         rawTimeDF = fetchGraph7Stats(UP)
-        #beautifyDF(rawTimeDF[1:3,:])
+        #beautifyDF(rawTimeDF[1:min(3,end),:])
         drawC3VizConverter(UP,rawTimeDF;graphType=7)
     end
 
