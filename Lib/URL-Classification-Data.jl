@@ -1161,8 +1161,10 @@ function VolumeCList()
     ("cdn.issigpen.com","cdn.issigpen.com"),
     ("cdn.jsdelivr.net","cdn.jsdelivr.net"),
     ("cdn.kixer.com","cdn.kixer.com"),
+    ("cdn.keywee.co","Keywee.co"),
     ("cdn.leafletjs.com","Cdn.leafletjs.com"),
     ("cdn.lqm.io","cdn.lqm.io"),
+    ("cdn.merklesearch.com","merklesearch.com"),
     ("cdn.mathjax.org","cdn.mathjax.org"),
     ("cdn.media.innity.net","cdn.media.innity.net"),
     ("cdn.mezaa.com","cdn.mezaa.com"),
@@ -6053,6 +6055,7 @@ function wellKnownUrlGroup(SP::ShowParams)
     ("Netmng.com","3rd Party Ad Operations"),
     ("FOX Ads","3rd Party Ad Operations"),
     ("Mapbox.com","Digital Engineering"),
+    ("merklesearch.com","Marketing Analytics"),
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
     return WellKnownUrlGroup
