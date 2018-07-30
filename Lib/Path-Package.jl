@@ -70,7 +70,7 @@ end
 function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
     CU::CurlParams,NR::NrParams,localTableDF::DataFrame)
   try
-      io = 0
+      io = 1
       pageCount = 0
       sessionIdString = ASCIIString("")
 
@@ -82,11 +82,11 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
           # Quick out
-          if (io == UP.limitPageViews)
+          if (io > UP.limitPageViews)
               break
           end
           if(SP.debugLevel > 4)
-              println("Finding page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("/nFinding page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
 
           if (UP.usePageLoad)
