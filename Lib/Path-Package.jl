@@ -72,6 +72,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
   try
       io = 1
       pageCount = 0
+      currentPage = io
       sessionIdString = ASCIIString("")
 
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
@@ -86,7 +87,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               break
           end
           if(SP.debugLevel > 4)
-              println("/nFinding page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("\nFinding page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
 
           if (UP.usePageLoad)
@@ -98,6 +99,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
+              currentPage = io
               io += 1
               if io <= UP.limitPageViews
                   sessionId = subdf[1,:session_id]
@@ -111,7 +113,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
-                      println("Page $(io) of $(UP.limitPageViews): $(labelString)")
+                      println("Attempting page $(currentPage) of $(UP.limitPageViews): $(labelString)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
