@@ -87,7 +87,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               break
           end
           if(SP.debugLevel > 4)
-              println("\nFinding page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("\nCheck time for page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
 
           if (UP.usePageLoad)
@@ -113,7 +113,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
-                      println("Attempting page $(currentPage) of $(UP.limitPageViews): $(labelString)")
+                      println("Attempting read page $(currentPage) of $(UP.limitPageViews): $(labelString)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
@@ -125,6 +125,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               else
                   break
               end
+          else
+              println("Rejecting current page, time outside range")
           end
       end
 
