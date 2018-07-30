@@ -93,7 +93,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         """)
 
         if (SP.debugLevel > 8)
-            standardChartTitle(TV,UP,SP,"Debug8: defaultLimitedBeaconsToDF All Columns")
+            standardChartTitle(TV,UP,SP,"Debug8: defaultLimitedBeaconsToDF All Columns, 3 Rows")
             beautifyDF(localTableDF[1:min(3,end),:])
         end
 
