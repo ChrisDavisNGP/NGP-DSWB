@@ -6055,7 +6055,10 @@ function wellKnownUrlGroup(SP::ShowParams)
     ("Netmng.com","3rd Party Ad Operations"),
     ("FOX Ads","3rd Party Ad Operations"),
     ("Mapbox.com","Digital Engineering"),
+    ("NGP Request","Digital Engineering"),
+    ("photorank","Marketing Analytics"),
     ("merklesearch.com","Marketing Analytics"),
+    ("videoplayer.nationalgeographic.com","Digital Video Player"),
     ("ztkcdn.net","3rd Party Internet Operations")
     ]);
     return WellKnownUrlGroup
