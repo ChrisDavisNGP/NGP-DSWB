@@ -331,7 +331,7 @@ end
 
 function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
 
-    studySession = uppercase(studySession)
+    #appears not to matter studySession = uppercase(studySession)
     if SP.debugLevel > 8
         println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
