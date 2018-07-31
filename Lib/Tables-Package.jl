@@ -89,6 +89,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
                 timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+            order by "timestamp" asc
             limit $(UP.limitQueryRows)
         """)
 
