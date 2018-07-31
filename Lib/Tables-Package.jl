@@ -390,7 +390,7 @@ toppageurl2 = query("""\
 select *
 FROM $(tableRt)
 where
- "timestamp" = '$(studyTime)'
+ "session_start" = '$(studyTime)'
 """);
 
 #        session_id = '$(studySession)' and
