@@ -360,6 +360,10 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         order by start_time asc
         """);
 
+        if SP.debugLevel > 8
+            rc = nrow(toppageurl)
+            println("Returning from sessionUrlTableToDF: $rc rows")
+        end
         return toppageurl
     catch y
         println("sessionUrlTableToDF Exception ",y)
