@@ -331,12 +331,12 @@ end
 
 function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
 
+    studySession = uppercase(studySession)
     if SP.debugLevel > 8
         println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
     rt = UP.resourceTable
-    studySession = "001C741C-E93C-4F61-9AFB-3728BD9ACA4D-PCOXVV"
 
     try
         toppageurl = query("""\
