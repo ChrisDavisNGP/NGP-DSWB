@@ -335,8 +335,8 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
-    #rt = UP.resourceTable
-    rt = "beacons_4744_rt"
+    rt = UP.resourceTable
+    
     try
         toppageurl = query("""\
         select 'None' as urlpagegroup,start_time,
@@ -356,10 +356,12 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             0 as beacon_time
         FROM $(rt)
         where
-            session_id = '$(studySession)' and
-            "timestamp" = '$(studyTime)'
+        session_id = '$(studySession)'
         order by start_time asc
         """);
+
+#        session_id = '$(studySession)' and
+#        "timestamp" = '$(studyTime)'
 
         if SP.debugLevel > 8
             rc = nrow(toppageurl)
