@@ -169,6 +169,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
                 timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+            order by "timestamp" asc
             limit $(UP.limitQueryRows)
         """)
 
@@ -390,7 +391,7 @@ toppageurl2 = query("""\
 select *
 FROM $(tableRt)
 where
- "session_start" = '$(studyTime)'
+ "timestamp" = '$(studyTime)'
 """);
 
 #        session_id = '$(studySession)' and
