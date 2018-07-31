@@ -119,6 +119,9 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
                   if (!suitable)
                       io -= 1
+                      if (SP.debugLevel > 8)
+                          waterFallFinder(TV,UP,SP,sessionIdString,timeStampVar)
+                      end
                   else
                       pageCount += 1
                   end
