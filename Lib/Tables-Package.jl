@@ -401,7 +401,6 @@ if SP.debugLevel > 8
     println("timestamp Only: $rc2 rows")
 end
 
-if rc1 + rc2 > 0
     toppageurl3 = query("""\
     select *
     FROM $(tableRt)
@@ -409,7 +408,6 @@ if rc1 + rc2 > 0
     """);
 
     beautifyDF(toppageurl3)
-end
 
 #--------------extra
 
