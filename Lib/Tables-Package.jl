@@ -335,7 +335,8 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
-    rt = UP.resourceTable
+    #rt = UP.resourceTable
+    rt = "beacons_4744_rt"
     try
         toppageurl = query("""\
         select 'None' as urlpagegroup,start_time,
