@@ -336,7 +336,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
     end
 
     rt = UP.resourceTable
-    
+
     try
         toppageurl = query("""\
         select 'None' as urlpagegroup,start_time,
@@ -367,6 +367,43 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             rc = nrow(toppageurl)
             println("Returning from sessionUrlTableToDF: $rc rows")
         end
+
+#------------extra
+toppageurl1 = query("""\
+select *
+FROM $(rt)
+where
+session_id = '$(studySession)'
+""");
+
+#        session_id = '$(studySession)' and
+#        "timestamp" = '$(studyTime)'
+
+if SP.debugLevel > 8
+    rc = nrow(toppageurl1)
+    println("Session_id Only: $rc rows")
+end
+
+toppageurl2 = query("""\
+select *
+FROM $(rt)
+where
+ "timestamp" = '$(studyTime)'
+""");
+
+#        session_id = '$(studySession)' and
+#        "timestamp" = '$(studyTime)'
+
+if SP.debugLevel > 8
+    rc = nrow(toppageurl2)
+    println("timestamp Only: $rc rows")
+end
+
+#--------------extra
+
+
+
+
         return toppageurl
     catch y
         println("sessionUrlTableToDF Exception ",y)
