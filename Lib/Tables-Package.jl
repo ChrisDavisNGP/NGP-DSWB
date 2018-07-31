@@ -336,7 +336,9 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
-    rt = UP.resourceTable
+    #rt = UP.resourceTable
+    tableRt = "beacons_4744_rt"
+    setTable(tableRt, tableType = "RESOURCE_TABLE")
 
     try
         toppageurl = query("""\
@@ -355,7 +357,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             'Label' as label,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END as load,
             0 as beacon_time
-        FROM $(rt)
+        FROM $(tableRt)
         where
             session_id = '$(studySession)' and
            "timestamp" = '$(studyTime)'
@@ -371,7 +373,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
 #------------extra
 toppageurl1 = query("""\
 select *
-FROM $(rt)
+FROM $(tableRt)
 where
 session_id = '$(studySession)'
 """);
@@ -380,13 +382,13 @@ session_id = '$(studySession)'
 #        "timestamp" = '$(studyTime)'
 
 if SP.debugLevel > 8
-    rc = nrow(toppageurl1)
-    println("Session_id Only: $rc rows")
+    rc1 = nrow(toppageurl1)
+    println("Session_id Only: $rc1 rows")
 end
 
 toppageurl2 = query("""\
 select *
-FROM $(rt)
+FROM $(tableRt)
 where
  "timestamp" = '$(studyTime)'
 """);
@@ -395,8 +397,18 @@ where
 #        "timestamp" = '$(studyTime)'
 
 if SP.debugLevel > 8
-    rc = nrow(toppageurl2)
-    println("timestamp Only: $rc rows")
+    rc2 = nrow(toppageurl2)
+    println("timestamp Only: $rc2 rows")
+end
+
+if rc1 + rc2 > 0
+    toppageurl3 = query("""\
+    select *
+    FROM $(tableRt)
+    limit 10
+    """);
+
+    beautifyDF(toppageurl3)
 end
 
 #--------------extra
