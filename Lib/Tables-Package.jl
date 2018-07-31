@@ -96,7 +96,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         if (SP.debugLevel > 8)
             localRowCount = nrow(localTableDF)
             standardChartTitle(TV,UP,SP,"Debug8: defaultLimitedBeaconsToDF All Columns, 3 of $localRowCount Rows")
-            beautifyDF(localTableDF[1:min(3,end),:])
+            beautifyDF(localTableDF[1:min(10,end),:])
         end
 
         return localTableDF
