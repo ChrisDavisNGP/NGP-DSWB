@@ -292,6 +292,8 @@ function pickTime()
     end
 
     if isdefined(:TvExactRange)
+
+        println("Debug: TvExactRange=",TvExactRange)
         timeValues = split(TvExactRange,",")
 
         if size(timeValues,1) != 2
@@ -301,6 +303,7 @@ function pickTime()
         end
 
         timeStartParts = split(timeValues[1])
+        println("Debug: timeStartParts=",timeStartParts)
 
         if size(timeStartParts,1) != 2
             println("Bad Date time in first position, need (m/d/yyyy hh:mm) using 24 hour clock")
@@ -323,6 +326,7 @@ function pickTime()
         end
 
         timeEndParts = split(timeValues[2])
+        println("Debug: timeEndParts",timeEndParts)
 
         if size(timeEndParts,1) != 2
             println("Bad Date time in second position, need (m/d/yyyy hh:mm) using 24 hour clock")
@@ -349,9 +353,9 @@ function pickTime()
         if timeEndPart2[1] == "00" timeEndPart2[1] = "0" end
         if timeEndPart2[2] == "00" timeEndPart2[2] = "0" end
 
-        #println("TV = timeVariables(",timeStartPart1[3],",",timeStartPart1[2],",",timeStartPart1[1],",",timeStartPart2[1],",",timeStartPart2[2],",",
-        #timeEndPart1[3],",",timeEndPart1[2],",",timeEndPart1[1],",",timeEndPart2[1],",",timeEndPart2[2],")"
-        #)
+        println("Debug: TV = timeVariables(",timeStartPart1[3],",",timeStartPart1[2],",",timeStartPart1[1],",",timeStartPart2[1],",",timeStartPart2[2],",",
+        timeEndPart1[3],",",timeEndPart1[2],",",timeEndPart1[1],",",timeEndPart2[1],",",timeEndPart2[2],")"
+        )
 
         localtv = timeVariables(
             parse(Int64,timeStartPart1[3]),
