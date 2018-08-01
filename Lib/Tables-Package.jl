@@ -406,7 +406,8 @@ end
     toppageurl3 = query("""\
     select *
     FROM $(tableRt)
-    limit 10
+    order by "timestamp"
+    limit 15
     """);
 
     beautifyDF(toppageurl3)
