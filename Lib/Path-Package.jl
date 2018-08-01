@@ -81,6 +81,17 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           beautifyDF(localTableDF[1:min(10,end),:])
       end
 
+      by(localTableDF,:timestamp) do df
+          println("Using by:",df[1,:session_id]," and ",df[1,:timestamp])
+      end
+
+      for row in eachrow(localTableDF)
+          println("Using eachrow:",row[:session_id]," and ",row[:timestamp])
+      end
+
+
+      end
+
       for subdf in groupby(localTableDF,[:session_id,:timestamp])
           # Quick out
           if (io > UP.limitPageViews)
