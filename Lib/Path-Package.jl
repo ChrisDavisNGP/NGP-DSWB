@@ -97,26 +97,26 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               break
           end
           if(SP.debugLevel > 4)
-              println("\nCheck time for page $io Timer=",subdfRow[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("\nCheck time for page $io Timer=",subdfRow[:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
 
           if (UP.usePageLoad)
-              timeVar = subdfRow[1,:timers_t_done]
-              timeStampVar = subdfRow[1,:timers_t_done]
+              timeVar = subdfRow[:timers_t_done]
+              timeStampVar = subdfRow[:timers_t_done]
           else
-              timeVar = subdfRow[1,:timers_domready]
-              timeStampVar = subdfRow[1,:timers_domready]
+              timeVar = subdfRow[:timers_domready]
+              timeStampVar = subdfRow[:timers_domready]
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               currentPage = io
               io += 1
               if io <= UP.limitPageViews
-                  sessionId = subdfRow[1,:session_id]
+                  sessionId = subdfRow[:session_id]
                   sessionIdString = ASCIIString(sessionId)
                   #println("SM=",CU.syntheticMonitor," timeStampVar=",timeStampVar)
                   if CU.syntheticMonitor == "no name"
-                      timeStampVar = subdfRow[1,:timestamp]
+                      timeStampVar = subdfRow[:timestamp]
                   end
                   #println(" tsv=",timeStampVar)
 
