@@ -406,8 +406,8 @@ end
     toppageurl3 = query("""\
     select "timestamp",session_id,count(*)
     FROM $(tableRt)
-    order by "timestamp" asc
     group by "timestamp",session_id
+    order by "timestamp" asc
     limit 500
     """);
 
