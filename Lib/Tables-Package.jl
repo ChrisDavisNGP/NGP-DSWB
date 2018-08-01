@@ -407,7 +407,7 @@ end
     select *
     FROM $(tableRt)
     order by "timestamp"
-    limit 15
+    limit 1500
     """);
 
     beautifyDF(toppageurl3)
