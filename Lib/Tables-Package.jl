@@ -404,13 +404,13 @@ if SP.debugLevel > 8
 end
 
     toppageurl3 = query("""\
-    select *
+    select "timestamp",session_id
     FROM $(tableRt)
     order by "timestamp"
-    limit 1500
+    limit 500
     """);
 
-    beautifyDF(toppageurl3)
+    beautifyDF(toppageurl3,maxRows=500)
 
 #--------------extra
 
