@@ -90,32 +90,33 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
      # end
 
      # for subdf in groupby(localTableDF,[:session_id,:timestamp])
-     by(localTableDF,:timestamp) do subdf
+     #by(localTableDF,:timestamp) do subdf
+     for subdfRow in eachrow(localTableDF)
           # Quick out
           if (io > UP.limitPageViews)
               break
           end
           if(SP.debugLevel > 4)
-              println("\nCheck time for page $io Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("\nCheck time for page $io Timer=",subdfRow[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
 
           if (UP.usePageLoad)
-              timeVar = subdf[1,:timers_t_done]
-              timeStampVar = subdf[1,:timers_t_done]
+              timeVar = subdfRow[1,:timers_t_done]
+              timeStampVar = subdfRow[1,:timers_t_done]
           else
-              timeVar = subdf[1,:timers_domready]
-              timeStampVar = subdf[1,:timers_domready]
+              timeVar = subdfRow[1,:timers_domready]
+              timeStampVar = subdfRow[1,:timers_domready]
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               currentPage = io
               io += 1
               if io <= UP.limitPageViews
-                  sessionId = subdf[1,:session_id]
+                  sessionId = subdfRow[1,:session_id]
                   sessionIdString = ASCIIString(sessionId)
                   #println("SM=",CU.syntheticMonitor," timeStampVar=",timeStampVar)
                   if CU.syntheticMonitor == "no name"
-                      timeStampVar = subdf[1,:timestamp]
+                      timeStampVar = subdfRow[1,:timestamp]
                   end
                   #println(" tsv=",timeStampVar)
 
