@@ -404,9 +404,10 @@ if SP.debugLevel > 8
 end
 
     toppageurl3 = query("""\
-    select "timestamp",session_id
+    select "timestamp",session_id,count(*)
     FROM $(tableRt)
-    order by "timestamp"
+    order by "timestamp" asc
+    group by "timestamp",session_id
     limit 500
     """);
 
