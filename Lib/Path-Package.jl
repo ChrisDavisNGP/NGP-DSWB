@@ -78,7 +78,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
       if SP.debugLevel > 8
-          beautifyDF(localTableDF[1:min(500,end),:])
+          beautifyDF(localTableDF[1:min(500,end),:],maxRows=500)
       end
 
       #by(localTableDF,:timestamp) do df
