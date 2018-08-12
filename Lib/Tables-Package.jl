@@ -339,8 +339,8 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
     end
 
     #rt = UP.resourceTable
-    tableRt = "beacons_4744_rt"
-    setTable(tableRt, tableType = "RESOURCE_TABLE")
+    #tableRt = "beacons_4744_rt"
+    #setTable(tableRt, tableType = "RESOURCE_TABLE")
 
     try
         toppageurl = query("""\
