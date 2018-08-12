@@ -178,11 +178,6 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
-#            order by timestamp asc
-#            limit $(UP.limitQueryRows)
-#        """)
-
         if (SP.debugLevel > 6)
             standardChartTitle(TV,UP,SP,"Debug8: critAggLimitedBeaconsToDF All Columns")
             beautifyDF(localTableDF[1:min(10,end),:])
