@@ -1,7 +1,7 @@
 # Test Plan Creation: Path Analysis
 
 using DSWB
-setRedshiftEndpoint("dswb-natgeo")
+db = setSnowflakeEndpoint("tenant_232301")
 setTable("beacons_4744")
 
 startTime = DateTime(2016,9,3,0,0,0)

@@ -1,7 +1,7 @@
 # Discovering the Conversion Impact
 
 using DSWB
-setRedshiftEndpoint("dswb-natgeo")
+db = setSnowflakeEndpoint("tenant_232301")
 setTable("beacons_4744")
 setConversionGroup("Video Player Base")
 

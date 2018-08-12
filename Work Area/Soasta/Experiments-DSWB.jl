@@ -27,7 +27,7 @@ using DataFrames
 using DSWB
 using Formatting
 
-dsn = "dswb-natgeo" # Redshift endpoint
+dsn = "tenant_232301"
 table = "beacons_4744" # beacon table name
 table_rt = "beacons_4744_rt"
 

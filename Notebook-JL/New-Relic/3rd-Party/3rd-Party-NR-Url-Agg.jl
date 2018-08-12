@@ -8,7 +8,7 @@ using DSWB
 using Formatting
 using URIParser
 
-dsn = "dswb-natgeo" # Redshift esetTable(tableRt, tableType = "RESOURCE_TABLE")ndpoint
+dsn = "tenant_232301"
 table = "beacons_4744" # beacon table name
 tableRt = "beacons_4744_rt"
 

@@ -1,7 +1,7 @@
 # Conversions by Average Load Times
 
 using DSWB
-setRedshiftEndpoint("dswb-natgeo")
+db = setSnowflakeEndpoint("tenant_232301")
 beaconTable = setTable("beacons_4744")
 conversionPageURL = "%fls.doubleclick.net/activity%"
 setConversionPage(conversionPageURL)

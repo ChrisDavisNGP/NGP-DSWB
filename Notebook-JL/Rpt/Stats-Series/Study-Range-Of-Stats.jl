@@ -4,7 +4,7 @@ using DSWB
 using Formatting
 using Distributions
 
-dsn = "dswb-natgeo" # Redshift endpoint
+dsn = "tenant_232301"
 table = "beacons_4744" # beacon table name
 tableRt = "beacons_4744_rt"
 

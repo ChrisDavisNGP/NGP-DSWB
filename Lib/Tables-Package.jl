@@ -178,7 +178,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#        localTableDF = select("""\
+#        localTableDF = query("""\
 #            select "timestamp",session_id,timers_t_done,timers_domready
 #            from $bt
 #            where
