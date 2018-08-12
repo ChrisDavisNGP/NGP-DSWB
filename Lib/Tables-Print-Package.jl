@@ -84,16 +84,16 @@ function joinTablesDetailsPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,j
         btv = UP.btView
         rt = UP.resourceTable
 
-        topSessionId = joinTableSummary[row:row,:session_id][1]
+        topSessionId = joinTableSummary[row:row,:sessionId][1]
         topTimeStamp = joinTableSummary[row:row,:timestamp][1]
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 
         joinTablesDetails = select("""\
             select $rt.start_time,$rt.encoded_size,$rt.transferred_size,$rt.decoded_size,$rt.url as urlgroup
             FROM $btv join $rt
-                on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+                on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
             where
-                $btv.session_id = '$(topSessionId)' and
+                $btv.sessionId = '$(topSessionId)' and
                 $btv.timestamp = $(topTimeStamp) and
                 $rt.encoded_size > 1000000 and
                 $rt.url not like '%/interactive-assets/%'
@@ -208,12 +208,12 @@ function bigPages4PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
 
         displayTitle(chart_title = "Big Pages With Session ID (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
         bigPagesSessionsDF = select("""\
-            select params_dom_sz dom_size,session_id,timestamp,params_u urlgroup
+            select params_dom_sz dom_size,sessionId,timestamp,params_u urlgroup
             from $btv
             where
                 params_dom_sz IS NOT NULL and
                 params_dom_sz > $(minSizeBytes) and
-                session_id IS NOT NULL
+                sessionId IS NOT NULL
             order by dom_size desc
             limit $(UP.limitQueryRows)
         """);
@@ -232,14 +232,14 @@ function bigPages5PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select count(*) cnt,$btv.params_dom_sz dom_size,$btv.session_id s_id,$btv.timestamp
+            select count(*) cnt,$btv.params_dom_sz dom_size,$btv.sessionId s_id,$btv.timestamp
             from $btv join $rt
-                on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+                on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
             where
                 $btv.params_dom_sz IS NOT NULL and
                 $btv.params_dom_sz > $(minSizeBytes) and
-                $btv.session_id IS NOT NULL
-            group by $btv.params_dom_sz, $btv.session_id, $btv.timestamp
+                $btv.sessionId IS NOT NULL
+            group by $btv.params_dom_sz, $btv.sessionId, $btv.timestamp
             order by $btv.params_dom_sz desc
             limit $(UP.limitQueryRows)
         """);
@@ -259,16 +259,16 @@ function bigPages6PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select $btv.params_dom_sz dom_size,$btv.session_id,$btv.timestamp,$rt.start_time,$rt.encoded_size,
+            select $btv.params_dom_sz dom_size,$btv.sessionId,$btv.timestamp,$rt.start_time,$rt.encoded_size,
                 $rt.transferred_size,
                 $rt.decoded_size,
                 $rt.url urlgroup
             from $btv join $rt
-                on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+                on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
             where
                 $btv.params_dom_sz IS NOT NULL and
                 $btv.params_dom_sz > $(minSizeBytes) and
-                $btv.session_id IS NOT NULL
+                $btv.sessionId IS NOT NULL
             order by $btv.params_dom_sz
             limit $(UP.limitQueryRows)
         """);
@@ -296,7 +296,7 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
             $btv.user_agent_family,
             count(*)
         from $btv join $rt
-            on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+            on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
@@ -325,7 +325,7 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
             CASE WHEN (position('?' in $btv.params_u) > 0) then trim('/' from (substring($btv.params_u for position('?' in substring($btv.params_u from 9)) +7))) else trim('/' from $btv.params_u) end as urlgroup,
             $rt.url
         from $btv join $rt
-            on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+            on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
             ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
@@ -359,7 +359,7 @@ function lookForLeftOversPrintTable(UP::UrlParams,SP::ShowParams)
             avg($rt.decoded_size) as decoded,
             count(*)
         from $btv join $rt
-        on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+        on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
         where $rt.encoded_size > 1 and
         $rt.url not ilike '%/interactive-assets/%' and
         $rt.url not ilike '%png' and
@@ -407,7 +407,7 @@ function lookForLeftOversDetailsPrintTable(UP::UrlParams,SP::ShowParams)
                 $rt.initiator_type,$rt.height,$rt.width,$rt.x,$rt.y,
                 count(*)
             from $btv join $rt
-                on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+                on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
             where $rt.encoded_size > 1 and $rt.url not like '%/interactive-assets/%'
             group by $rt.url,
                 $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
@@ -563,7 +563,7 @@ function displayMatchingResourcesByUrlBtvRtPrintTables(TV::TimeVars,UP::UrlParam
         joinTablesDF = select("""\
             select count(*), $rt.params_u as parenturl, $rt.url
             from $btv join $rt
-                on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
+                on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
             where
             $rt.url ilike '$(UP.resRegEx)'
             group by $rt.params_u, $rt.url, $btv.url
@@ -720,7 +720,7 @@ end
 
 function largePageDetailsPrintTable(localTable::ASCIIString,tableRt::ASCIIString,joinTableSummary::DataFrame,row::Int64)
     try
-        topSessionId = joinTableSummary[row:row,:session_id][1]
+        topSessionId = joinTableSummary[row:row,:sessionId][1]
         topTimeStamp = joinTableSummary[row:row,:timestamp][1]
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 
@@ -729,10 +729,10 @@ function largePageDetailsPrintTable(localTable::ASCIIString,tableRt::ASCIIString
                 $tableRt.decoded_size,
                 $tableRt.url as urlgroup
             from $localTable join $tableRt
-                on $localTable.session_id = $tableRt.session_id and
+                on $localTable.sessionId = $tableRt.sessionId and
                 $localTable.timestamp = $tableRt.timestamp
             where
-                $localTable.session_id = '$(topSessionId)' and
+                $localTable.sessionId = '$(topSessionId)' and
                 $localTable.timestamp = $(topTimeStamp) and
                 $tableRt.encoded_size > 1000000
             order by $tableRt.start_time

@@ -295,7 +295,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         where
           beacon_type = 'page view' and
           timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
-          session_id IS NOT NULL and
+          sessionId IS NOT NULL and
           params_rt_quit IS NULL and
           params_u ilike '$(UP.urlRegEx)' and
           user_agent_device_type ilike '$(UP.deviceType)' and
@@ -319,7 +319,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
             params_dom_sz > 0 and
             timers_t_page > 0 and
-            session_id IS NOT NULL and
+            sessionId IS NOT NULL and
             params_rt_quit IS NULL and
             params_u ilike '$(UP.urlRegEx)' and
             user_agent_device_type ilike '$(UP.deviceType)' and

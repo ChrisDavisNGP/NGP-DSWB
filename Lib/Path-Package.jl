@@ -82,14 +82,14 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       #by(localTableDF,:timestamp) do df
-    #      println("Using by:",df[1,:session_id]," and ",df[1,:timestamp])
+    #      println("Using by:",df[1,:sessionId]," and ",df[1,:timestamp])
     #  end
 
      # for row in eachrow(localTableDF)
-    #      println("Using eachrow:",row[:session_id]," and ",row[:timestamp])
+    #      println("Using eachrow:",row[:sessionId]," and ",row[:timestamp])
      # end
 
-     # for subdf in groupby(localTableDF,[:session_id,:timestamp])
+     # for subdf in groupby(localTableDF,[:sessionId,:timestamp])
      #by(localTableDF,:timestamp) do subdf
      for subdfRow in eachrow(localTableDF)
           # Quick out
@@ -112,7 +112,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               currentPage = io
               io += 1
               if io <= UP.limitPageViews
-                  sessionId = subdfRow[:session_id]
+                  sessionId = subdfRow[:sessionId]
                   sessionIdString = ASCIIString(sessionId)
                   #println("SM=",CU.syntheticMonitor," timeStampVar=",timeStampVar)
                   if CU.syntheticMonitor == "no name"
@@ -200,8 +200,8 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
       io = 0
       sessionIdString = ASCIIString("")
 
-#      for subdf in groupby(full,[:session_id,:timestamp])
-      for subdf in groupby(localTableDF,[:session_id,:timestamp])
+#      for subdf in groupby(full,[:sessionId,:timestamp])
+      for subdf in groupby(localTableDF,[:sessionId,:timestamp])
           #look for quick out
           if (io == UP.limitPageViews)
               return
@@ -223,7 +223,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
               io += 1
               #println("Testing $(io) against $(UP.limitPageViews)")
               if io <= UP.limitPageViews
-                  sessionId = subdf[1,:session_id]
+                  sessionId = subdf[1,:sessionId]
                   #println("Session_id $(sessionId)")
                   sessionIdString = ASCIIString(sessionId)
                   if CU.syntheticMonitor == "no name"
@@ -334,7 +334,7 @@ function individualPageDataNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,NR::NrP
             )
       end
 
-      #localDF = names!(toppageurl,[Symbol("session_id");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
+      #localDF = names!(toppageurl,[Symbol("sessionId");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
 
       if SP.debugLevel > 6
           beautifyDF(toppageurl)
@@ -938,7 +938,7 @@ end
 function createJoinTableSummary(SP::ShowParams,joinTableSummary::DataFrame,joinTables::DataFrame)
 
     joinTableSummary[:urlgroup] = "delete"
-    joinTableSummary[:session_id] = ""
+    joinTableSummary[:sessionId] = ""
     joinTableSummary[:timestamp] = 0
     joinTableSummary[:encoded] = 0
     joinTableSummary[:transferred] = 0
@@ -952,7 +952,7 @@ function createJoinTableSummary(SP::ShowParams,joinTableSummary::DataFrame,joinT
         for row in eachrow(subDf)
             if (i == 1)
                 i +=1
-                push!(joinTableSummary,[row[:urlgroup],row[:session_id],row[:timestamp],row[:encoded],row[:transferred],row[:decoded],row[:count]])
+                push!(joinTableSummary,[row[:urlgroup],row[:sessionId],row[:timestamp],row[:encoded],row[:transferred],row[:decoded],row[:count]])
             end
         end
     end
