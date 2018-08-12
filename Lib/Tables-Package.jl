@@ -159,20 +159,40 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
     try
         localTableDF = select("""\
-            select "timestamp",session_id,timers_t_done,timers_domready
+            select
+                "timestamp",
+                sessionId as session_id,
+                pageloadtime as timers_t_done,
+                timersDomReady as timers_domready
             from $bt
             where
                 "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                session_id IS NOT NULL and
-                params_rt_quit IS NULL and
-                params_u ilike '$(UP.urlRegEx)' and
-                user_agent_device_type ilike '$(UP.deviceType)' and
-                user_agent_os ilike '$(UP.agentOs)' and
-                page_group ilike '$(UP.pageGroup)' and
-                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+                sessionId IS NOT NULL and
+                paramsrtquit IS NULL and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             order by "timestamp" asc
             limit $(UP.limitQueryRows)
         """)
+
+#        localTableDF = select("""\
+#            select "timestamp",session_id,timers_t_done,timers_domready
+#            from $bt
+#            where
+#                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+#                session_id IS NOT NULL and
+#                params_rt_quit IS NULL and
+#                params_u ilike '$(UP.urlRegEx)' and
+#                user_agent_device_type ilike '$(UP.deviceType)' and
+#                user_agent_os ilike '$(UP.agentOs)' and
+#                page_group ilike '$(UP.pageGroup)' and
+#                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+#            order by "timestamp" asc
+#            limit $(UP.limitQueryRows)
+#        """)
 
         if (SP.debugLevel > 6)
             standardChartTitle(TV,UP,SP,"Debug8: critAggLimitedBeaconsToDF All Columns")
