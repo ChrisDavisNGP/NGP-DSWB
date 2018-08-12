@@ -9,7 +9,7 @@ tableRt = "$(table)_rt"
 sessions = "beacons_4744_sessions";
 
 # Connect to Beacon Data
-setRedshiftEndpoint(dsn)
+db = setSnowflakeEndpoint(dsn)
 setTable(table)
 #setTable(tableRt, tableType = RESOURCE_TABLE)
 #setTable(sessions; tableType = SESSIONS_TABLE);

@@ -10,7 +10,7 @@ table = "RUM_PRD_BEACON_FACT_DSWB_34501" # beacon table name
 tableRt = "$(table)_rt"
 
 # Connect to Beacon Data
-setRedshiftEndpoint(dsn)
+db = setSnowflakeEndpoint(dsn)
 setTable(table)
 # setTable(tableRt, tableType = "RESOURCE_TABLE")
 
