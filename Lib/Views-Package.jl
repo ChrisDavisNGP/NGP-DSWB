@@ -40,11 +40,11 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
         select("""\
             create or replace view $rtv as (
                 select $rt.*
-                from $btv join $rt on $rt.sessionId = $btv.sessionId
+                from $btv join $rt on $rt.sessionid = $btv.sessionid
                 where
                     $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                    $btv.sessionId IS NOT NULL
-                order by $rt.sessionId, $rt.timestamp, $rt.start_time
+                    $btv.sessionid IS NOT NULL
+                order by $rt.sessionid, $rt.timestamp, $rt.start_time
             )
             """)
 
