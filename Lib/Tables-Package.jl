@@ -163,7 +163,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
                 timestamp,
                 sessionId as session_id,
                 pageloadtime as timers_t_done,
-                timersdomready as timers_domready
+                domreadytimer as timers_domready
             from $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
