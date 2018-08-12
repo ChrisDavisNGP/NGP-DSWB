@@ -6,7 +6,7 @@ function urlCountPrintTable(UP::UrlParams,SP::ShowParams)
 
     try
 
-        test1Table = query("""\
+        test1Table = select("""\
             select URL, count(*)
             FROM $(UP.btView)
             GROUP BY url
@@ -22,7 +22,7 @@ end
 function agentCountPrintTable(UP::UrlParams,SP::ShowParams)
 
     try
-        CleanupTable = query("""\
+        CleanupTable = select("""\
             select count(*),user_agent_raw
             FROM $(UP.btView)
             where
@@ -42,7 +42,7 @@ end
 function urlParamsUCountPrintTable(UP::UrlParams,SP::ShowParams)
 
     try
-        CleanupTable = query("""\
+        CleanupTable = select("""\
             select count(*), URL, params_u
             FROM $(UP.btView)
             where
@@ -61,7 +61,7 @@ end
 function paramsUCountPrintTable(UP::UrlParams,SP::ShowParams)
 
     try
-        CleanupTable = query("""\
+        CleanupTable = select("""\
             select count(*) as "Page Views",params_u as "URL Landing In Nat Geo Site Default Group"
             FROM $(UP.btView)
             where
@@ -88,7 +88,7 @@ function joinTablesDetailsPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,j
         topTimeStamp = joinTableSummary[row:row,:timestamp][1]
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 
-        joinTablesDetails = query("""\
+        joinTablesDetails = select("""\
             select $rt.start_time,$rt.encoded_size,$rt.transferred_size,$rt.decoded_size,$rt.url as urlgroup
             FROM $btv join $rt
                 on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
@@ -116,7 +116,7 @@ function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         btv = UP.btView
 
-        topurl = query("""\
+        topurl = select("""\
             select count(*),CASE when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end urlgroup
             FROM $(btv)
             where
@@ -138,7 +138,7 @@ function countParamUBtViewPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         btv = UP.btView
 
-        topurl = query("""\
+        topurl = select("""\
             select count(*),params_u
             FROM $(btv)
             where
@@ -160,7 +160,7 @@ function bigPages2PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
     try
         btv = UP.btView
         displayTitle(chart_title = "Big Pages (Min $(minSizeBytes) KB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
-        bigPagesDF = query("""\
+        bigPagesDF = select("""\
             select params_dom_sz,timers_t_page load_time,params_u urlgroup
             from $btv
             where
@@ -183,7 +183,7 @@ function bigPages3PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         btv = UP.btView
 
         displayTitle(chart_title = "Big Pages By Average Size (Min $(minSizeBytes) KB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
-        bigAveragePagesDF = query("""\
+        bigAveragePagesDF = select("""\
             select count(*),avg(params_dom_sz) as size,avg(timers_t_page) as load,params_u as urlgroup
             from $btv
             where
@@ -207,7 +207,7 @@ function bigPages4PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         btv = UP.btView
 
         displayTitle(chart_title = "Big Pages With Session ID (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
-        bigPagesSessionsDF = query("""\
+        bigPagesSessionsDF = select("""\
             select params_dom_sz dom_size,session_id,"timestamp",params_u urlgroup
             from $btv
             where
@@ -231,7 +231,7 @@ function bigPages5PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         btv = UP.btView
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select count(*) cnt,$btv.params_dom_sz dom_size,$btv.session_id s_id,$btv."timestamp"
             from $btv join $rt
                 on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
@@ -258,7 +258,7 @@ function bigPages6PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         btv = UP.btView
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select $btv.params_dom_sz dom_size,$btv.session_id,$btv."timestamp",$rt.start_time,$rt.encoded_size,
                 $rt.transferred_size,
                 $rt.decoded_size,
@@ -289,7 +289,7 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
     rt = UP.resourceTable
 
     try
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
         select avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
             avg($rt.decoded_size) as decoded,
             $btv.user_agent_os,
@@ -318,7 +318,7 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
 
     try
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
         select avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
             avg($rt.decoded_size) as decoded,
             count(*),
@@ -351,7 +351,7 @@ function lookForLeftOversPrintTable(UP::UrlParams,SP::ShowParams)
         btv = UP.btView
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
         select $btv.user_agent_os,$btv.user_agent_family,$btv.user_agent_device_type,
             $rt.url,
             avg($rt.encoded_size) as encoded,
@@ -398,7 +398,7 @@ function lookForLeftOversDetailsPrintTable(UP::UrlParams,SP::ShowParams)
         btv = UP.btView
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select $rt.url,avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
                 avg($rt.decoded_size) as decoded,
                 $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
@@ -425,7 +425,7 @@ end
 
 function requestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,typeStr::ASCIIString)
 
-    rc = query("""\
+    rc = select("""\
 
         select count(*) reqcnt, substring(url for position('/' in substring(url from 9)) +7) urlgroup
         FROM $(UP.rtView)
@@ -441,7 +441,7 @@ end
 
 function nonCacheRequestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,typeStr::ASCIIString)
 
-    nc = query("""\
+    nc = select("""\
         select count(*), substring(url for position('/' in substring(url from 9)) +7) urlgroup
         FROM $(UP.rtView)
         where
@@ -457,7 +457,7 @@ end
 
 function cacheHitRatioPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
 
-    cached = query("""\
+    cached = select("""\
         select count(*), substring(url for position('/' in substring(url from 9)) +7) urlgroup
         FROM $(UP.rtView)
         where
@@ -467,7 +467,7 @@ function cacheHitRatioPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString
         LIMIT $(UP.limitQueryRows)
     """)
 
-    ratio = query("""\
+    ratio = select("""\
         select substring(url for position('/' in substring(url from 9)) +7) urlgroup, count(*) notCachedCount, 0 cachedCount, 0.0 ratio
         FROM $(UP.rtView)
         where
@@ -497,7 +497,7 @@ function displayMatchingResourcesByParentUrlPrintTable(TV::TimeVars,UP::UrlParam
     try
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select count(*), params_u as parenturl
             from $rt
             where
@@ -529,7 +529,7 @@ function displayMatchingResourcesByUrlRtPrintTable(TV::TimeVars,UP::UrlParams,SP
     try
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select count(*), url
             from $rt
             where
@@ -560,7 +560,7 @@ function displayMatchingResourcesByUrlBtvRtPrintTables(TV::TimeVars,UP::UrlParam
         btv = UP.btView
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select count(*), $rt.params_u as parenturl, $rt.url
             from $btv join $rt
                 on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
@@ -590,7 +590,7 @@ function displayMatchingResourcesAllFieldsPrintTable(TV::TimeVars,UP::UrlParams,
     try
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select *
             from $rt
             where
@@ -617,7 +617,7 @@ function displayMatchingResourcesStatsPrintTable(TV::TimeVars,UP::UrlParams,SP::
     try
         rt = UP.resourceTable
 
-        joinTablesDF = query("""\
+        joinTablesDF = select("""\
             select count(*),avg(start_time) as "start",
                 avg(fetch_start) as "fetch",
                 avg(dns_end-dns_start) as "dnstimems",
@@ -660,7 +660,7 @@ function topUrlTableByCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;
             ltName = UP.btView
 
             if (SP.debugLevel > 4)
-                dbgtopurl = query("""\
+                dbgtopurl = select("""\
 
                 select *
                 FROM $(ltName)
@@ -673,7 +673,7 @@ function topUrlTableByCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;
                 beautifyDF(dbgtopurl)
             end
 
-            topurl = query("""\
+            topurl = select("""\
 
             select count(*),
                 CASE
@@ -724,7 +724,7 @@ function largePageDetailsPrintTable(localTable::ASCIIString,tableRt::ASCIIString
         topTimeStamp = joinTableSummary[row:row,:timestamp][1]
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 
-        joinTablesDetails = query("""\
+        joinTablesDetails = select("""\
             select $tableRt.start_time,$tableRt.encoded_size,$tableRt.transferred_size,
                 $tableRt.decoded_size,
                 $tableRt.url as urlgroup
@@ -751,7 +751,7 @@ function resourceScreenPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     tvUpSpDumpDebug(TV,UP,SP,"resourceScreenPrintTable")
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
             select count(*),initiator_type,height,width,x,y,url
             from $(UP.resourceTable)
             where

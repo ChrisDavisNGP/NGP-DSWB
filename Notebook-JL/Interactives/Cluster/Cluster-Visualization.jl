@@ -74,7 +74,7 @@ end
 #display(results)
 
 #dropped geo_cc
-results2 = query("""\
+results2 = select("""\
     select "timestamp",page_group, user_agent_device_type,user_agent_family,
         params_dom_sz,params_dom_ln,params_dom_script,params_dom_img,
         timers_t_done,timers_t_resp,timers_t_page

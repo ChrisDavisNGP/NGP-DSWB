@@ -2,7 +2,7 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
     try
         localTable = UP.btView
 
-        fb = query("""\
+        fb = select("""\
         select 'Facebook' refgrp, count(*)
         FROM $localTable
         where http_referrer ilike '%facebook%' or params_r ilike '%facebook%' or tp_ga_utm_source ilike '%facebook%'
@@ -11,7 +11,7 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
         #display(fb)
 
 
-        gb = query("""\
+        gb = select("""\
         select 'Google' refgrp, count(*)
         FROM $localTable
         where http_referrer ilike '%google%' or params_r ilike '%google%' or tp_ga_utm_source ilike '%google%'
@@ -19,7 +19,7 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
 
         #display(gb)
 
-        red = query("""\
+        red = select("""\
         select 'Reddit' refgrp, count(*)
         FROM $localTable
         where http_referrer ilike '%reddit%' or params_r ilike '%reddit%' or tp_ga_utm_source ilike '%reddit%'
@@ -27,7 +27,7 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
 
         #display(red)
 
-        gas = query("""\
+        gas = select("""\
         select tp_ga_utm_source, count(*)
         FROM $localTable
         where http_referrer is not null and http_referrer != 'null'
@@ -37,7 +37,7 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
 
         #display(gas)
 
-        gam = query("""\
+        gam = select("""\
         select tp_ga_utm_medium, count(*)
         FROM $localTable
         where http_referrer is not null and http_referrer != 'null'
@@ -47,7 +47,7 @@ function customReferralsTable(TV::TimeVars,UP::UrlParams)
 
         #display(gam)
 
-        gac = query("""\
+        gac = select("""\
         select tp_ga_utm_campaign, count(*)
         FROM $localTable
         where http_referrer is not null and http_referrer != 'null'

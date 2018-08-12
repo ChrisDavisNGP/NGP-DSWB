@@ -9,7 +9,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)
         end
 
-        query("""\
+        select("""\
             create or replace view $btv as (
                 select * FROM $bt
                     where
@@ -22,7 +22,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             )
         """)
         if (SP.debugLevel > 0)
-            cnt = query("""SELECT count(*) FROM $btv""")
+            cnt = select("""SELECT count(*) FROM $btv""")
             println("$btv count is ",cnt[1,1])
         end
     catch y
@@ -37,7 +37,7 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
         rt = UP.resourceTable
         btv = UP.btView
 
-        query("""\
+        select("""\
             create or replace view $rtv as (
                 select $rt.*
                 from $btv join $rt on $rt.session_id = $btv.session_id
@@ -50,7 +50,7 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
 
         # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
         # where beacon_type = 'page view'
-        localTableRtDF = query("""SELECT * FROM $rtv""")
+        localTableRtDF = select("""SELECT * FROM $rtv""")
         #Hide output from final report
         println("$rtv count is ",size(localTableRtDF))
     catch y
@@ -66,9 +66,9 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
 
       try
 
-        query("""drop view if exists $(UP.btView)""")
+        select("""drop view if exists $(UP.btView)""")
 
-        query("""\
+        select("""\
             create or replace view $(UP.btView) as
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
@@ -81,7 +81,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
 
         # todo if select count into var for size zero check and dbg output
 
-        query("""\
+        select("""\
             create or replace view $localMobileTable as
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
@@ -92,7 +92,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
             )
         """)
 
-        query("""\
+        select("""\
             create or replace view $localDesktopTable as
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and

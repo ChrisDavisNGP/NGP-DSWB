@@ -53,13 +53,13 @@ datePart = :minute
 
 
 # Create view to query only product page_group
-query("""create or replace view $localTable as (select * from $table where page_group = '$(productPageGroup)' and "timestamp" between $startTimeMs and $endTimeMs)""")
+select("""create or replace view $localTable as (select * from $table where page_group = '$(productPageGroup)' and "timestamp" between $startTimeMs and $endTimeMs)""")
 
 setTable(localTable)
 
 # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
 # where beacon_type = 'page view'
-query("""SELECT count(*) FROM $localTable""")
+select("""SELECT count(*) FROM $localTable""")
 
 
 getBeaconCount()

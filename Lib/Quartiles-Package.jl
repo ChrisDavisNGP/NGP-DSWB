@@ -27,7 +27,7 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuarti
         pageGroups = pageGroupPercentages[:page_group][1:min(10,end)]
         pageGroups = "'"*join(pageGroups,"','")*"'"
         maxResources = showQuartiles
-        pageGroupQuartilesDF = query("""\
+        pageGroupQuartilesDF = select("""\
             SELECT DISTINCT page_group,
                 MIN(timers_t_done) OVER (PARTITION BY page_group) AS minimum,
                 PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY timers_t_done) OVER (PARTITION BY page_group) AS lower_quartile,

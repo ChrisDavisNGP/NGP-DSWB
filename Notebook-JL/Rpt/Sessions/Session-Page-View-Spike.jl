@@ -30,7 +30,7 @@ openingTitle(TV,UP,SP)
 bt = UP.beaconTable
 rt = UP.resourceTable
 
-toppagecount = query("""\
+toppagecount = select("""\
             select count(*),session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
             FROM $bt
             where
@@ -44,7 +44,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 
 firstSession = (toppagecount[1:1,:session_id][1])
 
-debugRecords = query("""\
+debugRecords = select("""\
             select *
             FROM $bt
             where
@@ -55,7 +55,7 @@ debugRecords = query("""\
 
 beautifyDF(debugRecords[1:min(10,end),:])
 
-debugRecords = query("""\
+debugRecords = select("""\
             select count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
             FROM $bt
             where
@@ -67,7 +67,7 @@ group by geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_re
 
 beautifyDF(debugRecords[1:min(100,end),:])
 
-debugRecords = query("""\
+debugRecords = select("""\
             select count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
             FROM $bt
             where
@@ -79,7 +79,7 @@ group by geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_
 
 beautifyDF(debugRecords[1:min(100,end),:])
 
-debugRecords = query("""\
+debugRecords = select("""\
             select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
             FROM $bt
             where
@@ -111,7 +111,7 @@ beautifyDF(debugRecords[1:min(100,end),:])
 #et = (TV.endTimeMsUTC)
 #println(st," , ",et)
 
-toppagecount = query("""\
+toppagecount = select("""\
             select count(*),session_id
             FROM $bt
             where
@@ -123,7 +123,7 @@ toppagecount = query("""\
 
 beautifyDF(toppagecount[1:min(10,end),:])
 
-#toppagecount = query("""\
+#toppagecount = select("""\
 #            select count(*),$rt.session_id
 #            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
 #            where
@@ -134,7 +134,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 #                """);
 
 
-#toppagecount = query("""\
+#toppagecount = select("""\
 #            select count(*) as request_count,
 #                $btRT.session_id
 #            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"

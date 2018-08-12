@@ -1098,7 +1098,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     if (SP.reportLevel > 11)
         if studyTime > 0
-            topurl = query("""\
+            topurl = select("""\
             select substring(url for position('/' in substring(url from 9)) +7) urlgroup,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
@@ -1108,7 +1108,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             group by urlgroup
             """);
         elseif (studySession != "None")
-            topurl = query("""\
+            topurl = select("""\
             select substring(url for position('/' in substring(url from 9)) +7) urlgroup,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
@@ -1118,7 +1118,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             group by urlgroup
             """);
         else
-            topurl = query("""\
+            topurl = select("""\
             select substring(url for position('/' in substring(url from 9)) +7) urlgroup,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
@@ -1159,7 +1159,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     if (SP.reportLevel > 11)
         if (studyTime > 0)
-            topdetailurl = query("""\
+            topdetailurl = select("""\
             select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as load_time,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as beacons,
@@ -1167,7 +1167,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             FROM $(tableRt) where session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
             """);
         elseif (studySession != "None")
-            topdetailurl = query("""\
+            topdetailurl = select("""\
             select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
@@ -1176,7 +1176,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             group by urlgroup
             """);
         else
-            topdetailurl = query("""\
+            topdetailurl = select("""\
             select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
@@ -1219,8 +1219,8 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     end
 
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
     ;
 
 end

@@ -365,7 +365,7 @@ function displayTopUrlsByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPa
     defaultBeaconCreateView(TV,UP,SP)
     setTable(UP.btView)
     topUrlTableByCountPrintTable(TV,UP,SP;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
-    q = query(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
 end
 
 function paginatePrintDf(printDF::DataFrame)
@@ -528,7 +528,7 @@ end
 function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
         select count(*)
         from $(UP.resourceTable)
         where
@@ -547,7 +547,7 @@ end
 function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;minEncoded::Int64=1000)
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
             select count(*),encoded_size,transferred_size,decoded_size,url
             from $(UP.resourceTable)
             where
@@ -577,7 +577,7 @@ end
 function resourceSummary(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
         select count(*),url
         from $(UP.resourceTable)
         where
@@ -599,7 +599,7 @@ end
 function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
         select *
         from $(UP.resourceTable)
         where
@@ -619,7 +619,7 @@ end
 function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
             select count(*),url,params_u
             from $(UP.resourceTable)
             where
@@ -641,7 +641,7 @@ end
 function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
             select count(*), avg(start_time) as "Start Time",
                 avg(fetch_start) as "Fetch Start",
                 avg(dns_end-dns_start) as "DNS ms",
@@ -672,7 +672,7 @@ end
 function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        timeTable = query("""\
+        timeTable = select("""\
             select (response_last_byte-start_time) as "Time Taken",
                 (start_time) as "Start Time",
                 (fetch_start) as "Fetch Start",
@@ -742,7 +742,7 @@ end
 function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        joinTables = query("""\
+        joinTables = select("""\
             select (response_last_byte-start_time) as "Time Taken",
                 (start_time) as "Start Time",
                 (fetch_start) as "Fetch S",
@@ -779,14 +779,14 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
 
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
     # where beacon_type = 'page view'
-    cnt = query("""SELECT count(*) FROM $btv""")
+    cnt = select("""SELECT count(*) FROM $btv""")
     #Hide output from final report
     println("$btv count is ",cnt[1,1])
 
     try
 
         displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
-        domSize = query("""\
+        domSize = select("""\
             select count(*),AVG(params_dom_sz) beacons,
                 AVG(timers_t_page)/1000 load_time,
                 CASE
@@ -813,7 +813,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
 
     try
         displayTitle(chart_title = "Total Bytes Used (Size x Views) Treemap Report (Min 2 MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
-        domSize = query("""\
+        domSize = select("""\
             select count(*),SUM(params_dom_sz) beacons,
                 AVG(timers_t_page)/1000 load_time,
                 CASE
@@ -843,7 +843,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     try
         displayTitle(chart_title = "Unique Domains Used", chart_info = [TV.timeString], showTimeStamp=false)
 
-        domSize = query("""\
+        domSize = select("""\
             select count(*),AVG(params_dom_doms) avgsize,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -865,7 +865,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     try
         displayTitle(chart_title = "Domains Nodes On Page (20k min)", chart_info = [TV.timeString], showTimeStamp=false)
 
-        domSize = query("""\
+        domSize = select("""\
             select count(*),AVG(params_dom_ln) avgsize,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -888,7 +888,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     try
         displayTitle(chart_title = "Domains Images", chart_info = [TV.timeString], showTimeStamp=false)
 
-        domSize = query("""\
+        domSize = select("""\
             select count(*) cnt,AVG(params_dom_img) avgsize,
                 AVG(params_dom_img_ext) avgsizeext,
                 CASE
@@ -912,7 +912,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     try
         displayTitle(chart_title = "Frequently Used Images", chart_info = [TV.timeString], showTimeStamp=false)
 
-        domSize = query("""\
+        domSize = select("""\
             select count(*) cnt,SUM(params_dom_img) avgsize,
                 SUM(params_dom_img_ext) avgsizeext,
                 CASE
@@ -939,7 +939,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         #params_dom_img,params_dom_img_ext,
         #params_dom_script,params_dom_script_ext,
 
-        domSize = query("""\
+        domSize = select("""\
             select count(*) cnt,AVG(params_dom_script) avgsize,
                 AVG(params_dom_script_ext) avgsizeext,
                 CASE
@@ -966,7 +966,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         #params_dom_img,params_dom_img_ext,
         #params_dom_script,params_dom_script_ext,
 
-        domSize = query("""\
+        domSize = select("""\
             select count(*) cnt,SUM(params_dom_script) avgsize,
                 SUM(params_dom_script_ext) avgsizeext,
                 CASE
@@ -992,7 +992,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     try
         #displayTitle(chart_title = "Big Pages Treemap Report (Min 3MB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
 
-        sizeTrend = query("""\
+        sizeTrend = select("""\
             select params_h_t,params_dom_sz size,
                 CASE
                     when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -1035,7 +1035,7 @@ function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         statsDF = DataFrame()
 
-        localDF = query("""SELECT params_dom_sz FROM $btv""")
+        localDF = select("""SELECT params_dom_sz FROM $btv""")
         dv = localDF[:params_dom_sz]
         statsDF = basicStatsFromDV(dv)
         statsDF[:unit] = "KBytes"

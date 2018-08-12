@@ -26,7 +26,7 @@ productPageGroup = "Your Shot" # primary page group
 localTable = "$(table)_$(scriptName)_spike_pview_prod"
 localTableRt = "$(tableRt)_spike_pview_prod"
 
-toppagecount = query("""\
+toppagecount = select("""\
             select count(*),session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
             FROM $table
             where
@@ -41,7 +41,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 firstSession = (toppagecount[1:1,:session_id][1])
 println(firstSession)
 
-debugRecords = query("""\
+debugRecords = select("""\
             select *
             FROM $table
             where
@@ -52,7 +52,7 @@ debugRecords = query("""\
 
 beautifyDF(debugRecords[1:min(10,end),:])
 
-debugRecords = query("""\
+debugRecords = select("""\
             select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
             FROM $table
             where
@@ -63,7 +63,7 @@ order by "timestamp"
 
 beautifyDF(debugRecords[1:min(100,end),:])
 
-debugRecords = query("""\
+debugRecords = select("""\
             select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
             FROM $table
             where
@@ -74,7 +74,7 @@ debugRecords = query("""\
 
 beautifyDF(debugRecords[1:min(300,end),:])
 
-debugRecords = query("""\
+debugRecords = select("""\
             select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
             FROM $table
             where
@@ -106,7 +106,7 @@ beautifyDF(debugRecords[1:min(300,end),:])
 #et = (TV.endTimeMsUTC)
 #println(st," , ",et)
 
-toppagecount = query("""\
+toppagecount = select("""\
             select count(*),session_id
             FROM $table
             where
@@ -118,7 +118,7 @@ toppagecount = query("""\
 
 beautifyDF(toppagecount[1:min(10,end),:])
 
-#toppagecount = query("""\
+#toppagecount = select("""\
 #            select count(*),$tableRt.session_id
 #            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
 #            where
@@ -129,7 +129,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 #                """);
 
 
-#toppagecount = query("""\
+#toppagecount = select("""\
 #            select count(*) as request_count,
 #                $tableRT.session_id
 #            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
@@ -153,6 +153,6 @@ topUrls()
 peakTable()
 statsTable()
 
-q = query(""" drop view if exists $localTable;""")
-q = query(""" drop view if exists $localTableRt;""")
+q = select(""" drop view if exists $localTable;""")
+q = select(""" drop view if exists $localTableRt;""")
 ;

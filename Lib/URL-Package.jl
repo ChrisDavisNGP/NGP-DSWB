@@ -167,7 +167,7 @@ end
 function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
     try
 
-        topUrlDF = query("""\
+        topUrlDF = select("""\
 
         select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
             CASE WHEN (position('?' in params_u) > 0) then (trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) || '/%') else params_u || '%' end as urlgroup
@@ -196,7 +196,7 @@ end
 
 function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeMs::Int64,endTimeMs::Int64)
     try
-        topUrl = query("""\
+        topUrl = select("""\
 
         select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
         FROM $(ltName)
@@ -235,7 +235,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = ["Pages Load Used",TV.timeString],showTimeStamp=false)
 
         if (showCount)
-            topurl = query("""\
+            topurl = select("""\
                 select count(*),
             CASE
             when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
@@ -254,7 +254,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         if (showCountDetails)
-            topurl = query("""\
+            topurl = select("""\
 
             select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
             FROM $(btv)
@@ -284,7 +284,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup) Dev=$(UP.deviceType), OS=$(UP.agentOs)",
          chart_info = [TV.timeString],showTimeStamp=false)
 
-        topurl = query("""\
+        topurl = select("""\
 
         select count(*),
         CASE
@@ -310,7 +310,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         scrubUrlToPrint(SP,topurl,:urlgroup)
         beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
 
-        topurl = query("""\
+        topurl = select("""\
 
         select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_page) ,params_u as urlgroup
         FROM $(ltName)

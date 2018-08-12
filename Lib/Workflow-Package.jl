@@ -158,8 +158,8 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfClearViews)
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 
@@ -173,8 +173,8 @@ function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     agentCountPrintTable(UP,SP)
 
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
     ;
 
 end
@@ -277,8 +277,8 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 
     if wfClearViews
-        q = query(""" drop view if exists $(UP.btView);""")
-        q = query(""" drop view if exists $(UP.rtView);""")
+        q = select(""" drop view if exists $(UP.btView);""")
+        q = select(""" drop view if exists $(UP.rtView);""")
     end
 
 end
@@ -295,8 +295,8 @@ function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     paramsUCountPrintTable(UP,SP)
 
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
     ;
 
 end
@@ -326,8 +326,8 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     beaconViewStats(TV,UP,SP)
 
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
     ;
 
 end
@@ -418,10 +418,10 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=UP.limitRows)
 
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
-    q = query(""" drop view if exists $(mobileView);""")
-    q = query(""" drop view if exists $(desktopView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(mobileView);""")
+    q = select(""" drop view if exists $(desktopView);""")
     ;
 end
 
@@ -487,7 +487,7 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
     ;
 
-    q = query(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
     ;
 
 end
@@ -663,8 +663,8 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfClearViews)
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -724,8 +724,8 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     graphLongTimesFATS(localStats2)
   end
   if (wfClearViews)
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -775,8 +775,8 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
     end
 
     if (wfClearViews)
-        q = query(""" drop view if exists $(UP.btView);""")
-        q = query(""" drop view if exists $(UP.rtView);""")
+        q = select(""" drop view if exists $(UP.btView);""")
+        q = select(""" drop view if exists $(UP.rtView);""")
     end
 
 end
@@ -817,8 +817,8 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfClearViews)
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -843,8 +843,8 @@ function findSingleResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfClearViews)
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -885,8 +885,8 @@ function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
   end
 
   if (wfClearViews)
-    q = query(""" drop view if exists $(UP.btView);""")
-    q = query(""" drop view if exists $(UP.rtView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -940,9 +940,9 @@ function beaconAndRtCountsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         beautifyDF(t2DF)
     end
 
-    rtcnt = query("""select count(*) from $rt""");
-    maxRt = query("""select max("timestamp") from $rt""");
-    minRt = query("""select min("timestamp") from $rt""");
+    rtcnt = select("""select count(*) from $rt""");
+    maxRt = select("""select max("timestamp") from $rt""");
+    minRt = select("""select min("timestamp") from $rt""");
 
     minStr = msToDateTime(minRt[1,:min]);
     maxStr = msToDateTime(maxRt[1,:max]);
@@ -1021,7 +1021,7 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
     # where beacon_type = 'page view'
-    # t1DF = query("""SELECT count(*) FROM $btv""")
+    # t1DF = select("""SELECT count(*) FROM $btv""")
 
     retailer_results = getLatestResults(hours=10, minutes=0, table_name="$(btv)")
     size(retailer_results)
@@ -1033,7 +1033,7 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     doit(retailer_results, showDimensionViz=true, showProgress=true);
 
-    q = query(""" drop view if exists $btv;""")
+    q = select(""" drop view if exists $btv;""")
     ;
 
 end
@@ -1050,7 +1050,7 @@ function largeResourcesForImageMgrWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
     largeResourceFileTypePrint(TV,UP,SP,"%svg")
     largeResourceFileTypePrint(TV,UP,SP,"%jpeg")
 
-    q = query(""" drop view if exists $(UP.btView);""")
+    q = select(""" drop view if exists $(UP.btView);""")
     ;
 
 end
