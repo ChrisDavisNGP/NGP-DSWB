@@ -208,11 +208,11 @@ end
 
 function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_34501", hours::Int64=3, minutes::Int64=0)
     # Get the date range of the table and format it using strftime
-    timestamp_range = query("SELECT min(timestamp) as min, max(timestamp) as max FROM $(table_name)")
+    timestamp_range = select("SELECT min(timestamp) as min, max(timestamp) as max FROM $(table_name)")
 
     timelimit = timestamp_range[1, 2] - (hours*60 + minutes) * 60 * 1000;
 
-    query("
+    select("
         SELECT page_group, params_u,
             geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
             user_agent_family, user_agent_major, user_agent_os, user_agent_osversion, user_agent_model,

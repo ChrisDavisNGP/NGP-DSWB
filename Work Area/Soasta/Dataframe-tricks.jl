@@ -1,9 +1,9 @@
 using QueryAPI
 ODBC.connect("vfdsn")
 
-results = query("SELECT COUNT(*) FROM soasta_beacons")
+results = select("SELECT COUNT(*) FROM soasta_beacons")
 
-tables=query("
+tables = select("
     SELECT DISTINCT tablename
       FROM pg_table_def
      WHERE schemaname = 'public'
@@ -12,7 +12,7 @@ tables=query("
 
 #Or describe a single table
 
-defn = query("
+defn = select("
     SELECT *
       FROM pg_table_def
      WHERE tablename = 'quickenloans_beacons'
@@ -54,7 +54,7 @@ table = "soasta_beacons"
 #We can now use this variable in a string using `$()` to dereference it.
 
 # Get the date range of the table and format it using strftime
-timestamp_range = query("SELECT min(timestamp) as min, max(timestamp) as max FROM $(table)");
+timestamp_range = select("SELECT min(timestamp) as min, max(timestamp) as max FROM $(table)");
 println(timestamp_range, "\n\n",
 strftime("%Y-%m-%dT%H:%M:%S", div(timestamp_range[1, 1], 1000)),
     " - ",
@@ -68,7 +68,7 @@ strftime("%Y-%m-%dT%H:%M:%S", div(timestamp_range[1, 2], 1000))
 #**Security Alert:** Do not do this with untrusted data as this could result in `SQL Injection` attacks
 
 # This will take a few (<20) seconds to run, so be patient
-results = query("
+results = select("
 SELECT
     page_group,
     geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
