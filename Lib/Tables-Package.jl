@@ -158,7 +158,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
     end
 
     try
-        localTableDF = query("""\
+        localTableDF = select("""\
             select "timestamp",session_id,timers_t_done,timers_domready
             from $bt
             where
