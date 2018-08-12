@@ -29,13 +29,13 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuarti
         maxResources = showQuartiles
         pageGroupQuartilesDF = select("""\
             SELECT DISTINCT page_group,
-                MIN(timers_t_done) OVER (PARTITION BY page_group) AS minimum,
-                PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY timers_t_done) OVER (PARTITION BY page_group) AS lower_quartile,
-                MEDIAN(timers_t_done) OVER (PARTITION BY page_group) AS "median",
-                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY timers_t_done) OVER (PARTITION BY page_group) AS upper_quartile,
-                PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY timers_t_done) OVER (PARTITION BY page_group) AS maximum,
+                MIN(pageloadtime) OVER (PARTITION BY page_group) AS minimum,
+                PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY page_group) AS lower_quartile,
+                MEDIAN(pageloadtime) OVER (PARTITION BY page_group) AS "median",
+                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY page_group) AS upper_quartile,
+                PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY page_group) AS maximum,
                 COUNT(*)OVER (PARTITION BY page_group)
-                --MAX(timers_t_done) OVER (PARTITION BY page_group) AS maximum
+                --MAX(pageloadtime) OVER (PARTITION BY page_group) AS maximum
             FROM $table
             WHERE
                 page_group IN ($(pageGroups)) and
@@ -45,7 +45,7 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuarti
                 params_u ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
-                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             ORDER BY count DESC
             limit $(showQuartiles)
         """);

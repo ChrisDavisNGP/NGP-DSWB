@@ -176,7 +176,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
     statsDF = DataFrame()
 
     if (UP.usePageLoad)
-        statsDF = buildTimeStats(localTableDF,:timers_t_done)
+        statsDF = buildTimeStats(localTableDF,:pageloadtime)
     else
         statsDF = buildTimeStats(localTableDF,:timers_domready)
     end
@@ -240,7 +240,7 @@ function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::Dat
     end
 
     if (UP.usePageLoad)
-        dv = localTableDF[:timers_t_done]
+        dv = localTableDF[:pageloadtime]
     else
         dv = localTableDF[:timers_domready]
     end
@@ -302,7 +302,7 @@ function basicStats(UP::UrlParams,localStatsDF::DataFrame)
     try
 
         if UP.usePageLoad
-            dv = Array{Float64}(localStatsDF[:timers_t_done])
+            dv = Array{Float64}(localStatsDF[:pageloadtime])
         else
             dv = Array{Float64}(localStatsDF[:timers_domready])
         end
@@ -416,7 +416,7 @@ function runningStats(UP::UrlParams,year::Int64,month::Int64,day::Int64,hour::In
     try
 
         if UP.usePageLoad
-            dv = Array{Float64}(localStatsDF[:timers_t_done])
+            dv = Array{Float64}(localStatsDF[:pageloadtime])
         else
             dv = Array{Float64}(localStatsDF[:timers_domready])
         end
@@ -540,7 +540,7 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             return
         end
 
-        statsDF = buildTimeStats(localStatsDF,:timers_t_done)
+        statsDF = buildTimeStats(localStatsDF,:pageloadtime)
 
         if size(statsDF,1) == 0
             println("No statsDF data")
@@ -558,8 +558,8 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         return statsDF
 
-        #c3 = drawC3Viz(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))); columnNames=[:timers_t_done], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
-        #drawHistogram(by(localTableDF, :timers_t_done, df->DataFrame(N=size(df,1))))
+        #c3 = drawC3Viz(by(localTableDF, :pageloadtime, df->DataFrame(N=size(df,1))); columnNames=[:pageloadtime], axisLabels=["Page Load Times"],dataNames=["Completed Sessions"], mPulseWidget=false, chart_title="Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["line"])
+        #drawHistogram(by(localTableDF, :pageloadtime, df->DataFrame(N=size(df,1))))
     catch y
         println("beaconViewStats Exception ",y)
     end
@@ -586,7 +586,7 @@ function distributionStats(UP::UrlParams)
         #statsDV = [18585.0,9499.0,19617.0,9624.0,28572.0,4255.0,9198.0,21984.0,27154.0,34180.0,14190.0,5248.0,6802.0,55169.0,55917.0,15414.0,33405.0]
         localStatsDF = statsBtViewTableToDF(UP);
         if (UP.usePageLoad)
-            statsDV = localStatsDF[:timers_t_done]
+            statsDV = localStatsDF[:pageloadtime]
         else
             statsDV = localStatsDF[:timers_domready]
         end
@@ -791,7 +791,7 @@ end
 function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
     try
         if (UP.usePageLoad)
-            dv = localStats2[:timers_t_done]
+            dv = localStats2[:pageloadtime]
         else
             dv = localStats2[:timers_domready]
         end

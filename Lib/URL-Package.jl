@@ -169,7 +169,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
 
         topUrlDF = select("""\
 
-        select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,
+        select count(*) cnt, AVG(params_dom_sz), AVG(pageloadtime) ,
             CASE WHEN (position('?' in params_u) > 0) then (trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) || '/%') else params_u || '%' end as urlgroup
         FROM $(UP.beaconTable)
         where
@@ -178,7 +178,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
             timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
             page_group ilike '$(UP.pageGroup)' and
             params_u ilike '$(UP.urlRegEx)' and
-            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
+            pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs) and
             user_agent_device_type ilike '$(UP.deviceType)' and
             user_agent_os ilike '$(UP.agentOs)' and
             params_rt_quit IS NULL
@@ -198,14 +198,14 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
     try
         topUrl = select("""\
 
-        select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
+        select count(*) cnt, AVG(params_dom_sz), AVG(pageloadtime) ,params_u as urlgroup
         FROM $(ltName)
         where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             timestamp between $startTimeMs and $endTimeMs and
             page_group ilike '$(pageGroup)' and
-            timers_t_done >= 1000 and timers_t_done < 600000 and
+            pageloadtime >= 1000 and pageloadtime < 600000 and
             params_rt_quit IS NULL
         group by params_u
         order by cnt desc
@@ -256,12 +256,12 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         if (showCountDetails)
             topurl = select("""\
 
-            select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_done) ,params_u as urlgroup
+            select count(*) cnt, AVG(params_dom_sz), AVG(pageloadtime) ,params_u as urlgroup
             FROM $(btv)
             where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
-            timers_t_done > 0
+            pageloadtime > 0
             group by params_u
             order by cnt desc
             limit $(UP.limitQueryRows)
@@ -301,7 +301,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           user_agent_device_type ilike '$(UP.deviceType)' and
           user_agent_os ilike '$(UP.agentOs)' and
           page_group ilike '$(UP.pageGroup)' and
-          timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+          pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         group by urlgroup
         order by count(*) desc
         limit $(UP.limitQueryRows)
@@ -325,7 +325,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             user_agent_device_type ilike '$(UP.deviceType)' and
             user_agent_os ilike '$(UP.agentOs)' and
             page_group ilike '$(UP.pageGroup)' and
-            timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+            pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         group by params_u
         order by cnt desc
         limit $(UP.limitQueryRows)
@@ -343,7 +343,7 @@ function setRangeUPT(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::Dat
 
     try
         statsDF = DataFrame()
-        dv = localTableDF[:timers_t_done]
+        dv = localTableDF[:pageloadtime]
         statsDF = basicStatsFromDV(dv)
 
         displayTitle(chart_title = "Raw Data Stats for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)

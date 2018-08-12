@@ -53,7 +53,7 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
-                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         """)
 
         tableDumpDFDebug(TV,UP,SP,localTableDF)
@@ -88,7 +88,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
-                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             order by timestamp asc
             limit $(UP.limitQueryRows)
         """)
@@ -132,7 +132,7 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,
             push!(localTableDF,[row[:jobId];row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
         end
 
-        localTableDF = names!(localTableDF,[Symbol("sessionId");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
+        localTableDF = names!(localTableDF,[Symbol("sessionId");Symbol("timestamp");Symbol("pageloadtime");Symbol("timers_domready")])
 
         if SP.debugLevel > 6
             beautifyDF(localTableDF)
@@ -162,7 +162,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             select
                 timestamp,
                 sessionId,
-                pageloadtime as timers_t_done,
+                pageloadtime,
                 domreadytimer as timers_domready
             from $bt
             where
@@ -178,7 +178,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#            select timestamp,sessionId,timers_t_done,timers_domready
+#           timers_domready
 #            from $bt
 #            where
 #                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -188,7 +188,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
 #                user_agent_device_type ilike '$(UP.deviceType)' and
 #                user_agent_os ilike '$(UP.agentOs)' and
 #                page_group ilike '$(UP.pageGroup)' and
-#                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+#                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
 #            order by timestamp asc
 #            limit $(UP.limitQueryRows)
 #        """)
@@ -262,7 +262,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 count(*) as request_count,
                 'Label' as label,
                 avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
-                avg($bt.timers_t_done) as beacon_time
+                avg($bt.pageloadtime) as beacon_time
             FROM $rt join $bt on $rt.sessionId = $bt.sessionId and $rt.timestamp = $bt.timestamp
             WHERE
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
@@ -271,7 +271,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 $bt.params_u ilike '$(UP.urlRegEx)' and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
-                $bt.timers_t_done >= $(UP.timeLowerMs) and $bt.timers_t_done <= $(UP.timeUpperMs) and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime <= $(UP.timeUpperMs) and
                 $bt.params_rt_quit IS NULL
             group by urlgroup,urlpagegroup,label
             """);
@@ -459,7 +459,7 @@ function getResourcesForBeaconToDF(TV::TimeVars,UP::UrlParams)
             and $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             and $bt.sessionId IS NOT NULL
             and $bt.page_group ilike '$(UP.pageGroup)'
-            and $bt.timers_t_done >= $(UP.timeLowerMs) and $bt.timers_t_done < $(UP.timeUpperMs)
+            and $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
             and $bt.params_rt_quit IS NULL
             and $bt.user_agent_device_type ilike '$(UP.deviceType)'
             and $bt.user_agent_os ilike '$(UP.agentOs)'
@@ -493,7 +493,7 @@ function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $bt.sessionId IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
                 $bt.params_u ilike '$(UP.urlRegEx)' and
-                $bt.timers_t_done >= $(UP.timeLowerMs) and $bt.timers_t_done < $(UP.timeUpperMs) and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.params_rt_quit IS NULL
@@ -536,7 +536,7 @@ end
 function statsBtViewByHourToDF(btv::ASCIIString,startTimeMsUTC::Int64, endTimeMsUTC::Int64)
     try
         localStats = select("""\
-            select timers_t_done
+            select pageloadtime
             FROM $btv
             where
                 timestamp between $startTimeMsUTC and $endTimeMsUTC
@@ -554,66 +554,66 @@ function statsBtViewTableToExtraDF(UP::UrlParams)
         localStats = select("""\
         select
         case
-          when timers_t_done between     0 and  1000 then '    0-1000'
-          when timers_t_done between  1001 and  2000 then ' 1001-2000'
-          when timers_t_done between  2001 and  3000 then ' 2001-3000'
-          when timers_t_done between  3001 and  4000 then ' 3001-4000'
-          when timers_t_done between  4001 and  5000 then ' 4001-5000'
-          when timers_t_done between  5001 and  6000 then ' 5001-6000'
-          when timers_t_done between  6001 and  7000 then ' 6001-7000'
-          when timers_t_done between  7001 and  8000 then ' 7001-8000'
-          when timers_t_done between  8001 and  9000 then ' 8001-9000'
-          when timers_t_done between  9001 and 10000 then ' 9001-10000'
-          when timers_t_done between 10001 and 11000 then '10001-11000'
-          when timers_t_done between 11001 and 12000 then '11001-12000'
-          when timers_t_done between 12001 and 13000 then '12001-13000'
-          when timers_t_done between 13001 and 14000 then '13001-14000'
-          when timers_t_done between 14001 and 15000 then '14001-15000'
-          when timers_t_done between 15001 and 16000 then '15001-16000'
-          when timers_t_done between 16001 and 17000 then '16001-17000'
-          when timers_t_done between 17001 and 18000 then '17001-18000'
-          when timers_t_done between 18001 and 19000 then '18001-19000'
-          when timers_t_done between 19001 and 20000 then '19001-20000'
-          when timers_t_done between 20001 and 21000 then '20001-21000'
-          when timers_t_done between 21001 and 22000 then '21001-22000'
-          when timers_t_done between 22001 and 23000 then '22001-23000'
-          when timers_t_done between 23001 and 24000 then '23001-24000'
-          when timers_t_done between 24001 and 25000 then '24001-25000'
-          when timers_t_done between 25001 and 26000 then '25001-26000'
-          when timers_t_done between 26001 and 27000 then '26001-27000'
-          when timers_t_done between 27001 and 28000 then '27001-28000'
-          when timers_t_done between 28001 and 29000 then '28001-29000'
-          when timers_t_done between 29001 and 30000 then '29001-30000'
-          when timers_t_done between 30001 and 31000 then '30001-31000'
-          when timers_t_done between 31001 and 32000 then '31001-32000'
-          when timers_t_done between 32001 and 33000 then '32001-33000'
-          when timers_t_done between 33001 and 34000 then '33001-34000'
-          when timers_t_done between 34001 and 35000 then '34001-35000'
-          when timers_t_done between 35001 and 36000 then '35001-36000'
-          when timers_t_done between 36001 and 37000 then '36001-37000'
-          when timers_t_done between 37001 and 38000 then '37001-38000'
-          when timers_t_done between 38001 and 39000 then '38001-39000'
-          when timers_t_done between 39001 and 40000 then '39001-40000'
-          when timers_t_done between 40001 and 41000 then '40001-41000'
-          when timers_t_done between 41001 and 42000 then '41001-42000'
-          when timers_t_done between 42001 and 43000 then '42001-43000'
-          when timers_t_done between 43001 and 44000 then '43001-44000'
-          when timers_t_done between 44001 and 45000 then '44001-45000'
-          when timers_t_done between 45001 and 46000 then '45001-46000'
-          when timers_t_done between 46001 and 47000 then '46001-47000'
-          when timers_t_done between 47001 and 48000 then '47001-48000'
-          when timers_t_done between 48001 and 49000 then '48001-49000'
-          when timers_t_done between 49001 and 50000 then '49001-50000'
-          when timers_t_done between 50001 and 51000 then '50001-51000'
-          when timers_t_done between 51001 and 52000 then '51001-52000'
-          when timers_t_done between 52001 and 53000 then '52001-53000'
-          when timers_t_done between 53001 and 54000 then '53001-54000'
-          when timers_t_done between 54001 and 55000 then '54001-55000'
-          when timers_t_done between 55001 and 56000 then '55001-56000'
-          when timers_t_done between 56001 and 57000 then '56001-57000'
-          when timers_t_done between 57001 and 58000 then '57001-58000'
-          when timers_t_done between 58001 and 59000 then '58001-59000'
-          when timers_t_done between 59001 and 60000 then '59001-60000'
+          when pageloadtime between     0 and  1000 then '    0-1000'
+          when pageloadtime between  1001 and  2000 then ' 1001-2000'
+          when pageloadtime between  2001 and  3000 then ' 2001-3000'
+          when pageloadtime between  3001 and  4000 then ' 3001-4000'
+          when pageloadtime between  4001 and  5000 then ' 4001-5000'
+          when pageloadtime between  5001 and  6000 then ' 5001-6000'
+          when pageloadtime between  6001 and  7000 then ' 6001-7000'
+          when pageloadtime between  7001 and  8000 then ' 7001-8000'
+          when pageloadtime between  8001 and  9000 then ' 8001-9000'
+          when pageloadtime between  9001 and 10000 then ' 9001-10000'
+          when pageloadtime between 10001 and 11000 then '10001-11000'
+          when pageloadtime between 11001 and 12000 then '11001-12000'
+          when pageloadtime between 12001 and 13000 then '12001-13000'
+          when pageloadtime between 13001 and 14000 then '13001-14000'
+          when pageloadtime between 14001 and 15000 then '14001-15000'
+          when pageloadtime between 15001 and 16000 then '15001-16000'
+          when pageloadtime between 16001 and 17000 then '16001-17000'
+          when pageloadtime between 17001 and 18000 then '17001-18000'
+          when pageloadtime between 18001 and 19000 then '18001-19000'
+          when pageloadtime between 19001 and 20000 then '19001-20000'
+          when pageloadtime between 20001 and 21000 then '20001-21000'
+          when pageloadtime between 21001 and 22000 then '21001-22000'
+          when pageloadtime between 22001 and 23000 then '22001-23000'
+          when pageloadtime between 23001 and 24000 then '23001-24000'
+          when pageloadtime between 24001 and 25000 then '24001-25000'
+          when pageloadtime between 25001 and 26000 then '25001-26000'
+          when pageloadtime between 26001 and 27000 then '26001-27000'
+          when pageloadtime between 27001 and 28000 then '27001-28000'
+          when pageloadtime between 28001 and 29000 then '28001-29000'
+          when pageloadtime between 29001 and 30000 then '29001-30000'
+          when pageloadtime between 30001 and 31000 then '30001-31000'
+          when pageloadtime between 31001 and 32000 then '31001-32000'
+          when pageloadtime between 32001 and 33000 then '32001-33000'
+          when pageloadtime between 33001 and 34000 then '33001-34000'
+          when pageloadtime between 34001 and 35000 then '34001-35000'
+          when pageloadtime between 35001 and 36000 then '35001-36000'
+          when pageloadtime between 36001 and 37000 then '36001-37000'
+          when pageloadtime between 37001 and 38000 then '37001-38000'
+          when pageloadtime between 38001 and 39000 then '38001-39000'
+          when pageloadtime between 39001 and 40000 then '39001-40000'
+          when pageloadtime between 40001 and 41000 then '40001-41000'
+          when pageloadtime between 41001 and 42000 then '41001-42000'
+          when pageloadtime between 42001 and 43000 then '42001-43000'
+          when pageloadtime between 43001 and 44000 then '43001-44000'
+          when pageloadtime between 44001 and 45000 then '44001-45000'
+          when pageloadtime between 45001 and 46000 then '45001-46000'
+          when pageloadtime between 46001 and 47000 then '46001-47000'
+          when pageloadtime between 47001 and 48000 then '47001-48000'
+          when pageloadtime between 48001 and 49000 then '48001-49000'
+          when pageloadtime between 49001 and 50000 then '49001-50000'
+          when pageloadtime between 50001 and 51000 then '50001-51000'
+          when pageloadtime between 51001 and 52000 then '51001-52000'
+          when pageloadtime between 52001 and 53000 then '52001-53000'
+          when pageloadtime between 53001 and 54000 then '53001-54000'
+          when pageloadtime between 54001 and 55000 then '54001-55000'
+          when pageloadtime between 55001 and 56000 then '55001-56000'
+          when pageloadtime between 56001 and 57000 then '56001-57000'
+          when pageloadtime between 57001 and 58000 then '57001-58000'
+          when pageloadtime between 58001 and 59000 then '58001-59000'
+          when pageloadtime between 59001 and 60000 then '59001-60000'
         else
             '60001+'
         end as timersdone,
@@ -634,7 +634,7 @@ function statsBtViewTableToDF(UP::UrlParams)
     try
         btv = UP.btView
 
-        localStats = select("""select timers_t_done from $btv""");
+        localStats = select("""select pageloadtime from $btv""");
 
         return localStats
     catch y
@@ -683,7 +683,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           localTableDF = select("""\
           select CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
             count(*) as request_count,
-            avg($table.timers_t_done) as beacon_time,
+            avg($table.pageloadtime) as beacon_time,
             sum($rt.encoded_size) as encoded_size
           FROM $rt join $table on $rt.sessionId = $table.sessionId and $rt.timestamp = $table.timestamp
               where
@@ -693,7 +693,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               and $table.params_u ilike '$(UP.urlRegEx)'
               and $table.user_agent_device_type ilike '$(UP.deviceType)'
               and $table.user_agent_os ilike '$(UP.agentOs)'
-              and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
+              and $table.pageloadtime >= $(UP.timeLowerMs) and $table.pageloadtime <= $(UP.timeUpperMs)
               and $table.params_rt_quit IS NULL
               and $table.errors IS NULL
           group by urlgroup,$table.sessionId,$table.timestamp,errors
@@ -808,11 +808,11 @@ function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
         UpperBy25p = statsDF[1:1,:UpperBy25p][1]
 
         localStats2 = select("""\
-            select timestamp, timers_t_done, sessionId
+            select timestamp, pageloadtime, sessionId
             from $(UP.btView) where
                 page_group ilike '$(UP.pageGroup)' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                timers_t_done > $(UpperBy25p)
+                pageloadtime > $(UpperBy25p)
         """)
 
         return localStats2

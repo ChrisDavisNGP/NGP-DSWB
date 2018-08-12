@@ -18,7 +18,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                         params_u ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)' and
                         user_agent_os ilike '$(UP.agentOs)' and
-                        timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
+                        pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             )
         """)
         if (SP.debugLevel > 0)

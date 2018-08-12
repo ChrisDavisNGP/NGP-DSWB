@@ -8,15 +8,15 @@ function showAvailableSessions(UP::UrlParams,SP::ShowParams,localTableDF::DataFr
             s = size(subdf)
 
             if (SP.debugLevel > 8)
-                println("Size=",s," Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+                println("Size=",s," Timer=",subdf[1,:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
             end
 
-            if (subdf[1,:timers_t_done] >= UP.timeLowerMs && subdf[1,:timers_t_done] <= UP.timeUpperMs)
+            if (subdf[1,:pageloadtime] >= UP.timeLowerMs && subdf[1,:pageloadtime] <= UP.timeUpperMs)
                 io += 1
                 if io <= UP.limitPageViews
                     s1 = subdf[1,:sessionId]
                     s2 = subdf[1,:timestamp]
-                    s3 = subdf[1,:timers_t_done]
+                    s3 = subdf[1,:pageloadtime]
                     if (SP.reportLevel > 0) println("executeSingleSession(TV,UP,SP,",s3,",\"",s1,"\",",s2,") #    Time=",s3) end
                 end
             end

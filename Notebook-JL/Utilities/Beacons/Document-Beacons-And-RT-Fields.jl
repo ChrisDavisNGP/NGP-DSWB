@@ -187,7 +187,7 @@ order by timestamp
 
 displayTitle(chart_title = "Timers (T) from Beacon", showTimeStamp=false)
 sessionFields = select("""\
-select timers_t_resp,timers_t_page,timers_t_done,timers_t_domloaded,timers_t_configfb,timers_t_configjs,
+select timers_t_resp,timers_t_page,pageloadtime,timers_t_domloaded,timers_t_configfb,timers_t_configjs,
 timers_t_load,timers_t_prerender,timers_t_postrender
 from $btv
 where sessionId = '$(sessionId)' and timestamp in $(ts)

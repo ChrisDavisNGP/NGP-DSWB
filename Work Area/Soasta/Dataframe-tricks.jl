@@ -74,12 +74,12 @@ SELECT
     geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
     user_agent_family, user_agent_major, user_agent_os, user_agent_osversion, user_agent_model,
     params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
-    timers_t_done
+    pageloadtime
   FROM $(table)
  WHERE page_group IS NOT NULL
    AND (params_rt_quit IS NULL OR params_rt_quit = FALSE)
-   AND timers_t_done IS NOT NULL
-   AND timers_t_done BETWEEN 0 AND 600000
+   AND pageloadtime IS NOT NULL
+   AND pageloadtime BETWEEN 0 AND 600000
    AND timestamp > ($(timestamp_range[1, 2])-(1*24*60*60*1000))
 ")
 
@@ -89,14 +89,14 @@ SELECT
 
 using StatsBase
 
-(iqr(results[:timers_t_done]), var(results[:timers_t_done]), kurtosis(results[:timers_t_done]))
+(iqr(results[:pageloadtime]), var(results[:pageloadtime]), kurtosis(results[:pageloadtime]))
 
 # Grouping a DataFrame by a column
 #
 #`DataFrames` use the [Split-Apply-Combine Strategy](http://dataframesjl.readthedocs.org/en/latest/split_apply_combine.html) to summarise and aggregate a `DataFrame` by one or more columns.
 
 by(results, :page_group) do df
-    DataFrame(iqr = iqr(df[:timers_t_done]), summary = summarystats(df[:timers_t_done]))
+    DataFrame(iqr = iqr(df[:pageloadtime]), summary = summarystats(df[:pageloadtime]))
 end
 
 # Using more than one column
@@ -104,7 +104,7 @@ end
 #We can group by more than one column.  In this case we use `page_group` and `geo_cc`.  We also use the `head` function to reduce the results to the top 15 (the second parameter to `head` is 15)
 
 head(by(results, [:geo_cc, :page_group]) do df
-    DataFrame(m=median(df[:timers_t_done]), iqr = iqr(df[:timers_t_done]), s² = var(df[:timers_t_done]))
+    DataFrame(m=median(df[:pageloadtime]), iqr = iqr(df[:pageloadtime]), s² = var(df[:pageloadtime]))
 end, 15)
 
 # Unicode Variable Names
@@ -150,7 +150,7 @@ function toJSON(rows::DataFrame)
         (:params_dom_ln, "dom.ln"),
         (:params_dom_script, "dom.script"),
         (:params_dom_img, "dom.img"),
-        (:timers_t_done, "timers.t_done")
+        (:pageloadtime, "timers.t_done")
     ])
 
     out = Array(Dict, n)

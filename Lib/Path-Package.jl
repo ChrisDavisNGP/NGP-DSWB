@@ -97,12 +97,12 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               break
           end
           if(SP.debugLevel > 4)
-              println("\nCheck time for page $io Timer=",subdfRow[:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("\nCheck time for page $io Timer=",subdfRow[:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
 
           if (UP.usePageLoad)
-              timeVar = subdfRow[:timers_t_done]
-              timeStampVar = subdfRow[:timers_t_done]
+              timeVar = subdfRow[:pageloadtime]
+              timeStampVar = subdfRow[:pageloadtime]
           else
               timeVar = subdfRow[:timers_domready]
               timeStampVar = subdfRow[:timers_domready]
@@ -208,12 +208,12 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
           end
           s = size(subdf,1)
           if(SP.debugLevel > 2)
-              println("Current Page Size=",s," Target Timer=",subdf[1,:timers_t_done]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("Current Page Size=",s," Target Timer=",subdf[1,:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
           end
 
           if (UP.usePageLoad)
-              timeVar = subdf[1,:timers_t_done]
-              timeStampVar = subdf[1,:timers_t_done]
+              timeVar = subdf[1,:pageloadtime]
+              timeStampVar = subdf[1,:pageloadtime]
           else
               timeVar = subdf[1,:timers_domready]
               timeStampVar = subdf[1,:timers_domready]
@@ -239,7 +239,7 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
                       displayTime = Dates.format(displayTimez,"yyyy-mm-dd HH:MM")
                   end
                   timeVarSec = timeVar / 1000.0
-                  # We may be missing requests such that the timers_t_done is a little bigger than the treemap
+                  # We may be missing requests such that the pageloadtime is a little bigger than the treemap
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
                       println("Page $(io) of $(UP.limitPageViews): $(labelString)")
@@ -334,7 +334,7 @@ function individualPageDataNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,NR::NrP
             )
       end
 
-      #localDF = names!(toppageurl,[Symbol("sessionId");Symbol("timestamp");Symbol("timers_t_done");Symbol("timers_domready")])
+      #localDF = names!(toppageurl,[Symbol("sessionId");Symbol("timestamp");Symbol("pageloadtime");Symbol("timers_domready")])
 
       if SP.debugLevel > 6
           beautifyDF(toppageurl)

@@ -86,7 +86,7 @@ aggregate(data[:,[2,20]], :page_group, [length, mean])
 using Gadfly
 df = readtable("data/gadflyData.csv");
 
-p = Gadfly.plot(df, x="timers_t_done", color="user_agent_os",
+p = Gadfly.plot(df, x="pageloadtime", color="user_agent_os",
     Theme(panel_fill=color("white"), background_color=color("white")),
     Geom.density,
     Guide.xlabel("Page Load Time (seconds)"),

@@ -44,7 +44,7 @@ end
 function getGroupSummary{T <: AbstractDataFrame}(df::T)
 #function getGroupSummary(df::DataFrame)
 
-    summaryDF = summarystats(df[:timers_t_done])
+    summaryDF = summarystats(df[:pageloadtime])
     fw = 0.0
     p2 = 0.0
     p98 = 0.0
@@ -66,8 +66,8 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
 
     try
         fw  = (summaryDF.q75-summaryDF.q25)*1.5
-        p2  = percentile(df[:timers_t_done], 2)
-        p98 = percentile(df[:timers_t_done], 98)
+        p2  = percentile(df[:pageloadtime], 2)
+        p98 = percentile(df[:pageloadtime], 98)
     catch y
         println("Exceptn 1 ",y);
     end
@@ -217,12 +217,12 @@ function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_345
             geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
             user_agent_family, user_agent_major, user_agent_os, user_agent_osversion, user_agent_model,
             params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
-            timers_t_done
+            pageloadtime
          FROM $(table_name)
          WHERE page_group IS NOT NULL
            AND (params_rt_quit IS NULL)
-           AND timers_t_done IS NOT NULL
-           AND timers_t_done BETWEEN 0 AND 600000
+           AND pageloadtime IS NOT NULL
+           AND pageloadtime BETWEEN 0 AND 600000
            AND timestamp > $(timelimit)
     ")
 #           AND (params_rt_quit IS NULL OR params_rt_quit = FALSE)

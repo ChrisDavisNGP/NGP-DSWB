@@ -36,7 +36,7 @@ setTable(btv)
 # We then write some code to pull data out of our DataBase.  The following fields are required:
 #
 #For beacon intensity (colour)
-#* `timers_t_done`
+#* `pageloadtime`
 #
 #For beacon size (radius)
 #* `params_dom_sz`
@@ -77,7 +77,7 @@ end
 results2 = select("""\
     select timestamp,page_group, user_agent_device_type,user_agent_family,
         params_dom_sz,params_dom_ln,params_dom_script,params_dom_img,
-        timers_t_done,timers_t_resp,timers_t_page
+        pageloadtime,timers_t_resp,timers_t_page
     from $(btv)
     where
         params_u ilike '$(UP.urlRegEx)'
