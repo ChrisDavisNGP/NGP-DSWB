@@ -220,12 +220,12 @@ function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_345
             pageloadtime
          FROM $(table_name)
          WHERE page_group IS NOT NULL
-           AND (params_rt_quit IS NULL)
+           AND (paramsrtquit IS NULL)
            AND pageloadtime IS NOT NULL
            AND pageloadtime BETWEEN 0 AND 600000
            AND timestamp > $(timelimit)
     ")
-#           AND (params_rt_quit IS NULL OR params_rt_quit = FALSE)
+#           AND (paramsrtquit IS NULL OR paramsrtquit = FALSE)
 end
 
 function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=false, progressID::ASCIIString="")

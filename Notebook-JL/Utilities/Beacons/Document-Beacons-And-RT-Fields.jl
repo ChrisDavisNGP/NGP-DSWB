@@ -316,7 +316,7 @@ order by timestamp
 displayTitle(chart_title = "Debug Info from Beacon", showTimeStamp=false)
 sessionFields = select("""\
 select params_rt_abld,params_rt_blstart,params_rt_bstart,params_rt_cstart,params_rt_end,params_rt_ntvu,params_rt_obo,
-params_rt_quit,params_rt_sh,params_rt_si,params_rt_sl,params_rt_srst,params_rt_start,params_rt_tstart,params_rt_tt,params_rt_ss,
+paramsrtquit,params_rt_sh,params_rt_si,params_rt_sl,params_rt_srst,params_rt_start,params_rt_tstart,params_rt_tt,params_rt_ss,
 params_cmet_mpulseid,params_errors,params_h_t,params_if,params_v,params_h_cr
 from $btv
 where sessionId = '$(sessionId)' and timestamp in $(ts)

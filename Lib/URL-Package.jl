@@ -181,7 +181,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
             pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs) and
             user_agent_device_type ilike '$(UP.deviceType)' and
             user_agent_os ilike '$(UP.agentOs)' and
-            params_rt_quit IS NULL
+            paramsrtquit IS NULL
         group by urlgroup
         order by cnt desc
         limit $(UP.limitQueryRows)
@@ -206,7 +206,7 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
             timestamp between $startTimeMs and $endTimeMs and
             page_group ilike '$(pageGroup)' and
             pageloadtime >= 1000 and pageloadtime < 600000 and
-            params_rt_quit IS NULL
+            paramsrtquit IS NULL
         group by params_u
         order by cnt desc
         limit $(UP.limitQueryRows)
@@ -296,7 +296,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           beacon_type = 'page view' and
           timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
           sessionId IS NOT NULL and
-          params_rt_quit IS NULL and
+          paramsrtquit IS NULL and
           params_u ilike '$(UP.urlRegEx)' and
           user_agent_device_type ilike '$(UP.deviceType)' and
           user_agent_os ilike '$(UP.agentOs)' and
@@ -320,7 +320,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             params_dom_sz > 0 and
             timers_t_page > 0 and
             sessionId IS NOT NULL and
-            params_rt_quit IS NULL and
+            paramsrtquit IS NULL and
             params_u ilike '$(UP.urlRegEx)' and
             user_agent_device_type ilike '$(UP.deviceType)' and
             user_agent_os ilike '$(UP.agentOs)' and

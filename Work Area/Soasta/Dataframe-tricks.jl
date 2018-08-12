@@ -77,7 +77,7 @@ SELECT
     pageloadtime
   FROM $(table)
  WHERE page_group IS NOT NULL
-   AND (params_rt_quit IS NULL OR params_rt_quit = FALSE)
+   AND (paramsrtquit IS NULL OR paramsrtquit = FALSE)
    AND pageloadtime IS NOT NULL
    AND pageloadtime BETWEEN 0 AND 600000
    AND timestamp > ($(timestamp_range[1, 2])-(1*24*60*60*1000))

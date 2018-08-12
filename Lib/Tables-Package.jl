@@ -21,7 +21,7 @@ function defaultResourcesToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.domreadytimer >= $(UP.timeLowerMs) and $bt.domreadytimer <= $(UP.timeUpperMs) and
-                $bt.params_rt_quit IS NULL
+                $bt.paramsrtquit IS NULL
         """)
 
         tableDumpDFDebug(TV,UP,SP,localTableDF)
@@ -48,7 +48,7 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 sessionId IS NOT NULL and
-                params_rt_quit IS NULL and
+                paramsrtquit IS NULL and
                 params_u ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
@@ -83,7 +83,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 sessionId IS NOT NULL and
-                params_rt_quit IS NULL and
+                paramsrtquit IS NULL and
                 params_u ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
@@ -163,7 +163,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
                 timestamp,
                 sessionId,
                 pageloadtime,
-                domreadytimer as domreadytimer
+                domreadytimer
             from $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -178,12 +178,6 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#           domreadytimer
-#            from $bt
-#            where
-#                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-#                sessionId IS NOT NULL and
-#                params_rt_quit IS NULL and
 #                params_u ilike '$(UP.urlRegEx)' and
 #                user_agent_device_type ilike '$(UP.deviceType)' and
 #                user_agent_os ilike '$(UP.agentOs)' and
@@ -272,7 +266,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime <= $(UP.timeUpperMs) and
-                $bt.params_rt_quit IS NULL
+                $bt.paramsrtquit IS NULL
             group by urlgroup,urlpagegroup,label
             """);
         else
@@ -301,7 +295,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.domreadytimer >= $(UP.timeLowerMs) and $bt.domreadytimer <= $(UP.timeUpperMs) and
-                $bt.params_rt_quit IS NULL
+                $bt.paramsrtquit IS NULL
             group by urlgroup,urlpagegroup,label
             """);
         end
@@ -460,7 +454,7 @@ function getResourcesForBeaconToDF(TV::TimeVars,UP::UrlParams)
             and $bt.sessionId IS NOT NULL
             and $bt.page_group ilike '$(UP.pageGroup)'
             and $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
-            and $bt.params_rt_quit IS NULL
+            and $bt.paramsrtquit IS NULL
             and $bt.user_agent_device_type ilike '$(UP.deviceType)'
             and $bt.user_agent_os ilike '$(UP.agentOs)'
             order by $rt.sessionId, $rt.timestamp, $rt.start_time
@@ -496,7 +490,7 @@ function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
-                $bt.params_rt_quit IS NULL
+                $bt.paramsrtquit IS NULL
             order by $rt.sessionId, $rt.timestamp, $rt.start_time
         """)
         return localTableRtDF
@@ -694,7 +688,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               and $table.user_agent_device_type ilike '$(UP.deviceType)'
               and $table.user_agent_os ilike '$(UP.agentOs)'
               and $table.pageloadtime >= $(UP.timeLowerMs) and $table.pageloadtime <= $(UP.timeUpperMs)
-              and $table.params_rt_quit IS NULL
+              and $table.paramsrtquit IS NULL
               and $table.errors IS NULL
           group by urlgroup,$table.sessionId,$table.timestamp,errors
           """);
@@ -712,7 +706,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                   and $table.user_agent_device_type ilike '$(UP.deviceType)'
                   and $table.user_agent_os ilike '$(UP.agentOs)'
                   and $table.domreadytimer >= $(UP.timeLowerMs) and $table.domreadytimer <= $(UP.timeUpperMs)
-                  and $table.params_rt_quit IS NULL
+                  and $table.paramsrtquit IS NULL
                   limit 3
                   """);
 
@@ -735,7 +729,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               and $table.user_agent_device_type ilike '$(UP.deviceType)'
               and $table.user_agent_os ilike '$(UP.agentOs)'
               and $table.domreadytimer >= $(UP.timeLowerMs) and $table.domreadytimer <= $(UP.timeUpperMs)
-              and $table.params_rt_quit IS NULL
+              and $table.paramsrtquit IS NULL
               and $table.errors IS NULL
           group by urlgroup,$table.sessionId,$table.timestamp,errors
               """);
