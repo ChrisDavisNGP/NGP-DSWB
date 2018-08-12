@@ -11,15 +11,15 @@ getBeaconCount()
 
 getBeaconsFirstAndLast()
 
-startTime = DateTime(2016,8,8)
+start_time = DateTime(2016,8,8)
 endTime = DateTime(2016,8,9)
 
-getBeaconCount(startTime,endTime)
+getBeaconCount(start_time,endTime)
 
-chartConversionsVsLoadTimes(startTime,endTime)
+chartConversionsVsLoadTimes(start_time,endTime)
 
-chartConversionsVsLoadTimes(startTime,endTime, timer=:timers_t_page, conversionPage=conversionPageURL)
+chartConversionsVsLoadTimes(start_time,endTime, timer=:timers_t_page, conversionPage=conversionPageURL)
 
-chartConversionsVsLoadTimes(startTime,endTime, url="%news%")
+chartConversionsVsLoadTimes(start_time,endTime, url="%news%")
 
-chartConversionsVsLoadTimes(startTime,endTime, url="%Men.jsp%")
+chartConversionsVsLoadTimes(start_time,endTime, url="%Men.jsp%")

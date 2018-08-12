@@ -140,7 +140,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
       if (wfShowActvitityImpact) && UP.pageGroup == "%"
-          chartActivityImpactByPageGroup(TV.startTime, TV.endTime;n=10,table=UP.btView);
+          chartActivityImpactByPageGroup(TV.start_time, TV.endTime;n=10,table=UP.btView);
       end
   catch y
     println("chartActivityImpactByPageGroup Exception ",y)
@@ -546,7 +546,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   # Currently broken - need ticket to Soasta
   if (wfShowChartTopPage)
     #fail thresholdValues = [1000, 10000, 100000]
-    #fail chartRes = chartResponseTimesVsTargets(startTime, endTime, datePart, thresholdValues)
+    #fail chartRes = chartResponseTimesVsTargets(start_time, endTime, datePart, thresholdValues)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
     try
         #chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC; beaconTable=UP.btView, resourceTable=UP.rtView,n=10,minPercentage=0.05)
@@ -575,8 +575,8 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   # Need to test
   if (wfShowChartTopPageResources)
     #setTable(localTableRt, tableType = "RESOURCE_TABLE")
-    #chartTopPageResourcesSummary(startTime, endTime)
-    #chartTopPageResourcesSummary(startTime, endTime, datepart = datePart)
+    #chartTopPageResourcesSummary(start_time, endTime)
+    #chartTopPageResourcesSummary(start_time, endTime, datepart = datePart)
     #setTable(localTable)
     #display(chartRes)
   end
@@ -591,7 +591,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowChartResUrlResponse)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
-    #chartRes = chartResourceResponseTimeDistribution(startTime, endTime,url="http://phenomena.nationalgeographic.com/files/2016/05/BH91DH.jpg")
+    #chartRes = chartResourceResponseTimeDistribution(start_time, endTime,url="http://phenomena.nationalgeographic.com/files/2016/05/BH91DH.jpg")
     chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC)
     setTable(UP.btView)
     display(chartRes)
@@ -607,7 +607,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowBounceByUrl)
     #chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC, url=UP.urlFull)
     chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC)
-    #chartBouncesVsLoadTimes(startTime, endTime)
+    #chartBouncesVsLoadTimes(start_time, endTime)
   end
 
   # known bad - need ticket

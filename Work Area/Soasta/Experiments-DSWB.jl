@@ -2,23 +2,23 @@
 # For now just leave the "+4" and do the rounding in your head.
 # i.e.,  23+4 is the next day at 3 am "...,7,29,23+4,0" becomes "...,7,30,3,0"
 # i.e.,  Here is a 9 to 5 day
-#startTime = DateTime(2016,7,29,9+4,0)
+#start_time = DateTime(2016,7,29,9+4,0)
 #endTime = DateTime(2016,7,29,17+4,0)
 
-startTime = DateTime(2016,8,29,9,0)
+start_time = DateTime(2016,8,29,9,0)
 endTime = DateTime(2016,8,29,17,0)
-startTimeMs = datetimeToMs(startTime)
+startTimeMs = datetimeToMs(start_time)
 endTimeMs = datetimeToMs(endTime)
 
 #st = DateTime(2016,7,25,12,30)
 #et = DateTime(2016,7,25,13,30)
 
-#startTime = datetimeToUTC(st, TimeZone("America/New York"))
+#start_time = datetimeToUTC(st, TimeZone("America/New York"))
 #endTime = datetimeToUTC(et, TimeZone("America/New York"))
 
 firstAndLast = getBeaconsFirstAndLast()
-timeString = "$(padDateTime(startTime)) to $(padDateTime(endTime))"
-println(startTime, ", ", endTime)
+timeString = "$(padDateTime(start_time)) to $(padDateTime(endTime))"
+println(start_time, ", ", endTime)
 
 # Welcome to DSWB
 
@@ -68,26 +68,26 @@ getBeaconsFirstAndLast()
 
 getBeaconCountByType()
 
-getAggregateSessionDuration(startTime, endTime, :avg)
+getAggregateSessionDuration(start_time, endTime, :avg)
 
-getAggregateSessionDuration(startTime, endTime, :median; byList=[:devicetypename])
+getAggregateSessionDuration(start_time, endTime, :median; byList=[:devicetypename])
 
-getAggregateSessionLength(startTime, endTime, :AVG; byList=[:devicetypename])
+getAggregateSessionLength(start_time, endTime, :AVG; byList=[:devicetypename])
 
-getAggregateSessionLengthAndDurationByLoadTime(startTime, endTime, :stddev; country="US")
+getAggregateSessionLengthAndDurationByLoadTime(start_time, endTime, :stddev; country="US")
 
 #broken
 
 #getAverageSessionLengthsByResourceTimer(DateTime(), now(), timer=:TTFB)
-#getAverageSessionLengthsByResourceTimer(startTime, endTime, timer=:TTFB)
+#getAverageSessionLengthsByResourceTimer(start_time, endTime, timer=:TTFB)
 
-getBeaconsBelowThresholdOverTime(startTime, endTime, :minute; pageGroup=productPageGroup, threshold = "2700")
+getBeaconsBelowThresholdOverTime(start_time, endTime, :minute; pageGroup=productPageGroup, threshold = "2700")
 
-#getBounceRateByDimension(startTime, endTime; dimension="minute", n=15, minPercentage=0.0, beaconType="page view", pageGroup=["Homepage","Product"], country=["US"], device=["Desktop"])
+#getBounceRateByDimension(start_time, endTime; dimension="minute", n=15, minPercentage=0.0, beaconType="page view", pageGroup=["Homepage","Product"], country=["US"], device=["Desktop"])
 
-t1 = getBounceRateByDimension(startTime, endTime, n=15, minPercentage=0.5, beaconType="page view", pageGroup=[productPageGroup], device=["Desktop","Mobile"])
-t2 = getBounceRateByDimension(startTime, endTime, n=15, minPercentage=0.5, beaconType="page view", pageGroup=[productPageGroup], device=["Desktop"])
-t3 = getBounceRateByDimension(startTime, endTime, n=15, minPercentage=0.5, beaconType="page view", pageGroup=[productPageGroup], device=["Mobile"])
+t1 = getBounceRateByDimension(start_time, endTime, n=15, minPercentage=0.5, beaconType="page view", pageGroup=[productPageGroup], device=["Desktop","Mobile"])
+t2 = getBounceRateByDimension(start_time, endTime, n=15, minPercentage=0.5, beaconType="page view", pageGroup=[productPageGroup], device=["Desktop"])
+t3 = getBounceRateByDimension(start_time, endTime, n=15, minPercentage=0.5, beaconType="page view", pageGroup=[productPageGroup], device=["Mobile"])
 
 display(t1)
 display(t2)
@@ -95,23 +95,23 @@ display(t3)
 
 sessionsTable = "_sessions"
 pagegroupTable = "_groups"
-table = getGroupIdPercentages(startTime, endTime, sessionsTable, pagegroupTable; onlyStartingPages=true, isMissingPagegroupIdTable=true, isMissingSessionsTable=true)
+table = getGroupIdPercentages(start_time, endTime, sessionsTable, pagegroupTable; onlyStartingPages=true, isMissingPagegroupIdTable=true, isMissingSessionsTable=true)
 
-httpAndHttps = getHttpVsHttps(startTime, endTime, :hour)
+httpAndHttps = getHttpVsHttps(start_time, endTime, :hour)
 
 dimension1 = Symbol("pagegroupname")
 dimension2 = Symbol("devicetypename")
 
-tto = thinkTimesOverall                 = getMedianThinkTime(startTime, endTime)
-ttpg = thinkTimesByPageGroup             = getMedianThinkTime(startTime, endTime; byList=[dimension1])
-ttall = thinkTimeByPageGroupAndDeviceType = getMedianThinkTime(startTime, endTime; byList=[dimension1, dimension2])
+tto = thinkTimesOverall                 = getMedianThinkTime(start_time, endTime)
+ttpg = thinkTimesByPageGroup             = getMedianThinkTime(start_time, endTime; byList=[dimension1])
+ttall = thinkTimeByPageGroupAndDeviceType = getMedianThinkTime(start_time, endTime; byList=[dimension1, dimension2])
 
 display(tto)
 display(ttpg)
 display(ttall)
 
-loadMedianiByYear = getMetricMediansByDatepart(startTime, endTime, :hour, pageGroup=productPageGroup)
+loadMedianiByYear = getMetricMediansByDatepart(start_time, endTime, :hour, pageGroup=productPageGroup)
 
-getMinMedianMaxByDatepart(startTime, endTime, :hour)
+getMinMedianMaxByDatepart(start_time, endTime, :hour)
 
-getSessionsStats(startTime::DateTime, endTime::DateTime)
+getSessionsStats(start_time::DateTime, endTime::DateTime)

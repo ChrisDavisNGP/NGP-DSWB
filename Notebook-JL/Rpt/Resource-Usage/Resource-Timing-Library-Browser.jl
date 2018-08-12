@@ -69,7 +69,7 @@ chartLoadTimeStats(TV.startTimeUTC, TV.endTimeUTC; dimension = BROWSER, url = do
 #  having to run the query.  The outputFile argument is set to the file to allow you to create a new or overwrite an old data file.  Using the inputFile argument
 #  will short-circuit the function call with a prepared result so remove it if you want to run the DB query to get new results.
 file = "browserResources";
-#chartResources(startTime, endTime; browser = browser, minResourceCount = 5_000, inputFile = file);
+#chartResources(start_time, endTime; browser = browser, minResourceCount = 5_000, inputFile = file);
 chartResources(TV.startTimeUTC, TV.endTimeUTC; browser = browser, minResourceCount = 5000, outputFile = file);
 
 # Trending Resource For Resource Load Time Insight
@@ -79,7 +79,7 @@ chartResources(TV.startTimeUTC, TV.endTimeUTC; browser = browser, minResourceCou
 # Only the resources coming from the specified browser will be considered.
 # This showTable argument allow you to hide the table and only show the chart, if it does not add to the presentation.
 file = "resourceTrending";
-#chartResourceTrend(worstResource, startTime, endTime, datepart; browser = browser, inputFile = file);
+#chartResourceTrend(worstResource, start_time, endTime, datepart; browser = browser, inputFile = file);
 chartResourceTrend(worstResource, TV.startTimeUTC, TV.endTimeUTC, TV.datepart; browser = browser, outputFile = file);
 
 #The graph below is the same graph (as the one above) but showing the median, 75th and 95th percentiles.

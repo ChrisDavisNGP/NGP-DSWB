@@ -436,7 +436,7 @@ sessionFields = select("""\
 select sessionid,session_start,timestamp,paramsu
 from $rtv
 where sessionid = '$(sessionid)' and timestamp in $(ts)
-order by timestamp,startTime
+order by timestamp,start_time
 limit 1000
 """)
 
@@ -453,7 +453,7 @@ sessionFields = select("""\
 select initiator_type, substring(url for position('/' in substring(url from 9)) +7) urlgroup,url
 from $rtv
 where sessionid = '$(sessionid)' and timestamp in $(ts)
-order by timestamp,startTime
+order by timestamp,start_time
 limit 1000
 """)
 
@@ -462,7 +462,7 @@ display(sessionFields[31:end,:])
 
 displayTitle(chart_title = "Timing from RT Data", showTimeStamp=false)
 sessionFields = select("""\
-select startTime,
+select start_time,
 redirect_start,redirect_end,
 fetch_start,
 dns_start,dns_end,
@@ -472,7 +472,7 @@ request_start, response_first_byte,response_last_byte,
 worker_start
 from $rtv
 where sessionid = '$(sessionid)' and timestamp in $(ts)
-order by timestamp,startTime
+order by timestamp,start_time
 limit 1000
 """)
 display(sessionFields[1:30,:])
@@ -483,7 +483,7 @@ sessionFields = select("""\
 select encoded_size,transferred_size,decoded_size,height,width,x,y
 from $rtv
 where sessionid = '$(sessionid)' and timestamp in $(ts)
-order by startTime
+order by start_time
 limit 1000
 """)
 

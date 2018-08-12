@@ -1,13 +1,13 @@
 # Packages in Lib Directory; structures first
-function bestDatePart(startTime::DateTime, endTime::DateTime)
+function bestDatePart(start_time::DateTime, endTime::DateTime)
 
     try
         datePart = :minute
-        dt = endTime-startTime
+        dt = endTime-start_time
         deltaTime = convert(Int64,dt)
         minuteLimit = (10*60*60*1000)+1
         hourLimit = (7*24*60*60*1000)+1
-        #println("starttime=",startTime," endtime=",endTime," deltaTime =",deltaTime," minuteLimit=",minuteLimit," hourLimit=",hourLimit)
+        #println("starttime=",start_time," endtime=",endTime," deltaTime =",deltaTime," minuteLimit=",minuteLimit," hourLimit=",hourLimit)
 
         if (deltaTime < minuteLimit)
             datePart = :minute
@@ -59,14 +59,14 @@ function timeVariables(
     try
         tempTime = TimeVarsInit()
 
-        tempTime.startTime = DateTime(Y1,M1,D1,H1,MM1)
+        tempTime.start_time = DateTime(Y1,M1,D1,H1,MM1)
         tempTime.endTime = DateTime(Y2,M2,D2,H2,MM2)
-        tempTime.startTimeMs = datetimeToMs(tempTime.startTime)
+        tempTime.startTimeMs = datetimeToMs(tempTime.start_time)
         tempTime.endTimeMs = datetimeToMs(tempTime.endTime)
-        tempTime.startTimeStr = Dates.format(tempTime.startTime,"yyyy-mm-dd HH:MM:SS")
+        tempTime.startTimeStr = Dates.format(tempTime.start_time,"yyyy-mm-dd HH:MM:SS")
         tempTime.endTimeStr = Dates.format(tempTime.endTime,"yyyy-mm-dd HH:MM:SS")
 
-        tempTime.startTimeUTC = datetimeToUTC(tempTime.startTime, TimeZone("America/New_York"))
+        tempTime.startTimeUTC = datetimeToUTC(tempTime.start_time, TimeZone("America/New_York"))
         tempTime.endTimeUTC = datetimeToUTC(tempTime.endTime, TimeZone("America/New_York"))
         tempTime.startTimeMsUTC = datetimeToMs(tempTime.startTimeUTC)
         tempTime.endTimeMsUTC = datetimeToMs(tempTime.endTimeUTC)
@@ -74,7 +74,7 @@ function timeVariables(
         tempTime.datePart = :hour
         tempTime.datePart = bestDatePart(tempTime.startTimeUTC,tempTime.endTimeUTC)
 
-        tempTime.timeString = "$(padDateTime(tempTime.startTime)) to $(padDateTime(tempTime.endTime)) Local Time"
+        tempTime.timeString = "$(padDateTime(tempTime.start_time)) to $(padDateTime(tempTime.endTime)) Local Time"
         tempTime.timeStringUTC = "$(padDateTime(tempTime.startTimeUTC)) to $(padDateTime(tempTime.endTimeUTC)) UTC Time"
 
         if (showTime)
@@ -95,14 +95,14 @@ function anyTimeVar(
     )
     try
         localTimeVar = TimeVarsInit()
-        localTimeVar.startTime = DateTime(Y1,M1,D1,H1,MM1)
+        localTimeVar.start_time = DateTime(Y1,M1,D1,H1,MM1)
         localTimeVar.endTime = DateTime(Y2,M2,D2,H2,MM2)
-        localTimeVar.startTimeMs = datetimeToMs(localTimeVar.startTime)
+        localTimeVar.startTimeMs = datetimeToMs(localTimeVar.start_time)
         localTimeVar.endTimeMs = datetimeToMs(localTimeVar.endTime)
-        localTimeVar.startTimeStr = "$(padDateTime(localTimeVar.startTime))"
+        localTimeVar.startTimeStr = "$(padDateTime(localTimeVar.start_time))"
         localTimeVar.endTimeStr = "$(padDateTime(localTimeVar.endTime))"
 
-        localTimeVar.startTimeUTC = datetimeToUTC(localTimeVar.startTime, TimeZone("America/New_York"))
+        localTimeVar.startTimeUTC = datetimeToUTC(localTimeVar.start_time, TimeZone("America/New_York"))
         localTimeVar.endTimeUTC = datetimeToUTC(localTimeVar.endTime, TimeZone("America/New_York"))
         localTimeVar.startTimeMsUTC = datetimeToMs(localTimeVar.startTimeUTC)
         localTimeVar.endTimeMsUTC = datetimeToMs(localTimeVar.endTimeUTC)
@@ -110,7 +110,7 @@ function anyTimeVar(
         localTimeVar.datePart = :hour
         localTimeVar.datePart = bestDatePart(localTimeVar.startTimeUTC,localTimeVar.endTimeUTC)
 
-        localTimeVar.timeString = "$(padDateTime(localTimeVar.startTime)) to $(padDateTime(localTimeVar.endTime)) Local Time"
+        localTimeVar.timeString = "$(padDateTime(localTimeVar.start_time)) to $(padDateTime(localTimeVar.endTime)) Local Time"
         localTimeVar.timeStringUTC = "$(padDateTime(localTimeVar.startTimeUTC)) to $(padDateTime(localTimeVar.endTimeUTC)) UTC Time"
 
         if (showTime)
@@ -128,15 +128,15 @@ function weeklyTimeVariables(;days::Int64=7)
     try
         firstAndLast = getBeaconsFirstAndLast()
         endTime = DateTime(firstAndLast[1,2])
-        startTime = DateTime(endTime - Day(days) + Minute(1))
+        start_time = DateTime(endTime - Day(days) + Minute(1))
 
         localtv =
         timeVariables(
-            Dates.year(startTime),
-            Dates.month(startTime),
-            Dates.day(startTime),
-            Dates.hour(startTime),
-            Dates.minute(startTime),
+            Dates.year(start_time),
+            Dates.month(start_time),
+            Dates.day(start_time),
+            Dates.hour(start_time),
+            Dates.minute(start_time),
             Dates.year(endTime),
             Dates.month(endTime),
             Dates.day(endTime),
@@ -161,15 +161,15 @@ function prevWorkWeekTimeVariables()
             endTime = DateTime(endTime - Day(1))
         end
 
-        startTime = DateTime(endTime - Day(5) + Minute(1))
+        start_time = DateTime(endTime - Day(5) + Minute(1))
 
         localtv =
         timeVariables(
-            Dates.year(startTime),
-            Dates.month(startTime),
-            Dates.day(startTime),
-            Dates.hour(startTime),
-            Dates.minute(startTime),
+            Dates.year(start_time),
+            Dates.month(start_time),
+            Dates.day(start_time),
+            Dates.hour(start_time),
+            Dates.minute(start_time),
             Dates.year(endTime),
             Dates.month(endTime),
             Dates.day(endTime),
@@ -188,14 +188,14 @@ function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
     try
         gmtNow = Dates.now()
         lclNow = now(TimeZone("America/New_York"))
-        startTime = lclNow - Dates.Day(1) # comes back UTC
-        endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
-        startTime = DateTime(endTime - Hour(24) + Minute(1))
+        start_time = lclNow - Dates.Day(1) # comes back UTC
+        endTime = DateTime(Dates.year(start_time), Dates.month(start_time), Dates.day(start_time), 23, 59)
+        start_time = DateTime(endTime - Hour(24) + Minute(1))
 
         #println("    clock: ", gmtNow, " local: ", lclNow)
-        #println("StartTime: ",startTime)
+        #println("StartTime: ",start_time)
         #println("  endTime: ",endTime)
-        #println("adj start: ",startTime)
+        #println("adj start: ",start_time)
 
         if (hours > 0)
             startHour = 13
@@ -204,18 +204,18 @@ function yesterdayTimeVariables(;startHour::Int64=0,endHour::Int64=24,hours=0)
                 endHour = 23
             end
             endTime = DateTime(endTime - Hour(24-endHour))
-            startTime = DateTime(startTime + Hour(startHour))
-            #println("hr  start: ",startTime)
+            start_time = DateTime(start_time + Hour(startHour))
+            #println("hr  start: ",start_time)
             #println("hr    end: ",endTime)
         end
 
         localtv =
         timeVariables(
-            Dates.year(startTime),
-            Dates.month(startTime),
-            Dates.day(startTime),
-            Dates.hour(startTime),
-            Dates.minute(startTime),
+            Dates.year(start_time),
+            Dates.month(start_time),
+            Dates.day(start_time),
+            Dates.hour(start_time),
+            Dates.minute(start_time),
             Dates.year(endTime),
             Dates.month(endTime),
             Dates.day(endTime),
@@ -238,22 +238,22 @@ function todayTimeVariables()
 
         gmtNow = Dates.now()
         lclNow = now(TimeZone("America/New_York"))
-        startTime = lclNow # comes back UTC
-        endTime = DateTime(Dates.year(startTime), Dates.month(startTime), Dates.day(startTime), 23, 59)
-        startTime = DateTime(endTime - Hour(24) + Minute(1))
+        start_time = lclNow # comes back UTC
+        endTime = DateTime(Dates.year(start_time), Dates.month(start_time), Dates.day(start_time), 23, 59)
+        start_time = DateTime(endTime - Hour(24) + Minute(1))
 
         #println("    clock: ",gmtNow, " local: ",lclNow)
-        #println("startTime: ",startTime)
+        #println("start_time: ",start_time)
         #println("  endTime: ",endTime)
-        #println(" adjStart: ",startTime)
+        #println(" adjStart: ",start_time)
 
         localtv =
         timeVariables(
-            Dates.year(startTime),
-            Dates.month(startTime),
-            Dates.day(startTime),
-            Dates.hour(startTime),
-            Dates.minute(startTime),
+            Dates.year(start_time),
+            Dates.month(start_time),
+            Dates.day(start_time),
+            Dates.hour(start_time),
+            Dates.minute(start_time),
             Dates.year(endTime),
             Dates.month(endTime),
             Dates.day(endTime),

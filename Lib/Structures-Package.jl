@@ -252,7 +252,7 @@ function ShowParamsValidate(SP::ShowParams)
 end
 
 type TimeVars
-    startTime::DateTime
+    start_time::DateTime
     endTime::DateTime
     startTimeMs::Int64
     endTimeMs::Int64

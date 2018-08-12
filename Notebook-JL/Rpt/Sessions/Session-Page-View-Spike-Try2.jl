@@ -85,8 +85,8 @@ debugRecords = select("""\
 
 beautifyDF(debugRecords[1:min(300,end),:])
 
-#                avg($tableRt.startTime),
-#                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.startTime) END) as total,
+#                avg($tableRt.start_time),
+#                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE ($tableRt.response_last_byte-$tableRt.start_time) END) as total,
 #                avg($tableRt.redirect_end-$tableRt.redirect_start) as redirect,
 #                avg(CASE WHEN ($tableRt.dns_start = 0 and $tableRt.request_start = 0) THEN (0) WHEN ($tableRt.dns_start = 0) THEN ($tableRt.request_start-$tableRt.fetch_start) ELSE ($tableRt.dns_start-$tableRt.fetch_start) END) as blocking,
 #                avg($tableRt.dns_end-$tableRt.dns_start) as dns,
@@ -98,7 +98,7 @@ beautifyDF(debugRecords[1:min(300,end),:])
 #               CASE WHEN (position('?' in $tableRt.url) > 0) then trim('/' from (substring($tableRt.url for position('?' in substring($tableRt.url from 9)) +7))) else trim('/' from $tableRt.url) end as urlgroup,
 #                count(*) as request_count,
 #                'Label' as label,
-#                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE (($tableRt.response_last_byte-$tableRt.startTime)/1000.0) END) as load,
+#                avg(CASE WHEN ($tableRt.response_last_byte = 0) THEN (0) ELSE (($tableRt.response_last_byte-$tableRt.start_time)/1000.0) END) as load,
 #                avg($table.domreadytimer) as beacon_time
 #localUrl = "%"
 #deviceType = "%"

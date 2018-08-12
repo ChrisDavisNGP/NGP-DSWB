@@ -5,10 +5,10 @@ db = setSnowflakeEndpoint("tenant_232301")
 setTable("RUM_PRD_BEACON_FACT_DSWB_34501")
 setConversionGroup("Video")
 
-startTime = DateTime(2016,7,10);
+start_time = DateTime(2016,7,10);
 endTime = DateTime(2016,7,13);
 
-groupsWithHighConversionImpact = getTopGroupsByConversionImpact(startTime, endTime)
+groupsWithHighConversionImpact = getTopGroupsByConversionImpact(start_time, endTime)
 
 ### This graph illustrates the relationship between a page group's relative conversion impact score, and its median load time.
 
@@ -18,4 +18,4 @@ drawImpact(convImpactTop20);
 ###The following charts show the relationship between page load times and conversion rates for the 5 groups with the highest conversion impact.
 
 top5Pages = convImpactTop20[1:5, symbol("Page Group")];
-for i = 1:5 chartConversionsVsLoadTimes(startTime, endTime; pageGroup = top5Pages[i]); end
+for i = 1:5 chartConversionsVsLoadTimes(start_time, endTime; pageGroup = top5Pages[i]); end

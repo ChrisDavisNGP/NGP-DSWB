@@ -233,8 +233,8 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
 
         if (UP.usePageLoad)
             toppageurl = select("""\
-            select 'None' as urlpagegroup,avg($rt.startTime),
-                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.startTime) END) as total,
+            select 'None' as urlpagegroup,avg($rt.start_time),
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.start_time) END) as total,
                 avg($rt.redirect_end-$rt.redirect_start) as redirect,
                 avg(CASE WHEN ($rt.dns_start = 0 and $rt.request_start = 0) THEN (0) WHEN ($rt.dns_start = 0) THEN ($rt.request_start-$rt.fetch_start) ELSE ($rt.dns_start-$rt.fetch_start) END) as blocking,
                 avg($rt.dns_end-$rt.dns_start) as dns,
@@ -246,7 +246,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
                 count(*) as request_count,
                 'Label' as label,
-                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.startTime)/1000.0) END) as load,
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
                 avg($bt.pageloadtime) as beacon_time
             FROM $rt join $bt on $rt.sessionid = $bt.sessionid and $rt.timestamp = $bt.timestamp
             WHERE
@@ -262,8 +262,8 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
             """);
         else
             toppageurl = select("""\
-            select 'None' as urlpagegroup,avg($rt.startTime),
-                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.startTime) END) as total,
+            select 'None' as urlpagegroup,avg($rt.start_time),
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE ($rt.response_last_byte-$rt.start_time) END) as total,
                 avg($rt.redirect_end-$rt.redirect_start) as redirect,
                 avg(CASE WHEN ($rt.dns_start = 0 and $rt.request_start = 0) THEN (0) WHEN ($rt.dns_start = 0) THEN ($rt.request_start-$rt.fetch_start) ELSE ($rt.dns_start-$rt.fetch_start) END) as blocking,
                 avg($rt.dns_end-$rt.dns_start) as dns,
@@ -275,7 +275,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 CASE WHEN (position('?' in $rt.url) > 0) then trim('/' from (substring($rt.url for position('?' in substring($rt.url from 9)) +7))) else trim('/' from $rt.url) end as urlgroup,
                 count(*) as request_count,
                 'Label' as label,
-                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.startTime)/1000.0) END) as load,
+                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
                 avg($bt.domreadytimer) as beacon_time
             FROM $rt join $bt on $rt.sessionid = $bt.sessionid and $rt.timestamp = $bt.timestamp
                 where
@@ -307,8 +307,8 @@ function allSessionUrlTableToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studyS
 
     try
         toppageurl = select("""\
-        select 'None' as urlpagegroup,avg(startTime),
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as total,
+        select 'None' as urlpagegroup,avg(start_time),
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as total,
             avg(redirect_end-redirect_start) as redirect,
             avg(CASE WHEN (dns_start = 0 and request_start = 0) THEN (0) WHEN (dns_start = 0) THEN (request_start-fetch_start) ELSE (dns_start-fetch_start) END) as blocking,
             avg(dns_end-dns_start) as dns,
@@ -320,7 +320,7 @@ function allSessionUrlTableToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studyS
             CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             count(*) as request_count,
             'Label' as label,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-startTime)/1000.0) END) as load,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END) as load,
             0 as beacon_time
         FROM $(rt)
         where
@@ -348,8 +348,8 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
 
     try
         toppageurl = select("""\
-        select 'None' as urlpagegroup,startTime,
-            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END as total,
+        select 'None' as urlpagegroup,start_time,
+            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as total,
             (redirect_end-redirect_start) as redirect,
             CASE WHEN (dns_start = 0 and request_start = 0) THEN (0) WHEN (dns_start = 0) THEN (request_start-fetch_start) ELSE (dns_start-fetch_start) END as blocking,
             (dns_end-dns_start) as dns,
@@ -361,13 +361,13 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             CASE when  (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
             1 as request_count,
             'Label' as label,
-            CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-startTime)/1000.0) END as load,
+            CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END as load,
             0 as beacon_time
         FROM $(tableRt)
         where
             sessionid = '$(studySession)' and
            timestamp = '$(studyTime)'
-        order by startTime asc
+        order by start_time asc
         """);
 
 
@@ -448,7 +448,7 @@ function getResourcesForBeaconToDF(TV::TimeVars,UP::UrlParams)
             and $bt.paramsrtquit IS NULL
             and $bt.devicetypename ilike '$(UP.deviceType)'
             and $bt.operatingsystemname ilike '$(UP.agentOs)'
-            order by $rt.sessionid, $rt.timestamp, $rt.startTime
+            order by $rt.sessionid, $rt.timestamp, $rt.start_time
             """)
 
 
@@ -482,7 +482,7 @@ function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $bt.devicetypename ilike '$(UP.deviceType)' and
                 $bt.operatingsystemname ilike '$(UP.agentOs)' and
                 $bt.paramsrtquit IS NULL
-            order by $rt.sessionid, $rt.timestamp, $rt.startTime
+            order by $rt.sessionid, $rt.timestamp, $rt.start_time
         """)
         return localTableRtDF
     catch y

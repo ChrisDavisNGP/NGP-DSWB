@@ -9,7 +9,7 @@ using DSWB;
 setEndpointForTenantId(%tenant%); # %tenant% (tenant ID) received from mPulse
 setTableForDomainId(%domain%); # %domain% (domain ID) received from mPulse
 
-# %date% (startTime), %date2% (endTime), and %country% (country filter) are received from mPulse
+# %date% (start_time), %date2% (endTime), and %country% (country filter) are received from mPulse
 @soasta_time treeData = getTreemapData(DateTime(%date%), DateTime(%date2%), countryFilter=%country%) "julia"
 
 #### <span style="color:red">The widget is dependent upon the following code, edit with extreme caution </span>

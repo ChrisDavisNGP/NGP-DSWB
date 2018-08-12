@@ -607,11 +607,11 @@ end
 
 function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    year1 = Dates.year(TV.startTime)
-    month1 = Dates.month(TV.startTime)
-    day1 = Dates.day(TV.startTime)
-    hour1 = Dates.hour(TV.startTime)
-    #minute1 = Dates.minute(TV.startTime)
+    year1 = Dates.year(TV.start_time)
+    month1 = Dates.month(TV.start_time)
+    day1 = Dates.day(TV.start_time)
+    hour1 = Dates.hour(TV.start_time)
+    #minute1 = Dates.minute(TV.start_time)
     #study whole hours only
     minute1 = 0
 
@@ -652,13 +652,13 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 println("Year ",year1," Month ",month1," Day ",day," Hour ",hour," M1 ",minute1," M2 ",minute2)
             end
             i += 1
-            startTime = DateTime(year1,month1,day,hour,minute1)
+            start_time = DateTime(year1,month1,day,hour,minute1)
             endTime   = DateTime(year2,month2,day,hour,minute2)
 
-            startTimeMs = datetimeToMs(startTime)
+            startTimeMs = datetimeToMs(start_time)
             endTimeMs = datetimeToMs(endTime)
 
-            startTimeUTC = datetimeToUTC(startTime, TimeZone("America/New_York"))
+            startTimeUTC = datetimeToUTC(start_time, TimeZone("America/New_York"))
             endTimeUTC = datetimeToUTC(endTime, TimeZone("America/New_York"))
             startTimeMsUTC = datetimeToMs(startTimeUTC)
             endTimeMsUTC = datetimeToMs(endTimeUTC)
