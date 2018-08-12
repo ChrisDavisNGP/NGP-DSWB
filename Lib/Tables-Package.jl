@@ -181,7 +181,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
         return localTableDF
     catch y
-        println("critAggLimitedBeaconsToDF Exception ",y)
+        println("critAggLimitedBeaconsToDFSoasta Exception ",y)
     end
 end
 

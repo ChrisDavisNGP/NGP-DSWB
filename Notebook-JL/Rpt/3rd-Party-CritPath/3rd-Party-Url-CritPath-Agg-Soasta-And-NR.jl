@@ -1,10 +1,11 @@
 ## Tables and Data Source setup
 
-using ODBC
+#using ODBC
 using DataFrames
 using DSWB
 using Formatting
 using URIParser
+using QueryAPI
 
 dsn = "tenant_232301"
 table = "RUM_PRD_BEACON_FACT_DSWB_34501" # beacon table name
