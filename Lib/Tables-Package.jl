@@ -174,7 +174,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
                 operatingsystemname ilike '$(UP.agentOs)' and
                 pagegroupname ilike '$(UP.pageGroup)' and
                 pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
-            order by "timestamp" asc
+            order by timestamp asc
             limit $(UP.limitQueryRows)
         """)
 
