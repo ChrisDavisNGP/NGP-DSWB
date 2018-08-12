@@ -44,7 +44,7 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
                 where
                     $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                     $btv.sessionid IS NOT NULL
-                order by $rt.sessionid, $rt.timestamp, $rt.start_time
+                order by $rt.sessionid, $rt.timestamp, $rt.startTime
             )
             """)
 

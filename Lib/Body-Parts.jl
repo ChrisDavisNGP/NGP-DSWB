@@ -642,7 +642,7 @@ function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = select("""\
-            select count(*), avg(start_time) as "Start Time",
+            select count(*), avg(startTime) as "Start Time",
                 avg(fetch_start) as "Fetch Start",
                 avg(dns_end-dns_start) as "DNS ms",
                 avg(tcp_connection_end-tcp_connection_start) as "TCP ms",
@@ -673,8 +673,8 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         timeTable = select("""\
-            select (response_last_byte-start_time) as "Time Taken",
-                (start_time) as "Start Time",
+            select (response_last_byte-startTime) as "Time Taken",
+                (startTime) as "Start Time",
                 (fetch_start) as "Fetch Start",
                 (dns_end-dns_start) as "DNS ms",
                 (tcp_connection_end-tcp_connection_start) as "TCP ms",
@@ -689,7 +689,7 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             where
                 url ilike '$(UP.resRegEx)' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                (response_last_byte-start_time) > 75 and (response_last_byte-start_time) < 10000
+                (response_last_byte-startTime) > 75 and (response_last_byte-startTime) < 10000
             order by "Time Taken" desc
         """);
 
@@ -743,8 +743,8 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = select("""\
-            select (response_last_byte-start_time) as "Time Taken",
-                (start_time) as "Start Time",
+            select (response_last_byte-startTime) as "Time Taken",
+                (startTime) as "Start Time",
                 (fetch_start) as "Fetch S",
                 (dns_end-dns_start) as "DNS ms",
                 (tcp_connection_end-tcp_connection_start) as "TCP ms",
@@ -760,8 +760,8 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             where
                 url ilike '$(UP.resRegEx)' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                start_time > 10000
-            order by start_time desc
+                startTime > 10000
+            order by startTime desc
             limit $(UP.limitQueryRows)
         """);
 

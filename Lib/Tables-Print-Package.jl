@@ -89,7 +89,7 @@ function joinTablesDetailsPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,j
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 
         joinTablesDetails = select("""\
-            select $rt.start_time,$rt.encoded_size,$rt.transferred_size,$rt.decoded_size,$rt.url as urlgroup
+            select $rt.startTime,$rt.encoded_size,$rt.transferred_size,$rt.decoded_size,$rt.url as urlgroup
             FROM $btv join $rt
                 on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
             where
@@ -97,7 +97,7 @@ function joinTablesDetailsPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,j
                 $btv.timestamp = $(topTimeStamp) and
                 $rt.encoded_size > 1000000 and
                 $rt.url not like '%/interactive-assets/%'
-            order by $rt.start_time
+            order by $rt.startTime
         """);
 
         recordsFound = nrow(joinTablesDetails)
@@ -259,7 +259,7 @@ function bigPages6PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select $btv.params_dom_sz dom_size,$btv.sessionid,$btv.timestamp,$rt.start_time,$rt.encoded_size,
+            select $btv.params_dom_sz dom_size,$btv.sessionid,$btv.timestamp,$rt.startTime,$rt.encoded_size,
                 $rt.transferred_size,
                 $rt.decoded_size,
                 $rt.url urlgroup
@@ -618,7 +618,7 @@ function displayMatchingResourcesStatsPrintTable(TV::TimeVars,UP::UrlParams,SP::
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select count(*),avg(start_time) as "start",
+            select count(*),avg(startTime) as "start",
                 avg(fetch_start) as "fetch",
                 avg(dns_end-dns_start) as "dnstimems",
                 avg(tcp_connection_end-tcp_connection_start) as "tcptimems",
@@ -725,7 +725,7 @@ function largePageDetailsPrintTable(localTable::ASCIIString,tableRt::ASCIIString
         topTitle = joinTableSummary[row:row,:urlgroup][1]
 
         joinTablesDetails = select("""\
-            select $tableRt.start_time,$tableRt.encoded_size,$tableRt.transferred_size,
+            select $tableRt.startTime,$tableRt.encoded_size,$tableRt.transferred_size,
                 $tableRt.decoded_size,
                 $tableRt.url as urlgroup
             from $localTable join $tableRt
@@ -735,7 +735,7 @@ function largePageDetailsPrintTable(localTable::ASCIIString,tableRt::ASCIIString
                 $localTable.sessionid = '$(topSessionId)' and
                 $localTable.timestamp = $(topTimeStamp) and
                 $tableRt.encoded_size > 1000000
-            order by $tableRt.start_time
+            order by $tableRt.startTime
         """);
 
         displayTitle(chart_title = "Large Requests for: $(topTitle)", chart_info = [TV.timeString], showTimeStamp=false)

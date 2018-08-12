@@ -1100,8 +1100,8 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         if studyTime > 0
             topurl = select("""\
             select substring(url for position('/' in substring(url from 9)) +7) urlgroup,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as load_time,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as beacons,
             count(*) as request_count
             FROM $(tableRt)
             where sessionid = '$(studySession)' and timestamp = '$(studyTime)'
@@ -1110,8 +1110,8 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         elseif (studySession != "None")
             topurl = select("""\
             select substring(url for position('/' in substring(url from 9)) +7) urlgroup,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as load_time,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as beacons,
             count(*) as request_count
             FROM $(localTableRt)
             where sessionid = '$(studySession)'
@@ -1120,8 +1120,8 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         else
             topurl = select("""\
             select substring(url for position('/' in substring(url from 9)) +7) urlgroup,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as load_time,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as beacons,
             count(*) as request_count
             FROM $(localTableRt)
             group by urlgroup
@@ -1129,7 +1129,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         #displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        #topurl = names!(topurl[:,:],[Symbol("beacons"),Symbol("urlgroup"),Symbol("load_time"),Symbol("start_time"),Symbol("redirect"),Symbol("blocking"),Symbol("dns"),Symbol("tcp"),Symbol("request"),Symbol("response")])
+        #topurl = names!(topurl[:,:],[Symbol("beacons"),Symbol("urlgroup"),Symbol("load_time"),Symbol("startTime"),Symbol("redirect"),Symbol("blocking"),Symbol("dns"),Symbol("tcp"),Symbol("request"),Symbol("response")])
         topurl = names!(topurl[:,:],[Symbol("urlgroup"),Symbol("load_time_int"),Symbol("beacons"),Symbol("request_count")]);
 
         # Note: this cell turns the :urlgroup from a URL to a string.  Run cell above each time before this cell
@@ -1161,16 +1161,16 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         if (studyTime > 0)
             topdetailurl = select("""\
             select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
-            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as load_time,
-            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as beacons,
+            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END as load_time,
+            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END as beacons,
             1 as request_count
             FROM $(tableRt) where sessionid = '$(studySession)' and timestamp = '$(studyTime)'
             """);
         elseif (studySession != "None")
             topdetailurl = select("""\
             select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as load_time,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as beacons,
             count(*) as request_count
             FROM $(localTableRt) where sessionid = '$(studySession)'
             group by urlgroup
@@ -1178,15 +1178,15 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         else
             topdetailurl = select("""\
             select CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as load_time,
-            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as load_time,
+            avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-startTime) END) as beacons,
             count(*) as request_count
             FROM $(localTableRt)
             group by urlgroup
             """);
         end
 
-        #topdetailurl = names!(topurl[:,:],[Symbol("beacons"),Symbol("urlgroup"),Symbol("load_time"),Symbol("start_time"),Symbol("redirect"),Symbol("blocking"),Symbol("dns"),Symbol("tcp"),Symbol("request"),Symbol("response")])
+        #topdetailurl = names!(topurl[:,:],[Symbol("beacons"),Symbol("urlgroup"),Symbol("load_time"),Symbol("startTime"),Symbol("redirect"),Symbol("blocking"),Symbol("dns"),Symbol("tcp"),Symbol("request"),Symbol("response")])
         topdetailurl = names!(topdetailurl[:,:],[Symbol("urlgroup"),Symbol("load_time_int"),Symbol("beacons"),Symbol("request_count")]);
 
         # Note: this cell turns the :urlgroup from a URL to a string.  Run cell above each time before this cell
