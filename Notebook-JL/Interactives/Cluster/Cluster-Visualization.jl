@@ -50,7 +50,7 @@ setTable(btv)
 #* `geo_org`
 #* `geo_netspeed`
 #* `user_agent_family`
-#* `user_agent_os`
+#* `operatingsystemname`
 #
 #The following are helpful
 #* `geo_rg`

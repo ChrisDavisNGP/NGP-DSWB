@@ -215,7 +215,7 @@ function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_345
     select("
         SELECT page_group, paramsu,
             geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
-            user_agent_family, user_agent_major, user_agent_os, user_agent_osversion, user_agent_model,
+            user_agent_family, user_agent_major, operatingsystemname, user_agent_osversion, user_agent_model,
             params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
             pageloadtime
          FROM $(table_name)
@@ -256,7 +256,7 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
         (:geo_rg => :geo_cc),
         (:geo_city => :geo_rg),
         (:user_agent_major => :user_agent_family),
-        (:user_agent_osversion => :user_agent_os)
+        (:user_agent_osversion => :operatingsystemname)
         )
     )
 
@@ -264,7 +264,7 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
         updateProgress("Trying $(size(cols, 1)) dimension combinations...")
     end
 
-    blacklisteddims = [:geo_netspeed,:user_agent_os,:geo_cc,:user_agent_family]
+    blacklisteddims = [:geo_netspeed,:operatingsystemname,:geo_cc,:user_agent_family]
 
     for (index, colnames) in enumerate(cols)
 

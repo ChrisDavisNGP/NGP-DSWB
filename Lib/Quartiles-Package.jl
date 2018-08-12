@@ -44,7 +44,7 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuarti
                 paramsrtquit IS NULL and
                 paramsu ilike '$(UP.urlRegEx)' and
                 devicetypename ilike '$(UP.deviceType)' and
-                user_agent_os ilike '$(UP.agentOs)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
                 pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             ORDER BY count DESC
             limit $(showQuartiles)

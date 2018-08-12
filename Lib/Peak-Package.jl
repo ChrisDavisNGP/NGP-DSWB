@@ -31,7 +31,7 @@ function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime3
 
         myFilter = SQLFilter[
             ilike("devicetypename",UP.deviceType),
-            ilike("user_agent_os",UP.agentOs)
+            ilike("operatingsystemname",UP.agentOs)
             ]
 
         if (usePageGroup)

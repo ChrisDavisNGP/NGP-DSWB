@@ -48,7 +48,7 @@ colwise(mean, data[:,20:22])
 
 #### groupby
 
-gd = groupby(data[:,10:12],:user_agent_os)
+gd = groupby(data[:,10:12],:operatingsystemname)
 
 gd[1]
 
@@ -62,7 +62,7 @@ data1 = data[4:5,10:11]
 
 data2 = data[9:10,[10,12]]
 
-fullData = join(data1, data2, on=:user_agent_os)
+fullData = join(data1, data2, on=:operatingsystemname)
 
 #### filtering
 
@@ -86,7 +86,7 @@ aggregate(data[:,[2,20]], :page_group, [length, mean])
 using Gadfly
 df = readtable("data/gadflyData.csv");
 
-p = Gadfly.plot(df, x="pageloadtime", color="user_agent_os",
+p = Gadfly.plot(df, x="pageloadtime", color="operatingsystemname",
     Theme(panel_fill=color("white"), background_color=color("white")),
     Geom.density,
     Guide.xlabel("Page Load Time (seconds)"),
