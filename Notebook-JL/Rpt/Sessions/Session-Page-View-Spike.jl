@@ -104,7 +104,7 @@ beautifyDF(debugRecords[1:min(100,end),:])
 #                count(*) as request_count,
 #                'Label' as label,
 #                avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
-#                avg($bt.timers_domready) as beacon_time
+#                avg($bt.domreadytimer) as beacon_time
 #localUrl = "%"
 #deviceType = "%"
 #st = (TV.startTimeMsUTC)

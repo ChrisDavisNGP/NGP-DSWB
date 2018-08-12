@@ -20,7 +20,7 @@ function defaultResourcesToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $bt.params_u ilike '$(UP.urlRegEx)' and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
-                $bt.timers_domready >= $(UP.timeLowerMs) and $bt.timers_domready <= $(UP.timeUpperMs) and
+                $bt.domreadytimer >= $(UP.timeLowerMs) and $bt.domreadytimer <= $(UP.timeUpperMs) and
                 $bt.params_rt_quit IS NULL
         """)
 
@@ -132,7 +132,7 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,
             push!(localTableDF,[row[:jobId];row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
         end
 
-        localTableDF = names!(localTableDF,[Symbol("sessionId");Symbol("timestamp");Symbol("pageloadtime");Symbol("timers_domready")])
+        localTableDF = names!(localTableDF,[Symbol("sessionId");Symbol("timestamp");Symbol("pageloadtime");Symbol("domreadytimer")])
 
         if SP.debugLevel > 6
             beautifyDF(localTableDF)
@@ -163,7 +163,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
                 timestamp,
                 sessionId,
                 pageloadtime,
-                domreadytimer as timers_domready
+                domreadytimer as domreadytimer
             from $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -178,7 +178,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#           timers_domready
+#           domreadytimer
 #            from $bt
 #            where
 #                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -291,7 +291,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 count(*) as request_count,
                 'Label' as label,
                 avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
-                avg($bt.timers_domready) as beacon_time
+                avg($bt.domreadytimer) as beacon_time
             FROM $rt join $bt on $rt.sessionId = $bt.sessionId and $rt.timestamp = $bt.timestamp
                 where
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
@@ -300,7 +300,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 $bt.params_u ilike '$(UP.urlRegEx)' and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
-                $bt.timers_domready >= $(UP.timeLowerMs) and $bt.timers_domready <= $(UP.timeUpperMs) and
+                $bt.domreadytimer >= $(UP.timeLowerMs) and $bt.domreadytimer <= $(UP.timeUpperMs) and
                 $bt.params_rt_quit IS NULL
             group by urlgroup,urlpagegroup,label
             """);
@@ -711,7 +711,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                   and $table.params_u ilike '$(UP.urlRegEx)'
                   and $table.user_agent_device_type ilike '$(UP.deviceType)'
                   and $table.user_agent_os ilike '$(UP.agentOs)'
-                  and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
+                  and $table.domreadytimer >= $(UP.timeLowerMs) and $table.domreadytimer <= $(UP.timeUpperMs)
                   and $table.params_rt_quit IS NULL
                   limit 3
                   """);
@@ -724,7 +724,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           localTableDF = select("""\
           select CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
               count(*) as request_count,
-              avg($table.timers_domready) as beacon_time,
+              avg($table.domreadytimer) as beacon_time,
               sum($rt.encoded_size) as encoded_size
           FROM $rt join $table on $rt.sessionId = $table.sessionId and $rt.timestamp = $table.timestamp
               where
@@ -734,7 +734,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               and $table.params_u ilike '$(UP.urlRegEx)'
               and $table.user_agent_device_type ilike '$(UP.deviceType)'
               and $table.user_agent_os ilike '$(UP.agentOs)'
-              and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
+              and $table.domreadytimer >= $(UP.timeLowerMs) and $table.domreadytimer <= $(UP.timeUpperMs)
               and $table.params_rt_quit IS NULL
               and $table.errors IS NULL
           group by urlgroup,$table.sessionId,$table.timestamp,errors

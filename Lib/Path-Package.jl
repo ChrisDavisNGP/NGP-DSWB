@@ -104,8 +104,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
               timeVar = subdfRow[:pageloadtime]
               timeStampVar = subdfRow[:pageloadtime]
           else
-              timeVar = subdfRow[:timers_domready]
-              timeStampVar = subdfRow[:timers_domready]
+              timeVar = subdfRow[:domreadytimer]
+              timeStampVar = subdfRow[:domreadytimer]
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
@@ -215,8 +215,8 @@ function showAvailableSessionsStreamline(TV::TimeVars,UP::UrlParams,SP::ShowPara
               timeVar = subdf[1,:pageloadtime]
               timeStampVar = subdf[1,:pageloadtime]
           else
-              timeVar = subdf[1,:timers_domready]
-              timeStampVar = subdf[1,:timers_domready]
+              timeVar = subdf[1,:domreadytimer]
+              timeStampVar = subdf[1,:domreadytimer]
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
@@ -334,7 +334,7 @@ function individualPageDataNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,NR::NrP
             )
       end
 
-      #localDF = names!(toppageurl,[Symbol("sessionId");Symbol("timestamp");Symbol("pageloadtime");Symbol("timers_domready")])
+      #localDF = names!(toppageurl,[Symbol("sessionId");Symbol("timestamp");Symbol("pageloadtime");Symbol("domreadytimer")])
 
       if SP.debugLevel > 6
           beautifyDF(toppageurl)

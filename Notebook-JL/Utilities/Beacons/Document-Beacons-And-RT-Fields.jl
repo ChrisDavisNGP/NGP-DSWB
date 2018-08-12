@@ -208,7 +208,7 @@ order by timestamp
 
 displayTitle(chart_title = "Timers from Beacon", showTimeStamp=false)
 sessionFields = select("""\
-select timers_before_dns,timers_dns,timers_tcp,timers_ssl,timers_domload,timers_domready,timers_renderstart,timers_loaded,timers_missing
+select timers_before_dns,timers_dns,timers_tcp,timers_ssl,timers_domload,domreadytimer,timers_renderstart,timers_loaded,timers_missing
 from $btv
 where sessionId = '$(sessionId)' and timestamp in $(ts)
 order by timestamp
@@ -218,7 +218,7 @@ println("timers_dns = DNS")
 println("timers_tcp = TCP")
 println("timers_ssl = SSL")
 println("timers_domload = DOM Loading")
-println("timers_domready = DOM Complete")
+println("domreadytimer = DOM Complete")
 println("timers_renderstart = First Paint")
 println("timers_loaded = nt_load_end - nt_nav_st")
 

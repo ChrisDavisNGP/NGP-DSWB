@@ -178,7 +178,7 @@ function timeBeaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF:
     if (UP.usePageLoad)
         statsDF = buildTimeStats(localTableDF,:pageloadtime)
     else
-        statsDF = buildTimeStats(localTableDF,:timers_domready)
+        statsDF = buildTimeStats(localTableDF,:domreadytimer)
     end
 
     if nrow(statsDF) == 0
@@ -242,7 +242,7 @@ function beaconStats(TV::TimeVars,UP::UrlParams,SP::ShowParams,localTableDF::Dat
     if (UP.usePageLoad)
         dv = localTableDF[:pageloadtime]
     else
-        dv = localTableDF[:timers_domready]
+        dv = localTableDF[:domreadytimer]
     end
 
     # Get page views #, median, min, max and more
@@ -304,7 +304,7 @@ function basicStats(UP::UrlParams,localStatsDF::DataFrame)
         if UP.usePageLoad
             dv = Array{Float64}(localStatsDF[:pageloadtime])
         else
-            dv = Array{Float64}(localStatsDF[:timers_domready])
+            dv = Array{Float64}(localStatsDF[:domreadytimer])
         end
 
         statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000.0,1)]
@@ -418,7 +418,7 @@ function runningStats(UP::UrlParams,year::Int64,month::Int64,day::Int64,hour::In
         if UP.usePageLoad
             dv = Array{Float64}(localStatsDF[:pageloadtime])
         else
-            dv = Array{Float64}(localStatsDF[:timers_domready])
+            dv = Array{Float64}(localStatsDF[:domreadytimer])
         end
 
         statsArr(v) = round(v/1000.0,3)
@@ -588,7 +588,7 @@ function distributionStats(UP::UrlParams)
         if (UP.usePageLoad)
             statsDV = localStatsDF[:pageloadtime]
         else
-            statsDV = localStatsDF[:timers_domready]
+            statsDV = localStatsDF[:domreadytimer]
         end
         n = fit(Normal, statsDV)
         println("normal ",n)
@@ -793,7 +793,7 @@ function longTimesFATS(TV::TimeVars,UP::UrlParams,localStats2::DataFrame)
         if (UP.usePageLoad)
             dv = localStats2[:pageloadtime]
         else
-            dv = localStats2[:timers_domready]
+            dv = localStats2[:domreadytimer]
         end
 
         statsArr(v) = [round(v,0),round(v/1000.0,3),round(v/60000,1)]
