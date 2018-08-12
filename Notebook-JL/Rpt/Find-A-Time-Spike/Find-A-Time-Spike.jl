@@ -7,7 +7,7 @@ using Formatting
 
 dsn = "tenant_232301"
 table = "RUM_PRD_BEACON_FACT_DSWB_34501" # beacon table name
-tableRt = "beacons_4744_rt"
+tableRt = "$(table)_rt"
 
 # Connect to Beacon Data
 setRedshiftEndpoint(dsn)
