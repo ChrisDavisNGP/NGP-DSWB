@@ -1,4 +1,4 @@
-using ODBC
+using QueryAPI
 ODBC.connect("vfdsn")
 
 results = query("SELECT COUNT(*) FROM soasta_beacons")

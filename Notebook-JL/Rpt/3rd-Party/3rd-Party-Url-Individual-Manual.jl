@@ -1,6 +1,6 @@
 ## Tables and Data Source setup
 
-using ODBC
+using QueryAPI
 using DataFrames
 using DSWB
 using Formatting
