@@ -68,19 +68,19 @@ group by geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_re
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = select("""\
-            select count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
+            select count(*), geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,paramsu
             FROM $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and sessionId = '$(firstSession)'
-group by geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
+group by geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,paramsu
                 order by count(*) desc
             """);
 
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = select("""\
-            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
+            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,paramsu
             FROM $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -142,7 +142,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 #                $rt.timestamp between $TV.startTimeMsUTC and $TV.endTimeMsUTC
 #                and $bt.sessionId IS NOT NULL
 #                and $bt.page_group ilike '$(UP.pageGroup)'
-#                and $bt.params_u ilike '$(localUrl)'
+#                and $bt.paramsu ilike '$(localUrl)'
 #                and $bt.user_agent_device_type ilike '$(deviceType)'
 #                group by sessionId
 #                """);

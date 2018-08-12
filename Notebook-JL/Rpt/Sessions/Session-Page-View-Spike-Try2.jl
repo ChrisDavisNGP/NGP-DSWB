@@ -64,7 +64,7 @@ order by timestamp
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = select("""\
-            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
+            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,paramsu
             FROM $table
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -75,7 +75,7 @@ debugRecords = select("""\
 beautifyDF(debugRecords[1:min(300,end),:])
 
 debugRecords = select("""\
-            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
+            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,paramsu
             FROM $table
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -137,7 +137,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 #                $tableRt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
 #                and $table.sessionId IS NOT NULL
 #                and $table.page_group ilike '$(productPageGroup)'
-#                and $table.params_u ilike '$(localUrl)'
+#                and $table.paramsu ilike '$(localUrl)'
 #                and $table.user_agent_device_type ilike '$(deviceType)'
 #                group by sessionId
 #                """);

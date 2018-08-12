@@ -17,7 +17,7 @@ function defaultResourcesToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
-                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.domreadytimer >= $(UP.timeLowerMs) and $bt.domreadytimer <= $(UP.timeUpperMs) and
@@ -49,7 +49,7 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 sessionId IS NOT NULL and
                 paramsrtquit IS NULL and
-                params_u ilike '$(UP.urlRegEx)' and
+                paramsu ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
@@ -84,7 +84,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 sessionId IS NOT NULL and
                 paramsrtquit IS NULL and
-                params_u ilike '$(UP.urlRegEx)' and
+                paramsu ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
@@ -178,7 +178,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#                params_u ilike '$(UP.urlRegEx)' and
+#                paramsu ilike '$(UP.urlRegEx)' and
 #                user_agent_device_type ilike '$(UP.deviceType)' and
 #                user_agent_os ilike '$(UP.agentOs)' and
 #                page_group ilike '$(UP.pageGroup)' and
@@ -216,7 +216,7 @@ function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             from $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                params_u ilike '$(UP.urlRegEx)' and
+                paramsu ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
@@ -262,7 +262,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
-                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime <= $(UP.timeUpperMs) and
@@ -291,7 +291,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
-                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.domreadytimer >= $(UP.timeLowerMs) and $bt.domreadytimer <= $(UP.timeUpperMs) and
@@ -449,7 +449,7 @@ function getResourcesForBeaconToDF(TV::TimeVars,UP::UrlParams)
             FROM $bt join $rt
             on $rt.sessionId = $bt.sessionId and $rt.timestamp = $bt.timestamp
             where
-            $bt.params_u ilike '$(UP.urlRegEx)'
+            $bt.paramsu ilike '$(UP.urlRegEx)'
             and $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             and $bt.sessionId IS NOT NULL
             and $bt.page_group ilike '$(UP.pageGroup)'
@@ -486,7 +486,7 @@ function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
-                $bt.params_u ilike '$(UP.urlRegEx)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
@@ -505,7 +505,7 @@ function gatherSizeDataToDF(UP::UrlParams,SP::ShowParams)
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-        select CASE WHEN (position('?' in $bt.params_u) > 0) then trim('/' from (substring($bt.params_u for position('?' in substring($bt.params_u from 9)) +7))) else trim('/' from $bt.params_u) end as urlgroup,
+        select CASE WHEN (position('?' in $bt.paramsu) > 0) then trim('/' from (substring($bt.paramsu for position('?' in substring($bt.paramsu from 9)) +7))) else trim('/' from $bt.paramsu) end as urlgroup,
             $bt.sessionId,
             $bt.timestamp,
             sum($rt.encoded_size) as encoded,
@@ -684,7 +684,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.sessionId IS NOT NULL
               and $table.page_group ilike '$(UP.pageGroup)'
-              and $table.params_u ilike '$(UP.urlRegEx)'
+              and $table.paramsu ilike '$(UP.urlRegEx)'
               and $table.user_agent_device_type ilike '$(UP.deviceType)'
               and $table.user_agent_os ilike '$(UP.agentOs)'
               and $table.pageloadtime >= $(UP.timeLowerMs) and $table.pageloadtime <= $(UP.timeUpperMs)
@@ -702,7 +702,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                   $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
                   and $table.sessionId IS NOT NULL
                   and $table.page_group ilike '$(UP.pageGroup)'
-                  and $table.params_u ilike '$(UP.urlRegEx)'
+                  and $table.paramsu ilike '$(UP.urlRegEx)'
                   and $table.user_agent_device_type ilike '$(UP.deviceType)'
                   and $table.user_agent_os ilike '$(UP.agentOs)'
                   and $table.domreadytimer >= $(UP.timeLowerMs) and $table.domreadytimer <= $(UP.timeUpperMs)
@@ -716,7 +716,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           end
 
           localTableDF = select("""\
-          select CASE WHEN (position('?' in $table.params_u) > 0) then trim('/' from (substring($table.params_u for position('?' in substring($table.params_u from 9)) +7))) else trim('/' from $table.params_u) end as urlgroup,
+          select CASE WHEN (position('?' in $table.paramsu) > 0) then trim('/' from (substring($table.paramsu for position('?' in substring($table.paramsu from 9)) +7))) else trim('/' from $table.paramsu) end as urlgroup,
               count(*) as request_count,
               avg($table.domreadytimer) as beacon_time,
               sum($rt.encoded_size) as encoded_size
@@ -725,7 +725,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.sessionId IS NOT NULL
               and $table.page_group ilike '$(UP.pageGroup)'
-              and $table.params_u ilike '$(UP.urlRegEx)'
+              and $table.paramsu ilike '$(UP.urlRegEx)'
               and $table.user_agent_device_type ilike '$(UP.deviceType)'
               and $table.user_agent_os ilike '$(UP.agentOs)'
               and $table.domreadytimer >= $(UP.timeLowerMs) and $table.domreadytimer <= $(UP.timeUpperMs)

@@ -561,7 +561,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowMedLoadUrl)
     chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:url,minPercentage=0.1)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_u,minPercentage=0.1)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:paramsu,minPercentage=0.1)
   end
 
   # Known bad - need ticket
@@ -619,7 +619,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowAggSessionLength)
-    myFilter = SQLFilter[ilike("params_u",UP.urlRegEx)]
+    myFilter = SQLFilter[ilike("paramsu",UP.urlRegEx)]
 
     perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; filters=myFilter)
     c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Page Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",

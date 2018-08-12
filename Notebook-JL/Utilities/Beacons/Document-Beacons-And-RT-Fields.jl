@@ -34,11 +34,11 @@ displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info 
 
 t1DF = select("""\
 
-select count(*),params_u
+select count(*),paramsu
 FROM $btv
 where
 beacon_type = 'page view'
-group by params_u
+group by paramsu
 order by count(*) desc
 limit 5
 
@@ -49,12 +49,12 @@ displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info 
 
 t2DF = select("""\
 
-select count(*),sessionId,params_u
+select count(*),sessionId,paramsu
 FROM $btv
 where
 beacon_type = 'page view' and
-params_u ilike '$(UP.urlRegEx)'
-group by params_u,sessionId
+paramsu ilike '$(UP.urlRegEx)'
+group by paramsu,sessionId
 order by count(*) desc
 """)
 beautifyDF(t2DF)
@@ -65,12 +65,12 @@ displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info 
 
 t3DF = select("""\
 
-select count(*),sessionId,params_u,timestamp
+select count(*),sessionId,paramsu,timestamp
 FROM $btv
 where
 beacon_type = 'page view' and
 sessionId = '$sessionId'
-group by params_u,sessionId,timestamp
+group by paramsu,sessionId,timestamp
 order by timestamp asc
 """)
 beautifyDF(t3DF)
@@ -84,7 +84,7 @@ select("""drop view if exists $rtv""")
 
 
 
-#select("""create or replace view $rtv as (select * from $tableRt where timestamp between $startTimeMs and $endTimeMs and (url ilike '$(localUrlRt)' or params_u ilike '$(localUrlRt)'))""")
+#select("""create or replace view $rtv as (select * from $tableRt where timestamp between $startTimeMs and $endTimeMs and (url ilike '$(localUrlRt)' or paramsu ilike '$(localUrlRt)'))""")
 select("""create or replace view $rtv as (select * from $tableRt where timestamp between $startTimeMs and $endTimeMs and sessionId = '$sessionId') limit 10000""")
 
 # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
@@ -325,7 +325,7 @@ order by timestamp
 
 displayTitle(chart_title = "URL from Beacon", showTimeStamp=false)
 sessionFields = select("""\
-select params_u,params_pgu,params_r,params_r2,params_nu
+select paramsu,params_pgu,params_r,params_r2,params_nu
 from $btv
 where sessionId = '$(sessionId)' and timestamp in $(ts)
 order by timestamp
@@ -433,7 +433,7 @@ order by timestamp
 
 displayTitle(chart_title = "Description Fields from RT Data", showTimeStamp=false)
 sessionFields = select("""\
-select sessionId,session_start,timestamp,params_u
+select sessionId,session_start,timestamp,paramsu
 from $rtv
 where sessionId = '$(sessionId)' and timestamp in $(ts)
 order by timestamp,start_time

@@ -5,7 +5,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         btv = UP.btView
         if (SP.debugLevel > 0)
             println("page group=$(UP.pageGroup), devType=$(UP.deviceType), os=$(UP.agentOs)")
-            println("params_u=",UP.urlRegEx)
+            println("paramsu=",UP.urlRegEx)
             println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)
         end
 
@@ -15,7 +15,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                     where
                         timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
-                        params_u ilike '$(UP.urlRegEx)' and
+                        paramsu ilike '$(UP.urlRegEx)' and
                         user_agent_device_type ilike '$(UP.deviceType)' and
                         user_agent_os ilike '$(UP.agentOs)' and
                         pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
@@ -72,7 +72,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
             create or replace view $(UP.btView) as
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
-            params_u ilike '$(UP.urlRegEx)' and
+            paramsu ilike '$(UP.urlRegEx)' and
             user_agent_os ilike '$(UP.agentOs)' and
             user_agent_device_type ilike '$(UP.deviceType)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -86,7 +86,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-            params_u ilike '$(UP.urlRegEx)' and
+            paramsu ilike '$(UP.urlRegEx)' and
             user_agent_os ilike '$(UP.agentOs)' and
             user_agent_device_type = 'Mobile'
             )
@@ -97,7 +97,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
             (select * FROM $(UP.beaconTable)
             where page_group ilike '$(UP.pageGroup)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-            params_u ilike '$(UP.urlRegEx)' and
+            paramsu ilike '$(UP.urlRegEx)' and
             user_agent_os ilike '$(UP.agentOs)' and
             user_agent_device_type = 'Desktop'
             )

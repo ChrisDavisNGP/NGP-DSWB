@@ -239,7 +239,7 @@ end
 
 function loadTimesParamsUPGD(TV::TimeVars,UP::UrlParams)
     try
-        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_u,minPercentage=0.5)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:paramsu,minPercentage=0.5)
 
         df = getTopURLsByLoadTime(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.5);
 
@@ -340,18 +340,18 @@ function displayGroupBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         beautifyDF(currentPageGroupDF[1:min(SP.showLines,end),:])
         #println("$pageGroup Beacons: ",size(currentPageGroupDF)[1])
 
-        finalPrintDF = DataFrame(count=Int64[],url=ASCIIString[],params_u=ASCIIString[])
+        finalPrintDF = DataFrame(count=Int64[],url=ASCIIString[],paramsu=ASCIIString[])
 
-        for subDF in groupby(currentPageGroupDF,[:url,:params_u])
+        for subDF in groupby(currentPageGroupDF,[:url,:paramsu])
             currentGroup = subDF[1:1,:url]
-            currentParams = subDF[1:1,:params_u]
+            currentParams = subDF[1:1,:paramsu]
             #println(size(subDF,1),"  ",currentGroup[1],"  ",currentParams[1])
-            push!(finalPrintDF,[size(subDF,1);subDF[1:1,:url];subDF[1:1,:params_u]])
+            push!(finalPrintDF,[size(subDF,1);subDF[1:1,:url];subDF[1:1,:paramsu]])
         end
 
         displayTitle(chart_title = "Top Beacons Counts (show limit $(SP.showLines)) For $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         sort!(finalPrintDF, cols=(order(:count, rev=true)))
-        scrubUrlToPrint(SP,finalPrintDF,:params_u)
+        scrubUrlToPrint(SP,finalPrintDF,:paramsu)
         beautifyDF(finalPrintDF[1:min(SP.showLines,end),:])
 
 
@@ -620,12 +620,12 @@ function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         joinTables = select("""\
-            select count(*),url,params_u
+            select count(*),url,paramsu
             from $(UP.resourceTable)
             where
                 url ilike '$(UP.resRegEx)' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
-            group by url, params_u
+            group by url, paramsu
             order by count(*) desc
             limit $(UP.limitQueryRows)
         """);
@@ -752,7 +752,7 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 (response_first_byte) as "Req FB",
                 (response_last_byte) as "Req LB",
                 url,
-                params_u,
+                paramsu,
                 (redirect_start) as "Redirect S",
                 (redirect_end) as "Redirect E",
                 (secure_connection_start) as "Secure Conn S"
@@ -790,8 +790,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
             select count(*),AVG(params_dom_sz) beacons,
                 AVG(timers_t_page)/1000 load_time,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -817,8 +817,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
             select count(*),SUM(params_dom_sz) beacons,
                 AVG(timers_t_page)/1000 load_time,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -846,8 +846,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         domSize = select("""\
             select count(*),AVG(params_dom_doms) avgsize,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -868,8 +868,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         domSize = select("""\
             select count(*),AVG(params_dom_ln) avgsize,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -892,8 +892,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
             select count(*) cnt,AVG(params_dom_img) avgsize,
                 AVG(params_dom_img_ext) avgsizeext,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -916,8 +916,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
             select count(*) cnt,SUM(params_dom_img) avgsize,
                 SUM(params_dom_img_ext) avgsizeext,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -943,8 +943,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
             select count(*) cnt,AVG(params_dom_script) avgsize,
                 AVG(params_dom_script_ext) avgsizeext,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -970,8 +970,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
             select count(*) cnt,SUM(params_dom_script) avgsize,
                 SUM(params_dom_script_ext) avgsizeext,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where
@@ -995,8 +995,8 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
         sizeTrend = select("""\
             select params_h_t,params_dom_sz size,
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                 end urlgroup
             from $btv
             where

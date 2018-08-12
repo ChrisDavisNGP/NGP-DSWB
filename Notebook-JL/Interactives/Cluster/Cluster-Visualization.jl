@@ -80,7 +80,7 @@ results2 = select("""\
         pageloadtime,timers_t_resp,timers_t_page
     from $(btv)
     where
-        params_u ilike '$(UP.urlRegEx)'
+        paramsu ilike '$(UP.urlRegEx)'
     limit $(UP.limitQueryRows)
 """);
 

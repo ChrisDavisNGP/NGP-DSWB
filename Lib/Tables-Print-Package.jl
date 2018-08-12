@@ -43,11 +43,11 @@ function urlParamsUCountPrintTable(UP::UrlParams,SP::ShowParams)
 
     try
         CleanupTable = select("""\
-            select count(*), URL, params_u
+            select count(*), URL, paramsu
             FROM $(UP.btView)
             where
                 beacon_type = 'page view'
-            GROUP BY url,params_u
+            GROUP BY url,paramsu
             Order by count(*) desc
     """)
 
@@ -62,13 +62,13 @@ function paramsUCountPrintTable(UP::UrlParams,SP::ShowParams)
 
     try
         CleanupTable = select("""\
-            select count(*) as "Page Views",params_u as "URL Landing In Nat Geo Site Default Group"
+            select count(*) as "Page Views",paramsu as "URL Landing In Nat Geo Site Default Group"
             FROM $(UP.btView)
             where
                 beacon_type = 'page view' and
-                params_u <> 'http://www.nationalgeographic.com/' and
-                params_u like 'http://www.nationalgeographic.com/?%'
-            GROUP BY params_u
+                paramsu <> 'http://www.nationalgeographic.com/' and
+                paramsu like 'http://www.nationalgeographic.com/?%'
+            GROUP BY paramsu
             Order by count(*) desc
         """)
 
@@ -117,7 +117,7 @@ function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         btv = UP.btView
 
         topurl = select("""\
-            select count(*),CASE when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7))) else trim('/' from params_u) end urlgroup
+            select count(*),CASE when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7))) else trim('/' from paramsu) end urlgroup
             FROM $(btv)
             where
                 beacon_type = 'page view'
@@ -139,11 +139,11 @@ function countParamUBtViewPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         btv = UP.btView
 
         topurl = select("""\
-            select count(*),params_u
+            select count(*),paramsu
             FROM $(btv)
             where
                 beacon_type = 'page view'
-            group by params_u
+            group by paramsu
             order by count(*) desc
             limit $(UP.limitQueryRows)
         """)
@@ -161,7 +161,7 @@ function bigPages2PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         btv = UP.btView
         displayTitle(chart_title = "Big Pages (Min $(minSizeBytes) KB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
         bigPagesDF = select("""\
-            select params_dom_sz,timers_t_page load_time,params_u urlgroup
+            select params_dom_sz,timers_t_page load_time,paramsu urlgroup
             from $btv
             where
                 params_dom_sz IS NOT NULL and
@@ -184,7 +184,7 @@ function bigPages3PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
 
         displayTitle(chart_title = "Big Pages By Average Size (Min $(minSizeBytes) KB Pages)", chart_info = [TV.timeString], showTimeStamp=false)
         bigAveragePagesDF = select("""\
-            select count(*),avg(params_dom_sz) as size,avg(timers_t_page) as load,params_u as urlgroup
+            select count(*),avg(params_dom_sz) as size,avg(timers_t_page) as load,paramsu as urlgroup
             from $btv
             where
                 params_dom_sz IS NOT NULL and
@@ -208,7 +208,7 @@ function bigPages4PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
 
         displayTitle(chart_title = "Big Pages With Session ID (Min $(minSizeBytes) KB)", chart_info = [TV.timeString], showTimeStamp=false)
         bigPagesSessionsDF = select("""\
-            select params_dom_sz dom_size,sessionId,timestamp,params_u urlgroup
+            select params_dom_sz dom_size,sessionId,timestamp,paramsu urlgroup
             from $btv
             where
                 params_dom_sz IS NOT NULL and
@@ -322,7 +322,7 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
         select avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
             avg($rt.decoded_size) as decoded,
             count(*),
-            CASE WHEN (position('?' in $btv.params_u) > 0) then trim('/' from (substring($btv.params_u for position('?' in substring($btv.params_u from 9)) +7))) else trim('/' from $btv.params_u) end as urlgroup,
+            CASE WHEN (position('?' in $btv.paramsu) > 0) then trim('/' from (substring($btv.paramsu for position('?' in substring($btv.paramsu from 9)) +7))) else trim('/' from $btv.paramsu) end as urlgroup,
             $rt.url
         from $btv join $rt
             on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
@@ -332,7 +332,7 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
             $btv.user_agent_device_type ilike '$(UP.deviceType)' and
             $btv.user_agent_os ilike '$(UP.agentOs)'
         group by
-            $btv.params_u,$rt.url
+            $btv.paramsu,$rt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
@@ -498,10 +498,10 @@ function displayMatchingResourcesByParentUrlPrintTable(TV::TimeVars,UP::UrlParam
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select count(*), params_u as parenturl
+            select count(*), paramsu as parenturl
             from $rt
             where
-                params_u ilike '$(UP.resRegEx)' and
+                paramsu ilike '$(UP.resRegEx)' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by parenturl
             order by count(*) desc
@@ -509,14 +509,14 @@ function displayMatchingResourcesByParentUrlPrintTable(TV::TimeVars,UP::UrlParam
         """);
 
         if (size(joinTablesDF)[1] > 0)
-            displayTitle(chart_title = "Any Parent Url (params_u) for pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
+            displayTitle(chart_title = "Any Parent Url (paramsu) for pattern $(UP.resRegEx)", chart_info = [TV.timeString], showTimeStamp=false)
             scrubUrlToPrint(SP,joinTablesDF,:parenturl)
             joinTablesDF = names!(joinTablesDF,[Symbol("Resource Count"),Symbol("Parent URLs for Resources")])
             beautifyDF(joinTablesDF[1:min(SP.showLines,end),:])
             joinTablesDF = names!(joinTablesDF,[Symbol("count"),Symbol("parenturl")])
             dataframeFieldStats(TV,SP,joinTablesDF,:count,"on column count")
         else
-            displayTitle(chart_title = "Any Parent Url (params_u) for pattern $(UP.resRegEx) is empty", showTimeStamp=false)
+            displayTitle(chart_title = "Any Parent Url (paramsu) for pattern $(UP.resRegEx) is empty", showTimeStamp=false)
         end
 
     catch y
@@ -561,12 +561,12 @@ function displayMatchingResourcesByUrlBtvRtPrintTables(TV::TimeVars,UP::UrlParam
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select count(*), $rt.params_u as parenturl, $rt.url
+            select count(*), $rt.paramsu as parenturl, $rt.url
             from $btv join $rt
                 on $btv.sessionId = $rt.sessionId and $btv.timestamp = $rt.timestamp
             where
             $rt.url ilike '$(UP.resRegEx)'
-            group by $rt.params_u, $rt.url, $btv.url
+            group by $rt.paramsu, $rt.url, $btv.url
             order by count(*) desc
         """);
 
@@ -626,7 +626,7 @@ function displayMatchingResourcesStatsPrintTable(TV::TimeVars,UP::UrlParams,SP::
                 avg(response_first_byte) as "responsefirstbyte",
                 avg(response_last_byte) as "responselastbyte",
                 max(response_last_byte) as "maxresponselastbyte",
-                params_u as parenturl, url,
+                paramsu as parenturl, url,
                 avg(redirect_end - redirect_start) as "redirecttimems",
                 avg(secure_connection_start) as "secureconnection"
             from $rt
@@ -677,8 +677,8 @@ function topUrlTableByCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;
 
             select count(*),
                 CASE
-                    when  (position('?' in params_u) > 0) then trim('/' from (substring(params_u for position('?' in substring(params_u from 9)) +7)))
-                    else trim('/' from params_u)
+                    when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
                     end urlgroup
                 FROM $(ltName)
                 where
