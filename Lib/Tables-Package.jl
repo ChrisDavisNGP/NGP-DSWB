@@ -160,13 +160,13 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
     try
         localTableDF = select("""\
             select
-                "timestamp",
+                timestamp,
                 sessionId as session_id,
                 pageloadtime as timers_t_done,
                 timersDomReady as timers_domready
             from $bt
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 sessionId IS NOT NULL and
                 paramsrtquit IS NULL and
                 paramsu ilike '$(UP.urlRegEx)' and
