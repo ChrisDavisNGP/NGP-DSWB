@@ -176,7 +176,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
-            page_group ilike '$(UP.pageGroup)' and
+            pagegroupname ilike '$(UP.pageGroup)' and
             paramsu ilike '$(UP.urlRegEx)' and
             pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs) and
             devicetypename ilike '$(UP.deviceType)' and
@@ -204,7 +204,7 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
             beacon_type = 'page view' and
             params_dom_sz > 0 and
             timestamp between $startTimeMs and $endTimeMs and
-            page_group ilike '$(pageGroup)' and
+            pagegroupname ilike '$(pageGroup)' and
             pageloadtime >= 1000 and pageloadtime < 600000 and
             paramsrtquit IS NULL
         group by paramsu
@@ -300,7 +300,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           paramsu ilike '$(UP.urlRegEx)' and
           devicetypename ilike '$(UP.deviceType)' and
           operatingsystemname ilike '$(UP.agentOs)' and
-          page_group ilike '$(UP.pageGroup)' and
+          pagegroupname ilike '$(UP.pageGroup)' and
           pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         group by urlgroup
         order by count(*) desc
@@ -324,7 +324,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             paramsu ilike '$(UP.urlRegEx)' and
             devicetypename ilike '$(UP.deviceType)' and
             operatingsystemname ilike '$(UP.agentOs)' and
-            page_group ilike '$(UP.pageGroup)' and
+            pagegroupname ilike '$(UP.pageGroup)' and
             pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         group by paramsu
         order by cnt desc

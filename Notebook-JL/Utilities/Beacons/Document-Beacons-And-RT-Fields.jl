@@ -134,7 +134,7 @@ order by timestamp
 
 displayTitle(chart_title = "Top Level Fields (2) from Beacon", showTimeStamp=false)
 sessionFields = select("""\
-select beacon_type,page_group,remote_ip,proxy_address,
+select beacon_type,pagegroupname,remote_ip,proxy_address,
 errors,warnings,spdy,ssl,ipv6,
 mobile_connection_type,compression_types,ab_test
 from $btv

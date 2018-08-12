@@ -1014,7 +1014,7 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     bt = UP.beaconTable
     btv = UP.btView
 
-    # Create view to query only product page_group
+    # Create view to query only product pagegroupname
     defaultBeaconCreateView(TV,UP,SP)
 
     setTable(btv)

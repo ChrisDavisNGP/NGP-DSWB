@@ -74,12 +74,12 @@ data[data[:,2] .== "class",2]
 
 #### by
 
-byData = by(data, :page_group, nrow)
+byData = by(data, :pagegroupname, nrow)
 sort(byData, cols=[:x1], rev=true)
 
 #### aggregate
 
-aggregate(data[:,[2,20]], :page_group, [length, mean])
+aggregate(data[:,[2,20]], :pagegroupname, [length, mean])
 
 ## 3. Gadfly
 

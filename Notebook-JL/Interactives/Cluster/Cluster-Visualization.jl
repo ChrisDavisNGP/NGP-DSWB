@@ -45,7 +45,7 @@ setTable(btv)
 #* `params_dom_img`
 #
 #Dimensions are all optional, but you won't get clusters without them... These are the most useful:
-#* `page_group`
+#* `pagegroupname`
 #* `geo_cc`
 #* `geo_org`
 #* `geo_netspeed`
@@ -75,7 +75,7 @@ end
 
 #dropped geo_cc
 results2 = select("""\
-    select timestamp,page_group, devicetypename,user_agent_family,
+    select timestamp,pagegroupname, devicetypename,user_agent_family,
         params_dom_sz,params_dom_ln,params_dom_script,params_dom_img,
         pageloadtime,timers_t_resp,timers_t_page
     from $(btv)

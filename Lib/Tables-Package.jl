@@ -16,7 +16,7 @@ function defaultResourcesToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 where
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
-                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
                 $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.devicetypename ilike '$(UP.deviceType)' and
                 $bt.operatingsystemname ilike '$(UP.agentOs)' and
@@ -52,7 +52,7 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 paramsu ilike '$(UP.urlRegEx)' and
                 devicetypename ilike '$(UP.deviceType)' and
                 operatingsystemname ilike '$(UP.agentOs)' and
-                page_group ilike '$(UP.pageGroup)' and
+                pagegroupname ilike '$(UP.pageGroup)' and
                 pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         """)
 
@@ -87,7 +87,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 paramsu ilike '$(UP.urlRegEx)' and
                 devicetypename ilike '$(UP.deviceType)' and
                 operatingsystemname ilike '$(UP.agentOs)' and
-                page_group ilike '$(UP.pageGroup)' and
+                pagegroupname ilike '$(UP.pageGroup)' and
                 pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             order by timestamp asc
             limit $(UP.limitQueryRows)
@@ -178,8 +178,6 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#                operatingsystemname ilike '$(UP.agentOs)' and
-#                page_group ilike '$(UP.pageGroup)' and
 #                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
 #            order by timestamp asc
 #            limit $(UP.limitQueryRows)
@@ -217,7 +215,7 @@ function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 paramsu ilike '$(UP.urlRegEx)' and
                 devicetypename ilike '$(UP.deviceType)' and
                 operatingsystemname ilike '$(UP.agentOs)' and
-                page_group ilike '$(UP.pageGroup)' and
+                pagegroupname ilike '$(UP.pageGroup)' and
                 beacon_type = 'error'
             limit $(UP.limitQueryRows)
         """)
@@ -259,7 +257,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
             WHERE
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
-                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
                 $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.devicetypename ilike '$(UP.deviceType)' and
                 $bt.operatingsystemname ilike '$(UP.agentOs)' and
@@ -288,7 +286,7 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 where
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
-                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
                 $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.devicetypename ilike '$(UP.deviceType)' and
                 $bt.operatingsystemname ilike '$(UP.agentOs)' and
@@ -450,7 +448,7 @@ function getResourcesForBeaconToDF(TV::TimeVars,UP::UrlParams)
             $bt.paramsu ilike '$(UP.urlRegEx)'
             and $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             and $bt.sessionId IS NOT NULL
-            and $bt.page_group ilike '$(UP.pageGroup)'
+            and $bt.pagegroupname ilike '$(UP.pageGroup)'
             and $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
             and $bt.paramsrtquit IS NULL
             and $bt.devicetypename ilike '$(UP.deviceType)'
@@ -483,7 +481,7 @@ function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             where
                 $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.sessionId IS NOT NULL and
-                $bt.page_group ilike '$(UP.pageGroup)' and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
                 $bt.paramsu ilike '$(UP.urlRegEx)' and
                 $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
                 $bt.devicetypename ilike '$(UP.deviceType)' and
@@ -681,7 +679,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               where
               $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.sessionId IS NOT NULL
-              and $table.page_group ilike '$(UP.pageGroup)'
+              and $table.pagegroupname ilike '$(UP.pageGroup)'
               and $table.paramsu ilike '$(UP.urlRegEx)'
               and $table.devicetypename ilike '$(UP.deviceType)'
               and $table.operatingsystemname ilike '$(UP.agentOs)'
@@ -699,7 +697,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                   where
                   $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
                   and $table.sessionId IS NOT NULL
-                  and $table.page_group ilike '$(UP.pageGroup)'
+                  and $table.pagegroupname ilike '$(UP.pageGroup)'
                   and $table.paramsu ilike '$(UP.urlRegEx)'
                   and $table.devicetypename ilike '$(UP.deviceType)'
                   and $table.operatingsystemname ilike '$(UP.agentOs)'
@@ -722,7 +720,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               where
               $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.sessionId IS NOT NULL
-              and $table.page_group ilike '$(UP.pageGroup)'
+              and $table.pagegroupname ilike '$(UP.pageGroup)'
               and $table.paramsu ilike '$(UP.urlRegEx)'
               and $table.devicetypename ilike '$(UP.deviceType)'
               and $table.operatingsystemname ilike '$(UP.agentOs)'
@@ -802,7 +800,7 @@ function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
         localStats2 = select("""\
             select timestamp, pageloadtime, sessionId
             from $(UP.btView) where
-                page_group ilike '$(UP.pageGroup)' and
+                pagegroupname ilike '$(UP.pageGroup)' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 pageloadtime > $(UpperBy25p)
         """)

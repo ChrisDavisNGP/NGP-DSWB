@@ -52,8 +52,8 @@ localTable = "$(table)_productPage_view"
 datePart = :minute
 
 
-# Create view to query only product page_group
-select("""create or replace view $localTable as (select * from $table where page_group = '$(productPageGroup)' and timestamp between $startTimeMs and $endTimeMs)""")
+# Create view to query only product pagegroupname
+select("""create or replace view $localTable as (select * from $table where pagegroupname = '$(productPageGroup)' and timestamp between $startTimeMs and $endTimeMs)""")
 
 setTable(localTable)
 
@@ -99,7 +99,7 @@ table = getGroupIdPercentages(startTime, endTime, sessionsTable, pagegroupTable;
 
 httpAndHttps = getHttpVsHttps(startTime, endTime, :hour)
 
-dimension1 = Symbol("page_group")
+dimension1 = Symbol("pagegroupname")
 dimension2 = Symbol("devicetypename")
 
 tto = thinkTimesOverall                 = getMedianThinkTime(startTime, endTime)

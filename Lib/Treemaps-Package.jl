@@ -34,14 +34,14 @@ end
 function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:page_group])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:pagegroupname])
         treeData[:x1] = "Natgeo - All"
         chartTile = "$(UP.pageGroup) Page Group"
         if UP.pageGroup == "%"
             chartTile = "All Page Groups"
         end
         displayTitle(chart_title = chartTile, chart_info = [TV.timeString],showTimeStamp=false)
-        drawTree(treeData; titleCol = :x1, fieldNames = [:page_group])
+        drawTree(treeData; titleCol = :x1, fieldNames = [:pagegroupname])
 
         if (SP.devView)
             sort!(treeData, cols=:beacons, rev=true)
@@ -51,13 +51,13 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             displayManyRows(treeData[:,1:3], [Symbol("Page Group"), Symbol("Load Time"), Symbol("Beacons")],SP.treemapTableLines)
         end
 
-        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:devicetypename,:page_group])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:devicetypename,:pagegroupname])
 
         if (UP.deviceType == "Desktop" || UP.deviceType == "%")
             subTreeData = treeData[treeData[:, :devicetypename] .== "Desktop", :]
             subTreeData[:x1] = "Natgeo - Desktop"
             displayTitle(chart_title = "Page Group - Desktop", chart_info = [TV.timeString],showTimeStamp=false)
-            drawTree(subTreeData; titleCol = :x1, fieldNames = [:page_group])
+            drawTree(subTreeData; titleCol = :x1, fieldNames = [:pagegroupname])
             if (SP.devView)
                 sort!(subTreeData, cols=:beacons, rev=true)
                 displayTitle(chart_title = "Desktop", chart_info = ["Highest Beacon Counts and Load Times"],showTimeStamp=false)
@@ -71,7 +71,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             subTreeData = treeData[treeData[:, :devicetypename] .== "Mobile", :]
             subTreeData[:x1] = "Natgeo - Mobile"
             displayTitle(chart_title = "Mobile", chart_info = [TV.timeString],showTimeStamp=false)
-            drawTree(subTreeData; titleCol = :x1, fieldNames = [:page_group])
+            drawTree(subTreeData; titleCol = :x1, fieldNames = [:pagegroupname])
             if (SP.devView)
                 sort!(subTreeData, cols=:beacons, rev=true)
                 displayTitle(chart_title = "Mobile", chart_info = ["Highest Beacon Counts and Load Times"],showTimeStamp=false)

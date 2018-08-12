@@ -24,21 +24,21 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuarti
 
         table = UP.beaconTable
         pageGroupPercentages = getGroupPercentages(TV.startTimeUTC, TV.endTimeUTC)
-        pageGroups = pageGroupPercentages[:page_group][1:min(10,end)]
+        pageGroups = pageGroupPercentages[:pagegroupname][1:min(10,end)]
         pageGroups = "'"*join(pageGroups,"','")*"'"
         maxResources = showQuartiles
         pageGroupQuartilesDF = select("""\
-            SELECT DISTINCT page_group,
-                MIN(pageloadtime) OVER (PARTITION BY page_group) AS minimum,
-                PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY page_group) AS lower_quartile,
-                MEDIAN(pageloadtime) OVER (PARTITION BY page_group) AS "median",
-                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY page_group) AS upper_quartile,
-                PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY page_group) AS maximum,
-                COUNT(*)OVER (PARTITION BY page_group)
-                --MAX(pageloadtime) OVER (PARTITION BY page_group) AS maximum
+            SELECT DISTINCT pagegroupname,
+                MIN(pageloadtime) OVER (PARTITION BY pagegroupname) AS minimum,
+                PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY pagegroupname) AS lower_quartile,
+                MEDIAN(pageloadtime) OVER (PARTITION BY pagegroupname) AS "median",
+                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY pagegroupname) AS upper_quartile,
+                PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY pageloadtime) OVER (PARTITION BY pagegroupname) AS maximum,
+                COUNT(*)OVER (PARTITION BY pagegroupname)
+                --MAX(pageloadtime) OVER (PARTITION BY pagegroupname) AS maximum
             FROM $table
             WHERE
-                page_group IN ($(pageGroups)) and
+                pagegroupname IN ($(pageGroups)) and
                 beacon_type = 'page view' and
                 timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 paramsrtquit IS NULL and

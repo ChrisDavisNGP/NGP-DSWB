@@ -213,13 +213,13 @@ function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_345
     timelimit = timestamp_range[1, 2] - (hours*60 + minutes) * 60 * 1000;
 
     select("
-        SELECT page_group, paramsu,
+        SELECT pagegroupname, paramsu,
             geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
             user_agent_family, user_agent_major, operatingsystemname, user_agent_osversion, user_agent_model,
             params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
             pageloadtime
          FROM $(table_name)
-         WHERE page_group IS NOT NULL
+         WHERE pagegroupname IS NOT NULL
            AND (paramsrtquit IS NULL)
            AND pageloadtime IS NOT NULL
            AND pageloadtime BETWEEN 0 AND 600000

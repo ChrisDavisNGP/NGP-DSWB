@@ -70,13 +70,13 @@ strftime("%Y-%m-%dT%H:%M:%S", div(timestamp_range[1, 2], 1000))
 # This will take a few (<20) seconds to run, so be patient
 results = select("
 SELECT
-    page_group,
+    pagegroupname,
     geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
     user_agent_family, user_agent_major, operatingsystemname, user_agent_osversion, user_agent_model,
     params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
     pageloadtime
   FROM $(table)
- WHERE page_group IS NOT NULL
+ WHERE pagegroupname IS NOT NULL
    AND (paramsrtquit IS NULL OR paramsrtquit = FALSE)
    AND pageloadtime IS NOT NULL
    AND pageloadtime BETWEEN 0 AND 600000
@@ -95,15 +95,15 @@ using StatsBase
 #
 #`DataFrames` use the [Split-Apply-Combine Strategy](http://dataframesjl.readthedocs.org/en/latest/split_apply_combine.html) to summarise and aggregate a `DataFrame` by one or more columns.
 
-by(results, :page_group) do df
+by(results, :pagegroupname) do df
     DataFrame(iqr = iqr(df[:pageloadtime]), summary = summarystats(df[:pageloadtime]))
 end
 
 # Using more than one column
 #
-#We can group by more than one column.  In this case we use `page_group` and `geo_cc`.  We also use the `head` function to reduce the results to the top 15 (the second parameter to `head` is 15)
+#We can group by more than one column.  In this case we use `pagegroupname` and `geo_cc`.  We also use the `head` function to reduce the results to the top 15 (the second parameter to `head` is 15)
 
-head(by(results, [:geo_cc, :page_group]) do df
+head(by(results, [:geo_cc, :pagegroupname]) do df
     DataFrame(m=median(df[:pageloadtime]), iqr = iqr(df[:pageloadtime]), s² = var(df[:pageloadtime]))
 end, 15)
 
@@ -135,7 +135,7 @@ function toJSON(rows::DataFrame)
     n = size(rows, 1)
     cols = names(rows)
     colmap = Dict([
-        (:page_group, "page_group"),
+        (:pagegroupname, "pagegroupname"),
         (:geo_cc, "geo.cc"),
         (:geo_rg, "geo.rg"),
         (:geo_city, "geo.city"),

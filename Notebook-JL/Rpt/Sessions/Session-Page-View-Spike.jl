@@ -141,7 +141,7 @@ beautifyDF(toppagecount[1:min(10,end),:])
 #                where
 #                $rt.timestamp between $TV.startTimeMsUTC and $TV.endTimeMsUTC
 #                and $bt.sessionId IS NOT NULL
-#                and $bt.page_group ilike '$(UP.pageGroup)'
+#                and $bt.pagegroupname ilike '$(UP.pageGroup)'
 #                and $bt.paramsu ilike '$(localUrl)'
 #                and $bt.devicetypename ilike '$(deviceType)'
 #                group by sessionId

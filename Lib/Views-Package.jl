@@ -14,7 +14,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 select * FROM $bt
                     where
                         timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                        page_group ilike '$(UP.pageGroup)' and
+                        pagegroupname ilike '$(UP.pageGroup)' and
                         paramsu ilike '$(UP.urlRegEx)' and
                         devicetypename ilike '$(UP.deviceType)' and
                         operatingsystemname ilike '$(UP.agentOs)' and
@@ -71,7 +71,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
         select("""\
             create or replace view $(UP.btView) as
             (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
+            where pagegroupname ilike '$(UP.pageGroup)' and
             paramsu ilike '$(UP.urlRegEx)' and
             operatingsystemname ilike '$(UP.agentOs)' and
             devicetypename ilike '$(UP.deviceType)' and
@@ -84,7 +84,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
         select("""\
             create or replace view $localMobileTable as
             (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
+            where pagegroupname ilike '$(UP.pageGroup)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
             paramsu ilike '$(UP.urlRegEx)' and
             operatingsystemname ilike '$(UP.agentOs)' and
@@ -95,7 +95,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
         select("""\
             create or replace view $localDesktopTable as
             (select * FROM $(UP.beaconTable)
-            where page_group ilike '$(UP.pageGroup)' and
+            where pagegroupname ilike '$(UP.pageGroup)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
             paramsu ilike '$(UP.urlRegEx)' and
             operatingsystemname ilike '$(UP.agentOs)' and
