@@ -78,7 +78,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
       if SP.debugLevel > 8
-          beautifyDF(localTableDF[1:min(500,end),:],maxRows=500)
+          beautifyDF(localTableDF[1:min(5,end),:],maxRows=500)
       end
 
       #by(localTableDF,:timestamp) do df
@@ -98,6 +98,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           end
           if(SP.debugLevel > 4)
               println("\nCheck time for page $io Timer=",subdfRow[:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
+              println("subdfRow[:sessionId]=",subdfRow[:sessionId])
           end
 
           if (UP.usePageLoad)
