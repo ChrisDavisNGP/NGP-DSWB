@@ -941,8 +941,8 @@ function beaconAndRtCountsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 
     rtcnt = select("""select count(*) from $rt""");
-    maxRt = select("""select max("timestamp") from $rt""");
-    minRt = select("""select min("timestamp") from $rt""");
+    maxRt = select("""select max(timestamp) from $rt""");
+    minRt = select("""select min(timestamp) from $rt""");
 
     minStr = msToDateTime(minRt[1,:min]);
     maxStr = msToDateTime(maxRt[1,:max]);

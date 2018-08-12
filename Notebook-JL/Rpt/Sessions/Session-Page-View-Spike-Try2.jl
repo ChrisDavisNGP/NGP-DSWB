@@ -30,7 +30,7 @@ toppagecount = select("""\
             select count(*),session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
             FROM $table
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and session_id IS NOT NULL
                 group by session_id,geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type
                 order by count(*) desc
@@ -45,7 +45,7 @@ debugRecords = select("""\
             select *
             FROM $table
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and session_id = '$(firstSession)'
                 limit 10
             """);
@@ -53,34 +53,34 @@ debugRecords = select("""\
 beautifyDF(debugRecords[1:min(10,end),:])
 
 debugRecords = select("""\
-            select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
+            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer
             FROM $table
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and session_id = '$(firstSession)'
-order by "timestamp"
+order by timestamp
             """);
 
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = select("""\
-            select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
+            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,params_u
             FROM $table
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and session_id = '$(firstSession)'
-                order by "timestamp"
+                order by timestamp
             """);
 
 beautifyDF(debugRecords[1:min(300,end),:])
 
 debugRecords = select("""\
-            select "timestamp", geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
+            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,user_agent_device_type,http_referrer,params_u
             FROM $table
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and session_id = '$(firstSession)'
-                order by "timestamp"
+                order by timestamp
             """);
 
 beautifyDF(debugRecords[1:min(300,end),:])
@@ -110,7 +110,7 @@ toppagecount = select("""\
             select count(*),session_id
             FROM $table
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and session_id IS NOT NULL
                 group by session_id
                 order by count(*) desc
@@ -120,9 +120,9 @@ beautifyDF(toppagecount[1:min(10,end),:])
 
 #toppagecount = select("""\
 #            select count(*),$tableRt.session_id
-#            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+#            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt.timestamp = $table.timestamp
 #            where
-#                $tableRt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+#                $tableRt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
 #                and $table.session_id IS NOT NULL
 #                group by $tableRt.session_id
 #                order by count(*) desc
@@ -132,9 +132,9 @@ beautifyDF(toppagecount[1:min(10,end),:])
 #toppagecount = select("""\
 #            select count(*) as request_count,
 #                $tableRT.session_id
-#            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt."timestamp" = $table."timestamp"
+#            FROM $tableRt join $table on $tableRt.session_id = $table.session_id and $tableRt.timestamp = $table.timestamp
 #                where
-#                $tableRt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+#                $tableRt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
 #                and $table.session_id IS NOT NULL
 #                and $table.page_group ilike '$(productPageGroup)'
 #                and $table.params_u ilike '$(localUrl)'

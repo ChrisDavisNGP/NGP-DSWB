@@ -12,9 +12,9 @@ function defaultResourcesToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         localTableDF = select("""\
             select $rt.*
-            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
+            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt.timestamp = $bt.timestamp
                 where
-                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.session_id IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
                 $bt.params_u ilike '$(UP.urlRegEx)' and
@@ -46,7 +46,7 @@ function defaultBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             select *
             from $bt
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 session_id IS NOT NULL and
                 params_rt_quit IS NULL and
                 params_u ilike '$(UP.urlRegEx)' and
@@ -81,7 +81,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             select *
             from $bt
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 session_id IS NOT NULL and
                 params_rt_quit IS NULL and
                 params_u ilike '$(UP.urlRegEx)' and
@@ -89,7 +89,7 @@ function defaultLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 user_agent_os ilike '$(UP.agentOs)' and
                 page_group ilike '$(UP.pageGroup)' and
                 timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
-            order by "timestamp" asc
+            order by timestamp asc
             limit $(UP.limitQueryRows)
         """)
 
@@ -178,10 +178,10 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-#            select "timestamp",session_id,timers_t_done,timers_domready
+#            select timestamp,session_id,timers_t_done,timers_domready
 #            from $bt
 #            where
-#                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+#                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
 #                session_id IS NOT NULL and
 #                params_rt_quit IS NULL and
 #                params_u ilike '$(UP.urlRegEx)' and
@@ -189,7 +189,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
 #                user_agent_os ilike '$(UP.agentOs)' and
 #                page_group ilike '$(UP.pageGroup)' and
 #                timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs)
-#            order by "timestamp" asc
+#            order by timestamp asc
 #            limit $(UP.limitQueryRows)
 #        """)
 
@@ -221,7 +221,7 @@ function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             select *
             from $bt
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 params_u ilike '$(UP.urlRegEx)' and
                 user_agent_device_type ilike '$(UP.deviceType)' and
                 user_agent_os ilike '$(UP.agentOs)' and
@@ -263,9 +263,9 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 'Label' as label,
                 avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
                 avg($bt.timers_t_done) as beacon_time
-            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
+            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt.timestamp = $bt.timestamp
             WHERE
-                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.session_id IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
                 $bt.params_u ilike '$(UP.urlRegEx)' and
@@ -292,9 +292,9 @@ function allPageUrlTableToDF(TV::TimeVars,UP::UrlParams)
                 'Label' as label,
                 avg(CASE WHEN ($rt.response_last_byte = 0) THEN (0) ELSE (($rt.response_last_byte-$rt.start_time)/1000.0) END) as load,
                 avg($bt.timers_domready) as beacon_time
-            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
+            FROM $rt join $bt on $rt.session_id = $bt.session_id and $rt.timestamp = $bt.timestamp
                 where
-                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.session_id IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
                 $bt.params_u ilike '$(UP.urlRegEx)' and
@@ -340,7 +340,7 @@ function allSessionUrlTableToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studyS
         FROM $(rt)
         where
             session_id = '$(studySession)' and
-            $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+            $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
         group by urlgroup,urlpagegroup,label
         """);
 
@@ -381,7 +381,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         FROM $(tableRt)
         where
             session_id = '$(studySession)' and
-           "timestamp" = '$(studyTime)'
+           timestamp = '$(studyTime)'
         order by start_time asc
         """);
 
@@ -400,7 +400,7 @@ session_id = '$(studySession)'
 """);
 
 #        session_id = '$(studySession)' and
-#        "timestamp" = '$(studyTime)'
+#        timestamp = '$(studyTime)'
 
 if SP.debugLevel > 8
     rc1 = nrow(toppageurl1)
@@ -411,11 +411,11 @@ toppageurl2 = select("""\
 select *
 FROM $(tableRt)
 where
- "timestamp" = '$(studyTime)'
+ timestamp = '$(studyTime)'
 """);
 
 #        session_id = '$(studySession)' and
-#        "timestamp" = '$(studyTime)'
+#        timestamp = '$(studyTime)'
 
 if SP.debugLevel > 8
     rc2 = nrow(toppageurl2)
@@ -423,10 +423,10 @@ if SP.debugLevel > 8
 end
 
     toppageurl3 = select("""\
-    select "timestamp",session_id,count(*)
+    select timestamp,session_id,count(*)
     FROM $(tableRt)
-    group by "timestamp",session_id
-    order by "timestamp" asc
+    group by timestamp,session_id
+    order by timestamp asc
     limit 500
     """);
 
@@ -453,17 +453,17 @@ function getResourcesForBeaconToDF(TV::TimeVars,UP::UrlParams)
         localTableRtDF = select("""\
             select $rt.*
             FROM $bt join $rt
-            on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
+            on $rt.session_id = $bt.session_id and $rt.timestamp = $bt.timestamp
             where
             $bt.params_u ilike '$(UP.urlRegEx)'
-            and $bt."timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+            and $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             and $bt.session_id IS NOT NULL
             and $bt.page_group ilike '$(UP.pageGroup)'
             and $bt.timers_t_done >= $(UP.timeLowerMs) and $bt.timers_t_done < $(UP.timeUpperMs)
             and $bt.params_rt_quit IS NULL
             and $bt.user_agent_device_type ilike '$(UP.deviceType)'
             and $bt.user_agent_os ilike '$(UP.agentOs)'
-            order by $rt.session_id, $rt."timestamp", $rt.start_time
+            order by $rt.session_id, $rt.timestamp, $rt.start_time
             """)
 
 
@@ -487,9 +487,9 @@ function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         localTableRtDF = select("""\
             select $rt.*
             FROM $bt join $rt
-                on $rt.session_id = $bt.session_id and $rt."timestamp" = $bt."timestamp"
+                on $rt.session_id = $bt.session_id and $rt.timestamp = $bt.timestamp
             where
-                $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
                 $bt.session_id IS NOT NULL and
                 $bt.page_group ilike '$(UP.pageGroup)' and
                 $bt.params_u ilike '$(UP.urlRegEx)' and
@@ -497,7 +497,7 @@ function treemapsLocalTableRtToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 $bt.user_agent_device_type ilike '$(UP.deviceType)' and
                 $bt.user_agent_os ilike '$(UP.agentOs)' and
                 $bt.params_rt_quit IS NULL
-            order by $rt.session_id, $rt."timestamp", $rt.start_time
+            order by $rt.session_id, $rt.timestamp, $rt.start_time
         """)
         return localTableRtDF
     catch y
@@ -513,14 +513,14 @@ function gatherSizeDataToDF(UP::UrlParams,SP::ShowParams)
         joinTablesDF = select("""\
         select CASE WHEN (position('?' in $bt.params_u) > 0) then trim('/' from (substring($bt.params_u for position('?' in substring($bt.params_u from 9)) +7))) else trim('/' from $bt.params_u) end as urlgroup,
             $bt.session_id,
-            $bt."timestamp",
+            $bt.timestamp,
             sum($rt.encoded_size) as encoded,
             sum($rt.transferred_size) as transferred,
             sum($rt.decoded_size) as decoded,
             count(*)
-        FROM $bt join $rt on $bt.session_id = $rt.session_id and $bt."timestamp" = $rt."timestamp"
+        FROM $bt join $rt on $bt.session_id = $rt.session_id and $bt.timestamp = $rt.timestamp
             where $rt.encoded_size > 1
-            group by urlgroup,$bt.session_id,$bt."timestamp"
+            group by urlgroup,$bt.session_id,$bt.timestamp
             order by encoded desc
         """);
 
@@ -539,7 +539,7 @@ function statsBtViewByHourToDF(btv::ASCIIString,startTimeMsUTC::Int64, endTimeMs
             select timers_t_done
             FROM $btv
             where
-                "timestamp" between $startTimeMsUTC and $endTimeMsUTC
+                timestamp between $startTimeMsUTC and $endTimeMsUTC
         """);
         return localStats
     catch y
@@ -655,7 +655,7 @@ function resourceImagesOnNatGeoToDF(UP::UrlParams,SP::ShowParams,fileType::ASCII
             count(*),
             $rt.url
         from $btv join $rt
-            on $btv.session_id = $rt.session_id and $btv."timestamp" = $rt."timestamp"
+            on $btv.session_id = $rt.session_id and $btv.timestamp = $rt.timestamp
         where $rt.encoded_size > $(UP.sizeMin) and
             ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
             $rt.url ilike 'http://www.nationalgeographic.com%'
@@ -685,9 +685,9 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             count(*) as request_count,
             avg($table.timers_t_done) as beacon_time,
             sum($rt.encoded_size) as encoded_size
-          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
+          FROM $rt join $table on $rt.session_id = $table.session_id and $rt.timestamp = $table.timestamp
               where
-              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+              $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.session_id IS NOT NULL
               and $table.page_group ilike '$(UP.pageGroup)'
               and $table.params_u ilike '$(UP.urlRegEx)'
@@ -696,16 +696,16 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               and $table.timers_t_done >= $(UP.timeLowerMs) and $table.timers_t_done <= $(UP.timeUpperMs)
               and $table.params_rt_quit IS NULL
               and $table.errors IS NULL
-          group by urlgroup,$table.session_id,$table."timestamp",errors
+          group by urlgroup,$table.session_id,$table.timestamp,errors
           """);
       else
 
           if (SP.debugLevel > 8)
               debugTableDF = select("""\
               select *
-              FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
+              FROM $rt join $table on $rt.session_id = $table.session_id and $rt.timestamp = $table.timestamp
                   where
-                  $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+                  $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
                   and $table.session_id IS NOT NULL
                   and $table.page_group ilike '$(UP.pageGroup)'
                   and $table.params_u ilike '$(UP.urlRegEx)'
@@ -726,9 +726,9 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               count(*) as request_count,
               avg($table.timers_domready) as beacon_time,
               sum($rt.encoded_size) as encoded_size
-          FROM $rt join $table on $rt.session_id = $table.session_id and $rt."timestamp" = $table."timestamp"
+          FROM $rt join $table on $rt.session_id = $table.session_id and $rt.timestamp = $table.timestamp
               where
-              $rt."timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs)
+              $rt.timestamp between $(TV.startTimeMs) and $(TV.endTimeMs)
               and $table.session_id IS NOT NULL
               and $table.page_group ilike '$(UP.pageGroup)'
               and $table.params_u ilike '$(UP.urlRegEx)'
@@ -737,7 +737,7 @@ function estimateFullBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
               and $table.timers_domready >= $(UP.timeLowerMs) and $table.timers_domready <= $(UP.timeUpperMs)
               and $table.params_rt_quit IS NULL
               and $table.errors IS NULL
-          group by urlgroup,$table.session_id,$table."timestamp",errors
+          group by urlgroup,$table.session_id,$table.timestamp,errors
               """);
 
 
@@ -786,7 +786,7 @@ function testUrlClassifyToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 CASE WHEN (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup
             FROM $rt
             where
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by urlgroup,urlpagegroup
             limit $(UP.limitQueryRows)
          """)
@@ -808,10 +808,10 @@ function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
         UpperBy25p = statsDF[1:1,:UpperBy25p][1]
 
         localStats2 = select("""\
-            select "timestamp", timers_t_done, session_id
+            select timestamp, timers_t_done, session_id
             from $(UP.btView) where
                 page_group ilike '$(UP.pageGroup)' and
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 timers_t_done > $(UpperBy25p)
         """)
 

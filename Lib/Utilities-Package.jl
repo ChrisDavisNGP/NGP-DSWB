@@ -13,8 +13,8 @@ function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession:
             select page_group,geo_cc,geo_rg, user_agent_os, user_agent_osversion, user_agent_device_type, user_agent_family, user_agent_major
             FROM $bt
             where
-               "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
-            order by "timestamp" asc
+               timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and session_id = '$(studySession)' and timestamp = '$(studyTime)'
+            order by timestamp asc
             LIMIT $(UP.limitQueryRows)
         """)
 

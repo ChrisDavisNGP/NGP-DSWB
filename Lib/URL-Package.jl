@@ -175,7 +175,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
         where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
             page_group ilike '$(UP.pageGroup)' and
             params_u ilike '$(UP.urlRegEx)' and
             timers_t_done >= $(UP.timeLowerMs) and timers_t_done < $(UP.timeUpperMs) and
@@ -203,7 +203,7 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
         where
             beacon_type = 'page view' and
             params_dom_sz > 0 and
-            "timestamp" between $startTimeMs and $endTimeMs and
+            timestamp between $startTimeMs and $endTimeMs and
             page_group ilike '$(pageGroup)' and
             timers_t_done >= 1000 and timers_t_done < 600000 and
             params_rt_quit IS NULL
@@ -294,7 +294,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         FROM $(ltName)
         where
           beacon_type = 'page view' and
-          "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+          timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
           session_id IS NOT NULL and
           params_rt_quit IS NULL and
           params_u ilike '$(UP.urlRegEx)' and
@@ -316,7 +316,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         FROM $(ltName)
         where
             beacon_type = 'page view' and
-            "timestamp" between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
             params_dom_sz > 0 and
             timers_t_page > 0 and
             session_id IS NOT NULL and

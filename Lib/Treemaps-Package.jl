@@ -1104,7 +1104,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             avg(CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END) as beacons,
             count(*) as request_count
             FROM $(tableRt)
-            where session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
+            where session_id = '$(studySession)' and timestamp = '$(studyTime)'
             group by urlgroup
             """);
         elseif (studySession != "None")
@@ -1164,7 +1164,7 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as load_time,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as beacons,
             1 as request_count
-            FROM $(tableRt) where session_id = '$(studySession)' and "timestamp" = '$(studyTime)'
+            FROM $(tableRt) where session_id = '$(studySession)' and timestamp = '$(studyTime)'
             """);
         elseif (studySession != "None")
             topdetailurl = select("""\

@@ -33,8 +33,8 @@ urlSpike.rtView = "$(table)_rtspike_view_prod"
 timeNormal = anyTimeVar(2017,6,7,11,49,2017,6,7,11,59)
 timeSpike  = anyTimeVar(2017,6,8,11,49,2017,6,8,11,59)
 
-select("""create or replace view $(urlNormal.rtView) as (select * from $(urlNormal.resourceTable) where "timestamp" between $(timeNormal.startTimeMsUTC) and $(timeNormal.endTimeMsUTC))""")
-select("""create or replace view $(urlSpike.rtView)  as (select * from $(urlSpike.resourceTable)  where "timestamp" between  $(timeSpike.startTimeMsUTC) and  $(timeSpike.endTimeMsUTC))""")
+select("""create or replace view $(urlNormal.rtView) as (select * from $(urlNormal.resourceTable) where timestamp between $(timeNormal.startTimeMsUTC) and $(timeNormal.endTimeMsUTC))""")
+select("""create or replace view $(urlSpike.rtView)  as (select * from $(urlSpike.resourceTable)  where timestamp between  $(timeSpike.startTimeMsUTC) and  $(timeSpike.endTimeMsUTC))""")
 
 t1DF = select("""SELECT count(*) FROM $(urlNormal.rtView)""")
 beautifyDF(t1DF)

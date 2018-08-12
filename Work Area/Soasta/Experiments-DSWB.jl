@@ -53,7 +53,7 @@ datePart = :minute
 
 
 # Create view to query only product page_group
-select("""create or replace view $localTable as (select * from $table where page_group = '$(productPageGroup)' and "timestamp" between $startTimeMs and $endTimeMs)""")
+select("""create or replace view $localTable as (select * from $table where page_group = '$(productPageGroup)' and timestamp between $startTimeMs and $endTimeMs)""")
 
 setTable(localTable)
 

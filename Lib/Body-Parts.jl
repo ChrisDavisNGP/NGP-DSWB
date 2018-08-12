@@ -532,7 +532,7 @@ function resourceMatched(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         select count(*)
         from $(UP.resourceTable)
         where
-            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
              url ilike '$(UP.resRegEx)'
         """);
 
@@ -552,7 +552,7 @@ function resourceSize(TV::TimeVars,UP::UrlParams,SP::ShowParams;minEncoded::Int6
             from $(UP.resourceTable)
             where
                 url ilike '$(UP.resRegEx)' and
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 encoded_size > $(minEncoded)
             group by encoded_size,transferred_size,decoded_size,url
             order by count(*) desc
@@ -581,7 +581,7 @@ function resourceSummary(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         select count(*),url
         from $(UP.resourceTable)
         where
-            "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
              url ilike '$(UP.resRegEx)'
         group by
         url
@@ -604,7 +604,7 @@ function resourceSummaryAllFields(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         from $(UP.resourceTable)
         where
           url ilike '$(UP.resRegEx)' and
-          "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+          timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
         limit $(UP.limitQueryRows)
         """);
 
@@ -624,7 +624,7 @@ function resourceSummaryDomainUrl(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             from $(UP.resourceTable)
             where
                 url ilike '$(UP.resRegEx)' and
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by url, params_u
             order by count(*) desc
             limit $(UP.limitQueryRows)
@@ -657,7 +657,7 @@ function resourceTime1(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             from $(UP.resourceTable)
             where
                 url ilike '$(UP.resRegEx)' and
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             group by url
             order by count(*) desc
         """);
@@ -688,7 +688,7 @@ function resourceTime2(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             from $(UP.resourceTable)
             where
                 url ilike '$(UP.resRegEx)' and
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 (response_last_byte-start_time) > 75 and (response_last_byte-start_time) < 10000
             order by "Time Taken" desc
         """);
@@ -759,7 +759,7 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             from $(UP.resourceTable)
             where
                 url ilike '$(UP.resRegEx)' and
-                "timestamp" between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 start_time > 10000
             order by start_time desc
             limit $(UP.limitQueryRows)
