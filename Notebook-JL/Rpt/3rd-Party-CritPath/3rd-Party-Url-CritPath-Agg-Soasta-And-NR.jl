@@ -12,7 +12,7 @@ tableRt = "$(table)_rt"
 tableErr = "$(table)_error"
 
 # Connect to Beacon Data
-setSnowflakeEndpoint(dsn)
+db = setSnowflakeEndpoint(dsn)
 setTable(table)
 
 include("../../../Lib/Include-Package.jl")
