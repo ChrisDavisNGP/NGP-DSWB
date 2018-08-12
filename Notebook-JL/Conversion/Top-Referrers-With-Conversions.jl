@@ -2,7 +2,7 @@
 
 using DSWB
 db = setSnowflakeEndpoint("tenant_232301")
-setTable("beacons_4744")
+setTable("RUM_PRD_BEACON_FACT_DSWB_34501")
 setConversionGroup("Video")
 
 startTime = DateTime(2016,6,1)

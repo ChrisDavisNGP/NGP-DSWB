@@ -2,7 +2,7 @@
 
 using DSWB
 db = setSnowflakeEndpoint("tenant_232301")
-beaconTable = setTable("beacons_4744")
+beaconTable = setTable("RUM_PRD_BEACON_FACT_DSWB_34501")
 conversionPageURL = "%fls.doubleclick.net/activity%"
 setConversionPage(conversionPageURL)
 

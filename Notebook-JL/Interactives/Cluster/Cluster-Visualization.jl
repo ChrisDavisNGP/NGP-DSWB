@@ -6,7 +6,7 @@ using Formatting
 include(CLUSTERING_PATH)
 
 dsn = "tenant_232301"
-table = "beacons_4744" # beacon table name
+table = "RUM_PRD_BEACON_FACT_DSWB_34501" # beacon table name
 tableRt = "beacons_4744_rt" # resource table name
 
 # Connect to Beacon Data

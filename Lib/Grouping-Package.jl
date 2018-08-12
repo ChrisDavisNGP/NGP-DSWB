@@ -206,7 +206,7 @@ function getGroupSummary{T <: AbstractDataFrame}(df::T)
 
 end
 
-function getLatestResults(;table_name::ASCIIString="beacons_4744", hours::Int64=3, minutes::Int64=0)
+function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_34501", hours::Int64=3, minutes::Int64=0)
     # Get the date range of the table and format it using strftime
     timestamp_range = query("SELECT min(timestamp) as min, max(timestamp) as max FROM $(table_name)")
 

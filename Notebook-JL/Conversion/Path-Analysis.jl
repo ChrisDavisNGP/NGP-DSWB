@@ -2,7 +2,7 @@
 
 using DSWB
 db = setSnowflakeEndpoint("tenant_232301")
-setTable("beacons_4744")
+setTable("RUM_PRD_BEACON_FACT_DSWB_34501")
 
 startTime = DateTime(2016,9,3,0,0,0)
 endTime   = DateTime(2016,9,3,23,0,0)
