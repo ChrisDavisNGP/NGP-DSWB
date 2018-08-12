@@ -11,7 +11,7 @@ end
 function deviceTypeTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        fieldNames = [:user_agent_device_type]
+        fieldNames = [:devicetypename]
         treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = fieldNames)
         treeData[:x1] = "Natgeo - All"
         displayTitle(chart_title = "Device Type for Page Group: $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
@@ -51,10 +51,10 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             displayManyRows(treeData[:,1:3], [Symbol("Page Group"), Symbol("Load Time"), Symbol("Beacons")],SP.treemapTableLines)
         end
 
-        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:user_agent_device_type,:page_group])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:devicetypename,:page_group])
 
         if (UP.deviceType == "Desktop" || UP.deviceType == "%")
-            subTreeData = treeData[treeData[:, :user_agent_device_type] .== "Desktop", :]
+            subTreeData = treeData[treeData[:, :devicetypename] .== "Desktop", :]
             subTreeData[:x1] = "Natgeo - Desktop"
             displayTitle(chart_title = "Page Group - Desktop", chart_info = [TV.timeString],showTimeStamp=false)
             drawTree(subTreeData; titleCol = :x1, fieldNames = [:page_group])
@@ -68,7 +68,7 @@ function pageGroupTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         if (UP.deviceType == "Mobile" || UP.deviceType == "%")
-            subTreeData = treeData[treeData[:, :user_agent_device_type] .== "Mobile", :]
+            subTreeData = treeData[treeData[:, :devicetypename] .== "Mobile", :]
             subTreeData[:x1] = "Natgeo - Mobile"
             displayTitle(chart_title = "Mobile", chart_info = [TV.timeString],showTimeStamp=false)
             drawTree(subTreeData; titleCol = :x1, fieldNames = [:page_group])

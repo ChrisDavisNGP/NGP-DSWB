@@ -30,7 +30,7 @@ function showPeakTable(TV::TimeVars,UP::UrlParams,SP::ShowParams; showStartTime3
         displayTitle(chart_title = chartTitle, chart_info = [TV.timeString], showTimeStamp=false)
 
         myFilter = SQLFilter[
-            ilike("user_agent_device_type",UP.deviceType),
+            ilike("devicetypename",UP.deviceType),
             ilike("user_agent_os",UP.agentOs)
             ]
 

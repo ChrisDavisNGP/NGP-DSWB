@@ -16,7 +16,7 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                         timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                         page_group ilike '$(UP.pageGroup)' and
                         paramsu ilike '$(UP.urlRegEx)' and
-                        user_agent_device_type ilike '$(UP.deviceType)' and
+                        devicetypename ilike '$(UP.deviceType)' and
                         user_agent_os ilike '$(UP.agentOs)' and
                         pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             )
@@ -74,7 +74,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
             where page_group ilike '$(UP.pageGroup)' and
             paramsu ilike '$(UP.urlRegEx)' and
             user_agent_os ilike '$(UP.agentOs)' and
-            user_agent_device_type ilike '$(UP.deviceType)' and
+            devicetypename ilike '$(UP.deviceType)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
             )
         """)
@@ -88,7 +88,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
             paramsu ilike '$(UP.urlRegEx)' and
             user_agent_os ilike '$(UP.agentOs)' and
-            user_agent_device_type = 'Mobile'
+            devicetypename = 'Mobile'
             )
         """)
 
@@ -99,7 +99,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
             paramsu ilike '$(UP.urlRegEx)' and
             user_agent_os ilike '$(UP.agentOs)' and
-            user_agent_device_type = 'Desktop'
+            devicetypename = 'Desktop'
             )
         """);
 

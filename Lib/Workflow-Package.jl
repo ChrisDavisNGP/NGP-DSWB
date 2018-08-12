@@ -375,8 +375,8 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     try
         chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC,dimension=:geo_cc,minPercentage=0.6)
-        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
-        printDF = getMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:devicetypename, n=15, orderBy="frontend", minPercentage=0.001)
+        printDF = getMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:devicetypename, n=15, orderBy="frontend", minPercentage=0.001)
         beautifyDF(printDF)
     catch y
         println("medianTimesPGD Exception ",y)
@@ -627,7 +627,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowMedLoadByDevice)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:user_agent_device_type, n=15, orderBy="frontend", minPercentage=0.001)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:devicetypename, n=15, orderBy="frontend", minPercentage=0.001)
   end
 
   if (wfShowMedLoadByGeo)

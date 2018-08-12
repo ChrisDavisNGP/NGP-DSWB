@@ -70,9 +70,9 @@ getBeaconCountByType()
 
 getAggregateSessionDuration(startTime, endTime, :avg)
 
-getAggregateSessionDuration(startTime, endTime, :median; byList=[:user_agent_device_type])
+getAggregateSessionDuration(startTime, endTime, :median; byList=[:devicetypename])
 
-getAggregateSessionLength(startTime, endTime, :AVG; byList=[:user_agent_device_type])
+getAggregateSessionLength(startTime, endTime, :AVG; byList=[:devicetypename])
 
 getAggregateSessionLengthAndDurationByLoadTime(startTime, endTime, :stddev; country="US")
 
@@ -100,7 +100,7 @@ table = getGroupIdPercentages(startTime, endTime, sessionsTable, pagegroupTable;
 httpAndHttps = getHttpVsHttps(startTime, endTime, :hour)
 
 dimension1 = Symbol("page_group")
-dimension2 = Symbol("user_agent_device_type")
+dimension2 = Symbol("devicetypename")
 
 tto = thinkTimesOverall                 = getMedianThinkTime(startTime, endTime)
 ttpg = thinkTimesByPageGroup             = getMedianThinkTime(startTime, endTime; byList=[dimension1])

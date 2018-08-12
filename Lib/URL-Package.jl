@@ -179,7 +179,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
             page_group ilike '$(UP.pageGroup)' and
             paramsu ilike '$(UP.urlRegEx)' and
             pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs) and
-            user_agent_device_type ilike '$(UP.deviceType)' and
+            devicetypename ilike '$(UP.deviceType)' and
             user_agent_os ilike '$(UP.agentOs)' and
             paramsrtquit IS NULL
         group by urlgroup
@@ -298,7 +298,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
           sessionId IS NOT NULL and
           paramsrtquit IS NULL and
           paramsu ilike '$(UP.urlRegEx)' and
-          user_agent_device_type ilike '$(UP.deviceType)' and
+          devicetypename ilike '$(UP.deviceType)' and
           user_agent_os ilike '$(UP.agentOs)' and
           page_group ilike '$(UP.pageGroup)' and
           pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
@@ -322,7 +322,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             sessionId IS NOT NULL and
             paramsrtquit IS NULL and
             paramsu ilike '$(UP.urlRegEx)' and
-            user_agent_device_type ilike '$(UP.deviceType)' and
+            devicetypename ilike '$(UP.deviceType)' and
             user_agent_os ilike '$(UP.agentOs)' and
             page_group ilike '$(UP.pageGroup)' and
             pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)

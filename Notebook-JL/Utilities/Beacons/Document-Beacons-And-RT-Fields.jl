@@ -153,7 +153,7 @@ order by timestamp
 displayTitle(chart_title = "User Agent Fields from Beacon", showTimeStamp=false)
 sessionFields = select("""\
 select user_agent_family,user_agent_major,user_agent_minor,user_agent_mobile,user_agent_model,user_agent_os,user_agent_osversion,
-user_agent_manufacturer,user_agent_device_type,user_agent_isp,params_ua_plt,params_ua_vnd
+user_agent_manufacturer,devicetypename,user_agent_isp,params_ua_plt,params_ua_vnd
 from $btv
 where sessionId = '$(sessionId)' and timestamp in $(ts)
 order by timestamp
