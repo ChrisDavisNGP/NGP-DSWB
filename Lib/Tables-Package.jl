@@ -345,6 +345,10 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
+    #Todo grab first records, grab timestamp and then select data on all three timestamp, sessionid, sessionstart
+    # plus add in the beacon timestamp as >=
+
+
     try
         toppageurl = select("""\
         select 'None' as urlpagegroup,start_time,
@@ -378,46 +382,46 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         end
 
 #------------extra
-toppageurl1 = select("""\
-select *
-FROM $(tableRt)
-where
-sessionid = '$(studySession)'
-""");
+#toppageurl1 = select("""\
+#select *
+#FROM $(tableRt)
+#where
+#sessionid = '$(studySession)'
+#""");
+
+##        sessionid = '$(studySession)' and
+##        timestamp = '$(studyTime)'
+
+#if SP.debugLevel > 8
+#    rc1 = nrow(toppageurl1)
+#    println("Session_id Only: $rc1 rows")
+#    beautifyDF(toppageurl1,maxRows=10)
+#end
+
+#toppageurl2 = select("""\
+#select *
+#FROM $(tableRt)
+#where
+# timestamp = '$(studyTime)'
+#""");
 
 #        sessionid = '$(studySession)' and
 #        timestamp = '$(studyTime)'
 
-if SP.debugLevel > 8
-    rc1 = nrow(toppageurl1)
-    println("Session_id Only: $rc1 rows")
-    beautifyDF(toppageurl1,maxRows=10)
-end
+#if SP.debugLevel > 8
+#    rc2 = nrow(toppageurl2)
+#    println("timestamp Only: $rc2 rows")
+#    beautifyDF(toppageurl2,maxRows=10)
+#end
 
-toppageurl2 = select("""\
-select *
-FROM $(tableRt)
-where
- timestamp = '$(studyTime)'
-""");
-
-#        sessionid = '$(studySession)' and
-#        timestamp = '$(studyTime)'
-
-if SP.debugLevel > 8
-    rc2 = nrow(toppageurl2)
-    println("timestamp Only: $rc2 rows")
-    beautifyDF(toppageurl2,maxRows=10)
-end
-
-    toppageurl3 = select("""\
-    select timestamp,sessionid,count(*)
-    FROM $(tableRt)
-    group by timestamp,sessionid
-    order by timestamp asc
-    limit 100
-    """);
-    beautifyDF(toppageurl3,maxRows=10)
+#    toppageurl3 = select("""\
+#    select timestamp,sessionid,count(*)
+#    FROM $(tableRt)
+#    group by timestamp,sessionid
+#    order by timestamp asc
+#    limit 100
+#    """);
+#    beautifyDF(toppageurl3,maxRows=10)
 #--------------extra
 
         return toppageurl
