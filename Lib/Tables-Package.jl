@@ -129,7 +129,7 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,
 
         localTableDF = DataFrame(jobid=ASCIIString[],timestamp=Int64[],onpageload=Int64[],onpagecontentload=Int64[])
         for row in eachrow(NR.results.row)
-            push!(localTableDF,[row[:jobId];row[:timestamp],row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
+            push!(localTableDF,[row[:jobId];row[:timestamp];row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
         end
 
         localTableDF = names!(localTableDF,[Symbol("sessionid");Symbol("sessionstart");Symbol("timestamp");Symbol("pageloadtime");Symbol("domreadytimer")])
