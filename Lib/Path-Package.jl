@@ -91,9 +91,11 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
           if (UP.usePageLoad)
               timeVar = subdfRow[:pageloadtime]
               timeStampVar = subdfRow[:pageloadtime]
+              sessionStart = subdfRow[:pageloadtime]
           else
               timeVar = subdfRow[:domreadytimer]
               timeStampVar = subdfRow[:domreadytimer]
+              sessionStart = subdfRow[:domreadytimer]
           end
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
@@ -104,17 +106,17 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   sessionIdString = ASCIIString(sessionid)
                   #println("SM=",CU.syntheticMonitor," timeStampVar=",timeStampVar)
                   if CU.syntheticMonitor == "no name"
-                      #timeStampVar = subdfRow[:timestamp]
-                      timeStampVar = subdfRow[:sessionstart]
+                      timeStampVar = subdfRow[:timestamp]
+                      sessionStart = subdfRow[:sessionstart]
                   end
                   #println(" tsv=",timeStampVar)
 
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
-                      println("Attempting read page $(currentPage) of $(UP.limitPageViews): $(labelString) : timeStampVar=$(timeStampVar)")
+                      println("Attempting read page $(currentPage) of $(UP.limitPageViews): $(labelString) : sessionStart=$(sessionStart) timeStampVar=$(timeStampVar)")
                   end
-                  topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
+                  topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,sessionStart,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
                   if (!suitable)
                       io -= 1
@@ -268,10 +270,10 @@ end
 
 
 function individualPageData(TV::TimeVars,UP::UrlParams,SP::ShowParams,
-    CU::CurlParams,NR::NrParams,studySession::ASCIIString,studyTime::Int64)
+    CU::CurlParams,NR::NrParams,studySession::ASCIIString,studyTime::Int64,originalTimeStamp::Int64)
   try
       if CU.syntheticMonitor == "no name"
-          toppageurl = individualPageDataSoasta(TV,UP,SP,studySession,studyTime)
+          toppageurl = individualPageDataSoasta(TV,UP,SP,studySession,studyTime,originalTimeStamp)
       else
           toppageurl = individualPageDataNR(TV,SP,CU,NR,studySession,studyTime)
       end
@@ -339,7 +341,7 @@ end
 
 # From Individual-Streamline-Body
 
-function individualPageDataSoasta(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+function individualPageDataSoasta(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64,originalTimeStamp::Int64)
   try
 
       if SP.debugLevel > 6
@@ -352,7 +354,7 @@ function individualPageDataSoasta(TV::TimeVars,UP::UrlParams,SP::ShowParams,stud
           if SP.debugLevel > 8
               println("Calling sessionUrlTableToDF")
           end
-          toppageurl = sessionUrlTableToDF(UP,SP,studySession,studyTime)
+          toppageurl = sessionUrlTableToDF(UP,SP,studySession,studyTime,originalTimeStamp)
           elseif (studySession != "None")
               if SP.debugLevel > 8
                   println("Calling allSessionUrlTableToDF")

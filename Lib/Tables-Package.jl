@@ -338,11 +338,11 @@ function allSessionUrlTableToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studyS
     end
 end
 
-function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64)
+function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64,originalTimeStamp::Int64)
 
     #appears not to matter studySession = uppercase(studySession)
     if SP.debugLevel > 8
-        println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
+        println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime," originalTimeStamp=",originalTimeStamp)
     end
 
     #Todo grab first records, grab timestamp and then select data on all three timestamp, sessionid, sessionstart
@@ -406,6 +406,22 @@ if SP.debugLevel > 8
     rc2 = nrow(toppageurl2)
     println("timestamp Only: $rc2 rows")
     beautifyDF(toppageurl2,maxRows=10)
+end
+
+if SP.debugLevel > 8
+    toppageurl3 = select("""\
+    select *
+    FROM $(tableRt)
+    where
+    where
+        sessionid = '$(studySession)' and
+        sessionstart = '$(studyTime)' and
+        timestamp = '$(originalTimeStamp)'
+    """);
+
+    rc3 = nrow(toppageurl3)
+    println("All 3: $rc3 rows")
+    beautifyDF(toppageurl3,maxRows=30)
 end
 
 #if SP.debugLevel > 8
