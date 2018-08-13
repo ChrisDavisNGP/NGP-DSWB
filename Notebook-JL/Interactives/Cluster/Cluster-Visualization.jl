@@ -53,7 +53,7 @@ setTable(btv)
 #* `operatingsystemname`
 #
 #The following are helpful
-#* `geo_rg`
+#* `regioncode`
 #* `geo_city`
 #* `geo_postalcode` (currently not available in DSWB database, but we'll add it)
 #* `user_agent_model`

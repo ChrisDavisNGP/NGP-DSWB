@@ -71,7 +71,7 @@ strftime("%Y-%m-%dT%H:%M:%S", div(timestamp_range[1, 2], 1000))
 results = select("
 SELECT
     pagegroupname,
-    countrycode, geo_rg, geo_city, geo_org, geo_netspeed,
+    countrycode, regioncode, geo_city, geo_org, geo_netspeed,
     user_agent_family, user_agent_major, operatingsystemname, user_agent_osversion, user_agent_model,
     params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
     pageloadtime
@@ -137,7 +137,7 @@ function toJSON(rows::DataFrame)
     colmap = Dict([
         (:pagegroupname, "pagegroupname"),
         (:countrycode, "geo.cc"),
-        (:geo_rg, "geo.rg"),
+        (:regioncode, "geo.rg"),
         (:geo_city, "geo.city"),
         (:geo_org, "org"),
         (:geo_netspeed, "netspeed"),

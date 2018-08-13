@@ -214,7 +214,7 @@ function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_345
 
     select("
         SELECT pagegroupname, paramsu,
-            countrycode, geo_rg, geo_city, geo_org, geo_netspeed,
+            countrycode, regioncode, geo_city, geo_org, geo_netspeed,
             user_agent_family, user_agent_major, operatingsystemname, user_agent_osversion, user_agent_model,
             params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
             pageloadtime
@@ -253,8 +253,8 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
     push!(groupsummary, ["", grouped[1, :spread], grouped[1, :n], grouped[1, :spread]/grouped[1, :n], 1])
 
     cols = generateDimensionMatrix(cols, dims, constraints = Dict(
-        (:geo_rg => :countrycode),
-        (:geo_city => :geo_rg),
+        (:regioncode => :countrycode),
+        (:geo_city => :regioncode),
         (:user_agent_major => :user_agent_family),
         (:user_agent_osversion => :operatingsystemname)
         )

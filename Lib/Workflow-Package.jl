@@ -1028,8 +1028,8 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     # drop some of the fields to make the output easier to read
 
-    #delete!(retailer_results,[:geo_rg,:geo_city,:geo_org,:user_agent_major,:user_agent_osversion,:operatingsystemname,:user_agent_model,:referrer])
-    delete!(retailer_results,[:geo_rg,:geo_city,:geo_org,:user_agent_major,:user_agent_osversion,:operatingsystemname,:user_agent_model])
+    #delete!(retailer_results,[:regioncode,:geo_city,:geo_org,:user_agent_major,:user_agent_osversion,:operatingsystemname,:user_agent_model,:referrer])
+    delete!(retailer_results,[:regioncode,:geo_city,:geo_org,:user_agent_major,:user_agent_osversion,:operatingsystemname,:user_agent_model])
 
     doit(retailer_results, showDimensionViz=true, showProgress=true);
 

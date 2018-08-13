@@ -19,7 +19,7 @@ rgmap = getMapRegionsNames();
 treeData[:title] = "Treemap";
 treeData[rand(size(treeData, 1)) .> .99, :];
 titleCol = :title;
-fieldNames = [:pagegroupname, :countrycode, :geo_rg];
+fieldNames = [:pagegroupname, :countrycode, :regioncode];
 data = filter(x -> x["title"] != "--", groupTreeByTitle(treeData, titleCol));
 numCharts = length(unique(treeData[treeData[titleCol] .!= "--", titleCol]));
 dict = Dict("treeData" => data,"ccmap" => ccmap,"rgmap" => rgmap,"numCharts" => numCharts, "fieldNames" => fieldNames);

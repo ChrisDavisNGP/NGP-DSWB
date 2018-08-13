@@ -76,7 +76,7 @@ chartResourceStats(domain, TV.startTimeUTC, TV.endTimeUTC);
 #   COUNTRY_CODE (United States, UK, etc.), DEVICE_TYPE (Desktop, Mobile, Tablet, etc.), RESOURCE_TYPE (img, css, link, etc.), OS (Windows, Mac OS X, etc.), BROWSER (Chrome,
 #   IE, Firefox, etc.), Page Group (Homepage, Category, Checkout, etc.).
 # You can use specific dimensions from for the above short-cuts or DB column names directly.  Example: :operatingsystemname (equivalent to OS), :compression_types,
-#   :http_method, :geo_rg, etc.
+#   :http_method, :regioncode, etc.
 # Only one dimension can be used at this time to ensure accuracy of data.
 chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; dimensions = [DEVICE_TYPE]);
 
@@ -85,7 +85,7 @@ chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; dimensions = [DEVICE_TYPE]
 #   COUNTRY_CODE (United States, UK, etc.), DEVICE_TYPE (Desktop, Mobile, Tablet, etc.), RESOURCE_TYPE (img, css, link, etc.), OS (Windows, Mac OS X, etc.), BROWSER (Chrome,
 #   IE, Firefox, etc.), Page Group (Homepage, Category, Checkout, etc.).
 # You can use specific dimensions from for the above short-cuts or DB column names directly.  Example: :operatingsystemname (equivalent to OS), :compression_types,
-#   :http_method, :geo_rg, etc.
+#   :http_method, :regioncode, etc.
 # Only one dimension can be used at this time to ensure accuracy of data.
 deviceType = "Desktop";
 chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, dimensions = [RESOURCE_URL], chartTitle = deviceType);
@@ -95,7 +95,7 @@ chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, d
 #   COUNTRY_CODE (United States, UK, etc.), DEVICE_TYPE (Desktop, Mobile, Tablet, etc.), RESOURCE_TYPE (img, css, link, etc.), OS (Windows, Mac OS X, etc.), BROWSER (Chrome,
 #   IE, Firefox, etc.), Page Group (Homepage, Category, Checkout, etc.).
 # You can use specific dimensions from for the above short-cuts or DB column names directly.  Example: :operatingsystemname (equivalent to OS), :compression_types,
-#   :http_method, :geo_rg, etc.
+#   :http_method, :regioncode, etc.
 # Only one dimension can be used at this time to ensure accuracy of data.
 deviceType = "Mobile";
 chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, dimensions = [RESOURCE_URL], chartTitle = deviceType);
@@ -105,7 +105,7 @@ chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, d
 #   COUNTRY_CODE (United States, UK, etc.), DEVICE_TYPE (Desktop, Mobile, Tablet, etc.), RESOURCE_TYPE (img, css, link, etc.), OS (Windows, Mac OS X, etc.), BROWSER (Chrome,
 #   IE, Firefox, etc.), Page Group (Homepage, Category, Checkout, etc.).
 # You can use specific dimensions from for the above short-cuts or DB column names directly.  Example: :operatingsystemname (equivalent to OS), :compression_types,
-#   :http_method, :geo_rg, etc.
+#   :http_method, :regioncode, etc.
 # Only one dimension can be used at this time to ensure accuracy of data.
 deviceType = "Tablet";
 chartTreemapResources(TV.startTimeUTC, TV.endTimeUTC; deviceType = deviceType, dimensions = [RESOURCE_URL], chartTitle = deviceType);
