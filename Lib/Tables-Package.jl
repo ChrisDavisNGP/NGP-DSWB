@@ -408,8 +408,8 @@ if SP.debugLevel > 8
     beautifyDF(toppageurl2,maxRows=10)
 end
 
-if SP.debugLevel > 8
-    toppageurl3 = select("""\
+if SP.debugLevel > -1
+    toppageurl = select("""\
     select *
     FROM $(tableRt)
     where
@@ -418,9 +418,9 @@ if SP.debugLevel > 8
         timestamp = '$(originalTimeStamp)'
     """);
 
-    rc3 = nrow(toppageurl3)
+    rc3 = nrow(toppageurl)
     println("All 3: $rc3 rows")
-    beautifyDF(toppageurl3,maxRows=30)
+    beautifyDF(toppageurl,maxRows=30)
 end
 
 #if SP.debugLevel > 8
