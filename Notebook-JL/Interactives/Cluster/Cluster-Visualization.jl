@@ -49,7 +49,7 @@ setTable(btv)
 #* `countrycode`
 #* `geo_org`
 #* `geo_netspeed`
-#* `user_agent_family`
+#* `useragentname`
 #* `operatingsystemname`
 #
 #The following are helpful
@@ -60,7 +60,7 @@ setTable(btv)
 #
 #The following are only used to render beacon information
 #* `url`
-#* `user_agent_major`
+#* `useragentversion`
 #* `operatingsystemversion`
 
 #@which getLatestResults(hours=2, minutes=0, table_name="$(page_group_table)")
@@ -75,7 +75,7 @@ end
 
 #dropped countrycode
 results2 = select("""\
-    select timestamp,pagegroupname, devicetypename,user_agent_family,
+    select timestamp,pagegroupname, devicetypename,useragentname,
         params_dom_sz,params_dom_ln,params_dom_script,params_dom_img,
         pageloadtime,timers_t_resp,timers_t_page
     from $(btv)

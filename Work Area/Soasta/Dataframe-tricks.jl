@@ -72,7 +72,7 @@ results = select("
 SELECT
     pagegroupname,
     countrycode, regioncode, geo_city, geo_org, geo_netspeed,
-    user_agent_family, user_agent_major, operatingsystemname, operatingsystemversion, user_agent_model,
+    useragentname, useragentversion, operatingsystemname, operatingsystemversion, user_agent_model,
     params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
     pageloadtime
   FROM $(table)
@@ -141,8 +141,8 @@ function toJSON(rows::DataFrame)
         (:geo_city, "geo.city"),
         (:geo_org, "org"),
         (:geo_netspeed, "netspeed"),
-        (:user_agent_family, "ua.family"),
-        (:user_agent_major, "ua.major"),
+        (:useragentname, "ua.family"),
+        (:useragentversion, "ua.major"),
         (:operatingsystemname, "ua.os"),
         (:operatingsystemversion, "ua.osversion"),
         (:user_agent_model, "ua.model"),

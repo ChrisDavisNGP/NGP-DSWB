@@ -10,10 +10,12 @@ function waterFallFinder(TV::TimeVars,UP::UrlParams,SP::ShowParams,studySession:
         bt = UP.beaconTable
 
         waterfall = select("""\
-            select pagegroupname,countrycode,regioncode, operatingsystemname, operatingsystemversion, devicetypename, user_agent_family, user_agent_major
+            select pagegroupname,countrycode,regioncode, operatingsystemname, operatingsystemversion, devicetypename, useragentname, useragentversion
             FROM $bt
             where
-               timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and sessionid = '$(studySession)' and timestamp = '$(studyTime)'
+               timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+               sessionid = '$(studySession)' and
+               timestamp = '$(studyTime)'
             order by timestamp asc
             LIMIT $(UP.limitQueryRows)
         """)

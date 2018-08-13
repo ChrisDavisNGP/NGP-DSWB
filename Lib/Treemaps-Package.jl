@@ -88,10 +88,10 @@ end
 function browserFamilyTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:user_agent_family])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:useragentname])
         treeData[:x1] = "Natgeo - All"
         displayTitle(chart_title = "Browser Family for Page Group: $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        drawTree(treeData; titleCol = :x1, fieldNames = [:user_agent_family])
+        drawTree(treeData; titleCol = :x1, fieldNames = [:useragentname])
 
         # Format beacon output
         sort!(treeData, cols=:beacons, rev=true)

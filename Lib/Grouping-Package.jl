@@ -215,7 +215,7 @@ function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_345
     select("
         SELECT pagegroupname, paramsu,
             countrycode, regioncode, geo_city, geo_org, geo_netspeed,
-            user_agent_family, user_agent_major, operatingsystemname, operatingsystemversion, user_agent_model,
+            useragentname, useragentversion, operatingsystemname, operatingsystemversion, user_agent_model,
             params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
             pageloadtime
          FROM $(table_name)
@@ -255,7 +255,7 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
     cols = generateDimensionMatrix(cols, dims, constraints = Dict(
         (:regioncode => :countrycode),
         (:geo_city => :regioncode),
-        (:user_agent_major => :user_agent_family),
+        (:useragentversion => :useragentname),
         (:operatingsystemversion => :operatingsystemname)
         )
     )
@@ -264,7 +264,7 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
         updateProgress("Trying $(size(cols, 1)) dimension combinations...")
     end
 
-    blacklisteddims = [:geo_netspeed,:operatingsystemname,:countrycode,:user_agent_family]
+    blacklisteddims = [:geo_netspeed,:operatingsystemname,:countrycode,:useragentname]
 
     for (index, colnames) in enumerate(cols)
 
