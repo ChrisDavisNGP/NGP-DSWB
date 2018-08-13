@@ -375,44 +375,44 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         end
 
 #------------extra
-#toppageurl1 = select("""\
-#select *
-#FROM $(tableRt)
-#where
-#sessionid = '$(studySession)'
-#""");
+toppageurl1 = select("""\
+select *
+FROM $(tableRt)
+where
+sessionid = '$(studySession)'
+""");
 
-##        sessionid = '$(studySession)' and
-##        timestamp = '$(studyTime)'
+#        sessionid = '$(studySession)' and
+#        timestamp = '$(studyTime)'
 
-#if SP.debugLevel > 8
-#    rc1 = nrow(toppageurl1)
-#    println("Session_id Only: $rc1 rows")
-#end
+if SP.debugLevel > 8
+    rc1 = nrow(toppageurl1)
+    println("Session_id Only: $rc1 rows")
+end
 
-#toppageurl2 = select("""\
-#select *
-#FROM $(tableRt)
-#where
-# timestamp = '$(studyTime)'
-#""");
+toppageurl2 = select("""\
+select *
+FROM $(tableRt)
+where
+ timestamp = '$(studyTime)'
+""");
 
-##        sessionid = '$(studySession)' and
-##        timestamp = '$(studyTime)'
+#        sessionid = '$(studySession)' and
+#        timestamp = '$(studyTime)'
 
-#if SP.debugLevel > 8
-#    rc2 = nrow(toppageurl2)
-#    println("timestamp Only: $rc2 rows")
-#end
+if SP.debugLevel > 8
+    rc2 = nrow(toppageurl2)
+    println("timestamp Only: $rc2 rows")
+end
 
-#    toppageurl3 = select("""\
-#    select timestamp,sessionid,count(*)
-#    FROM $(tableRt)
-#    group by timestamp,sessionid
-#    order by timestamp asc
-#    limit 500
-#    """);
-#    beautifyDF(toppageurl3,maxRows=500)
+    toppageurl3 = select("""\
+    select timestamp,sessionid,count(*)
+    FROM $(tableRt)
+    group by timestamp,sessionid
+    order by timestamp asc
+    limit 100
+    """);
+    beautifyDF(toppageurl3,maxRows=500)
 #--------------extra
 
         return toppageurl

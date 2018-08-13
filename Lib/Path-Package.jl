@@ -77,28 +77,15 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
       criticalPathDF = DataFrame(urlgroup=ASCIIString[],time=Int64[])
 
-      if SP.debugLevel > 8
-          beautifyDF(localTableDF[1:min(5,end),:],maxRows=500)
-      end
+      # Redundant table
+      #if SP.debugLevel > 8
+      #  beautifyDF(localTableDF[1:min(5,end),:],maxRows=500)
+      #end
 
-      #by(localTableDF,:timestamp) do df
-    #      println("Using by:",df[1,:sessionid]," and ",df[1,:timestamp])
-    #  end
-
-     # for row in eachrow(localTableDF)
-    #      println("Using eachrow:",row[:sessionid]," and ",row[:timestamp])
-     # end
-
-     # for subdf in groupby(localTableDF,[:sessionid,:timestamp])
-     #by(localTableDF,:timestamp) do subdf
      for subdfRow in eachrow(localTableDF)
           # Quick out
           if (io > UP.limitPageViews)
               break
-          end
-          if(SP.debugLevel > 4)
-              println("\nCheck time for page $io Timer=",subdfRow[:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs)
-              println("subdfRow[:sessionid]=",subdfRow[:sessionid])
           end
 
           if (UP.usePageLoad)
@@ -140,7 +127,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   break
               end
           else
-              println("Rejecting current page, time outside range")
+              println("\nRejecting current page $io Timer=",subdfRow[:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs," sessionid=",subdfRow[:sessionid])
+              #println("Rejecting current page, time outside range")
           end
       end
 
