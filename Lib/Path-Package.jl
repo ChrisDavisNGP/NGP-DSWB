@@ -104,7 +104,8 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   sessionIdString = ASCIIString(sessionid)
                   #println("SM=",CU.syntheticMonitor," timeStampVar=",timeStampVar)
                   if CU.syntheticMonitor == "no name"
-                      timeStampVar = subdfRow[:timestamp]
+                      #timeStampVar = subdfRow[:timestamp]
+                      timeStampVar = subdfRow[:sessionstart]
                   end
                   #println(" tsv=",timeStampVar)
 

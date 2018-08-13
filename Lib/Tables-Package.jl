@@ -129,10 +129,10 @@ function critAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,
 
         localTableDF = DataFrame(jobid=ASCIIString[],timestamp=Int64[],onpageload=Int64[],onpagecontentload=Int64[])
         for row in eachrow(NR.results.row)
-            push!(localTableDF,[row[:jobId];row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
+            push!(localTableDF,[row[:jobId];row[:timestamp],row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
         end
 
-        localTableDF = names!(localTableDF,[Symbol("sessionid");Symbol("timestamp");Symbol("pageloadtime");Symbol("domreadytimer")])
+        localTableDF = names!(localTableDF,[Symbol("sessionid");Symbol("sessionstart");Symbol("timestamp");Symbol("pageloadtime");Symbol("domreadytimer")])
 
         if SP.debugLevel > 6
             beautifyDF(localTableDF)
@@ -162,7 +162,8 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
     try
         localTableDF = select("""\
             select
-                sessionstart as timestamp,
+                timestamp,
+                sessionstart,
                 sessionid,
                 pageloadtime,
                 domreadytimer
