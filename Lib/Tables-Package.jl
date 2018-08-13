@@ -365,7 +365,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         FROM $(tableRt)
         where
             sessionid = '$(studySession)' and
-           timestamp = '$(studyTime)'
+            sessionstart = '$(studyTime)'
         order by start_time asc
         """);
 
@@ -391,7 +391,7 @@ sessionid = '$(studySession)'
 if SP.debugLevel > 8
     rc1 = nrow(toppageurl1)
     println("Session_id Only: $rc1 rows")
-    beautifyDF(toppageurl1,maxRows=100)
+    beautifyDF(toppageurl1,maxRows=10)
 end
 
 toppageurl2 = select("""\
@@ -407,7 +407,7 @@ where
 if SP.debugLevel > 8
     rc2 = nrow(toppageurl2)
     println("timestamp Only: $rc2 rows")
-    beautifyDF(toppageurl2,maxRows=100)
+    beautifyDF(toppageurl2,maxRows=10)
 end
 
     toppageurl3 = select("""\
@@ -417,7 +417,7 @@ end
     order by timestamp asc
     limit 100
     """);
-    beautifyDF(toppageurl3,maxRows=100)
+    beautifyDF(toppageurl3,maxRows=10)
 #--------------extra
 
         return toppageurl

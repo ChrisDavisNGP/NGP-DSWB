@@ -112,7 +112,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
-                      println("Attempting read page $(currentPage) of $(UP.limitPageViews): $(labelString)")
+                      println("Attempting read page $(currentPage) of $(UP.limitPageViews): $(labelString) : timeStampVar=$(timeStampVar)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
