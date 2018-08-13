@@ -388,6 +388,7 @@ sessionid = '$(studySession)'
 if SP.debugLevel > 8
     rc1 = nrow(toppageurl1)
     println("Session_id Only: $rc1 rows")
+    beautifyDF(toppageurl1,maxRows=100)
 end
 
 toppageurl2 = select("""\
@@ -403,6 +404,7 @@ where
 if SP.debugLevel > 8
     rc2 = nrow(toppageurl2)
     println("timestamp Only: $rc2 rows")
+    beautifyDF(toppageurl2,maxRows=100)
 end
 
     toppageurl3 = select("""\
@@ -412,7 +414,7 @@ end
     order by timestamp asc
     limit 100
     """);
-    beautifyDF(toppageurl3,maxRows=500)
+    beautifyDF(toppageurl3,maxRows=100)
 #--------------extra
 
         return toppageurl
