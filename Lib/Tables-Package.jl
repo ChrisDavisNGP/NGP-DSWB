@@ -413,7 +413,6 @@ if SP.debugLevel > 8
     select *
     FROM $(tableRt)
     where
-    where
         sessionid = '$(studySession)' and
         sessionstart = '$(studyTime)' and
         timestamp = '$(originalTimeStamp)'
