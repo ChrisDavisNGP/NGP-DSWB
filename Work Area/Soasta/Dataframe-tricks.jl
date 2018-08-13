@@ -71,7 +71,7 @@ strftime("%Y-%m-%dT%H:%M:%S", div(timestamp_range[1, 2], 1000))
 results = select("
 SELECT
     pagegroupname,
-    geo_cc, geo_rg, geo_city, geo_org, geo_netspeed,
+    countrycode, geo_rg, geo_city, geo_org, geo_netspeed,
     user_agent_family, user_agent_major, operatingsystemname, user_agent_osversion, user_agent_model,
     params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
     pageloadtime
@@ -101,9 +101,9 @@ end
 
 # Using more than one column
 #
-#We can group by more than one column.  In this case we use `pagegroupname` and `geo_cc`.  We also use the `head` function to reduce the results to the top 15 (the second parameter to `head` is 15)
+#We can group by more than one column.  In this case we use `pagegroupname` and `countrycode`.  We also use the `head` function to reduce the results to the top 15 (the second parameter to `head` is 15)
 
-head(by(results, [:geo_cc, :pagegroupname]) do df
+head(by(results, [:countrycode, :pagegroupname]) do df
     DataFrame(m=median(df[:pageloadtime]), iqr = iqr(df[:pageloadtime]), s² = var(df[:pageloadtime]))
 end, 15)
 
@@ -136,7 +136,7 @@ function toJSON(rows::DataFrame)
     cols = names(rows)
     colmap = Dict([
         (:pagegroupname, "pagegroupname"),
-        (:geo_cc, "geo.cc"),
+        (:countrycode, "geo.cc"),
         (:geo_rg, "geo.rg"),
         (:geo_city, "geo.city"),
         (:geo_org, "org"),

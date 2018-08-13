@@ -46,7 +46,7 @@ setTable(btv)
 #
 #Dimensions are all optional, but you won't get clusters without them... These are the most useful:
 #* `pagegroupname`
-#* `geo_cc`
+#* `countrycode`
 #* `geo_org`
 #* `geo_netspeed`
 #* `user_agent_family`
@@ -73,7 +73,7 @@ if SP.debugLevel > 4
 end
 #display(results)
 
-#dropped geo_cc
+#dropped countrycode
 results2 = select("""\
     select timestamp,pagegroupname, devicetypename,user_agent_family,
         params_dom_sz,params_dom_ln,params_dom_script,params_dom_img,

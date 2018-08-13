@@ -27,12 +27,12 @@ localTable = "$(table)_$(scriptName)_spike_pview_prod"
 localTableRt = "$(tableRt)_spike_pview_prod"
 
 toppagecount = select("""\
-            select count(*),sessionid,geo_cc, geo_isp, proxy_address,remote_ip,devicetypename
+            select count(*),sessionid,countrycode, geo_isp, proxy_address,remote_ip,devicetypename
             FROM $table
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and sessionid IS NOT NULL
-                group by sessionid,geo_cc, geo_isp, proxy_address,remote_ip,devicetypename
+                group by sessionid,countrycode, geo_isp, proxy_address,remote_ip,devicetypename
                 order by count(*) desc
                 """);
 
@@ -53,7 +53,7 @@ debugRecords = select("""\
 beautifyDF(debugRecords[1:min(10,end),:])
 
 debugRecords = select("""\
-            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer
+            select timestamp, countrycode, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer
             FROM $table
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -64,7 +64,7 @@ order by timestamp
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = select("""\
-            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,paramsu
+            select timestamp, countrycode, geo_isp, proxy_address,remote_ip,devicetypename,paramsu
             FROM $table
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
@@ -75,7 +75,7 @@ debugRecords = select("""\
 beautifyDF(debugRecords[1:min(300,end),:])
 
 debugRecords = select("""\
-            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer,paramsu
+            select timestamp, countrycode, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer,paramsu
             FROM $table
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)

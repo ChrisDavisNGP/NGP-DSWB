@@ -169,7 +169,7 @@ order by timestamp
 
 displayTitle(chart_title = "Geo from Beacon", showTimeStamp=false)
 sessionFields = select("""\
-select geo_cc,geo_city,geo_lat,geo_lon,geo_netspeed,geo_org,geo_postalcode,geo_rg,geo_isp
+select countrycode,geo_city,geo_lat,geo_lon,geo_netspeed,geo_org,geo_postalcode,geo_rg,geo_isp
 from $btv
 where sessionid = '$(sessionid)' and timestamp in $(ts)
 order by timestamp

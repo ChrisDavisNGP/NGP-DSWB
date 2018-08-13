@@ -31,12 +31,12 @@ bt = UP.beaconTable
 rt = UP.resourceTable
 
 toppagecount = select("""\
-            select count(*),sessionid,geo_cc, geo_isp, proxy_address,remote_ip,devicetypename
+            select count(*),sessionid,countrycode, geo_isp, proxy_address,remote_ip,devicetypename
             FROM $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and sessionid IS NOT NULL
-                group by sessionid,geo_cc, geo_isp, proxy_address,remote_ip,devicetypename
+                group by sessionid,countrycode, geo_isp, proxy_address,remote_ip,devicetypename
                 order by count(*) desc
                 """);
 
@@ -56,31 +56,31 @@ debugRecords = select("""\
 beautifyDF(debugRecords[1:min(10,end),:])
 
 debugRecords = select("""\
-            select count(*), geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer
+            select count(*), countrycode, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer
             FROM $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and sessionid = '$(firstSession)'
-group by geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer
+group by countrycode, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer
                 order by count(*) desc
             """);
 
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = select("""\
-            select count(*), geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,paramsu
+            select count(*), countrycode, geo_isp, proxy_address,remote_ip,devicetypename,paramsu
             FROM $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
                 and sessionid = '$(firstSession)'
-group by geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,paramsu
+group by countrycode, geo_isp, proxy_address,remote_ip,devicetypename,paramsu
                 order by count(*) desc
             """);
 
 beautifyDF(debugRecords[1:min(100,end),:])
 
 debugRecords = select("""\
-            select timestamp, geo_cc, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer,paramsu
+            select timestamp, countrycode, geo_isp, proxy_address,remote_ip,devicetypename,http_referrer,paramsu
             FROM $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)

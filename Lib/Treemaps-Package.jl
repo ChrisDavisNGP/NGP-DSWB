@@ -108,10 +108,10 @@ end
 function countryTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:geo_cc])
+        treeData = getTreemapData(TV.startTimeUTC, TV.endTimeUTC, fieldNames = [:countrycode])
         treeData[:x1] = "Natgeo - All"
         displayTitle(chart_title = "Countries for Page Group: $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
-        drawTree(treeData; titleCol = :x1, fieldNames = [:geo_cc])
+        drawTree(treeData; titleCol = :x1, fieldNames = [:countrycode])
 
         # Format beacon output
         sort!(treeData, cols=:beacons, rev=true)
@@ -121,10 +121,10 @@ function countryTreemap(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         cc = getMapCountryNames()
         countries = DataArray([])
         for x in eachrow(treeData)
-            countries = vcat(countries,cc[x[:geo_cc]])
+            countries = vcat(countries,cc[x[:countrycode]])
         end
 
-        treeData[:geo_cc] = countries
+        treeData[:countrycode] = countries
         displayManyRows(treeData[:,[1:3;]], [Symbol("Countries"), Symbol("Load Time"), Symbol("Beacons")],SP.treemapTableLines)
     catch y
         println("countryTreemap Exception ",y)

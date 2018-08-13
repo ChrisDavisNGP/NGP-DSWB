@@ -374,7 +374,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     loadTimesParamsUPGD(TV,UP)
 
     try
-        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC,dimension=:geo_cc,minPercentage=0.6)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC,dimension=:countrycode,minPercentage=0.6)
         chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:devicetypename, n=15, orderBy="frontend", minPercentage=0.001)
         printDF = getMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:devicetypename, n=15, orderBy="frontend", minPercentage=0.001)
         beautifyDF(printDF)
@@ -631,7 +631,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowMedLoadByGeo)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:geo_cc,minPercentage=2.5,n=10)
+    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:countrycode,minPercentage=2.5,n=10)
   end
 
   if (wfShowCustomReferrers)
