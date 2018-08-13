@@ -392,7 +392,7 @@ if SP.debugLevel > 8
 
     rc1 = nrow(toppageurl1)
     println("Session_id Only: $rc1 rows")
-    beautifyDF(toppageurl1,maxRows=30)
+    beautifyDF(toppageurl1,maxRows=1000)
 end
 
 if SP.debugLevel > 8
@@ -405,11 +405,11 @@ if SP.debugLevel > 8
 
     rc2 = nrow(toppageurl2)
     println("timestamp Only: $rc2 rows")
-    beautifyDF(toppageurl2,maxRows=10)
+    beautifyDF(toppageurl2,maxRows=1000)
 end
 
-if SP.debugLevel > -1
-    toppageurl = select("""\
+if SP.debugLevel > 18
+    toppageurl3 = select("""\
     select *
     FROM $(tableRt)
     where
@@ -418,9 +418,9 @@ if SP.debugLevel > -1
         timestamp = '$(originalTimeStamp)'
     """);
 
-    rc3 = nrow(toppageurl)
+    rc3 = nrow(toppageurl3)
     println("All 3: $rc3 rows")
-    beautifyDF(toppageurl,maxRows=30)
+    beautifyDF(toppageurl3,maxRows=30)
 end
 
 #if SP.debugLevel > 8
