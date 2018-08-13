@@ -402,7 +402,7 @@ function lookForLeftOversDetailsPrintTable(UP::UrlParams,SP::ShowParams)
             select $rt.url,avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
                 avg($rt.decoded_size) as decoded,
                 $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
-                $btv.user_agent_family,$btv.user_agent_major,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.operatingsystemname,$btv.user_agent_osversion,$btv.user_agent_raw,
+                $btv.user_agent_family,$btv.user_agent_major,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.operatingsystemname,$btv.operatingsystemversion,$btv.user_agent_raw,
                 $btv.user_agent_manufacturer,$btv.devicetypename,$btv.user_agent_isp,$btv.geo_isp,$btv.params_ua_plt,$btv.params_ua_vnd,
                 $rt.initiator_type,$rt.height,$rt.width,$rt.x,$rt.y,
                 count(*)
@@ -411,7 +411,7 @@ function lookForLeftOversDetailsPrintTable(UP::UrlParams,SP::ShowParams)
             where $rt.encoded_size > 1 and $rt.url not like '%/interactive-assets/%'
             group by $rt.url,
                 $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
-                $btv.user_agent_family,$btv.user_agent_major,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.operatingsystemname,$btv.user_agent_osversion,$btv.user_agent_raw,
+                $btv.user_agent_family,$btv.user_agent_major,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.operatingsystemname,$btv.operatingsystemversion,$btv.user_agent_raw,
                 $btv.user_agent_manufacturer,$btv.devicetypename,$btv.user_agent_isp,$btv.geo_isp,$btv.params_ua_plt,$btv.params_ua_vnd,
                 $rt.initiator_type,$rt.height,$rt.width,$rt.x,$rt.y
             order by encoded desc

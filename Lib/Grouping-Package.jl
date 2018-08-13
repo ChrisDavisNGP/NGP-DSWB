@@ -215,7 +215,7 @@ function getLatestResults(;table_name::ASCIIString="RUM_PRD_BEACON_FACT_DSWB_345
     select("
         SELECT pagegroupname, paramsu,
             countrycode, regioncode, geo_city, geo_org, geo_netspeed,
-            user_agent_family, user_agent_major, operatingsystemname, user_agent_osversion, user_agent_model,
+            user_agent_family, user_agent_major, operatingsystemname, operatingsystemversion, user_agent_model,
             params_dom_sz, params_dom_ln, params_dom_script, params_dom_img,
             pageloadtime
          FROM $(table_name)
@@ -256,7 +256,7 @@ function groupResults(results::DataFrame; dims::Int64=1, showProgress::Bool=fals
         (:regioncode => :countrycode),
         (:geo_city => :regioncode),
         (:user_agent_major => :user_agent_family),
-        (:user_agent_osversion => :operatingsystemname)
+        (:operatingsystemversion => :operatingsystemname)
         )
     )
 

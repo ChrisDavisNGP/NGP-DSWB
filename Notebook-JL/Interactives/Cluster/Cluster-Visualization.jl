@@ -61,7 +61,7 @@ setTable(btv)
 #The following are only used to render beacon information
 #* `url`
 #* `user_agent_major`
-#* `user_agent_osversion`
+#* `operatingsystemversion`
 
 #@which getLatestResults(hours=2, minutes=0, table_name="$(page_group_table)")
 
