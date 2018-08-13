@@ -342,10 +342,6 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime)
     end
 
-    #rt = UP.resourceTable
-    #tableRt = "$(table)_rt"
-    #setTable(tableRt, tableType = "RESOURCE_TABLE")
-
     try
         toppageurl = select("""\
         select 'None' as urlpagegroup,start_time,
@@ -358,7 +354,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             CASE WHEN (response_first_byte = 0) THEN (0) ELSE (response_last_byte-response_first_byte) END as response,
             0 as gap,
             0 as critical,
-            CASE when  (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
+            url as urlgroup,
             1 as request_count,
             'Label' as label,
             CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END as load,
@@ -369,6 +365,8 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
            timestamp = '$(studyTime)'
         order by start_time asc
         """);
+
+#Trim the URL query string missing        CASE when  (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
 
 
         if SP.debugLevel > 8
