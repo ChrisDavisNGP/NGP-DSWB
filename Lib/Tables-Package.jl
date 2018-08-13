@@ -157,10 +157,12 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
         println("time Range: $(UP.timeLowerMs),$(UP.timeUpperMs)")
     end
 
+# using sessionstart as starting time not timestamp
+
     try
         localTableDF = select("""\
             select
-                timestamp,
+                sessionstart as timestamp,
                 sessionid,
                 pageloadtime,
                 domreadytimer

@@ -1206,6 +1206,11 @@ end
 function criticalPathAggWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
   try
 
+      if SP.debugLevel > 4
+          println()
+          println("Start criticalPathAggWorkflow")
+      end
+
       localTableDF = DataFrame()
       statsDF = DataFrame()
 
