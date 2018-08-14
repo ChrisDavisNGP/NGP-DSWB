@@ -162,7 +162,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
     try
         localTableDF = select("""\
             select
-                timestamp,
+                timestamp+remainderts,
                 sessionstart,
                 sessionid,
                 pageloadtime,
@@ -181,26 +181,26 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-        if (SP.debugLevel > 16)
+        if (SP.debugLevel > 6)
             standardChartTitle(TV,UP,SP,"Debug6: critAggLimitedBeaconsToDF All Columns")
             beautifyDF(localTableDF[1:min(10,end),:])
         end
 
 #-------extra
-        localTableDF2 = select("""\
-            select
-                *
-            from $bt
-            where
-                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                sessionid = 'fa07d823-5596-4f25-ad80-293c1d3db95f-pdesjs'
-            order by timestamp asc
-            limit 150
-        """)
-
-        if (SP.debugLevel > 8)
-            beautifyDF(localTableDF2[1:min(150,end),:],maxRows=150)
-        end
+#        localTableDF2 = select("""\
+#            select
+#                *
+#            from $bt
+#            where
+#                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+#                sessionid = 'fa07d823-5596-4f25-ad80-293c1d3db95f-pdesjs'
+#            order by timestamp asc
+#            limit 150
+#        """)
+#
+#        if (SP.debugLevel > 8)
+#            beautifyDF(localTableDF2[1:min(150,end),:],maxRows=150)
+#        end
 #---------extra
 
         return localTableDF
@@ -239,7 +239,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             0 as beacon_time
         FROM $(tableRt)
         where
-            paramsu ilike '$(UP.urlRegEx)' and
+            timestamp = '$(originalTimeStamp)' and
             sessionid = '$(studySession)' and
             sessionstart = '$(studyTime)'
         order by start_time asc
@@ -254,7 +254,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         end
 
 #------------extra
-if SP.debugLevel > 8
+if SP.debugLevel > 18
     toppageurl1 = select("""\
     select *
     FROM $(tableRt)
