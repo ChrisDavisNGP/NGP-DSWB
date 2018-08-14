@@ -193,7 +193,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             from $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                sessionid = 'fa07d823-5596-4f25-ad80-293c1d3db95f-pdesjs' and
+                sessionid = 'fa07d823-5596-4f25-ad80-293c1d3db95f-pdesjs'
             order by timestamp asc
             limit 150
         """)
