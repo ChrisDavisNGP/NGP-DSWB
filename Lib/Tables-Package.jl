@@ -193,7 +193,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             from $bt
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                sessionid IS NOT NULL and
+                sessionid = 'fa07d823-5596-4f25-ad80-293c1d3db95f-pdesjs' and
                 paramsrtquit IS NULL and
                 paramsu ilike '$(UP.urlRegEx)' and
                 devicetypename ilike '$(UP.deviceType)' and
@@ -201,11 +201,11 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
                 pagegroupname ilike '$(UP.pageGroup)' and
                 pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             order by timestamp asc
-            limit 15
+            limit 150
         """)
 
         if (SP.debugLevel > 8)
-            beautifyDF(localTableDF2[1:min(10,end),:])
+            beautifyDF(localTableDF2[1:min(150,end),:],maxRows=150)
         end
 #---------extra
 

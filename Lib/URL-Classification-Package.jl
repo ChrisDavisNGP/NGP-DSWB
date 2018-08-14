@@ -241,12 +241,12 @@ end
 
 
 function wellKnownPathDictionary(SP::ShowParams)
-  if SP.debugLevel > 4
-      println("Loading Path Dictionary")
-  end
-
   if SP.noSymbols
       return
+  end
+
+  if SP.debugLevel > 4
+      println("Loading Path Dictionary")
   end
 
   if SP.debug == true
@@ -261,12 +261,16 @@ function wellKnownPathDictionary(SP::ShowParams)
 end
 
 function wellKnownHostEncyclopedia(SP::ShowParams)
-    if SP.debugLevel > 4
-        println("Loading Encyclopedia")
+    if SP.noSymbols
+        if SP.debugLevel > 4
+            println("Skipping Encyclopedia")
+        end
+
+        return
     end
 
-    if SP.noSymbols
-        return
+    if SP.debugLevel > 4
+        println("Loading Encyclopedia")
     end
 
     WellKnownHostDirectory = wellKnownHostEncyclopediaInternal(SP)

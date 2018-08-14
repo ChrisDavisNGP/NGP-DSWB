@@ -5874,12 +5874,12 @@ end
 
 function wellKnownUrlGroup(SP::ShowParams)
 
-    if SP.debugLevel > 4
-        println("Loading Known Url Groups")
-    end
-
     if SP.noSymbols
         return
+    end
+
+    if SP.debugLevel > 4
+        println("Loading Known Url Groups")
     end
 
     WellKnownUrlGroup = Dict([
