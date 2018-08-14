@@ -162,7 +162,7 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
     try
         localTableDF = select("""\
             select
-                timestamp+remainderts,
+                timestamp+remainderts as timestamp,
                 sessionstart,
                 sessionid,
                 pageloadtime,
