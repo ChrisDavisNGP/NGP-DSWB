@@ -263,7 +263,7 @@ if SP.debugLevel > 8
     """);
 
     rc1 = nrow(toppageurl1)
-    println("Session_id Only: $rc1 rows, first ts=",topppageurl2[:timestamp][1])
+    println("Session_id Only: $rc1 rows, first ts=",topppageurl1[:timestamp][1])
     beautifyDF(toppageurl1,maxRows=1000)
 end
 
