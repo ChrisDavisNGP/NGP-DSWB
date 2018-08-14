@@ -194,12 +194,6 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 sessionid = 'fa07d823-5596-4f25-ad80-293c1d3db95f-pdesjs' and
-                paramsrtquit IS NULL and
-                paramsu ilike '$(UP.urlRegEx)' and
-                devicetypename ilike '$(UP.deviceType)' and
-                operatingsystemname ilike '$(UP.agentOs)' and
-                pagegroupname ilike '$(UP.pageGroup)' and
-                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             order by timestamp asc
             limit 150
         """)
@@ -214,6 +208,113 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
         println("critAggLimitedBeaconsToDFSoasta Exception ",y)
     end
 end
+
+function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64,originalTimeStamp::Int64)
+
+    #appears not to matter studySession = uppercase(studySession)
+    if SP.debugLevel > 8
+        println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime," originalTimeStamp=",originalTimeStamp)
+    end
+
+    #Todo grab first records, grab timestamp and then select data on all three timestamp, sessionid, sessionstart
+    # plus add in the beacon timestamp as >=
+
+
+    try
+        toppageurl = select("""\
+        select 'None' as urlpagegroup,start_time,
+            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as total,
+            (redirect_end-redirect_start) as redirect,
+            CASE WHEN (dns_start = 0 and request_start = 0) THEN (0) WHEN (dns_start = 0) THEN (request_start-fetch_start) ELSE (dns_start-fetch_start) END as blocking,
+            (dns_end-dns_start) as dns,
+            (tcp_connection_end-tcp_connection_start) as tcp,
+            (response_first_byte-request_start) as request,
+            CASE WHEN (response_first_byte = 0) THEN (0) ELSE (response_last_byte-response_first_byte) END as response,
+            0 as gap,
+            0 as critical,
+            url as urlgroup,
+            1 as request_count,
+            'Label' as label,
+            CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END as load,
+            0 as beacon_time
+        FROM $(tableRt)
+        where
+            paramsu ilike '$(UP.urlRegEx)' and
+            sessionid = '$(studySession)' and
+            sessionstart = '$(studyTime)'
+        order by start_time asc
+        """);
+
+#Trim the URL query string missing        CASE when  (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
+
+
+        if SP.debugLevel > 8
+            rc = nrow(toppageurl)
+            println("Returning from sessionUrlTableToDF: $rc rows")
+        end
+
+#------------extra
+if SP.debugLevel > 8
+    toppageurl1 = select("""\
+    select *
+    FROM $(tableRt)
+    where
+    sessionid = '$(studySession)'
+    """);
+
+    rc1 = nrow(toppageurl1)
+    println("Session_id Only: $rc1 rows, first ts=",topppageurl2[:timestamp][1])
+    beautifyDF(toppageurl1,maxRows=1000)
+end
+
+# Debug like the above
+if SP.debugLevel > 18
+    toppageurl2 = select("""\
+    select *
+    FROM $(tableRt)
+    where
+    paramsu ilike '$(UP.urlRegEx)' and
+    sessionid = '$(studySession)'
+    """);
+
+    rc2 = nrow(toppageurl2)
+    println("timestamp Only: $rc2 rows, first ts ",toppageurl2[:timestamp])
+    beautifyDF(toppageurl2,maxRows=1000)
+end
+
+if SP.debugLevel > 18
+    toppageurl3 = select("""\
+    select *
+    FROM $(tableRt)
+    where
+        sessionid = '$(studySession)' and
+        sessionstart = '$(studyTime)' and
+        timestamp = '$(originalTimeStamp)'
+    """);
+
+    rc3 = nrow(toppageurl3)
+    println("All 3: $rc3 rows")
+    beautifyDF(toppageurl3,maxRows=30)
+end
+
+#if SP.debugLevel > 8
+#    toppageurl3 = select("""\
+#    select timestamp,sessionid,count(*)
+#    FROM $(tableRt)
+#    group by timestamp,sessionid
+#    order by timestamp asc
+#    limit 100
+#    """);
+#    beautifyDF(toppageurl3,maxRows=10)
+#end
+#--------------extra
+
+        return toppageurl
+    catch y
+        println("sessionUrlTableToDF Exception ",y)
+    end
+end
+
 
 function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
@@ -358,112 +459,6 @@ function allSessionUrlTableToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,studyS
         return toppageurl
     catch y
         println("allSessionUrlTableToDF Exception ",y)
-    end
-end
-
-function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIString,studyTime::Int64,originalTimeStamp::Int64)
-
-    #appears not to matter studySession = uppercase(studySession)
-    if SP.debugLevel > 8
-        println("Starting sessionUrlTableToDF: studySession= ",studySession," studyTime=",studyTime," originalTimeStamp=",originalTimeStamp)
-    end
-
-    #Todo grab first records, grab timestamp and then select data on all three timestamp, sessionid, sessionstart
-    # plus add in the beacon timestamp as >=
-
-
-    try
-        toppageurl = select("""\
-        select 'None' as urlpagegroup,start_time,
-            CASE WHEN (response_last_byte = 0) THEN (0) ELSE (response_last_byte-start_time) END as total,
-            (redirect_end-redirect_start) as redirect,
-            CASE WHEN (dns_start = 0 and request_start = 0) THEN (0) WHEN (dns_start = 0) THEN (request_start-fetch_start) ELSE (dns_start-fetch_start) END as blocking,
-            (dns_end-dns_start) as dns,
-            (tcp_connection_end-tcp_connection_start) as tcp,
-            (response_first_byte-request_start) as request,
-            CASE WHEN (response_first_byte = 0) THEN (0) ELSE (response_last_byte-response_first_byte) END as response,
-            0 as gap,
-            0 as critical,
-            url as urlgroup,
-            1 as request_count,
-            'Label' as label,
-            CASE WHEN (response_last_byte = 0) THEN (0) ELSE ((response_last_byte-start_time)/1000.0) END as load,
-            0 as beacon_time
-        FROM $(tableRt)
-        where
-            paramsu ilike '$(UP.urlRegEx)' and
-            sessionid = '$(studySession)' and
-            sessionstart = '$(studyTime)'
-        order by start_time asc
-        """);
-
-#Trim the URL query string missing        CASE when  (position('?' in url) > 0) then trim('/' from (substring(url for position('?' in substring(url from 9)) +7))) else trim('/' from url) end as urlgroup,
-
-
-        if SP.debugLevel > 8
-            rc = nrow(toppageurl)
-            println("Returning from sessionUrlTableToDF: $rc rows")
-        end
-
-#------------extra
-if SP.debugLevel > 18
-    toppageurl1 = select("""\
-    select *
-    FROM $(tableRt)
-    where
-    sessionid = '$(studySession)'
-    """);
-
-    rc1 = nrow(toppageurl1)
-    println("Session_id Only: $rc1 rows")
-    beautifyDF(toppageurl1,maxRows=1000)
-end
-
-# Debug like the above
-if SP.debugLevel > 8
-    toppageurl2 = select("""\
-    select *
-    FROM $(tableRt)
-    where
-    paramsu ilike '$(UP.urlRegEx)' and
-    sessionid = '$(studySession)'
-    """);
-
-    rc2 = nrow(toppageurl2)
-    println("timestamp Only: $rc2 rows, first ts ",toppageurl2[:timestamp])
-    beautifyDF(toppageurl2,maxRows=1000)
-end
-
-if SP.debugLevel > 18
-    toppageurl3 = select("""\
-    select *
-    FROM $(tableRt)
-    where
-        sessionid = '$(studySession)' and
-        sessionstart = '$(studyTime)' and
-        timestamp = '$(originalTimeStamp)'
-    """);
-
-    rc3 = nrow(toppageurl3)
-    println("All 3: $rc3 rows")
-    beautifyDF(toppageurl3,maxRows=30)
-end
-
-#if SP.debugLevel > 8
-#    toppageurl3 = select("""\
-#    select timestamp,sessionid,count(*)
-#    FROM $(tableRt)
-#    group by timestamp,sessionid
-#    order by timestamp asc
-#    limit 100
-#    """);
-#    beautifyDF(toppageurl3,maxRows=10)
-#end
-#--------------extra
-
-        return toppageurl
-    catch y
-        println("sessionUrlTableToDF Exception ",y)
     end
 end
 
