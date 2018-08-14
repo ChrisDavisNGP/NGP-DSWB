@@ -426,7 +426,7 @@ if SP.debugLevel > 8
     FROM $(tableRt)
     where
     paramsu ilike '$(UP.urlRegEx)' and
-    sessionstart = '$(studySession)'
+    sessionid = '$(studySession)'
     """);
 
     rc2 = nrow(toppageurl2)
