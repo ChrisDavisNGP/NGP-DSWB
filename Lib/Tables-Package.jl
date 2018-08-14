@@ -391,6 +391,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
             0 as beacon_time
         FROM $(tableRt)
         where
+            paramsu ilike '$(UP.urlRegEx)' and
             sessionid = '$(studySession)' and
             sessionstart = '$(studyTime)'
         order by start_time asc
