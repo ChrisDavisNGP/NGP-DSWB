@@ -181,10 +181,33 @@ function critAggLimitedBeaconsToDFSoasta(TV::TimeVars,UP::UrlParams,SP::ShowPara
             limit $(UP.limitQueryRows)
         """)
 
-        if (SP.debugLevel > 6)
-            standardChartTitle(TV,UP,SP,"Debug8: critAggLimitedBeaconsToDF All Columns")
+        if (SP.debugLevel > 16)
+            standardChartTitle(TV,UP,SP,"Debug6: critAggLimitedBeaconsToDF All Columns")
             beautifyDF(localTableDF[1:min(10,end),:])
         end
+
+#-------extra
+        localTableDF2 = select("""\
+            select
+                *
+            from $bt
+            where
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                sessionid IS NOT NULL and
+                paramsrtquit IS NULL and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+            order by timestamp asc
+            limit 15
+        """)
+
+        if (SP.debugLevel > 8)
+            beautifyDF(localTableDF2[1:min(10,end),:])
+        end
+#---------extra
 
         return localTableDF
     catch y
@@ -395,7 +418,8 @@ if SP.debugLevel > 8
     beautifyDF(toppageurl1,maxRows=1000)
 end
 
-if SP.debugLevel > 8
+# Debug like the above
+if SP.debugLevel > 18
     toppageurl2 = select("""\
     select *
     FROM $(tableRt)
