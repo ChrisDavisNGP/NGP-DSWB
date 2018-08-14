@@ -406,7 +406,7 @@ function sessionUrlTableToDF(UP::UrlParams,SP::ShowParams,studySession::ASCIIStr
         end
 
 #------------extra
-if SP.debugLevel > 8
+if SP.debugLevel > 18
     toppageurl1 = select("""\
     select *
     FROM $(tableRt)
@@ -420,16 +420,17 @@ if SP.debugLevel > 8
 end
 
 # Debug like the above
-if SP.debugLevel > 18
+if SP.debugLevel > 8
     toppageurl2 = select("""\
     select *
     FROM $(tableRt)
     where
-    sessionstart = '$(studyTime)'
+    paramsu ilike '$(UP.urlRegEx)' and
+    sessionstart = '$(studySession)'
     """);
 
     rc2 = nrow(toppageurl2)
-    println("timestamp Only: $rc2 rows")
+    println("timestamp Only: $rc2 rows, first ts ",toppageurl2[:timestamp])
     beautifyDF(toppageurl2,maxRows=1000)
 end
 
