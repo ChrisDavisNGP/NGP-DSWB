@@ -136,7 +136,7 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
       end
 
       if (SP.debugLevel > 4)
-          println("size of criticalPathDF is ",size(criticalPathDF,1)," Using $pageCount pages")
+          println("Size of criticalPathDF is ",size(criticalPathDF,1)," Using $pageCount pages")
       end
 
       finalCriticalPathDF = finalCriticalPath(SP,criticalPathDF)
