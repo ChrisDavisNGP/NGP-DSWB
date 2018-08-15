@@ -100,7 +100,6 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
 
           if (timeVar >= UP.timeLowerMs && timeVar <= UP.timeUpperMs)
               currentPage = io
-              io += 1
               if io <= UP.limitPageViews
                   sessionid = subdfRow[:sessionid]
                   sessionIdString = ASCIIString(sessionid)
@@ -114,24 +113,25 @@ function criticalPathStreamline(TV::TimeVars,UP::UrlParams,SP::ShowParams,
                   timeVarSec = timeVar / 1000.0
                   if (SP.debugLevel > 6)
                       labelString = "$(timeVarSec) Seconds"
-                      println("Attempting read page $(currentPage) of $(UP.limitPageViews): $(labelString) : sessionStart=$(sessionStart) timeStampVar=$(timeStampVar)")
+                      println("Attempting read page $(currentPage) of $(UP.limitPageViews): $(labelString) : sessionStart=$(sessionStart) timeStampVar=$(timeStampVar) io=$(io)")
                   end
                   topPageUrl = individualPageData(TV,UP,SP,CU,NR,sessionIdString,sessionStart,timeStampVar)
                   suitable  = individualCriticalPath(TV,UP,SP,topPageUrl,criticalPathDF,timeVar)
                   if (!suitable)
-                      io -= 1
                       if (SP.debugLevel > 8)
-                          waterFallFinder(TV,UP,SP,sessionIdString,timeStampVar)
+                          waterFallFinder(TV,UP,SP,sessionIdString,sessionStart)
                       end
                   else
+                      io += 1
                       pageCount += 1
                   end
               else
                   break
               end
           else
-              println("\nRejecting current page $io Timer=",subdfRow[:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs," sessionid=",subdfRow[:sessionid])
-              #println("Rejecting current page, time outside range")
+              if (SP.debugLevel > 0)
+                  println("\nRejecting current page $io Timer=",subdfRow[:pageloadtime]," rl=",UP.timeLowerMs," ru=",UP.timeUpperMs," sessionid=",subdfRow[:sessionid])
+              end
           end
       end
 
