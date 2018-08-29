@@ -167,10 +167,11 @@ end
 
 function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultBeaconCreateView(TV,UP,SP)
+    #defaultBeaconCreateView(TV,UP,SP)
 
-    urlCountPrintTable(UP,SP)
+    urlCountPrintTable(TV,UP,SP)
 
+#View missing here
     agentCountPrintTable(UP,SP)
 
     q = select(""" drop view if exists $(UP.btView);""")
@@ -287,12 +288,11 @@ function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    #defaultBeaconCreateView(TV,UP,SP)
+    urlCountPrintTable(TV,UP,SP)
 
-    urlCountPrintTableNoView(TV,UP,SP)
+    urlParamsUCountPrintTable(TV,UP,SP)
 
-    #urlParamsUCountPrintTable(UP,SP)
-
+#view missing here
     #paramsUCountPrintTable(UP,SP)
 
     #q = select(""" drop view if exists $(UP.btView);""")
