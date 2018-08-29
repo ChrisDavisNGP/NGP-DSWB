@@ -2,6 +2,41 @@
 #  Functions which print tables only
 #
 
+function urlCountPrintTableNoView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+
+    try
+
+        bt = UP.beaconTable
+        if (SP.debugLevel > 0)
+            println("page group=$(UP.pageGroup), devType=$(UP.deviceType), os=$(UP.agentOs)")
+            println("paramsu=",UP.urlRegEx)
+            println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)
+        end
+
+        test1Table = select("""\
+            select URL, count(*)
+            FROM $bt
+            where
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+            GROUP BY url
+            ORDER BY count(*) desc
+        """)
+        if (SP.debugLevel > 0)
+            cnt = select("""SELECT count(*) FROM $bt""")
+            println("$bt count is ",cnt[1,1])
+        end
+
+        beautifyDF(test1Table[1:min(SP.showLines,end),:])
+    catch y
+        println("urlCountPrintTable Exception ",y)
+    end
+end
+
 function urlCountPrintTable(UP::UrlParams,SP::ShowParams)
 
     try

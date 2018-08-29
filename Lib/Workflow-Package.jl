@@ -289,14 +289,14 @@ function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     defaultBeaconCreateView(TV,UP,SP)
 
-    urlCountPrintTable(UP,SP)
+    urlCountPrintTableNoView(UP,SP)
 
-    urlParamsUCountPrintTable(UP,SP)
+    #urlParamsUCountPrintTable(UP,SP)
 
-    paramsUCountPrintTable(UP,SP)
+    #paramsUCountPrintTable(UP,SP)
 
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
+    #q = select(""" drop view if exists $(UP.btView);""")
+    #q = select(""" drop view if exists $(UP.rtView);""")
     ;
 
 end
