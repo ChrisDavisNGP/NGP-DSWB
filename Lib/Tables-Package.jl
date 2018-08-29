@@ -677,7 +677,7 @@ function resourceImagesOnNatGeoToDF(UP::UrlParams,SP::ShowParams,fileType::ASCII
             on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
         where $rt.encoded_size > $(UP.sizeMin) and
             ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $rt.url ilike 'http://www.nationalgeographic.com%'
+            $rt.url ilike 'https://www.nationalgeographic.com%'
         group by $rt.url
         order by encoded desc, transferred desc, decoded desc
         """);

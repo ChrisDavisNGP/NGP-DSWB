@@ -586,7 +586,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowChartResUrlResponse)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
-    #chartRes = chartResourceResponseTimeDistribution(start_time, endTime,url="http://phenomena.nationalgeographic.com/files/2016/05/BH91DH.jpg")
+    #chartRes = chartResourceResponseTimeDistribution(start_time, endTime,url="https://phenomena.nationalgeographic.com/files/2016/05/BH91DH.jpg")
     chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC)
     setTable(UP.btView)
     display(chartRes)

@@ -27,7 +27,7 @@ SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
 browser = "Chrome Mobile";
-worstResource = "http://www.site.com/assets/css/fonts/fontawesome-webfont.woff?v=4.5.0";
+worstResource = "https://www.site.com/assets/css/fonts/fontawesome-webfont.woff?v=4.5.0";
 conversionMetric = :custom_metrics_1;
 setConversionMetric(conversionMetric);
 

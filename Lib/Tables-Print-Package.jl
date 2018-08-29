@@ -103,8 +103,8 @@ function paramsUCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             FROM $bt
             where
                 beacontypename = 'page view' and
-                paramsu <> 'http://www.nationalgeographic.com/' and
-                paramsu like 'http://www.nationalgeographic.com/?%' and
+                paramsu <> 'https://www.nationalgeographic.com/' and
+                paramsu like 'https://www.nationalgeographic.com/?%' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 pagegroupname ilike '$(UP.pageGroup)' and
                 paramsu ilike '$(UP.urlRegEx)' and

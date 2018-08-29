@@ -164,7 +164,7 @@ chartResourceServerStats(TV.startTimeUTC, TV.endTimeUTC; url = domain, isFirstPa
 
 # For official documentation, try using: ?chartLoadTimeDistribution
 # The domain to look at is taken from the domain servers listed above. (#23)
-slowDomain = "http://securepubads.g.doubleclick.net"
+slowDomain = "https://securepubads.g.doubleclick.net"
 chartLoadTimeDistribution(slowDomain, TV.startTimeUTC, TV.endTimeUTC)
 
 ##Which are the worst resources in this page group, and which are the most important to address?

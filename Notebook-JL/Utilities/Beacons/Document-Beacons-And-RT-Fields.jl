@@ -20,7 +20,7 @@ TV = pickTime()
 UP = UrlParamsInit(scriptName)
 UP.pageGroup = "Nat Geo Homepage"
 UP.urlRegEx = "%www.nationalgeographic.com/"
-UP.urlFull = "http://www.nationalgeographic.com/"
+UP.urlFull = "https://www.nationalgeographic.com/"
 UrlParamsValidate(UP)
 
 SP = ShowParamsInit()
