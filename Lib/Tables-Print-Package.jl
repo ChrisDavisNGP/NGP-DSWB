@@ -8,6 +8,7 @@ function urlCountPrintTableNoView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         bt = UP.beaconTable
         if (SP.debugLevel > 0)
+            println("urlCountPrintTableNoView")
             println("page group=$(UP.pageGroup), devType=$(UP.deviceType), os=$(UP.agentOs)")
             println("paramsu=",UP.urlRegEx)
             println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)

@@ -287,9 +287,9 @@ function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    defaultBeaconCreateView(TV,UP,SP)
+    #defaultBeaconCreateView(TV,UP,SP)
 
-    urlCountPrintTableNoView(UP,SP)
+    urlCountPrintTableNoView(TV,UP,SP)
 
     #urlParamsUCountPrintTable(UP,SP)
 
