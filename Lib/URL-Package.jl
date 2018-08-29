@@ -173,7 +173,7 @@ function returnMatchingUrlTableV2(TV::TimeVars,UP::UrlParams)
             CASE WHEN (position('?' in paramsu) > 0) then (trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7))) || '/%') else paramsu || '%' end as urlgroup
         FROM $(UP.beaconTable)
         where
-            beacon_type = 'page view' and
+            beacontypename = 'page view' and
             params_dom_sz > 0 and
             timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
             pagegroupname ilike '$(UP.pageGroup)' and
@@ -201,7 +201,7 @@ function returnTopUrlTable(ltName::ASCIIString,pageGroup::ASCIIString,startTimeM
         select count(*) cnt, AVG(params_dom_sz), AVG(pageloadtime) ,paramsu as urlgroup
         FROM $(ltName)
         where
-            beacon_type = 'page view' and
+            beacontypename = 'page view' and
             params_dom_sz > 0 and
             timestamp between $startTimeMs and $endTimeMs and
             pagegroupname ilike '$(pageGroup)' and
@@ -243,7 +243,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             end urlgroup
             FROM $(btv)
             where
-            beacon_type = 'page view'
+            beacontypename = 'page view'
             group by urlgroup
             order by count(*) desc
             limit $(UP.limitQueryRows)
@@ -259,7 +259,7 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             select count(*) cnt, AVG(params_dom_sz), AVG(pageloadtime) ,paramsu as urlgroup
             FROM $(btv)
             where
-            beacon_type = 'page view' and
+            beacontypename = 'page view' and
             params_dom_sz > 0 and
             pageloadtime > 0
             group by paramsu
@@ -293,7 +293,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end urlgroup
         FROM $(ltName)
         where
-          beacon_type = 'page view' and
+          beacontypename = 'page view' and
           timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
           sessionid IS NOT NULL and
           paramsrtquit IS NULL and
@@ -315,7 +315,7 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_page) ,paramsu as urlgroup
         FROM $(ltName)
         where
-            beacon_type = 'page view' and
+            beacontypename = 'page view' and
             timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
             params_dom_sz > 0 and
             timers_t_page > 0 and

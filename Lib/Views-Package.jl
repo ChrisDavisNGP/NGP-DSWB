@@ -49,7 +49,7 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
             """)
 
         # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
-        # where beacon_type = 'page view'
+        # where beacontypename = 'page view'
         localTableRtDF = select("""SELECT * FROM $rtv""")
         #Hide output from final report
         println("$rtv count is ",size(localTableRtDF))

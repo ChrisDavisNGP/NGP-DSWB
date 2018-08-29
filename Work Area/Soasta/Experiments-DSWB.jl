@@ -58,7 +58,7 @@ select("""create or replace view $localTable as (select * from $table where page
 setTable(localTable)
 
 # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
-# where beacon_type = 'page view'
+# where beacontypename = 'page view'
 select("""SELECT count(*) FROM $localTable""")
 
 

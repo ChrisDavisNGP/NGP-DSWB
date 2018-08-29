@@ -1020,7 +1020,7 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     setTable(btv)
 
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
-    # where beacon_type = 'page view'
+    # where beacontypename = 'page view'
     # t1DF = select("""SELECT count(*) FROM $btv""")
 
     retailer_results = getLatestResults(hours=10, minutes=0, table_name="$(btv)")

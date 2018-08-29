@@ -37,7 +37,7 @@ t1DF = select("""\
 select count(*),paramsu
 FROM $btv
 where
-beacon_type = 'page view'
+beacontypename = 'page view'
 group by paramsu
 order by count(*) desc
 limit 5
@@ -52,7 +52,7 @@ t2DF = select("""\
 select count(*),sessionid,paramsu
 FROM $btv
 where
-beacon_type = 'page view' and
+beacontypename = 'page view' and
 paramsu ilike '$(UP.urlRegEx)'
 group by paramsu,sessionid
 order by count(*) desc
@@ -68,7 +68,7 @@ t3DF = select("""\
 select count(*),sessionid,paramsu,timestamp
 FROM $btv
 where
-beacon_type = 'page view' and
+beacontypename = 'page view' and
 sessionid = '$sessionid'
 group by paramsu,sessionid,timestamp
 order by timestamp asc
@@ -88,7 +88,7 @@ select("""drop view if exists $rtv""")
 select("""create or replace view $rtv as (select * from $tableRt where timestamp between $startTimeMs and $endTimeMs and sessionid = '$sessionid') limit 10000""")
 
 # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
-# where beacon_type = 'page view'
+# where beacontypename = 'page view'
 cnt = select("""SELECT count(*) FROM $rtv""")
 #Hide output from final report
 println("$rtv count is ",cnt[1,1])
@@ -134,7 +134,7 @@ order by timestamp
 
 displayTitle(chart_title = "Top Level Fields (2) from Beacon", showTimeStamp=false)
 sessionFields = select("""\
-select beacon_type,pagegroupname,remote_ip,proxy_address,
+select beacontypename,pagegroupname,remote_ip,proxy_address,
 errors,warnings,spdy,ssl,ipv6,
 mobile_connection_type,compression_types,ab_test
 from $btv

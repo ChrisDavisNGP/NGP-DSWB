@@ -338,7 +338,7 @@ function errorBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                 devicetypename ilike '$(UP.deviceType)' and
                 operatingsystemname ilike '$(UP.agentOs)' and
                 pagegroupname ilike '$(UP.pageGroup)' and
-                beacon_type = 'error'
+                beacontypename = 'error'
             limit $(UP.limitQueryRows)
         """)
 

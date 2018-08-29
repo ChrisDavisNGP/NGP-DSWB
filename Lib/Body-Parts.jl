@@ -778,7 +778,7 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
     btv = UP.btView
 
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
-    # where beacon_type = 'page view'
+    # where beacontypename = 'page view'
     cnt = select("""SELECT count(*) FROM $btv""")
     #Hide output from final report
     println("$btv count is ",cnt[1,1])

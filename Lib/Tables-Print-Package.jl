@@ -45,7 +45,7 @@ function agentCountPrintTable(UP::UrlParams,SP::ShowParams)
             select count(*),user_agent_raw
             FROM $(UP.btView)
             where
-                beacon_type = 'page view'
+                beacontypename = 'page view'
             group by user_agent_raw
             order by count(*) desc
         limit $(UP.limitQueryRows)
@@ -73,7 +73,7 @@ function urlParamsUCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             select count(*), URL, paramsu
             FROM $bt
             where
-                beacon_type = 'page view' and
+                beacontypename = 'page view' and
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 pagegroupname ilike '$(UP.pageGroup)' and
                 paramsu ilike '$(UP.urlRegEx)' and
@@ -103,7 +103,7 @@ function paramsUCountPrintTable(UP::UrlParams,SP::ShowParams)
             select count(*) as "Page Views",paramsu as "URL Landing In Nat Geo Site Default Group"
             FROM $(UP.btView)
             where
-                beacon_type = 'page view' and
+                beacontypename = 'page view' and
                 paramsu <> 'http://www.nationalgeographic.com/' and
                 paramsu like 'http://www.nationalgeographic.com/?%'
             GROUP BY paramsu
@@ -158,7 +158,7 @@ function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             select count(*),CASE when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7))) else trim('/' from paramsu) end urlgroup
             FROM $(btv)
             where
-                beacon_type = 'page view'
+                beacontypename = 'page view'
             group by urlgroup
             order by count(*) desc
             limit $(UP.limitQueryRows)
@@ -180,7 +180,7 @@ function countParamUBtViewPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             select count(*),paramsu
             FROM $(btv)
             where
-                beacon_type = 'page view'
+                beacontypename = 'page view'
             group by paramsu
             order by count(*) desc
             limit $(UP.limitQueryRows)
@@ -703,7 +703,7 @@ function topUrlTableByCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;
                 select *
                 FROM $(ltName)
                 where
-                    beacon_type = 'page view'
+                    beacontypename = 'page view'
                     limit 10
                 """);
 
@@ -720,7 +720,7 @@ function topUrlTableByCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams;
                     end urlgroup
                 FROM $(ltName)
                 where
-                    beacon_type = 'page view'
+                    beacontypename = 'page view'
                     group by urlgroup
                     order by count(*) desc
                     limit $(rowLimit)
