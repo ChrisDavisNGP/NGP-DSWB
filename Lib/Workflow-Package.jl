@@ -292,12 +292,7 @@ function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     urlParamsUCountPrintTable(TV,UP,SP)
 
-#view missing here
-    #paramsUCountPrintTable(UP,SP)
-
-    #q = select(""" drop view if exists $(UP.btView);""")
-    #q = select(""" drop view if exists $(UP.rtView);""")
-    ;
+    paramsUCountPrintTable(TV,UP,SP)
 
 end
 

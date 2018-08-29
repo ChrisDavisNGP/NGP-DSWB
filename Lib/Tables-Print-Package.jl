@@ -27,10 +27,6 @@ function urlCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             GROUP BY url
             ORDER BY count(*) desc
         """)
-        if (SP.debugLevel > 0)
-            cnt = select("""SELECT count(*) FROM $bt""")
-            println("$bt count is ",cnt[1,1])
-        end
 
         beautifyDF(test1Table[1:min(SP.showLines,end),:])
     catch y
@@ -51,7 +47,7 @@ function agentCountPrintTable(UP::UrlParams,SP::ShowParams)
         limit $(UP.limitQueryRows)
     """)
 
-        beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
+    beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
 
     catch y
         println("agentCountPrintTable Exception ",y)
@@ -63,7 +59,7 @@ function urlParamsUCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         bt = UP.beaconTable
         if (SP.debugLevel > 0)
-            println("urlCountPrintTable")
+            println("urlParamsUCountPrintTable")
             println("page group=$(UP.pageGroup), devType=$(UP.deviceType), os=$(UP.agentOs)")
             println("paramsu=",UP.urlRegEx)
             println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)
@@ -83,11 +79,6 @@ function urlParamsUCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             GROUP BY url,paramsu
             ORDER BY count(*) desc
         """)
-        if (SP.debugLevel > 0)
-            cnt = select("""SELECT count(*) FROM $bt""")
-            println("$bt count is ",cnt[1,1])
-        end
-
 
         beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
 
@@ -96,18 +87,32 @@ function urlParamsUCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function paramsUCountPrintTable(UP::UrlParams,SP::ShowParams)
+function paramsUCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
+        bt = UP.beaconTable
+        if (SP.debugLevel > 0)
+            println("paramsUCountPrintTable")
+            println("page group=$(UP.pageGroup), devType=$(UP.deviceType), os=$(UP.agentOs)")
+            println("paramsu=",UP.urlRegEx)
+            println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)
+        end
+
         CleanupTable = select("""\
             select count(*) as "Page Views",paramsu as "URL Landing In Nat Geo Site Default Group"
-            FROM $(UP.btView)
+            FROM $bt
             where
                 beacontypename = 'page view' and
                 paramsu <> 'http://www.nationalgeographic.com/' and
-                paramsu like 'http://www.nationalgeographic.com/?%'
+                paramsu like 'http://www.nationalgeographic.com/?%' and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             GROUP BY paramsu
-            Order by count(*) desc
+            ORDER BY count(*) desc
         """)
 
         beautifyDF(CleanupTable[1:min(SP.showLines,end),:])
