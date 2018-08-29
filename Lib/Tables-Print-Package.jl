@@ -70,7 +70,7 @@ function urlParamsUCountPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         CleanupTable = select("""\
-            count(*), URL, paramsu
+            select count(*), URL, paramsu
             FROM $bt
             where
                 beacon_type = 'page view' and
