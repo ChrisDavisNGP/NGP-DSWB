@@ -526,19 +526,30 @@ end
 
 function gatherSizeDataToDF(UP::UrlParams,SP::ShowParams)
     try
-        bt = UP.btView
+        bt = UP.beaconTable
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-        select CASE WHEN (position('?' in $bt.paramsu) > 0) then trim('/' from (substring($bt.paramsu for position('?' in substring($bt.paramsu from 9)) +7))) else trim('/' from $bt.paramsu) end as urlgroup,
-            $bt.sessionid,
-            $bt.timestamp,
-            sum($rt.encoded_size) as encoded,
-            sum($rt.transferred_size) as transferred,
-            sum($rt.decoded_size) as decoded,
-            count(*)
-        FROM $bt join $rt on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
-            where $rt.encoded_size > 1
+            select
+                CASE
+                    WHEN (position('?' in $bt.paramsu) > 0)
+                    then trim('/' from (substring($bt.paramsu for position('?' in substring($bt.paramsu from 9)) +7)))
+                    else trim('/' from $bt.paramsu) end as urlgroup,
+                $bt.sessionid,
+                $bt.timestamp,
+                sum($rt.encoded_size) as encoded,
+                sum($rt.transferred_size) as transferred,
+                sum($rt.decoded_size) as decoded,
+                count(*)
+            FROM $bt join $rt on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
+            where
+                $rt.encoded_size > 1 and
+                $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
             group by urlgroup,$bt.sessionid,$bt.timestamp
             order by encoded desc
         """);
@@ -552,13 +563,19 @@ function gatherSizeDataToDF(UP::UrlParams,SP::ShowParams)
     end
 end
 
-function statsBtViewByHourToDF(btv::ASCIIString,startTimeMsUTC::Int64, endTimeMsUTC::Int64)
+function statsBtViewByHourToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         localStats = select("""\
-            select pageloadtime
-            FROM $btv
+            select
+                pageloadtime
+            FROM $(UP.beaconTable)
             where
-                timestamp between $startTimeMsUTC and $endTimeMsUTC
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         """);
         return localStats
     catch y
@@ -566,9 +583,9 @@ function statsBtViewByHourToDF(btv::ASCIIString,startTimeMsUTC::Int64, endTimeMs
     end
 end
 
-function statsBtViewTableToExtraDF(UP::UrlParams)
+function statsBtViewTableToExtraDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
-        btv = UP.btView
+        #btv = UP.bt View
 
         localStats = select("""\
         select
@@ -637,7 +654,14 @@ function statsBtViewTableToExtraDF(UP::UrlParams)
             '60001+'
         end as timersdone,
         count(1)
-            from $btv
+            from $(UP.beaconTable)
+        WHERE
+            timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            pagegroupname ilike '$(UP.pageGroup)' and
+            paramsu ilike '$(UP.urlRegEx)' and
+            devicetypename ilike '$(UP.deviceType)' and
+            operatingsystemname ilike '$(UP.agentOs)' and
+            pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         group by 1
         order by 1 asc
             """);
@@ -649,11 +673,22 @@ function statsBtViewTableToExtraDF(UP::UrlParams)
 end
 
 
-function statsBtViewTableToDF(UP::UrlParams)
+function statsBtViewTableToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
-        btv = UP.btView
+        #btv = UP.bt View
 
-        localStats = select("""select pageloadtime from $btv""");
+        localStats = select("""\
+            select
+                pageloadtime
+            FROM $(UP.beaconTable)
+            where
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+        """);
 
         return localStats
     catch y
@@ -664,20 +699,28 @@ end
 function resourceImagesOnNatGeoToDF(UP::UrlParams,SP::ShowParams,fileType::ASCIIString)
 
     try
-        btv = UP.btView
+        bt = UP.beaconTable
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-        select avg($rt.encoded_size) as encoded,
-            avg($rt.transferred_size) as transferred,
-            avg($rt.decoded_size) as decoded,
-            count(*),
-            $rt.url
-        from $btv join $rt
-            on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
-        where $rt.encoded_size > $(UP.sizeMin) and
-            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $rt.url ilike 'https://www.nationalgeographic.com%'
+            select
+                avg($rt.encoded_size) as encoded,
+                avg($rt.transferred_size) as transferred,
+                avg($rt.decoded_size) as decoded,
+                count(*),
+                $rt.url
+            from $bt join $rt
+                on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
+            where
+                $rt.encoded_size > $(UP.sizeMin) and
+                ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
+                $rt.url ilike 'https://www.nationalgeographic.com%' and
+                $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
         group by $rt.url
         order by encoded desc, transferred desc, decoded desc
         """);
@@ -827,10 +870,15 @@ function localStatsFATS(TV::TimeVars,UP::UrlParams,statsDF::DataFrame)
         UpperBy25p = statsDF[1:1,:UpperBy25p][1]
 
         localStats2 = select("""\
-            select timestamp, pageloadtime, sessionid
-            from $(UP.btView) where
-                pagegroupname ilike '$(UP.pageGroup)' and
+            select
+                timestamp, pageloadtime, sessionid
+            from $(UP.beaconTable)
+            where
                 timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
                 pageloadtime > $(UpperBy25p)
         """)
 

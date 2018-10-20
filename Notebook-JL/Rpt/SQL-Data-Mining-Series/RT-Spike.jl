@@ -51,6 +51,4 @@ nonCacheRequestCountByGroupPrintTable(timeSpike,urlSpike,SP,"Spike")
 cacheHitRatioPrintTable(timeNormal,urlNormal,"Normal")
 cacheHitRatioPrintTable(timeSpike,urlSpike,"Spike")
 
-q = select(""" drop view if exists $(urlNormal.rtView);""")
-q = select(""" drop view if exists $(urlSpike.rtView);""")
 ;

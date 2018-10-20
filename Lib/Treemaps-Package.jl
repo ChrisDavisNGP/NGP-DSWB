@@ -1219,8 +1219,4 @@ function urlPageTreemapsAllBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     end
 
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
-    ;
-
 end

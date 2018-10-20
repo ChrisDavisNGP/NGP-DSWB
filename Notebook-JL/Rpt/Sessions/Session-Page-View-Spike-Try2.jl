@@ -153,6 +153,4 @@ topUrls()
 peakTable()
 statsTable()
 
-q = select(""" drop view if exists $localTable;""")
-q = select(""" drop view if exists $localTableRt;""")
 ;

@@ -1,4 +1,4 @@
-function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
+function obsoleteDefaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
         bt = UP.beaconTable
@@ -8,6 +8,22 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             println("paramsu=",UP.urlRegEx)
             println("Low=",UP.timeLowerMs," High=", UP.timeUpperMs)
         end
+
+# another way for beacons
+        beaconFilter = SQLFilter[
+            ilike("pagegroupname",UP.pageGroup),
+            ilike("paramsu",UP.urlRegEx),
+            ilike("devicetypename",UP.deviceType),
+            ilike("operatingsystemname",UP.agentOs)
+            ]
+
+            $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.paramsu ilike '$(UP.urlRegEx)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
+
 
         select("""\
             create or replace view $btv as (
@@ -21,12 +37,8 @@ function defaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams)
                         pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             )
         """)
-        if (SP.debugLevel > 0)
-            cnt = select("""SELECT count(*) FROM $btv""")
-            println("$btv count is ",cnt[1,1])
-        end
     catch y
-        println("defaultBeaconCreateView Exception ",y)
+        println("obsoleteDefaultBeaconCreateView Exception ",y)
     end
 end
 
@@ -65,8 +77,6 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
     end
 
       try
-
-        select("""drop view if exists $(UP.btView)""")
 
         select("""\
             create or replace view $(UP.btView) as

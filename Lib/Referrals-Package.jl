@@ -1,58 +1,115 @@
-function customReferralsTable(TV::TimeVars,UP::UrlParams)
+function customReferralsTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
-        localTable = UP.btView
+        #localTable = UP.bt View
 
         fb = select("""\
-        select 'Facebook' refgrp, count(*)
-        FROM $localTable
-        where http_referrer ilike '%facebook%' or params_r ilike '%facebook%' or tp_ga_utm_source ilike '%facebook%'
+            select
+                'Facebook' refgrp, count(*)
+            FROM $(UP.beaconTable)
+            where
+                (http_referrer ilike '%facebook%' or
+                params_r ilike '%facebook%' or
+                tp_ga_utm_source ilike '%facebook%') and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         """)
 
         #display(fb)
 
 
         gb = select("""\
-        select 'Google' refgrp, count(*)
-        FROM $localTable
-        where http_referrer ilike '%google%' or params_r ilike '%google%' or tp_ga_utm_source ilike '%google%'
+            select
+                'Google' refgrp, count(*)
+            FROM $(UP.beaconTable)
+            where
+                (http_referrer ilike '%google%' or
+                params_r ilike '%google%' or
+                tp_ga_utm_source ilike '%google%') and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         """)
 
         #display(gb)
 
         red = select("""\
-        select 'Reddit' refgrp, count(*)
-        FROM $localTable
-        where http_referrer ilike '%reddit%' or params_r ilike '%reddit%' or tp_ga_utm_source ilike '%reddit%'
+            select
+                'Reddit' refgrp, count(*)
+            FROM $(UP.beaconTable)
+            where
+                (http_referrer ilike '%reddit%' or
+                params_r ilike '%reddit%' or
+                tp_ga_utm_source ilike '%reddit%') and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         """)
 
         #display(red)
 
         gas = select("""\
-        select tp_ga_utm_source, count(*)
-        FROM $localTable
-        where http_referrer is not null and http_referrer != 'null'
-        group by tp_ga_utm_source
-        order by count(*) desc
+            select
+                tp_ga_utm_source, count(*)
+            FROM $(UP.beaconTable)
+            where
+                http_referrer is not null and
+                http_referrer != 'null' and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+            group by tp_ga_utm_source
+            order by count(*) desc
         """)
 
         #display(gas)
 
         gam = select("""\
-        select tp_ga_utm_medium, count(*)
-        FROM $localTable
-        where http_referrer is not null and http_referrer != 'null'
-        group by tp_ga_utm_medium
-        order by count(*) desc
+            select
+                tp_ga_utm_medium, count(*)
+            FROM $(UP.beaconTable)
+            where
+                http_referrer is not null and
+                http_referrer != 'null' and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+            group by tp_ga_utm_medium
+            order by count(*) desc
         """)
 
         #display(gam)
 
         gac = select("""\
-        select tp_ga_utm_campaign, count(*)
-        FROM $localTable
-        where http_referrer is not null and http_referrer != 'null'
-        group by tp_ga_utm_campaign
-        order by count(*) desc
+            select
+                tp_ga_utm_campaign, count(*)
+            FROM $(UP.beaconTable)
+            where
+                http_referrer is not null and
+                http_referrer != 'null' and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+            group by tp_ga_utm_campaign
+            order by count(*) desc
         """)
 
         displayTitle(chart_title = "Custom Analytics Top Referrers for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)

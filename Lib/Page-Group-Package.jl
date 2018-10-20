@@ -1,4 +1,4 @@
-function customRefPGD(TV::TimeVars,UP::UrlParams)
+function customRefPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     customReferralsTable(TV,UP)
 end
 

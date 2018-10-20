@@ -175,25 +175,25 @@ function concurrentSessionsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileV
             println("Starting concurrentSessionsPGD")
         end
 
-        if (UP.deviceType == "%")
+        #if (UP.deviceType == "%")
             chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-        end
+        #end
 
-        if (UP.deviceType == "Mobile")
-            timeString2 = timeString * " - Mobile Only"
-            #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup) - MOBILE ONLY", chart_info = [TV.timeString2],showTimeStamp=false)
-            setTable(mobileView)
-            chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-            setTable(UP.btView)
-        end
+        #if (UP.deviceType == "Mobile")
+    #        timeString2 = timeString * " - Mobile Only"
+    #        #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup) - MOBILE ONLY", chart_info = [TV.timeString2],showTimeStamp=false)
+    #        setTable(mobileView)
+    #        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    #        setTable(UP.bt View)
+    #    end
 
-        if (UP.deviceType == "Desktop")
-            timeString2 = timeString * " - Desktop Only"
-            #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup) - DESKTOP ONLY", chart_info = [TV.timeString],showTimeStamp=false)
-            setTable(desktopView)
-            chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-            setTable(UP.btView)
-        end
+    #    if (UP.deviceType == "Desktop")
+    #        timeString2 = timeString * " - Desktop Only"
+    #        #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup) - DESKTOP ONLY", chart_info = [TV.timeString],showTimeStamp=false)
+    #        setTable(desktopView)
+    #        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    #        setTable(UP.bt View)
+    #    end
 
     catch y
         println("cell concurrentSessionsPGD Exception ",y)
@@ -207,27 +207,29 @@ function loadTimesPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobileView::ASCI
             println("Starting localTimesPGD")
         end
 
+        beaconFilter = SQLFilter[
+            ilike("pagegroupname",UP.pageGroup),
+            ilike("paramsu",UP.urlRegEx),
+            ilike("devicetypename",UP.deviceType),
+            ilike("operatingsystemname",UP.agentOs)
+            ]
+
         #todo turn off title in chartLoadTimes
         #displayTitle(chart_title = "Median Load Times for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         if (UP.deviceType == "%")
-
-            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart,filters=beaconFilter)
         end
 
         #cannot use the other forms without creating the code for the charts.  Titles cannot be overwritten.
         if (UP.deviceType == "Mobile")
 
             displayTitle(chart_title = "Median Load Times for $(UP.pageGroup) - MOBILE ONLY", chart_info = [TV.timeString],showTimeStamp=false)
-            setTable(mobileView)
-            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-            setTable(UP.btView)
+            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart,filters=beaconFilter)
         end
 
         if (UP.deviceType == "Desktop")
             displayTitle(chart_title = "Median Load Times for $(UP.pageGroup) - DESKTOP ONLY", chart_info = [TV.timeString],showTimeStamp=false)
-            setTable(desktopView)
-            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-            setTable(UP.btView)
+            chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart,filters=beaconFilter)
         end
 
     catch y
@@ -267,7 +269,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
         dispDMT = DataFrame(RefGroup=["","",""],Unit=["","",""],Count=[0,0,0],Mean=[0.0,0.0,0.0],Median=[0.0,0.0,0.0],Min=[0.0,0.0,0.0],Max=[0.0,0.0,0.0])
 
         UP.deviceType = "Desktop"
-        statsFullDF2 = statsBtViewTableToDF(UP)
+        statsFullDF2 = statsBtViewTableToDF(TV,UP,SP)
         dispDMT[1:1,:RefGroup] = "Desktop"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(UP,statsFullDF2)
@@ -279,7 +281,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
             dispDMT[1:1,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Mobile"
-        statsFullDF2 = statsBtViewTableToDF(UP)
+        statsFullDF2 = statsBtViewTableToDF(TV,UP,SP)
         dispDMT[2:2,:RefGroup] = "Mobile"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(UP,statsFullDF2)
@@ -291,7 +293,7 @@ function statsDetailsPrint(TV::TimeVars,UP::UrlParams,SP::ShowParams,joinTableSu
             dispDMT[2:2,:Max] = statsDF2[2:2,:max]
         end
         UP.deviceType = "Tablet"
-        statsFullDF2 = statsBtViewTableToDF(UP)
+        statsFullDF2 = statsBtViewTableToDF(TV,UP,SP)
         dispDMT[3:3,:RefGroup] = "Tablet"
         if (size(statsFullDF2)[1] > 0)
             statsDF2 = basicStats(UP,statsFullDF2)
@@ -362,10 +364,9 @@ end
 
 function displayTopUrlsByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
     UP.pageGroup = quickPageGroup
-    defaultBeaconCreateView(TV,UP,SP)
-    setTable(UP.btView)
+    #defaultBeaconCreateView(TV,UP,SP)
+    #setTable(UP.bt View)
     topUrlTableByCountPrintTable(TV,UP,SP;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
-    q = select(""" drop view if exists $(UP.btView);""")
 end
 
 function paginatePrintDf(printDF::DataFrame)
@@ -774,14 +775,24 @@ end
 
 function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultBeaconCreateView(TV,UP,SP)
-    btv = UP.btView
+    #defaultBeaconCreateView(TV,UP,SP)
+    #btv = UP.bt View
 
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
     # where beacontypename = 'page view'
-    cnt = select("""SELECT count(*) FROM $btv""")
+    cnt = select("""\
+        SELECT count(*)
+        FROM $(UP.beaconTable)
+        WHERE
+            timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            pagegroupname ilike '$(UP.pageGroup)' and
+            paramsu ilike '$(UP.urlRegEx)' and
+            devicetypename ilike '$(UP.deviceType)' and
+            operatingsystemname ilike '$(UP.agentOs)' and
+            pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+        """)
     #Hide output from final report
-    println("$btv count is ",cnt[1,1])
+    println("$(UP.beaconTable) count is ",cnt[1,1])
 
     try
 
@@ -793,10 +804,16 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_sz IS NOT NULL
-                and params_dom_sz > 3000000
+                params_dom_sz IS NOT NULL and
+                params_dom_sz > 3000000 and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by beacons desc
             limit $(UP.limitQueryRows)
@@ -820,10 +837,16 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_sz IS NOT NULL
-                and params_dom_sz > 2000000
+                params_dom_sz IS NOT NULL and
+                params_dom_sz > 2000000 and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by beacons desc
             limit $(UP.limitQueryRows)
@@ -849,10 +872,16 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_doms > 50
-                and params_dom_doms IS NOT NULL
+                params_dom_doms > 50 and
+                params_dom_doms IS NOT NULL and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by avgsize desc
             limit $(UP.limitQueryRows)
@@ -871,10 +900,16 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_ln > 20000
-                and params_dom_ln IS NOT NULL
+                params_dom_ln > 20000 and
+                params_dom_ln IS NOT NULL and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by avgsize desc
             limit $(UP.limitQueryRows)
@@ -895,11 +930,17 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_img > 100
-                and params_dom_img IS NOT NULL
-                and params_dom_img_ext IS NOT NULL
+                params_dom_img > 100 and
+                params_dom_img IS NOT NULL and
+                params_dom_img_ext IS NOT NULL and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by avgsize desc
             limit $(UP.limitQueryRows)
@@ -919,11 +960,17 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_img > 500
-                and params_dom_img IS NOT NULL
-                and params_dom_img_ext IS NOT NULL
+                params_dom_img > 500 and
+                params_dom_img IS NOT NULL and
+                params_dom_img_ext IS NOT NULL and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by CNT desc
             limit $(UP.limitQueryRows)
@@ -946,11 +993,17 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_script > 100
-                and params_dom_script IS NOT NULL
-                and params_dom_script_ext IS NOT NULL
+                params_dom_script > 100 and
+                params_dom_script IS NOT NULL and
+                params_dom_script_ext IS NOT NULL and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by avgsize desc
             limit $(UP.limitQueryRows)
@@ -973,11 +1026,17 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_script > 200
-                and params_dom_script IS NOT NULL
-                and params_dom_script_ext IS NOT NULL
+                params_dom_script > 200 and
+                params_dom_script IS NOT NULL and
+                params_dom_script_ext IS NOT NULL and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             group by urlgroup
             order by cnt desc
             limit $(UP.limitQueryRows)
@@ -998,9 +1057,15 @@ function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams
                     when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
                     else trim('/' from paramsu)
                 end urlgroup
-            from $btv
+            from $(UP.beaconTable)
             where
-                params_dom_sz IS NOT NULL
+                params_dom_sz IS NOT NULL and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
             limit $(UP.limitQueryRows)
         """);
 
@@ -1031,11 +1096,24 @@ function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 
     try
-        btv = UP.btView
+        #btv = UP.bt View
 
         statsDF = DataFrame()
 
-        localDF = select("""SELECT params_dom_sz FROM $btv""")
+        localDF = select("""\
+            SELECT
+                params_dom_sz
+            FROM $(UP.beaconTable)
+            WHERE
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                pagegroupname ilike '$(UP.pageGroup)' and
+                paramsu ilike '$(UP.urlRegEx)' and
+                devicetypename ilike '$(UP.deviceType)' and
+                operatingsystemname ilike '$(UP.agentOs)' and
+                pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+            """)
+
+
         dv = localDF[:params_dom_sz]
         statsDF = basicStatsFromDV(dv)
         statsDF[:unit] = "KBytes"

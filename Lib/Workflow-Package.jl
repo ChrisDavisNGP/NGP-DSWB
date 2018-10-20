@@ -72,9 +72,16 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  defaultBeaconCreateView(TV,UP,SP)
+  #defaultBeaconCreateView(TV,UP,SP)
 
-  setTable(UP.btView)
+  #setTable(UP.bt View)
+
+  beaconFilter = SQLFilter[
+      ilike("pagegroupname",UP.pageGroup),
+      ilike("paramsu",UP.urlRegEx),
+      ilike("devicetypename",UP.deviceType),
+      ilike("operatingsystemname",UP.agentOs)
+      ]
 
   try
     if (wfShowPeakTable)
@@ -86,7 +93,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
     if (wfShowSessionBeacons)
-          chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; table=UP.btView)
+          chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
     end
   catch y
       println("chartConcurrentSessionsAndBeaconsOverTime Exception ",y)
@@ -94,7 +101,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
       if (wfShowChartLoad)
-          chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart;table=UP.btView)
+          chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, filters=beaconFilter)
       end
   catch y
       println("chartLoadTimes Exception ",y)
@@ -104,7 +111,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       topUrlTableByTime(TV,UP,SP)   # use UP.pageGroup = "%" for no group
   end
 
-  setTable(UP.btView)
+  #setTable(UP.bt View)
 
   try
       if (wfShowBrowserTreemap)
@@ -140,7 +147,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
       if (wfShowActvitityImpact) && UP.pageGroup == "%"
-          chartActivityImpactByPageGroup(TV.start_time, TV.endTime;n=10,table=UP.btView);
+          chartActivityImpactByPageGroup(TV.start_time, TV.endTime;n=10);
       end
   catch y
     println("chartActivityImpactByPageGroup Exception ",y)
@@ -148,7 +155,7 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   try
       if (wfShowAggSession)
-          perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; table=UP.btView);
+          perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; filters=beaconFilter);
 
           c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Session Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
               "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Session Load for All Pages", y2Data=["data2"], vizTypes=["area","line"]);
@@ -157,26 +164,15 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       println("getAggregateSessionLengthAndDurationByLoadTime Exception ",y)
   end
 
-  if (wfClearViews)
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
-  end
-
-
 end
 
 function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    #defaultBeaconCreateView(TV,UP,SP)
+    ##defaultBeaconCreateView(TV,UP,SP)
 
     urlCountPrintTable(TV,UP,SP)
 
-#View missing here
-    agentCountPrintTable(UP,SP)
-
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
-    ;
+    agentCountPrintTable(TV,UP,SP)
 
 end
 
@@ -233,11 +229,11 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    defaultBeaconCreateView(TV,UP,SP)
-    setTable(UP.btView)
+    #defaultBeaconCreateView(TV,UP,SP)
+    #setTable(UP.bt View)
 
     if wfPageGroupGraph
-        rawTimeDF = fetchGraph7Stats(UP)
+        rawTimeDF = fetchGraph7Stats(TV,UP,SP)
         #beautifyDF(rawTimeDF[1:min(3,end),:])
         drawC3VizConverter(UP,rawTimeDF;graphType=7)
     end
@@ -251,7 +247,6 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
        )
         AllStatsDF = createAllStatsDF(TV,UP,SP)
     end
-
 
     if wfStatsGraphMedian
         drawC3VizConverter(UP,AllStatsDF;graphType=1)
@@ -277,11 +272,6 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         drawC3VizConverter(UP,AllStatsDF;graphType=6)
     end
 
-    if wfClearViews
-        q = select(""" drop view if exists $(UP.btView);""")
-        q = select(""" drop view if exists $(UP.rtView);""")
-    end
-
 end
 
 function dumpDataFieldsV2Workflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
@@ -300,30 +290,35 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    defaultBeaconCreateView(TV,UP,SP)
+    #defaultBeaconCreateView(TV,UP,SP)
+    #todo-btview
+
+    beaconFilter = SQLFilter[
+        ilike("pagegroupname",UP.pageGroup),
+        ilike("paramsu",UP.urlRegEx),
+        ilike("devicetypename",UP.deviceType),
+        ilike("operatingsystemname",UP.agentOs)
+        ]
 
     try
-        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; table=UP.btView)
+        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
     catch y
         println("chartconcurrentsessionsBeacons Exception ",y)
     end
 
     try
-        chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart; table=UP.btView)
+        chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, filters=beaconFilter)
     catch y
         println("chartloadTime Exception ",y)
     end
 
-    setTable(UP.btView)
+    #setTable(UP.bt View)
+
     topUrlTable(TV,UP,SP)
 
     showPeakTable(TV,UP,SP)
 
     beaconViewStats(TV,UP,SP)
-
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
-    ;
 
 end
 
@@ -413,10 +408,6 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     chartActivityImpactByPageGroup(TV.startTimeUTC, TV.endTimeUTC;n=UP.limitRows)
 
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
-    q = select(""" drop view if exists $(mobileView);""")
-    q = select(""" drop view if exists $(desktopView);""")
     ;
 end
 
@@ -482,9 +473,6 @@ function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
     ;
 
-    q = select(""" drop view if exists $(UP.btView);""")
-    ;
-
 end
 
 function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
@@ -521,13 +509,21 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   setTable(UP.btView)
 
+  beaconFilter = SQLFilter[
+      ilike("pagegroupname",UP.pageGroup),
+      ilike("paramsu",UP.urlRegEx),
+      ilike("devicetypename",UP.deviceType),
+      ilike("operatingsystemname",UP.agentOs)
+      ]
+
+
   if (wfShowSessions)
     #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup)", chart_info = [TV.timeString])
     chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
   end
 
   if (wfShowMedLoadTimes)
-    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, pageUrl=UP.urlRegEx)
+    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, filters=beaconFilter)
   end
 
   if (wfShowTopPages)
@@ -544,7 +540,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     #fail chartRes = chartResponseTimesVsTargets(start_time, endTime, datePart, thresholdValues)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
     try
-        #chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC; beaconTable=UP.btView, resourceTable=UP.rtView,n=10,minPercentage=0.05)
+        #chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC; beaconTable=UP.bt View, resourceTable=UP.rtView,n=10,minPercentage=0.05)
         chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC)
         display(chartRes[1:20,:])
     catch y
@@ -657,11 +653,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     drawSunburst(result10[1]; totalPaths=result10[3])
   end
 
-  if (wfClearViews)
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
-  end
-
 end
 
 function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
@@ -693,13 +684,21 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   setTable(UP.btView)
 
+  beaconFilter = SQLFilter[
+      ilike("pagegroupname",UP.pageGroup),
+      ilike("paramsu",UP.urlRegEx),
+      ilike("devicetypename",UP.deviceType),
+      ilike("operatingsystemname",UP.agentOs)
+      ]
+
+
   if (wfShowBelowThreshold)
     chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
   end
 
   if (wfShowLoadTimes)
     #displayTitle(chart_title = "Median Load Times for $(UP.pageGroup)", chart_info = [TV.timeString])
-    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, filters=beaconFilter)
   end
 
   if (wfShowDurationByDate)
@@ -717,10 +716,6 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowLongTimes)
     graphLongTimesFATS(localStats2)
-  end
-  if (wfClearViews)
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -769,11 +764,6 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
         end
     end
 
-    if (wfClearViews)
-        q = select(""" drop view if exists $(UP.btView);""")
-        q = select(""" drop view if exists $(UP.rtView);""")
-    end
-
 end
 
 function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
@@ -811,11 +801,6 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       displayMatchingResourcesAllFieldsPrintTable(TV,UP,SP)
   end
 
-  if (wfClearViews)
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
-  end
-
 end
 
 function findSingleResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
@@ -835,11 +820,6 @@ function findSingleResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowResourcesByUrls)
       displayMatchingResourcesByUrlBtvRtPrintTables(TV,UP,SP)
-  end
-
-  if (wfClearViews)
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -877,11 +857,6 @@ function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
 
   if (wfShowBigPage6)
       bigPages6PrintTable(TV,UP,SP,minSizeBytes)
-  end
-
-  if (wfClearViews)
-    q = select(""" drop view if exists $(UP.btView);""")
-    q = select(""" drop view if exists $(UP.rtView);""")
   end
 
 end
@@ -1016,7 +991,7 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
     # where beacontypename = 'page view'
-    # t1DF = select("""SELECT count(*) FROM $btv""")
+    # t1DF = select("""SELECT count(*) FROM $bt v""")
 
     retailer_results = getLatestResults(hours=10, minutes=0, table_name="$(btv)")
     size(retailer_results)
@@ -1027,9 +1002,6 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     delete!(retailer_results,[:regioncode,:geo_city,:geo_org,:useragentversion,:operatingsystemversion,:operatingsystemname,:user_agent_model])
 
     doit(retailer_results, showDimensionViz=true, showProgress=true);
-
-    q = select(""" drop view if exists $btv;""")
-    ;
 
 end
 
@@ -1045,7 +1017,6 @@ function largeResourcesForImageMgrWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
     largeResourceFileTypePrint(TV,UP,SP,"%svg")
     largeResourceFileTypePrint(TV,UP,SP,"%jpeg")
 
-    q = select(""" drop view if exists $(UP.btView);""")
     ;
 
 end

@@ -40,7 +40,7 @@ function pageGroupQuartiles(TV::TimeVars,UP::UrlParams,SP::ShowParams,showQuarti
             WHERE
                 pagegroupname IN ($(pageGroups)) and
                 beacontypename = 'page view' and
-                timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
+                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
                 paramsrtquit IS NULL and
                 paramsu ilike '$(UP.urlRegEx)' and
                 devicetypename ilike '$(UP.deviceType)' and

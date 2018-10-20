@@ -528,8 +528,8 @@ end
 
 function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
-        setTable(UP.btView)
-        localStatsDF = statsBtViewTableToDF(UP);
+        #setTable(UP.bt View)
+        localStatsDF = statsBtViewTableToDF(TV,UP,SP);
 
         if SP.debugLevel > 8
             beautifyDF(localStatsDF[1:min(3,end),:])
@@ -565,12 +565,12 @@ function beaconViewStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     end
 end
 
-function fetchGraph7Stats(UP::UrlParams)
+function fetchGraph7Stats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     localStatsDF = DataFrame()
     statsDF = DataFrame()
     try
-        localStatsDF = statsBtViewTableToExtraDF(UP);
+        localStatsDF = statsBtViewTableToExtraDF(TV,UP,SP);
         return localStatsDF
 
     catch y
@@ -578,13 +578,13 @@ function fetchGraph7Stats(UP::UrlParams)
     end
 end
 
-function distributionStats(UP::UrlParams)
+function distributionStats(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     try
         # Does not work
 
         #statsDV = Float64()
         #statsDV = [18585.0,9499.0,19617.0,9624.0,28572.0,4255.0,9198.0,21984.0,27154.0,34180.0,14190.0,5248.0,6802.0,55169.0,55917.0,15414.0,33405.0]
-        localStatsDF = statsBtViewTableToDF(UP);
+        localStatsDF = statsBtViewTableToDF(TV,UP,SP);
         if (UP.usePageLoad)
             statsDV = localStatsDF[:pageloadtime]
         else
@@ -664,7 +664,7 @@ function createAllStatsDF(TV::TimeVars,UP::UrlParams,SP::ShowParams)
             endTimeMsUTC = datetimeToMs(endTimeUTC)
 
 
-            localStatsDF = statsBtViewByHourToDF(UP.btView,startTimeMsUTC,endTimeMsUTC)
+            localStatsDF = statsBtViewByHourToDF(TV,UP,SP)
             if size(localStatsDF,1) > 0
                 statsDF = runningStats(UP,year1,month1,day,hour,localStatsDF)
 

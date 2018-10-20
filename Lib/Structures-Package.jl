@@ -120,7 +120,7 @@ function UrlParamsInit(nb::ASCIIString)
 end
 
 function UrlParamsPrint(UP::UrlParams)
-    println("Tables: bt=",UP.beaconTable," btView=",UP.btView," rt=",UP.resourceTable," rtView=",UP.rtView);
+    println("Tables: bt=",UP.beaconTable," rt=",UP.resourceTable);
     println("pageGroup=",UP.pageGroup," urlRegEx=",UP.urlRegEx," urlFull=",UP.urlFull," resRegEx=",UP.resRegEx);
     println("timeLowerMs=",UP.timeLowerMs," timeUpperMs=",UP.timeUpperMs," limitRows=",UP.limitRows);
     println("samplesMin=",UP.samplesMin," sizeMin=",UP.sizeMin," orderBy=",UP.orderBy," usePageLoad=",UP.usePageLoad);
@@ -203,7 +203,7 @@ function ShowParamsInit()
             else
                 println("Warning: Debugging Levels inputs should be odd numbers.  Code uses even numbers (i.e., > 0,2,4,6,8,10). Adding 1, new value ",SP.debugLevel)
                 println("")
-            end            
+            end
         end
     end
 

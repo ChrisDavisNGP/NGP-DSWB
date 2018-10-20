@@ -230,23 +230,29 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     showCountDetails=true
 
     try
-        btv = UP.btView
+        #btv = UP.bt View
 
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = ["Pages Load Used",TV.timeString],showTimeStamp=false)
 
         if (showCount)
             topurl = select("""\
                 select count(*),
-            CASE
-            when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
-            else trim('/' from paramsu)
-            end urlgroup
-            FROM $(btv)
-            where
-            beacontypename = 'page view'
-            group by urlgroup
-            order by count(*) desc
-            limit $(UP.limitQueryRows)
+                    CASE
+                        when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                        else trim('/' from paramsu)
+                    end urlgroup
+                FROM $(UP.beaconTable)
+                where
+                    beacontypename = 'page view' and
+                    timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                    pagegroupname ilike '$(UP.pageGroup)' and
+                    paramsu ilike '$(UP.urlRegEx)' and
+                    devicetypename ilike '$(UP.deviceType)' and
+                    operatingsystemname ilike '$(UP.agentOs)' and
+                    pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+                group by urlgroup
+                order by count(*) desc
+                limit $(UP.limitQueryRows)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
@@ -256,15 +262,22 @@ function topUrlTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         if (showCountDetails)
             topurl = select("""\
 
-            select count(*) cnt, AVG(params_dom_sz), AVG(pageloadtime) ,paramsu as urlgroup
-            FROM $(btv)
-            where
-            beacontypename = 'page view' and
-            params_dom_sz > 0 and
-            pageloadtime > 0
-            group by paramsu
-            order by cnt desc
-            limit $(UP.limitQueryRows)
+                select
+                    count(*) cnt, AVG(params_dom_sz), AVG(pageloadtime) ,paramsu as urlgroup
+                FROM $(UP.beaconTable)
+                where
+                    beacontypename = 'page view' and
+                    params_dom_sz > 0 and
+                    pageloadtime > 0 and
+                    timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                    pagegroupname ilike '$(UP.pageGroup)' and
+                    paramsu ilike '$(UP.urlRegEx)' and
+                    devicetypename ilike '$(UP.deviceType)' and
+                    operatingsystemname ilike '$(UP.agentOs)' and
+                    pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+                group by paramsu
+                order by cnt desc
+                limit $(UP.limitQueryRows)
             """);
 
             scrubUrlToPrint(SP,topurl,:urlgroup)
@@ -287,21 +300,21 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         topurl = select("""\
 
         select count(*),
-        CASE
-        when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
-        else trim('/' from paramsu)
-        end urlgroup
+            CASE
+            when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+            else trim('/' from paramsu)
+            end urlgroup
         FROM $(ltName)
         where
-          beacontypename = 'page view' and
-          timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
-          sessionid IS NOT NULL and
-          paramsrtquit IS NULL and
-          paramsu ilike '$(UP.urlRegEx)' and
-          devicetypename ilike '$(UP.deviceType)' and
-          operatingsystemname ilike '$(UP.agentOs)' and
-          pagegroupname ilike '$(UP.pageGroup)' and
-          pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+            beacontypename = 'page view' and
+            sessionid IS NOT NULL and
+            paramsrtquit IS NULL and
+            timestamp between $(TV.startTimeMs) and $(TV.endTimeMs) and
+            pagegroupname ilike '$(UP.pageGroup)' and
+            paramsu ilike '$(UP.urlRegEx)' and
+            devicetypename ilike '$(UP.deviceType)' and
+            operatingsystemname ilike '$(UP.agentOs)' and
+            pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
         group by urlgroup
         order by count(*) desc
         limit $(UP.limitQueryRows)
@@ -312,7 +325,8 @@ function topUrlTableByTime(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
         topurl = select("""\
 
-        select count(*) cnt, AVG(params_dom_sz), AVG(timers_t_page) ,paramsu as urlgroup
+        select
+            count(*) cnt, AVG(params_dom_sz), AVG(timers_t_page) ,paramsu as urlgroup
         FROM $(ltName)
         where
             beacontypename = 'page view' and
