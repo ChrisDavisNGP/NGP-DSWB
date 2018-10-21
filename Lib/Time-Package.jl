@@ -124,19 +124,24 @@ function anyTimeVar(
     end
 end
 
-function weeklyTimeVariables(;days::Int64=7)
+function weeklyTimeVariables(;days::Int64=7,debugTime::Int64=0)
     try
         firstAndLast = getBeaconsFirstAndLast()
         endTime = DateTime(firstAndLast[1,2])
-        start_time = DateTime(endTime - Day(days) + Minute(1))
+        startTime = DateTime(endTime - Day(days) + Minute(1))
+
+        if (debugTime > 0)
+            println("weeklyTimeVariables endTime: ", endTime)
+            println("startTime: ",startTime)
+        end
 
         localtv =
         timeVariables(
-            Dates.year(start_time),
-            Dates.month(start_time),
-            Dates.day(start_time),
-            Dates.hour(start_time),
-            Dates.minute(start_time),
+            Dates.year(startTime),
+            Dates.month(startTime),
+            Dates.day(startTime),
+            Dates.hour(startTime),
+            Dates.minute(startTime),
             Dates.year(endTime),
             Dates.month(endTime),
             Dates.day(endTime),
@@ -180,7 +185,7 @@ function prevWorkWeekTimeVariables()
         return localtv
 
     catch y
-        println("TV = weeklyTimeVariables Exception ",y)
+        println("TV = prevWorkWeekTimeVariables Exception ",y)
     end
 end
 
@@ -268,7 +273,7 @@ function todayTimeVariables()
     end
 end
 
-function pickTime()
+function pickTime(;debugTime::Int64=0)
 
     # Greater than 10 hours is the usual work day
     if isdefined(:TvHours) && TvHours < 10
@@ -282,7 +287,10 @@ function pickTime()
     end
 
     if isdefined(:TvDays) && TvDays < 8
-        localtv = weeklyTimeVariables(days=TvDays)
+        if (debugTime > 0)
+            println(" Calling weeklyTimeVariables TvDays: ",TvDays)
+        end
+        localtv = weeklyTimeVariables(days=TvDays,debugTime)
         return localtv
     end
 
