@@ -290,7 +290,7 @@ function pickTime(;debugTime::Int64=0)
         if (debugTime > 0)
             println(" Calling weeklyTimeVariables TvDays: ",TvDays)
         end
-        localtv = weeklyTimeVariables(days=TvDays,debugTime)
+        localtv = weeklyTimeVariables(days=TvDays,debugTime=debugTime)
         return localtv
     end
 

@@ -29,7 +29,7 @@ include("../../../Lib/URL-Package.jl")
 include("../../../Lib/Utilities-Package.jl")
 include("../../../Lib/Workflow-Package.jl")
 
-TV = pickTime()
+TV = pickTime(1)
 #TV = timeVariables(2017,6,14,6,0,2017,6,15,0,5)
 
 UP = UrlParamsInit(scriptName)
