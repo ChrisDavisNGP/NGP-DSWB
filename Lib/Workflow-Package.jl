@@ -464,7 +464,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   #Turn sections on / off to debug
   wfShowSessions = true
-  wfShowMedLoadTimes = false # broken by me
+  wfShowMedLoadTimes = true # broken by me
   wfShowTopPages = true
   wfShowTopUrlPages = true
   wfShowChartTopPage = false # broken - need ticket
@@ -499,16 +499,28 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowSessions)
     #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup)", chart_info = [TV.timeString])
-    chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-    chartConcurrentSessionsAndBeaconsOverTime(TV.startTime, TV.endTime, TV.datePart)
+    try
+        chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
+        chartConcurrentSessionsAndBeaconsOverTime(TV.start_time, TV.endTime, TV.datePart)
+    catch y
+        println("urlDetailsWorkflow-wfShowSessions Excpt: ",y)
+    end
   end
 
   if (wfShowMedLoadTimes)
-    chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, filters=beaconFilter)
+      try
+          chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, filters=beaconFilter)
+      catch y
+          println("urlDetailsWorkflow-wfShowMedLoadTimes Excpt: ",y)
+      end
   end
 
   if (wfShowTopPages)
-    countUrlgroupPrintTable(TV,UP,SP)
+      try
+          countUrlgroupPrintTable(TV,UP,SP)
+      catch y
+          println("urlDetailsWorkflow-wfShowTopPages Excpt: ",y)
+      end
   end
 
   if (wfShowTopUrlPages)
