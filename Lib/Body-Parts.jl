@@ -1120,7 +1120,7 @@ function bigPages1SRFLP(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         return minSizeBytes
 
     catch y
-        println("setupLocalTable Exception ",y)
+        println("bigPages1SRFLP Exception ",y)
     end
 end
 

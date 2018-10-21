@@ -174,14 +174,16 @@ end
 function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
+        #CASE
+        #    when  (position('?' in paramsu) > 0)
+        #    then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+        #    else trim('/' from paramsu)
+        #end urlgroup
+
         topurl = select("""\
             select
                 count(*),
-                CASE
-                    when  (position('?' in paramsu) > 0)
-                    then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
-                    else trim('/' from paramsu)
-                end urlgroup
+                paramsu urlgroup
             FROM $(UP.beaconTable)
             where
                 beacontypename = 'page view' and
@@ -199,7 +201,7 @@ function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
     catch y
-        println("setupLocalTable Exception ",y)
+        println("countUrlgroupPrintTable Exception ",y)
     end
 end
 
@@ -226,7 +228,7 @@ function countParamUBtViewPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString,"URL: $(UP.urlRegEx)"])
         beautifyDF(names!(topurl[:,:],[Symbol("Views"),Symbol("Url - With Grouping After Parameters Dropped")]))
     catch y
-        println("setupLocalTable Exception ",y)
+        println("countParamUBtViewPrintTable Exception ",y)
     end
 end
 

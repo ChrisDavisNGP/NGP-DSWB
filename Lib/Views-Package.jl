@@ -79,7 +79,7 @@ function obsoleteDefaultResourceView(TV::TimeVars,UP::UrlParams)
         #Hide output from final report
         println("$rt v count is ",size(localTableRtDF))
     catch y
-        println("setupLocalTable Exception ",y)
+        println("obsoleteDefaultResourceView Exception ",y)
     end
 end
 
