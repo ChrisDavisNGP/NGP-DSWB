@@ -22,6 +22,5 @@ include("Tables-Print-Package.jl")
 include("Treemaps-Package.jl")
 include("URL-Package.jl")
 include("Utilities-Package.jl")
-include("Views-Package.jl")
 include("Workflow-Package.jl")
 ;
