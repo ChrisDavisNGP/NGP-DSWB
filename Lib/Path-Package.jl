@@ -1,3 +1,5 @@
+# structure-new-relic.jl
+
 function criticalPathAggregationMain(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   try
 
