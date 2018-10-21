@@ -467,15 +467,15 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   wfShowMedLoadTimes = true # broken by me
   wfShowTopPages = true
   wfShowTopUrlPages = true
-  wfShowChartTopPage = false # broken - need ticket
+  wfShowChartTopPage = true # was false # broken - need ticket
   wfShowMedLoadUrl = true
-  wfShowChartCacheHitRatio = false # broken - need ticket
+  wfShowChartCacheHitRatio = true # was false # broken - need ticket
   wfShowChartTopPageResources = true
-  wfShowChartResResponse = false # broken - need ticket
-  wfShowChartResUrlResponse = false # broken like the one above
-  wfShowPercentBelow = false # broken - need ticket
+  wfShowChartResResponse = true # was false # broken - need ticket
+  wfShowChartResUrlResponse = true # was false # broken like the one above
+  wfShowPercentBelow = true # was false # broken - need ticket
   wfShowBounceByUrl = true
-  wfShowResResponseTime = false # broken - need ticket
+  wfShowResResponseTime = true # was false # broken - need ticket
   wfShowAggSessionLength = true
   wfShowMedLoadByDevice = true
   wfShowMedLoadByGeo = true
@@ -524,14 +524,17 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowTopUrlPages)
-    countParamUBtViewPrintTable(TV,UP,SP)
+    try
+        countParamUBtViewPrintTable(TV,UP,SP)
+    catch y
+        println("urlDetailsWorkflow-wfShowTopUrlPages Excpt: ",y)
+    end
   end
 
   # Currently broken - need ticket to Soasta
   if (wfShowChartTopPage)
     #fail thresholdValues = [1000, 10000, 100000]
     #fail chartRes = chartResponseTimesVsTargets(start_time, endTime, datePart, thresholdValues)
-    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
     try
         chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC)
         display(chartRes[1:20,:])
@@ -542,100 +545,154 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowMedLoadUrl)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:url,minPercentage=0.1)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:paramsu,minPercentage=0.1)
+    try
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:url,minPercentage=0.1)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:paramsu,minPercentage=0.1)
+    catch y
+        println("urlDetailsWorkflow-wfShowMedLoadUrl Excpt: ",y)
+    end
   end
 
   # Known bad - need ticket
   if (wfShowChartCacheHitRatio)
-    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
-    chartRes = chartCacheHitRatioByUrl(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.1)
-    display(chartRes)
+    try
+        chartRes = chartCacheHitRatioByUrl(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.1)
+        display(chartRes)
+    catch y
+        println("urlDetailsWorkflow-wfShowChartCacheHitRatio Excpt: ",y)
+    end
   end
 
   # Need to test
   if (wfShowChartTopPageResources)
-    #setTable(localTableRt, tableType = "RESOURCE_TABLE")
-    #chartTopPageResourcesSummary(start_time, endTime)
-    #chartTopPageResourcesSummary(start_time, endTime, datepart = datePart)
-    #setTable(localTable)
-    #display(chartRes)
+    try
+        #chartTopPageResourcesSummary(start_time, endTime)
+        #chartTopPageResourcesSummary(start_time, endTime, datepart = datePart)
+        #display(chartRes)
+    catch y
+        println("urlDetailsWorkflow-wfShowChartTopPageResources Excpt: ",y)
+    end
   end
 
   # known bad - need ticket
   if (wfShowChartResResponse)
-    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
-    chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC,url=UP.urlRegEx)
-    display(chartRes)
+    try
+        chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC,url=UP.urlRegEx)
+        display(chartRes)
+    catch y
+        println("urlDetailsWorkflow-wfShowChartResResponse Excpt: ",y)
+    end
   end
 
   if (wfShowChartResUrlResponse)
-    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
-    chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC)
-    display(chartRes)
+    try
+        chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC)
+        display(chartRes)
+    catch y
+        println("urlDetailsWorkflow-wfShowChartResUrlResponse Excpt: ",y)
+    end
   end
 
   # known bad - need ticket
   if (wfShowPercentBelow)
-    println(TV.startTimeUTC," and ",TV.endTimeUTC)
-    #chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, :hour; pageGroup=UP.pageGroup, threshold=6000, url=UP.urlRegEx)
-    chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, :hour)
+    try
+        chartPercentageOfBeaconsBelowThresholdStackedBar(TV.startTimeUTC, TV.endTimeUTC, :hour)
+    catch y
+        println("urlDetailsWorkflow-wfShowPercentBelow Excpt: ",y)
+    end
   end
 
   if (wfShowBounceByUrl)
-    #chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC, url=UP.urlFull)
-    chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC)
-    #chartBouncesVsLoadTimes(start_time, endTime)
+    try
+        #chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC, url=UP.urlFull)
+        chartBouncesVsLoadTimes(TV.startTimeUTC, TV.endTimeUTC)
+        #chartBouncesVsLoadTimes(start_time, endTime)
+    catch y
+        println("urlDetailsWorkflow-wfShowBounceByUrl Excpt: ",y)
+    end
   end
 
   # known bad - need ticket
   if (wfShowResResponseTime)
-    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
-    responseDist = getResourceResponseTimeDistribution(TV.startTimeUTC,TV.endTimeUTC, n=15, url=UP.urlFull)
-    display(responseDist)
+    try
+        responseDist = getResourceResponseTimeDistribution(TV.startTimeUTC,TV.endTimeUTC, n=15, url=UP.urlFull)
+        display(responseDist)
+    catch y
+        println("urlDetailsWorkflow-wfShowResResponseTime Excpt: ",y)
+    end
   end
 
   if (wfShowAggSessionLength)
-    myFilter = SQLFilter[ilike("paramsu",UP.urlRegEx)]
-
-    perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; filters=myFilter)
-    c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Page Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
-        "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Top URL Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"])
+        try
+            perfsessionLength = getAggregateSessionLengthAndDurationByLoadTime(TV.startTimeUTC, TV.endTimeUTC; filters=beaconFilter)
+            c3 = drawC3Viz(perfsessionLength; columnNames=[:load_time,:total,:avg_length], axisLabels=["Page Load Times","Completed Sessions", "Average Session Length"],dataNames=["Completed Sessions",
+                "Average Session Length", "Average Session Duration"], mPulseWidget=false, chart_title="Top URL Page Load for $(UP.pageGroup) Page Group", y2Data=["data2"], vizTypes=["area","line"])
+        catch y
+            println("urlDetailsWorkflow-wfShowAggSessionLength Excpt: ",y)
+        end
   end
 
   if (wfShowMedLoadByDevice)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:devicetypename, n=15, orderBy="frontend", minPercentage=0.001)
+    try
+        chartMedianLoadTimesByDimension(TV.startTimeUTC, TV.endTimeUTC; dimension=:devicetypename, n=15, orderBy="frontend", minPercentage=0.001)
+    catch y
+        println("urlDetailsWorkflow-wfShowMedLoadByDevice Excpt: ",y)
+    end
   end
 
   if (wfShowMedLoadByGeo)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:countrycode,minPercentage=2.5,n=10)
+    try
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:countrycode,minPercentage=2.5,n=10)
+    catch y
+        println("urlDetailsWorkflow-wfShowMedLoadByGeo Excpt: ",y)
+    end
   end
 
   if (wfShowCustomReferrers)
-    customRefPGD(TV,UP)
+    try
+        customRefPGD(TV,UP)
+    catch y
+        println("urlDetailsWorkflow-wfShowCustomReferrers Excpt: ",y)
+    end
   end
 
   if (wfShowReferrers)
-      standardReferrals(TV,UP,SP)
+      try
+          standardReferrals(TV,UP,SP)
+      catch y
+          println("urlDetailsWorkflow-wfShowReferrers Excpt: ",y)
+      end
   end
 
   if (wfShowMedLoadByReferrers)
-    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
-    t1 = getMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
-    display(t1)
+    try
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
+        t1 = getMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:http_referrer,minPercentage=0.5)
+        display(t1)
 
-    chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
-    t2 = getMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
-    display(t2)
+        chartMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
+        t2 = getMedianLoadTimesByDimension(TV.startTimeUTC,TV.endTimeUTC,dimension=:params_r,minPercentage=0.5)
+        display(t2)
+    catch y
+        println("urlDetailsWorkflow-wfShowMedLoadByReferrers Excpt: ",y)
+    end
   end
 
   if (wfShowTreemaps)
-    treemapsPGD(TV,UP,SP)
+    try
+        treemapsPGD(TV,UP,SP)
+    catch y
+        println("urlDetailsWorkflow-wfShowTreemaps Excpt: ",y)
+    end
   end
 
   if (wfShowSunburst)
-    result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=30, f=getAbandonPaths,useurls=true);
-    drawSunburst(result10[1]; totalPaths=result10[3])
+    try
+        result10 = getAllPaths(TV.startTimeUTC, TV.endTimeUTC; n=30, f=getAbandonPaths,useurls=true);
+        drawSunburst(result10[1]; totalPaths=result10[3])
+    catch y
+        println("urlDetailsWorkflow-wfShowSunburst Excpt: ",y)
+    end
   end
 
 end

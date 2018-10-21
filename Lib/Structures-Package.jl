@@ -253,6 +253,7 @@ end
 
 type TimeVars
     start_time::DateTime
+    startTime::DateTime
     endTime::DateTime
     startTimeMs::Int64
     endTimeMs::Int64
@@ -269,7 +270,7 @@ end
 
 function TimeVarsInit()
     dt = DateTime(2000,1,1,1,1)
-    TV = TimeVars(dt,dt,0,0,"","",dt,dt,0,0,:hour,"a","b")
+    TV = TimeVars(dt,dt,dt,0,0,"","",dt,dt,0,0,:hour,"a","b")
     return TV
 end
 
