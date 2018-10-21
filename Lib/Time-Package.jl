@@ -128,12 +128,12 @@ function weeklyTimeVariables(;days::Int64=7,debugTime::Int64=0)
     try
         # returns Snowflake UTC Time
         firstAndLast = getBeaconsFirstAndLast()
-        endTimeUTC = DateTime(firstAndLast[1,2])
-        startTimeUTC = DateTime(endTimeUTC - Day(days) + Minute(1))
-        endTimez = astimezone(endTimeUTC,TimeZone("America/New_York"))
-        startTimez = astimezone(startTimeUTC,TimeZone("America/New_York"))
-        endTime = Dates.format(endTimez,"yyyy-mm-dd HH:MM")
-        startTime = Dates.format(startTimez,"yyyy-mm-dd HH:MM")
+        endTime = DateTime(firstAndLast[1,2])
+        startTime = DateTime(endTime - Day(days) + Minute(1))
+        #endTimez = astimezone(endTimeUTC,TimeZone("America/New_York"))
+        #startTimez = astimezone(startTimeUTC,TimeZone("America/New_York"))
+        #endTime = Dates.format(endTimez,"yyyy-mm-dd HH:MM")
+        #startTime = Dates.format(startTimez,"yyyy-mm-dd HH:MM")
 
         if (debugTime > 0)
             println("weeklyTimeVariables endTime: ", endTime, " startTime: ",startTime)
