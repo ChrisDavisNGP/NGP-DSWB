@@ -49,7 +49,7 @@ function removeNegitiveTime(inDF::DataFrame,field::Symbol)
 end
 ;
 
-
+# Assumes you pass in Local Time
 
 function timeVariables(
     Y1::Int64,M1::Int64,D1::Int64,H1::Int64,MM1::Int64,
@@ -128,12 +128,10 @@ function weeklyTimeVariables(;days::Int64=7,debugTime::Int64=0)
     try
         # returns Snowflake UTC Time
         firstAndLast = getBeaconsFirstAndLast()
-        endTime = DateTime(firstAndLast[1,2])
+        endTimeDtUtc = DateTime(firstAndLast[1,2])
+        endTimeDtUtcZ = ZonedDateTime(endTimeDtUtc,TimeZone("UTC"))
+        endTime = astimezone(endTimeDtUtcZ,TimeZone("America/New_York"))
         startTime = DateTime(endTime - Day(days) + Minute(1))
-        #endTimez = astimezone(endTimeUTC,TimeZone("America/New_York"))
-        #startTimez = astimezone(startTimeUTC,TimeZone("America/New_York"))
-        #endTime = Dates.format(endTimez,"yyyy-mm-dd HH:MM")
-        #startTime = Dates.format(startTimez,"yyyy-mm-dd HH:MM")
 
         if (debugTime > 0)
             println("weeklyTimeVariables endTime: ", endTime, " startTime: ",startTime)
