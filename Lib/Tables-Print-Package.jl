@@ -320,7 +320,11 @@ function bigPages5PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select count(*) cnt,$btv.params_dom_sz dom_size,$btv.sessionid s_id,$btv.timestamp
+            select
+                count(*) cnt,
+                $bt.params_dom_sz dom_size,
+                $bt.sessionid s_id,
+                $bt.timestamp
             from $bt join $rt
                 on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
             where
@@ -353,7 +357,8 @@ function bigPages6PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBy
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select $bt.params_dom_sz dom_size,
+            select
+                $bt.params_dom_sz dom_size,
                 $bt.sessionid,
                 $bt.timestamp,
                 $rt.start_time,
@@ -603,10 +608,24 @@ end
 
 function requestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,typeStr::ASCIIString)
 
+    rt = UP.resourceTable
+    bt = UP.beaconTable
+
     rc = select("""\
 
-        select count(*) reqcnt, substring(url for position('/' in substring(url from 9)) +7) urlgroup
-        FROM $(UP.rtView)
+        select
+            count(*) reqcnt,
+            substring($rt.url for position('/' in substring($rt.url from 9)) +7) urlgroup
+        from
+            $bt join $rt on $rt.sessionid = $bt.sessionid
+        where
+            $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.sessionid IS NOT NULL and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.paramsu ilike '$(UP.urlRegEx)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
         group by urlgroup
         order by reqcnt desc
         LIMIT $(UP.limitQueryRows)
@@ -619,11 +638,24 @@ end
 
 function nonCacheRequestCountByGroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,typeStr::ASCIIString)
 
+    rt = UP.resourceTable
+    bt = UP.beaconTable
+
     nc = select("""\
-        select count(*), substring(url for position('/' in substring(url from 9)) +7) urlgroup
-        FROM $(UP.rtView)
+        select
+            count(*),
+            substring($rt.url for position('/' in substring($rt.url from 9)) +7) urlgroup
+        from
+            $bt join $rt on $rt.sessionid = $bt.sessionid
         where
-            (response_last_byte-response_first_byte) > 0
+            $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.sessionid IS NOT NULL and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.paramsu ilike '$(UP.urlRegEx)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
+            ($rt.response_last_byte-$rt.response_first_byte) > 0
         group by urlgroup
         order by count(*) desc
         LIMIT $(UP.limitQueryRows)
@@ -635,21 +667,49 @@ end
 
 function cacheHitRatioPrintTable(TV::TimeVars,UP::UrlParams,typeStr::ASCIIString)
 
+    rt = UP.resourceTable
+    bt = UP.beaconTable
+
     cached = select("""\
-        select count(*), substring(url for position('/' in substring(url from 9)) +7) urlgroup
-        FROM $(UP.rtView)
+        select
+            count(*),
+            substring($rt.url for position('/' in substring($rt.url from 9)) +7) urlgroup
+        from
+            $bt join $rt on $rt.sessionid = $bt.sessionid
         where
-            (response_last_byte-response_first_byte) = 0
+            $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.sessionid IS NOT NULL and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.paramsu ilike '$(UP.urlRegEx)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
+            ($rt.response_last_byte-$rt.response_first_byte) = 0
         group by urlgroup
         order by count(*) desc
         LIMIT $(UP.limitQueryRows)
     """)
 
+    rt = UP.resourceTable
+    bt = UP.beaconTable
+
     ratio = select("""\
-        select substring(url for position('/' in substring(url from 9)) +7) urlgroup, count(*) notCachedCount, 0 cachedCount, 0.0 ratio
-        FROM $(UP.rtView)
+        select
+            substring($rt.url for position('/' in substring($rt.url from 9)) +7) urlgroup,
+            count(*) notCachedCount,
+            0 cachedCount,
+            0.0 ratio
+        from
+            $bt join $rt on $rt.sessionid = $bt.sessionid
         where
-            (response_last_byte-response_first_byte) > 0
+            $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.sessionid IS NOT NULL and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.paramsu ilike '$(UP.urlRegEx)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
+            ($rt.response_last_byte-$rt.response_first_byte) > 0
         group by urlgroup
         order by count(*) desc
         LIMIT $(UP.limitQueryRows)
@@ -674,13 +734,22 @@ function displayMatchingResourcesByParentUrlPrintTable(TV::TimeVars,UP::UrlParam
 
     try
         rt = UP.resourceTable
+        bt = UP.beaconTable
 
         joinTablesDF = select("""\
-            select count(*), paramsu as parenturl
-            from $rt
+            select
+                count(*),
+                $bt.paramsu as parenturl
+            from
+                $bt join $rt on $rt.sessionid = $bt.sessionid
             where
-                paramsu ilike '$(UP.resRegEx)' and
-                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.sessionid IS NOT NULL and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
             group by parenturl
             order by count(*) desc
             limit $(UP.limitQueryRows)
@@ -706,13 +775,22 @@ function displayMatchingResourcesByUrlRtPrintTable(TV::TimeVars,UP::UrlParams,SP
 
     try
         rt = UP.resourceTable
+        bt = UP.beaconTable
 
         joinTablesDF = select("""\
-            select count(*), url
-            from $rt
+            select
+                count(*),
+                $rt.url
+            from
+                $bt join $rt on $rt.sessionid = $bt.sessionid
             where
-                url ilike '$(UP.resRegEx)' and
-                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.sessionid IS NOT NULL and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
+                $rt.url ilike '$(UP.resRegEx)'
             group by url
             order by count(*) desc
             limit $(UP.limitQueryRows)
@@ -778,13 +856,20 @@ function displayMatchingResourcesAllFieldsPrintTable(TV::TimeVars,UP::UrlParams,
 
     try
         rt = UP.resourceTable
+        bt = UP.beaconTable
 
         joinTablesDF = select("""\
             select *
-            from $rt
+            from
+                $bt join $rt on $rt.sessionid = $bt.sessionid
             where
-              url ilike '$(UP.resRegEx)' and
-              timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.sessionid IS NOT NULL and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
+                $rt.url ilike '$(UP.resRegEx)'
             limit 3
         """);
 
@@ -805,23 +890,32 @@ function displayMatchingResourcesStatsPrintTable(TV::TimeVars,UP::UrlParams,SP::
 
     try
         rt = UP.resourceTable
+        bt = UP.beaconTable
 
         joinTablesDF = select("""\
-            select count(*),avg(start_time) as "start",
-                avg(fetch_start) as "fetch",
-                avg(dns_end-dns_start) as "dnstimems",
-                avg(tcp_connection_end-tcp_connection_start) as "tcptimems",
-                avg(request_start) as "request",
-                avg(response_first_byte) as "responsefirstbyte",
-                avg(response_last_byte) as "responselastbyte",
-                max(response_last_byte) as "maxresponselastbyte",
-                paramsu as parenturl, url,
-                avg(redirect_end - redirect_start) as "redirecttimems",
-                avg(secure_connection_start) as "secureconnection"
-            from $rt
+            select
+                count(*),
+                avg($rt.start_time) as "start",
+                avg($rt.fetch_start) as "fetch",
+                avg($rt.dns_end-$rt.dns_start) as "dnstimems",
+                avg($rt.tcp_connection_end-$rt.tcp_connection_start) as "tcptimems",
+                avg($rt.request_start) as "request",
+                avg($rt.response_first_byte) as "responsefirstbyte",
+                avg($rt.response_last_byte) as "responselastbyte",
+                max($rt.response_last_byte) as "maxresponselastbyte",
+                $bt.paramsu as parenturl, url,
+                avg($rt.redirect_end - $rt.redirect_start) as "redirecttimems",
+                avg($rt.secure_connection_start) as "secureconnection"
+            from
+                $bt join $rt on $rt.sessionid = $bt.sessionid
             where
-                url ilike '$(UP.resRegEx)' and
-                timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC)
+                    $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                    $bt.sessionid IS NOT NULL and
+                    $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                    $bt.devicetypename ilike '$(UP.deviceType)' and
+                    $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                    $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs) and
+                    url ilike '$(UP.resRegEx)'
             group by parenturl,url
             order by count(*) desc
         """);

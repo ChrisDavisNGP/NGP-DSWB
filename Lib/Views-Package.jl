@@ -26,7 +26,7 @@ function obsoleteDefaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
 
         select("""\
-            create or replace view $btv as (
+            create or replace view $b tv as (
                 select * FROM $bt
                     where
                         timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -42,35 +42,48 @@ function obsoleteDefaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowPara
     end
 end
 
-function defaultResourceView(TV::TimeVars,UP::UrlParams)
+function obsoleteDefaultResourceView(TV::TimeVars,UP::UrlParams)
 
     try
-        rtv = UP.rtView
+
         rt = UP.resourceTable
-        btv = UP.bt View
+        bt = UP.beaconTable
+
+        select $rt.*
+        from
+            $bt join $rt on $rt.sessionid = $bt.sessionid
+        where
+            $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.sessionid IS NOT NULL and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.paramsu ilike '$(UP.urlRegEx)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
+        order by $rt.sessionid, $rt.timestamp, $rt.start_time
 
         select("""\
-            create or replace view $rtv as (
+            create or replace view $rt v as (
                 select $rt.*
-                from $btv join $rt on $rt.sessionid = $btv.sessionid
+                from $bt v join $rt on $rt.sessionid = $bt v.sessionid
                 where
                     $rt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-                    $btv.sessionid IS NOT NULL
+                    $bt v.sessionid IS NOT NULL
                 order by $rt.sessionid, $rt.timestamp, $rt.start_time
             )
             """)
 
         # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
         # where beacontypename = 'page view'
-        localTableRtDF = select("""SELECT * FROM $rtv""")
+        localTableRtDF = select("""SELECT * FROM $rt v""")
         #Hide output from final report
-        println("$rtv count is ",size(localTableRtDF))
+        println("$rt v count is ",size(localTableRtDF))
     catch y
         println("setupLocalTable Exception ",y)
     end
 end
 
-function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
+function obsoletePageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,localMobileTable::ASCIIString,localDesktopTable::ASCIIString)
 
     if SP.debugLevel > 8
         println("Starting pageGroupDetailsCreateView")

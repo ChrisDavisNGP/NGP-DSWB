@@ -314,7 +314,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
 
     openingTitle(TV,UP,SP)
 
-    pageGroupDetailsCreateView(TV,UP,SP,mobileView,desktopView)
+    #pageGroupDetailsCreateView(TV,UP,SP,mobileView,desktopView)
 
     statsDF = beaconViewStats(TV,UP,SP)
     if !isdefined(:statsDF)
@@ -489,8 +489,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  defaultResourceView(TV,UP)
-
   beaconFilter = SQLFilter[
       ilike("pagegroupname",UP.pageGroup),
       ilike("paramsu",UP.urlRegEx),
@@ -520,9 +518,8 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowChartTopPage)
     #fail thresholdValues = [1000, 10000, 100000]
     #fail chartRes = chartResponseTimesVsTargets(start_time, endTime, datePart, thresholdValues)
-    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
     try
-        #chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC; beaconTable=UP.bt View, resourceTable=UP.rtView,n=10,minPercentage=0.05)
         chartRes = chartTopPageResourcesSummary(TV.startTimeUTC, TV.endTimeUTC)
         display(chartRes[1:20,:])
     catch y
@@ -538,7 +535,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   # Known bad - need ticket
   if (wfShowChartCacheHitRatio)
-    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
     chartRes = chartCacheHitRatioByUrl(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.1)
     display(chartRes)
   end
@@ -554,14 +551,13 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   # known bad - need ticket
   if (wfShowChartResResponse)
-    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
     chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC,url=UP.urlRegEx)
     display(chartRes)
   end
 
   if (wfShowChartResUrlResponse)
-    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
-    #chartRes = chartResourceResponseTimeDistribution(start_time, endTime,url="https://phenomena.nationalgeographic.com/files/2016/05/BH91DH.jpg")
+    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
     chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC)
     display(chartRes)
   end
@@ -581,7 +577,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   # known bad - need ticket
   if (wfShowResResponseTime)
-    setTable(UP.rtView, tableType = "RESOURCE_TABLE")
+    setTable(UP.resourceTable, tableType = "RESOURCE_TABLE")
     responseDist = getResourceResponseTimeDistribution(TV.startTimeUTC,TV.endTimeUTC, n=15, url=UP.urlFull)
     display(responseDist)
   end

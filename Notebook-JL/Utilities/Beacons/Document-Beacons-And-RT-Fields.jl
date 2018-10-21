@@ -95,14 +95,24 @@ ts = "('1482106711154','1482106711161','1482107709775')";
 rtv = UP.rtView
 
 
-#select("""create or replace view $rtv as (select * from $tableRt where timestamp between $startTimeMs and $endTimeMs and (url ilike '$(localUrlRt)' or paramsu ilike '$(localUrlRt)'))""")
-select("""create or replace view $rtv as (select * from $tableRt where timestamp between $startTimeMs and $endTimeMs and sessionid = '$sessionid') limit 10000""")
+select("""\
+create or replace view $rt v as (
+    select *
+        from $tableRt
+        where timestamp between $startTimeMs and $endTimeMs
+        and sessionid = '$sessionid'
+        )
+    limit 10000
+    """)
 
 # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
 # where beacontypename = 'page view'
-cnt = select("""SELECT count(*) FROM $rtv""")
+cnt = select("""\
+    SELECT
+        count(*)
+        FROM $rt v""")
 #Hide output from final report
-println("$rtv count is ",cnt[1,1])
+println("$rt v count is ",cnt[1,1])
 
 #DF Select cnt btv where sessionid, timestamp
 sBeacon = select("""\
@@ -123,7 +133,7 @@ display(sBeacon)
 #DF Select cnt rtv where sessionid, timestamp
 sRt = select("""\
 select count(*)
-from $rtv
+from $rt v
 where sessionid = '$(sessionid)' and timestamp in $(ts)
 """)
 
@@ -618,7 +628,7 @@ order by timestamp
 displayTitle(chart_title = "Description Fields from RT Data", showTimeStamp=false)
 sessionFields = select("""\
 select sessionid,session_start,timestamp,paramsu
-from $rtv
+from $rt v
 where sessionid = '$(sessionid)' and timestamp in $(ts)
 order by timestamp,start_time
 limit 1000
@@ -635,7 +645,7 @@ displayTitle(chart_title = "URL Fields from RT Data", showTimeStamp=false)
 
 sessionFields = select("""\
 select initiator_type, substring(url for position('/' in substring(url from 9)) +7) urlgroup,url
-from $rtv
+from $rt v
 where sessionid = '$(sessionid)' and timestamp in $(ts)
 order by timestamp,start_time
 limit 1000
@@ -654,7 +664,7 @@ tcp_connection_start,secure_connection_start,
 tcp_connection_end,
 request_start, response_first_byte,response_last_byte,
 worker_start
-from $rtv
+from $rt v
 where sessionid = '$(sessionid)' and timestamp in $(ts)
 order by timestamp,start_time
 limit 1000
@@ -665,7 +675,7 @@ display(sessionFields[31:end,:])
 displayTitle(chart_title = "Additional Details from RT Data", showTimeStamp=false)
 sessionFields = select("""\
 select encoded_size,transferred_size,decoded_size,height,width,x,y
-from $rtv
+from $rt v
 where sessionid = '$(sessionid)' and timestamp in $(ts)
 order by start_time
 limit 1000
