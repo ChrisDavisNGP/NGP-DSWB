@@ -126,13 +126,15 @@ end
 
 function weeklyTimeVariables(;days::Int64=7,debugTime::Int64=0)
     try
+        # returns Snowflake UTC Time
         firstAndLast = getBeaconsFirstAndLast()
-        endTime = DateTime(firstAndLast[1,2])
-        startTime = DateTime(endTime - Day(days) + Minute(1))
+        endTimeUTC = DateTime(firstAndLast[1,2])
+        startTimeUTC = DateTime(endTime - Day(days) + Minute(1))
+        endTime = astimezone(endTimeUTC,TimeZone("America/New_York"))
+        startTime = astimezone(startTimeUTC,TimeZone("America/New_York"))
 
         if (debugTime > 0)
-            println("weeklyTimeVariables endTime: ", endTime)
-            println("startTime: ",startTime)
+            println("weeklyTimeVariables endTime: ", endTime, "startTime: ",startTime)
         end
 
         localtv =
