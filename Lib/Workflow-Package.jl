@@ -500,8 +500,8 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowSessions)
     #displayTitle(chart_title = "Concurrent Sessions and Beacons for $(UP.pageGroup)", chart_info = [TV.timeString])
     try
+        #Function title includes UTC in label
         chartConcurrentSessionsAndBeaconsOverTime(TV.startTimeUTC, TV.endTimeUTC, TV.datePart)
-        chartConcurrentSessionsAndBeaconsOverTime(TV.start_time, TV.endTime, TV.datePart)
     catch y
         println("urlDetailsWorkflow-wfShowSessions Excpt: ",y)
     end
@@ -509,6 +509,10 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowMedLoadTimes)
       try
+          beaconFilter = SQLFilter[
+              ilike("pagegroupname",UP.pageGroup)
+              ]
+          println("beaconFilter ",beaconFilter)
           chartLoadTimes(TV.startTimeUTC, TV.endTimeUTC, TV.datePart, filters=beaconFilter)
       catch y
           println("urlDetailsWorkflow-wfShowMedLoadTimes Excpt: ",y)

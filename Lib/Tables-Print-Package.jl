@@ -177,7 +177,11 @@ function countUrlgroupPrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         topurl = select("""\
             select
                 count(*),
-                CASE when  (position('?' in paramsu) > 0) then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7))) else trim('/' from paramsu) end urlgroup
+                CASE
+                    when  (position('?' in paramsu) > 0)
+                    then trim('/' from (substring(paramsu for position('?' in substring(paramsu from 9)) +7)))
+                    else trim('/' from paramsu)
+                end urlgroup
             FROM $(UP.beaconTable)
             where
                 beacontypename = 'page view' and

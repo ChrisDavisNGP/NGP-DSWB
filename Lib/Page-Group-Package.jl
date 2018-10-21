@@ -1,5 +1,5 @@
 function customRefPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-    customReferralsTable(TV,UP)
+    customReferralsTable(TV,UP,SP)
 end
 
 function treemapsPGD(TV::TimeVars,UP::UrlParams,SP::ShowParams)
