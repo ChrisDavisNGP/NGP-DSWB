@@ -142,7 +142,7 @@ function standardReferrals(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         end
 
         toprDF = getTopReferrers(TV.startTimeUTC, TV.endTimeUTC, n=UP.limitRows)
-        limit = (min(UP.showLines,size(toprDF)[1]))
+        limit = (min(SP.showLines,size(toprDF)[1]))
         chartTopN(TV.startTimeUTC, TV.endTimeUTC, n=limit; variable=:referrers;)
         displayTitle(chart_title = "Top Referrers for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
         beautifyDF(toprDF)

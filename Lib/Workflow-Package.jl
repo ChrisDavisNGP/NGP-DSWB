@@ -360,7 +360,7 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     end
 
 
-    customRefPGD(TV,UP)
+    customRefPGD(TV,UP,SP)
 
     standardReferrals(TV,UP,SP)
 
@@ -560,7 +560,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   # Known bad - need ticket
   if (wfShowChartCacheHitRatio)
     try
-        chartRes = chartCacheHitRatioByUrl(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.1)
+        chartRes = chartCacheHitRatioByUrl(TV.startTimeUTC, TV.endTimeUTC)
         display(chartRes)
     catch y
         println("urlDetailsWorkflow-wfShowChartCacheHitRatio Excpt: ",y)
@@ -581,7 +581,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   # known bad - need ticket
   if (wfShowChartResResponse)
     try
-        chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC,url=UP.urlRegEx)
+        chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC,url=UP.urlFull)
         display(chartRes)
     catch y
         println("urlDetailsWorkflow-wfShowChartResResponse Excpt: ",y)
@@ -654,7 +654,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   if (wfShowCustomReferrers)
     try
-        customRefPGD(TV,UP)
+        customRefPGD(TV,UP,SP)
     catch y
         println("urlDetailsWorkflow-wfShowCustomReferrers Excpt: ",y)
     end
