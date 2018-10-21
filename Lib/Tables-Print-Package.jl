@@ -316,19 +316,25 @@ end
 function bigPages5PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
-        btv = UP.btView
+        bt = UP.beaconTable
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
             select count(*) cnt,$btv.params_dom_sz dom_size,$btv.sessionid s_id,$btv.timestamp
-            from $btv join $rt
-                on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
+            from $bt join $rt
+                on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
             where
-                $btv.params_dom_sz IS NOT NULL and
-                $btv.params_dom_sz > $(minSizeBytes) and
-                $btv.sessionid IS NOT NULL
-            group by $btv.params_dom_sz, $btv.sessionid, $btv.timestamp
-            order by $btv.params_dom_sz desc
+                $bt.params_dom_sz IS NOT NULL and
+                $bt.params_dom_sz > $(minSizeBytes) and
+                $bt.sessionid IS NOT NULL and
+                $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
+            group by $bt.params_dom_sz, $bt.sessionid, $bt.timestamp
+            order by $bt.params_dom_sz desc
             limit $(UP.limitQueryRows)
         """);
 
@@ -343,21 +349,31 @@ end
 function bigPages6PrintTable(TV::TimeVars,UP::UrlParams,SP::ShowParams,minSizeBytes::Float64)
 
     try
-        btv = UP.btView
+        bt = UP.beaconTable
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select $btv.params_dom_sz dom_size,$btv.sessionid,$btv.timestamp,$rt.start_time,$rt.encoded_size,
+            select $bt.params_dom_sz dom_size,
+                $bt.sessionid,
+                $bt.timestamp,
+                $rt.start_time,
+                $rt.encoded_size,
                 $rt.transferred_size,
                 $rt.decoded_size,
                 $rt.url urlgroup
-            from $btv join $rt
-                on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
+            from $bt join $rt
+                on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
             where
-                $btv.params_dom_sz IS NOT NULL and
-                $btv.params_dom_sz > $(minSizeBytes) and
-                $btv.sessionid IS NOT NULL
-            order by $btv.params_dom_sz
+                $bt.params_dom_sz IS NOT NULL and
+                $bt.params_dom_sz > $(minSizeBytes) and
+                $bt.sessionid IS NOT NULL
+                $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.paramsu ilike '$(UP.urlRegEx)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
+            order by $bt.params_dom_sz
             limit $(UP.limitQueryRows)
         """);
 
@@ -373,26 +389,30 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
 
     # Create the summary table
 
-    btv = UP.btView
+    bt = UP.beaconTable
     rt = UP.resourceTable
 
     try
         joinTablesDF = select("""\
-        select avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
+        select avg($rt.encoded_size) as encoded,
+            avg($rt.transferred_size) as transferred,
             avg($rt.decoded_size) as decoded,
-            $btv.operatingsystemname,
-            $btv.useragentname,
+            $bt.operatingsystemname,
+            $bt.useragentname,
             count(*)
-        from $btv join $rt
-            on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
+        from $bt join $rt
+            on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
            ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $btv.devicetypename ilike '$(UP.deviceType)' and
-            $btv.operatingsystemname ilike '$(UP.agentOs)'
+           $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
         group by
-            $btv.useragentname,
-            $btv.operatingsystemname
+            $bt.useragentname,
+            $bt.operatingsystemname
         order by encoded desc, transferred desc, decoded desc
         """);
 
@@ -410,17 +430,20 @@ function bigPagesSizePrintTable(TV,UP,SP,fileType::ASCIIString;minEncoded::Int64
         select avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
             avg($rt.decoded_size) as decoded,
             count(*),
-            CASE WHEN (position('?' in $btv.paramsu) > 0) then trim('/' from (substring($btv.paramsu for position('?' in substring($btv.paramsu from 9)) +7))) else trim('/' from $btv.paramsu) end as urlgroup,
+            CASE WHEN (position('?' in $bt.paramsu) > 0) then trim('/' from (substring($bt.paramsu for position('?' in substring($bt.paramsu from 9)) +7))) else trim('/' from $bt.paramsu) end as urlgroup,
             $rt.url
-        from $btv join $rt
-            on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
+        from $bt join $rt
+            on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
         where $rt.encoded_size > $(minEncoded) and
             $rt.url not like '%/interactive-assets/%' and
             ($rt.url ilike '$(fileType)' or $rt.url ilike '$(fileType)?%') and
-            $btv.devicetypename ilike '$(UP.deviceType)' and
-            $btv.operatingsystemname ilike '$(UP.agentOs)'
+            $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+            $bt.pagegroupname ilike '$(UP.pageGroup)' and
+            $bt.devicetypename ilike '$(UP.deviceType)' and
+            $bt.operatingsystemname ilike '$(UP.agentOs)' and
+            $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
         group by
-            $btv.paramsu,$rt.url
+            $bt.paramsu,$rt.url
         order by encoded desc, transferred desc, decoded desc
         """);
 
@@ -436,18 +459,21 @@ function lookForLeftOversPrintTable(UP::UrlParams,SP::ShowParams)
     joinTablesDF = DataFrame()
 
     try
-        btv = UP.btView
+        bt = UP.beaconTable
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-        select $btv.operatingsystemname,$btv.useragentname,$btv.devicetypename,
+        select
+            $bt.operatingsystemname,
+            $bt.useragentname,
+            $bt.devicetypename,
             $rt.url,
             avg($rt.encoded_size) as encoded,
             avg($rt.transferred_size) as transferred,
             avg($rt.decoded_size) as decoded,
             count(*)
-        from $btv join $rt
-        on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
+        from $bt join $rt
+        on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
         where $rt.encoded_size > 1 and
         $rt.url not ilike '%/interactive-assets/%' and
         $rt.url not ilike '%png' and
@@ -462,11 +488,16 @@ function lookForLeftOversPrintTable(UP::UrlParams,SP::ShowParams)
         $rt.url not ilike '%.js?%' and
         $rt.url not ilike '%css' and
         $rt.url not ilike '%ttf' and
-        $rt.url not ilike '%woff%'
+        $rt.url not ilike '%woff%' and
+        $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+        $bt.pagegroupname ilike '$(UP.pageGroup)' and
+        $bt.devicetypename ilike '$(UP.deviceType)' and
+        $bt.operatingsystemname ilike '$(UP.agentOs)' and
+        $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
         group by
-            $btv.useragentname,
-            $btv.operatingsystemname,
-            $btv.devicetypename,
+            $bt.useragentname,
+            $bt.operatingsystemname,
+            $bt.devicetypename,
             $rt.url
         order by encoded desc, transferred desc, decoded desc
         """);
@@ -483,25 +514,84 @@ function lookForLeftOversDetailsPrintTable(UP::UrlParams,SP::ShowParams)
     joinTablesDF = DataFrame()
 
     try
-        btv = UP.btView
+        bt = UP.beaconTable
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select $rt.url,avg($rt.encoded_size) as encoded,avg($rt.transferred_size) as transferred,
+            select
+                $rt.url,
+                avg($rt.encoded_size) as encoded,
+                avg($rt.transferred_size) as transferred,
                 avg($rt.decoded_size) as decoded,
-                $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
-                $btv.useragentname,$btv.useragentversion,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.operatingsystemname,$btv.operatingsystemversion,$btv.user_agent_raw,
-                $btv.user_agent_manufacturer,$btv.devicetypename,$btv.user_agent_isp,$btv.geo_isp,$btv.params_ua_plt,$btv.params_ua_vnd,
-                $rt.initiator_type,$rt.height,$rt.width,$rt.x,$rt.y,
+                $bt.compression_types,
+                $bt.domain,
+                $bt.geo_netspeed,
+                $bt.mobile_connection_type,
+                $bt.params_scr_bpp,
+                $bt.params_scr_dpx,
+                $bt.params_scr_mtp,
+                $bt.params_scr_orn,
+                $bt.params_scr_xy,
+                $bt.useragentname,
+                $bt.useragentversion,
+                $bt.user_agent_minor,
+                $bt.user_agent_mobile,
+                $bt.user_agent_model,
+                $bt.operatingsystemname,
+                $bt.operatingsystemversion,
+                $bt.user_agent_raw,
+                $bt.user_agent_manufacturer,
+                $bt.devicetypename,
+                $bt.user_agent_isp,
+                $bt.geo_isp,
+                $bt.params_ua_plt,
+                $bt.params_ua_vnd,
+                $rt.initiator_type,
+                $rt.height,
+                $rt.width,
+                $rt.x,
+                $rt.y,
                 count(*)
-            from $btv join $rt
-                on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
-            where $rt.encoded_size > 1 and $rt.url not like '%/interactive-assets/%'
-            group by $rt.url,
-                $btv.compression_types,$btv.domain,$btv.geo_netspeed,$btv.mobile_connection_type,$btv.params_scr_bpp,$btv.params_scr_dpx,$btv.params_scr_mtp,$btv.params_scr_orn,params_scr_xy,
-                $btv.useragentname,$btv.useragentversion,$btv.user_agent_minor,$btv.user_agent_mobile,$btv.user_agent_model,$btv.operatingsystemname,$btv.operatingsystemversion,$btv.user_agent_raw,
-                $btv.user_agent_manufacturer,$btv.devicetypename,$btv.user_agent_isp,$btv.geo_isp,$btv.params_ua_plt,$btv.params_ua_vnd,
-                $rt.initiator_type,$rt.height,$rt.width,$rt.x,$rt.y
+            from $bt join $rt
+                on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
+            where
+                $rt.encoded_size > 1 and
+                $rt.url not like '%/interactive-assets/%' and
+                $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
+            group by
+                $rt.url,
+                $bt.compression_types,
+                $bt.domain,
+                $bt.geo_netspeed,
+                $bt.mobile_connection_type,
+                $bt.params_scr_bpp,
+                $bt.params_scr_dpx,
+                $bt.params_scr_mtp,
+                $bt.params_scr_orn,
+                $bt.params_scr_xy,
+                $bt.useragentname,
+                $bt.useragentversion,
+                $bt.user_agent_minor,
+                $bt.user_agent_mobile,
+                $bt.user_agent_model,
+                $bt.operatingsystemname,
+                $bt.operatingsystemversion,
+                $bt.user_agent_raw,
+                $bt.user_agent_manufacturer,
+                $bt.devicetypename,
+                $bt.user_agent_isp,
+                $bt.geo_isp,
+                $bt.params_ua_plt,
+                $bt.params_ua_vnd,
+                $rt.initiator_type,
+                $rt.height,
+                $rt.width,
+                $rt.x,
+                $rt.y
             order by encoded desc
         """);
 
@@ -645,16 +735,27 @@ end
 function displayMatchingResourcesByUrlBtvRtPrintTables(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     try
-        btv = UP.btView
+        bt = UP.beaconTable
         rt = UP.resourceTable
 
         joinTablesDF = select("""\
-            select count(*), $rt.paramsu as parenturl, $rt.url
-            from $btv join $rt
-                on $btv.sessionid = $rt.sessionid and $btv.timestamp = $rt.timestamp
+            select
+                count(*),
+                $rt.paramsu as parenturl,
+                $rt.url
+            from $bt join $rt
+                on $bt.sessionid = $rt.sessionid and $bt.timestamp = $rt.timestamp
             where
-            $rt.url ilike '$(UP.resRegEx)'
-            group by $rt.paramsu, $rt.url, $btv.url
+                $rt.url ilike '$(UP.resRegEx)' and
+                $bt.timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+                $bt.pagegroupname ilike '$(UP.pageGroup)' and
+                $bt.devicetypename ilike '$(UP.deviceType)' and
+                $bt.operatingsystemname ilike '$(UP.agentOs)' and
+                $bt.pageloadtime >= $(UP.timeLowerMs) and $bt.pageloadtime < $(UP.timeUpperMs)
+            group by
+                $rt.paramsu,
+                $rt.url,
+                $bt.url
             order by count(*) desc
         """);
 

@@ -26,24 +26,21 @@ UrlParamsValidate(UP)
 SP = ShowParamsInit()
 ShowParamsValidate(SP)
 
-defaultBeaconCreateView(TV,UP,SP)
-
-btv = UP.btView
-
 displayTitle(chart_title = "Top URL Page Views for $(UP.pageGroup)", chart_info = [TV.timeString],showTimeStamp=false)
 
 t1DF = select("""\
 
-select count(*),paramsu
+select
+    count(*),paramsu
 FROM $(UP.beaconTable)
 where
-beacontypename = 'page view' and
-timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
-pagegroupname ilike '$(UP.pageGroup)' and
-paramsu ilike '$(UP.urlRegEx)' and
-devicetypename ilike '$(UP.deviceType)' and
-operatingsystemname ilike '$(UP.agentOs)' and
-pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
+    beacontypename = 'page view' and
+    timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+    pagegroupname ilike '$(UP.pageGroup)' and
+    paramsu ilike '$(UP.urlRegEx)' and
+    devicetypename ilike '$(UP.deviceType)' and
+    operatingsystemname ilike '$(UP.agentOs)' and
+    pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
 group by paramsu
 order by count(*) desc
 limit 5

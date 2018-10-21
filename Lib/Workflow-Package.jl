@@ -72,10 +72,6 @@ function dailyWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  #defaultBeaconCreateView(TV,UP,SP)
-
-  #setTable(UP.bt View)
-
   beaconFilter = SQLFilter[
       ilike("pagegroupname",UP.pageGroup),
       ilike("paramsu",UP.urlRegEx),
@@ -168,8 +164,6 @@ end
 
 function dumpDataFieldsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    ##defaultBeaconCreateView(TV,UP,SP)
-
     urlCountPrintTable(TV,UP,SP)
 
     agentCountPrintTable(TV,UP,SP)
@@ -229,9 +223,6 @@ function studyRangeOfStatsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    #defaultBeaconCreateView(TV,UP,SP)
-    #setTable(UP.bt View)
-
     if wfPageGroupGraph
         rawTimeDF = fetchGraph7Stats(TV,UP,SP)
         #beautifyDF(rawTimeDF[1:min(3,end),:])
@@ -290,9 +281,6 @@ function findAPageViewSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    #defaultBeaconCreateView(TV,UP,SP)
-    #todo-btview
-
     beaconFilter = SQLFilter[
         ilike("pagegroupname",UP.pageGroup),
         ilike("paramsu",UP.urlRegEx),
@@ -327,7 +315,6 @@ function pageGroupDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,mobi
     openingTitle(TV,UP,SP)
 
     pageGroupDetailsCreateView(TV,UP,SP,mobileView,desktopView)
-    setTable(UP.btView);
 
     statsDF = beaconViewStats(TV,UP,SP)
     if !isdefined(:statsDF)
@@ -452,8 +439,6 @@ end
 
 function aemLargeImagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
-    defaultBeaconCreateView(TV,UP,SP);
-
     joinTables = DataFrame()
     joinTables = gatherSizeDataToDF(UP,SP)
     ;
@@ -504,10 +489,7 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  defaultBeaconCreateView(TV,UP,SP)
   defaultResourceView(TV,UP)
-
-  setTable(UP.btView)
 
   beaconFilter = SQLFilter[
       ilike("pagegroupname",UP.pageGroup),
@@ -547,7 +529,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
         println("chartTop LocalTable Exception ",y)
     end
 
-    setTable(UP.btView)
   end
 
   if (wfShowMedLoadUrl)
@@ -559,7 +540,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowChartCacheHitRatio)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
     chartRes = chartCacheHitRatioByUrl(TV.startTimeUTC, TV.endTimeUTC, minPercentage=0.1)
-    setTable(UP.btView)
     display(chartRes)
   end
 
@@ -576,7 +556,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowChartResResponse)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
     chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC,url=UP.urlRegEx)
-    setTable(UP.btView)
     display(chartRes)
   end
 
@@ -584,7 +563,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
     #chartRes = chartResourceResponseTimeDistribution(start_time, endTime,url="https://phenomena.nationalgeographic.com/files/2016/05/BH91DH.jpg")
     chartRes = chartResourceResponseTimeDistribution(TV.startTimeUTC, TV.endTimeUTC)
-    setTable(UP.btView)
     display(chartRes)
   end
 
@@ -605,7 +583,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowResResponseTime)
     setTable(UP.rtView, tableType = "RESOURCE_TABLE")
     responseDist = getResourceResponseTimeDistribution(TV.startTimeUTC,TV.endTimeUTC, n=15, url=UP.urlFull)
-    setTable(UP.btView)
     display(responseDist)
   end
 
@@ -626,7 +603,6 @@ function urlDetailsWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   end
 
   if (wfShowCustomReferrers)
-    localTable = UP.btView
     customRefPGD(TV,UP)
   end
 
@@ -670,8 +646,6 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  defaultBeaconCreateView(TV,UP,SP)
-
   statsDF = DataFrame()
   localStats2 = DataFrame()
 
@@ -681,8 +655,6 @@ function findATimeSpikeWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
   if (wfShowLongTimes)
     longTimesFATS(TV,UP,localStats2)
   end
-
-  setTable(UP.btView)
 
   beaconFilter = SQLFilter[
       ilike("pagegroupname",UP.pageGroup),
@@ -729,8 +701,6 @@ function aemLargeResourcesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams,min
     wfShowLeftOvers = true
     wfShowLeftOversDetails = true
     wfClearViews = true
-
-    defaultBeaconCreateView(TV,UP,SP)
 
     if (wfShowBigPagesByFileType)
         bigPagesSizePrintTable(TV,UP,SP,"%jpg";minEncoded=minimumEncoded)
@@ -787,8 +757,6 @@ function findAnyResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
       displayMatchingResourcesByParentUrlPrintTable(TV,UP,SP)
   end
 
-  defaultBeaconCreateView(TV,UP,SP)
-
   if (wfShowResourcesByUrls)
       displayMatchingResourcesByUrlBtvRtPrintTables(TV,UP,SP)
   end
@@ -816,8 +784,6 @@ function findSingleResourceWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
   openingTitle(TV,UP,SP)
 
-  defaultBeaconCreateView(TV,UP,SP)
-
   if (wfShowResourcesByUrls)
       displayMatchingResourcesByUrlBtvRtPrintTables(TV,UP,SP)
   end
@@ -834,8 +800,6 @@ function showRequestsForLargePagesWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowPa
   wfShowBigPage6 = true
 
   wfClearViews = true
-
-  defaultBeaconCreateView(TV,UP,SP)
 
   minSizeBytes = bigPages1SRFLP(TV,UP,SP)
 
@@ -981,19 +945,11 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 
     openingTitle(TV,UP,SP)
 
-    bt = UP.beaconTable
-    btv = UP.btView
-
-    # Create view to query only product pagegroupname
-    defaultBeaconCreateView(TV,UP,SP)
-
-    setTable(btv)
-
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
     # where beacontypename = 'page view'
     # t1DF = select("""SELECT count(*) FROM $bt v""")
 
-    retailer_results = getLatestResults(hours=10, minutes=0, table_name="$(btv)")
+    retailer_results = getLatestResults(hours=10, minutes=0, table_name="$(UP.beaconTable)")
     size(retailer_results)
 
     # drop some of the fields to make the output easier to read
@@ -1006,8 +962,6 @@ function pageGroupAnimationWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 end
 
 function largeResourcesForImageMgrWorkflow(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-    defaultBeaconCreateView(TV,UP,SP)
 
     largeResourceFileTypePrint(TV,UP,SP,"%jpg")
     largeResourceFileTypePrint(TV,UP,SP,"%png")

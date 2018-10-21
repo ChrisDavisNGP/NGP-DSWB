@@ -364,8 +364,6 @@ end
 
 function displayTopUrlsByCount(TV::TimeVars,UP::UrlParams,SP::ShowParams,quickPageGroup::ASCIIString; rowLimit::Int64=20, beaconsLimit::Int64=2, paginate::Bool=false)
     UP.pageGroup = quickPageGroup
-    #defaultBeaconCreateView(TV,UP,SP)
-    #setTable(UP.bt View)
     topUrlTableByCountPrintTable(TV,UP,SP;rowLimit=rowLimit, beaconsLimit=beaconsLimit, paginate=paginate)
 end
 
@@ -774,9 +772,6 @@ function resourceTime3(TV::TimeVars,UP::UrlParams,SP::ShowParams)
 end
 
 function determinePageConstructionBody(TV::TimeVars,UP::UrlParams,SP::ShowParams)
-
-    #defaultBeaconCreateView(TV,UP,SP)
-    #btv = UP.bt View
 
     # Some routines use the unload events, some do not.  First count is all beacons such as page view and unload
     # where beacontypename = 'page view'

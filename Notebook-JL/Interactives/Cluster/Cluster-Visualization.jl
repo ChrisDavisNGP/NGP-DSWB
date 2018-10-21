@@ -27,10 +27,6 @@ ShowParamsValidate(SP)
 
 #conversionMetric = "custom_metrics_0" # conversion metric column
 
-defaultBeaconCreateView(TV,UP,SP)
-btv = UP.btView
-setTable(btv)
-
 # Get Data
 #
 # We then write some code to pull data out of our DataBase.  The following fields are required:
@@ -78,7 +74,13 @@ results2 = select("""\
     select timestamp,pagegroupname, devicetypename,useragentname,
         params_dom_sz,params_dom_ln,params_dom_script,params_dom_img,
         pageloadtime,timers_t_resp,timers_t_page
-    from $(btv)
+    from
+        timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
+        pagegroupname ilike '$(UP.pageGroup)' and
+        paramsu ilike '$(UP.urlRegEx)' and
+        devicetypename ilike '$(UP.deviceType)' and
+        operatingsystemname ilike '$(UP.agentOs)' and
+        pageloadtime >= $(UP.timeLowerMs) and pageloadtime < $(UP.timeUpperMs)
     where
         paramsu ilike '$(UP.urlRegEx)'
     limit $(UP.limitQueryRows)

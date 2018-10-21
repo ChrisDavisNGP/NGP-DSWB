@@ -2,7 +2,7 @@ function obsoleteDefaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
     try
         bt = UP.beaconTable
-        btv = UP.btView
+        btv = UP.bt View
         if (SP.debugLevel > 0)
             println("page group=$(UP.pageGroup), devType=$(UP.deviceType), os=$(UP.agentOs)")
             println("paramsu=",UP.urlRegEx)
@@ -47,7 +47,7 @@ function defaultResourceView(TV::TimeVars,UP::UrlParams)
     try
         rtv = UP.rtView
         rt = UP.resourceTable
-        btv = UP.btView
+        btv = UP.bt View
 
         select("""\
             create or replace view $rtv as (
@@ -79,7 +79,7 @@ function pageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowParams,lo
       try
 
         select("""\
-            create or replace view $(UP.btView) as
+            create or replace view $(UP.bt View) as
             (select * FROM $(UP.beaconTable)
             where pagegroupname ilike '$(UP.pageGroup)' and
             paramsu ilike '$(UP.urlRegEx)' and
