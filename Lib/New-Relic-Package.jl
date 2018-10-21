@@ -714,3 +714,43 @@ function diffDailyChangeOnPageLoad(oldTV::TimeVars,newTV::TimeVars,SP::ShowParam
 
     return true
 end
+
+function critAggLimitedBeaconsToDF(TV::TimeVars,UP::UrlParams,SP::ShowParams,CU::CurlParams,NR::NrParams)
+
+    if CU.syntheticMonitor == "no name"
+        critAggLimitedBeaconsToDFSoasta(TV,UP,SP)
+    else
+        critAggLimitedBeaconsToDFNR(TV,SP,CU,NR)
+    end
+
+end
+
+function critAggLimitedBeaconsToDFNR(TV::TimeVars,SP::ShowParams,CU::CurlParams,NR::NrParams)
+
+    try
+        jsonTimeString = curlCritAggLimitedBeaconsToDFNR(TV,SP,CU)
+        timeDict = curlSyntheticJson(SP,jsonTimeString)
+
+        fillNrResults(SP,NR,timeDict["results"])
+
+        if SP.debugLevel > 6
+            beautifyDF(NR.results.row[1:min(3,end),:])
+        end
+
+        localTableDF = DataFrame(jobid=ASCIIString[],timestamp=Int64[],onpageload=Int64[],onpagecontentload=Int64[])
+        for row in eachrow(NR.results.row)
+            push!(localTableDF,[row[:jobId];row[:timestamp];row[:timestamp];round(row[:onPageLoad],0);round(row[:onPageContentLoad],0)])
+        end
+
+        localTableDF = names!(localTableDF,[Symbol("sessionid");Symbol("sessionstart");Symbol("timestamp");Symbol("pageloadtime");Symbol("domreadytimer")])
+
+        if SP.debugLevel > 6
+            beautifyDF(localTableDF)
+        end
+        return localTableDF
+
+    catch y
+        println("critAggLimitedBeaconsToDFNR Exception ",y)
+    end
+
+end
