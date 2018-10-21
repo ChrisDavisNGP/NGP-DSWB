@@ -26,7 +26,7 @@ function obsoleteDefaultBeaconCreateView(TV::TimeVars,UP::UrlParams,SP::ShowPara
 
 
         select("""\
-            create or replace view $b tv as (
+            create or replace v iew $b tv as (
                 select * FROM $bt
                     where
                         timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -63,7 +63,7 @@ function obsoleteDefaultResourceView(TV::TimeVars,UP::UrlParams)
         order by $rt.sessionid, $rt.timestamp, $rt.start_time
 
         select("""\
-            create or replace view $rt v as (
+            create or replace v iew $rt v as (
                 select $rt.*
                 from $bt v join $rt on $rt.sessionid = $bt v.sessionid
                 where
@@ -92,7 +92,7 @@ function obsoletePageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowP
       try
 
         select("""\
-            create or replace view $(UP.bt View) as
+            create or replace v iew $(UP.bt View) as
             (select * FROM $(UP.beaconTable)
             where pagegroupname ilike '$(UP.pageGroup)' and
             paramsu ilike '$(UP.urlRegEx)' and
@@ -105,7 +105,7 @@ function obsoletePageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowP
         # todo if select count into var for size zero check and dbg output
 
         select("""\
-            create or replace view $localMobileTable as
+            create or replace v iew $localMobileTable as
             (select * FROM $(UP.beaconTable)
             where pagegroupname ilike '$(UP.pageGroup)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
@@ -116,7 +116,7 @@ function obsoletePageGroupDetailsCreateView(TV::TimeVars,UP::UrlParams,SP::ShowP
         """)
 
         select("""\
-            create or replace view $localDesktopTable as
+            create or replace v iew $localDesktopTable as
             (select * FROM $(UP.beaconTable)
             where pagegroupname ilike '$(UP.pageGroup)' and
             timestamp between $(TV.startTimeMsUTC) and $(TV.endTimeMsUTC) and
